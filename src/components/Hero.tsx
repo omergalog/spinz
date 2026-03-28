@@ -17,7 +17,7 @@ export default function Hero() {
           src="/assets/hero-bike.jpg"
           alt=""
           className="h-full w-full object-cover"
-          style={{ opacity: 0.28 }}
+          style={{ opacity: 0.45 }}
         />
         <div
           className="absolute inset-0"
@@ -70,7 +70,7 @@ export default function Hero() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.9, delay: 0.95 }}
           style={{
-            color: `${TEXT_LIGHT}99`,
+            color: '#FFFFFF',
             fontFamily: "'Heebo', sans-serif",
             fontSize: 'clamp(15px, 1.8vw, 20px)',
             fontWeight: 300,

@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Instagram, MessageCircle } from 'lucide-react';
 
 const TEXT = '#EDEBE6';
-const TEXT_MUTED = '#888';
+const TEXT_MUTED = '#FFFFFF';
 const BG = '#1C1C1C';
 const BORDER = '#2A2A2A';
 const GOLD = '#C9A870';
@@ -19,7 +19,6 @@ function TikTokIcon({ size = 16 }: { size?: number }) {
 const navLinks = [
   { label: 'בית', href: '#' },
   { label: 'מודלים', href: '#models' },
-  { label: 'חנות', href: '#shop' },
   { label: 'צור קשר', href: '#lead-form' },
 ];
 
@@ -37,118 +36,12 @@ export default function Footer() {
 
         <div className="mx-auto max-w-7xl px-6 lg:px-16">
 
-          {/* Main row */}
-          <div className="flex flex-col gap-12 py-16 md:flex-row md:items-start md:justify-between">
-
-            {/* Brand */}
-            <div className="flex flex-col gap-5">
-              <img src="/assets/logo.png" alt="SPINZ" style={{ height: '44px', width: 'auto', maxWidth: '200px', objectFit: 'contain', filter: 'invert(1) brightness(2)' }} />
-              <p className="max-w-[200px] text-sm leading-relaxed" style={{ fontFamily: "'Heebo', sans-serif", color: TEXT_MUTED }}>
-                אופני עיר סינגל ספיד. בנויים לרחובות, מעוצבים לבלוט.
-              </p>
-
-              <div className="flex items-center gap-2 pt-1">
-                {socialLinks.map(s => (
-                  <a
-                    key={s.label}
-                    href={s.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={s.label}
-                    className="flex h-8 w-8 items-center justify-center transition-all duration-300"
-                    style={{ border: `1px solid ${BORDER}`, color: TEXT_MUTED }}
-                    onMouseEnter={e => {
-                      const el = e.currentTarget as HTMLAnchorElement;
-                      el.style.borderColor = GOLD;
-                      el.style.color = GOLD;
-                    }}
-                    onMouseLeave={e => {
-                      const el = e.currentTarget as HTMLAnchorElement;
-                      el.style.borderColor = BORDER;
-                      el.style.color = TEXT_MUTED;
-                    }}
-                  >
-                    {s.icon}
-                  </a>
-                ))}
-                <a
-                  href={whatsappHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-8 items-center gap-1.5 px-3 text-xs font-bold uppercase tracking-wider transition-all duration-300"
-                  style={{ border: `1px solid ${BORDER}`, color: TEXT_MUTED, fontFamily: "'Heebo', sans-serif" }}
-                  onMouseEnter={e => {
-                    const el = e.currentTarget as HTMLAnchorElement;
-                    el.style.borderColor = '#25D36640';
-                    el.style.color = '#25D366';
-                  }}
-                  onMouseLeave={e => {
-                    const el = e.currentTarget as HTMLAnchorElement;
-                    el.style.borderColor = BORDER;
-                    el.style.color = TEXT_MUTED;
-                  }}
-                >
-                  <MessageCircle size={13} />
-                  WA
-                </a>
-              </div>
-            </div>
-
-            {/* Nav */}
-            <nav className="flex flex-col gap-2">
-              <span className="mb-2 text-[10px] uppercase tracking-[0.35em]" style={{ color: '#444', fontFamily: "'Heebo', sans-serif" }}>
-                ניווט
-              </span>
-              {navLinks.map(link => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="w-fit text-sm transition-colors duration-200"
-                  style={{ color: TEXT_MUTED, fontFamily: "'Heebo', sans-serif" }}
-                  onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = TEXT)}
-                  onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = TEXT_MUTED)}
-                >
-                  {link.label}
-                </a>
-              ))}
-            </nav>
-
-            {/* Contact */}
-            <div className="flex flex-col gap-2">
-              <span className="mb-2 text-[10px] uppercase tracking-[0.35em]" style={{ color: '#444', fontFamily: "'Heebo', sans-serif" }}>
-                צור קשר
-              </span>
-              <a
-                href={whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-fit text-sm transition-colors duration-200"
-                style={{ color: TEXT_MUTED, fontFamily: "'Heebo', sans-serif" }}
-                onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = '#25D366')}
-                onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = TEXT_MUTED)}
-              >
-                WhatsApp
-              </a>
-              <a
-                href="https://instagram.com/spinz"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-fit text-sm transition-colors duration-200"
-                style={{ color: TEXT_MUTED, fontFamily: "'Heebo', sans-serif" }}
-                onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = GOLD)}
-                onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = TEXT_MUTED)}
-              >
-                @spinz
-              </a>
-            </div>
-          </div>
-
           {/* Bottom bar */}
           <div className="flex flex-col items-center justify-between gap-2 py-6 md:flex-row" style={{ borderTop: `1px solid ${BORDER}` }}>
-            <p className="text-xs" style={{ color: '#444', fontFamily: "'Heebo', sans-serif" }}>
+            <p className="text-xs" style={{ color: '#FFFFFF', fontFamily: "'Heebo', sans-serif" }}>
               © 2025 Spinz. כל הזכויות שמורות.
             </p>
-            <p className="text-xs" style={{ color: '#333', fontFamily: "'Heebo', sans-serif" }}>
+            <p className="text-xs" style={{ color: '#FFFFFF', fontFamily: "'Heebo', sans-serif" }}>
               Built in Tel Aviv
             </p>
           </div>

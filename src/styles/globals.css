@@ -154,6 +154,12 @@ button {
 /* ─────────────────────────────────────────
    Marquee ticker
 ───────────────────────────────────────── */
+@keyframes btnSlide {
+  0%, 100% { transform: translateX(0); }
+  30%       { transform: translateX(-6px); }
+  60%       { transform: translateX(6px); }
+}
+
 @keyframes marquee {
   from { transform: translateX(0%); }
   to   { transform: translateX(-50%); }

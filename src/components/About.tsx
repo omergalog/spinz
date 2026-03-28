@@ -1,5 +1,25 @@
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
+
+function CountUp({ target, suffix = '', duration = 2800 }: { target: number; suffix?: string; duration?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: '-60px' });
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    if (!inView) return;
+    let start = 0;
+    const step = (timestamp: number) => {
+      if (!start) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      setValue(Math.floor(progress * target));
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }, [inView, target, duration]);
+
+  return <span ref={ref}>{value}{suffix}</span>;
+}
 
 const DARK = '#1C1C1C';
 const GOLD = '#C9A870';
@@ -195,7 +215,7 @@ export default function About() {
                   fontFamily: "'Heebo', sans-serif",
                   fontSize: big ? '18px' : '15px',
                   fontWeight: big ? 500 : 400,
-                  color: big ? '#EDEBE6' : '#666',
+                  color: big ? '#EDEBE6' : '#FFFFFF',
                   lineHeight: 1.75,
                   margin: 0,
                 }}
@@ -257,10 +277,10 @@ export default function About() {
           className="hidden md:grid"
         >
           {[
-            { num: '100%', label: 'ישיר מהמפעל' },
-            { num: '3', label: 'דגמים בקולקציה' },
-            { num: '48H', label: 'זמן תגובה מקסימלי' },
-          ].map(({ num, label }) => (
+            { num: '100%', label: 'ישיר מהמפעל', target: 100, suffix: '%' },
+            { num: '3', label: 'דגמים בקולקציה', target: 3, suffix: '' },
+            { num: '72H', label: 'אצלך בבית', target: 72, suffix: 'H' },
+          ].map(({ label, target, suffix }) => (
             <div
               key={label}
               style={{
@@ -270,9 +290,9 @@ export default function About() {
               }}
             >
               <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '48px', color: GOLD, letterSpacing: '0.04em', margin: 0, lineHeight: 1 }}>
-                {num}
+                <CountUp target={target} suffix={suffix} />
               </p>
-              <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#555', margin: '8px 0 0' }}>
+              <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#FFFFFF', margin: '8px 0 0' }}>
                 {label}
               </p>
             </div>

@@ -14,7 +14,7 @@ const models: BikeModel[] = [
     name: 'STREET 01',
     tagline: 'הקלאסיק של הרחוב',
     image: '/assets/model-1.png',
-    price: 2490,
+    price: 100000,
     accentColor: '#C5C9B5',
     features: [
       { label: 'פריים', value: 'Chromoly Steel' },
@@ -27,7 +27,7 @@ const models: BikeModel[] = [
     name: 'URBAN X',
     tagline: 'אגרסיבי. קל. מהיר.',
     image: '/assets/model-2.png',
-    price: 3190,
+    price: 100000,
     accentColor: '#8B2020',
     features: [
       { label: 'פריים', value: 'Butted Aluminum' },
@@ -40,7 +40,7 @@ const models: BikeModel[] = [
     name: 'TRACK R',
     tagline: 'נולד בפיסטה. גדל בעיר.',
     image: '/assets/model-3.png',
-    price: 3890,
+    price: 100000,
     accentColor: '#3A5CA0',
     features: [
       { label: 'פריים', value: 'Hi-Ten Track Geo' },

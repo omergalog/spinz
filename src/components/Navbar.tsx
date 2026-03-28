@@ -64,7 +64,7 @@ export default function Navbar() {
             onClick={e => { e.preventDefault(); scrollTo('#'); }}
             style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
           >
-            <img src="/assets/logo.png" alt="SPINZ" style={{ height: '32px', width: 'auto' }} />
+            <img src="/assets/logo.png" alt="SPINZ" style={{ height: '48px', width: 'auto' }} />
           </a>
 
           {/* Nav */}
@@ -105,6 +105,7 @@ export default function Navbar() {
                 textDecoration: 'none',
                 transition: 'background-color 0.25s, transform 0.25s',
                 whiteSpace: 'nowrap',
+                animation: 'btnSlide 1.2s ease-in-out infinite',
               }}
               onMouseEnter={e => {
                 const el = e.currentTarget as HTMLAnchorElement;

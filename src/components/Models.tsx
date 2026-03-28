@@ -102,7 +102,7 @@ function ModelCard({ model, index }: { model: typeof models[number]; index: numb
           >
             {model.name}
           </h3>
-          <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: '#666', margin: '4px 0 0' }}>
+          <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: '#FFFFFF', margin: '4px 0 0' }}>
             {model.tagline}
           </p>
         </div>
@@ -112,8 +112,8 @@ function ModelCard({ model, index }: { model: typeof models[number]; index: numb
             <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', fontWeight: 700, color: GOLD }}>
               {formatPrice(model.price)}
             </span>
-            <p style={{ fontFamily: "'Heebo'", fontSize: '9px', color: '#666', margin: '2px 0 0', letterSpacing: '0.1em' }}>
-              ממחיר
+            <p style={{ fontFamily: "'Heebo'", fontSize: '9px', color: '#FFFFFF', margin: '2px 0 0', letterSpacing: '0.1em' }}>
+              מחיר
             </p>
           </div>
         </div>

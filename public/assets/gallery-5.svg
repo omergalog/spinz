@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600">
+  <rect width="600" height="600" fill="#161616"/>
+  <rect x="1" y="1" width="598" height="598" fill="none" stroke="#2A2A2A" stroke-width="2"/>
+  <!-- Saddle / seat detail -->
+  <!-- Rails -->
+  <line x1="180" y1="340" x2="420" y2="340" stroke="#222" stroke-width="5"/>
+  <line x1="185" y1="346" x2="415" y2="346" stroke="#222" stroke-width="5"/>
+  <!-- Saddle shape -->
+  <path d="M160,330 Q220,280 300,275 Q380,280 440,330 Q420,345 300,348 Q180,345 160,330 Z" fill="#1E1E1E" stroke="#2A2A2A" stroke-width="3"/>
+  <!-- Saddle accent line -->
+  <path d="M190,318 Q300,300 410,318" fill="none" stroke="#E8FF00" stroke-width="2" opacity="0.4"/>
+  <!-- Seat post -->
+  <rect x="286" y="346" width="28" height="140" fill="#222"/>
+  <!-- Seat post clamp -->
+  <rect x="278" y="472" width="44" height="18" fill="#2A2A2A" rx="2"/>
+  <!-- Frame tube suggestion -->
+  <path d="M300,490 Q260,520 200,560" fill="none" stroke="#2A2A2A" stroke-width="14" stroke-linecap="round"/>
+  <!-- Spinz branding on saddle -->
+  <text x="300" y="322" font-family="monospace" font-size="10" fill="#2A2A2A" text-anchor="middle" letter-spacing="5">SPINZ</text>
+  <text x="300" y="555" font-family="monospace" font-size="11" fill="#2A2A2A" text-anchor="middle" letter-spacing="3">GALLERY 05</text>
+</svg>

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <rect width="800" height="600" fill="#111111"/>
+  <rect x="1" y="1" width="798" height="598" fill="none" stroke="#2A2A2A" stroke-width="2"/>
+
+  <!-- Wheel back -->
+  <circle cx="240" cy="390" r="140" fill="none" stroke="#2A2A2A" stroke-width="12"/>
+  <circle cx="240" cy="390" r="14" fill="#2A2A2A"/>
+  <line x1="240" y1="250" x2="240" y2="530" stroke="#1E1E1E" stroke-width="3"/>
+  <line x1="100" y1="390" x2="380" y2="390" stroke="#1E1E1E" stroke-width="3"/>
+  <line x1="141" y1="291" x2="339" y2="489" stroke="#1E1E1E" stroke-width="3"/>
+  <line x1="339" y1="291" x2="141" y2="489" stroke="#1E1E1E" stroke-width="3"/>
+
+  <!-- Wheel front -->
+  <circle cx="560" cy="390" r="140" fill="none" stroke="#2A2A2A" stroke-width="12"/>
+  <circle cx="560" cy="390" r="14" fill="#2A2A2A"/>
+  <line x1="560" y1="250" x2="560" y2="530" stroke="#1E1E1E" stroke-width="3"/>
+  <line x1="420" y1="390" x2="700" y2="390" stroke="#1E1E1E" stroke-width="3"/>
+  <line x1="461" y1="291" x2="659" y2="489" stroke="#1E1E1E" stroke-width="3"/>
+  <line x1="659" y1="291" x2="461" y2="489" stroke="#1E1E1E" stroke-width="3"/>
+
+  <!-- Frame — more aggressive geometry -->
+  <polygon points="240,390 385,180 500,390" fill="none" stroke="#2A2A2A" stroke-width="11" stroke-linejoin="round"/>
+  <line x1="385" y1="180" x2="560" y2="390" stroke="#2A2A2A" stroke-width="11"/>
+  <line x1="385" y1="180" x2="510" y2="162" stroke="#2A2A2A" stroke-width="9"/>
+  <line x1="510" y1="162" x2="560" y2="390" stroke="#2A2A2A" stroke-width="9"/>
+  <line x1="510" y1="162" x2="528" y2="130" stroke="#333" stroke-width="8"/>
+  <line x1="508" y1="130" x2="545" y2="130" stroke="#333" stroke-width="7"/>
+  <line x1="385" y1="180" x2="376" y2="142" stroke="#333" stroke-width="8"/>
+  <ellipse cx="363" cy="140" rx="22" ry="6" fill="#333"/>
+
+  <!-- Chainring — orange accent -->
+  <circle cx="385" cy="390" r="28" fill="none" stroke="#FF4D00" stroke-width="3" opacity="0.5"/>
+
+  <text x="400" y="555" font-family="monospace" font-size="11" fill="#2A2A2A" text-anchor="middle" letter-spacing="3">URBAN X — PLACEHOLDER</text>
+</svg>

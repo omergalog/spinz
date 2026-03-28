@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600">
+  <rect width="600" height="600" fill="#111111"/>
+  <rect x="1" y="1" width="598" height="598" fill="none" stroke="#2A2A2A" stroke-width="2"/>
+  <!-- Urban texture — grid / street -->
+  <line x1="0" y1="150" x2="600" y2="150" stroke="#161616" stroke-width="1"/>
+  <line x1="0" y1="300" x2="600" y2="300" stroke="#161616" stroke-width="1"/>
+  <line x1="0" y1="450" x2="600" y2="450" stroke="#161616" stroke-width="1"/>
+  <line x1="150" y1="0" x2="150" y2="600" stroke="#161616" stroke-width="1"/>
+  <line x1="300" y1="0" x2="300" y2="600" stroke="#161616" stroke-width="1"/>
+  <line x1="450" y1="0" x2="450" y2="600" stroke="#161616" stroke-width="1"/>
+  <!-- Chainring detail -->
+  <circle cx="300" cy="290" r="160" fill="none" stroke="#2A2A2A" stroke-width="3"/>
+  <circle cx="300" cy="290" r="130" fill="none" stroke="#222" stroke-width="14"/>
+  <circle cx="300" cy="290" r="100" fill="none" stroke="#1A1A1A" stroke-width="3"/>
+  <circle cx="300" cy="290" r="30" fill="#161616" stroke="#2A2A2A" stroke-width="4"/>
+  <!-- Chainring teeth suggestion -->
+  <circle cx="300" cy="290" r="145" fill="none" stroke="#E8FF00" stroke-width="2" stroke-dasharray="8 6" opacity="0.35"/>
+  <!-- Chain -->
+  <path d="M300,450 Q380,490 420,490" fill="none" stroke="#222" stroke-width="8" stroke-dasharray="12 6"/>
+  <!-- Pedal arms -->
+  <line x1="300" y1="290" x2="300" y2="430" stroke="#2A2A2A" stroke-width="12" stroke-linecap="round"/>
+  <line x1="300" y1="290" x2="300" y2="150" stroke="#2A2A2A" stroke-width="12" stroke-linecap="round"/>
+  <rect x="264" y="420" width="72" height="16" fill="#333" rx="3"/>
+  <rect x="264" y="144" width="72" height="16" fill="#333" rx="3"/>
+  <text x="300" y="560" font-family="monospace" font-size="11" fill="#2A2A2A" text-anchor="middle" letter-spacing="3">GALLERY 04</text>
+</svg>

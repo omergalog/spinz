@@ -13,7 +13,7 @@ export default function CookieBanner({ loaderDone }: { loaderDone: boolean }) {
   useEffect(() => {
     if (!loaderDone) return;
     try { if (localStorage.getItem('spinz-cookies') === '1') return; } catch {}
-    const t = setTimeout(() => { setVisible(true); }, 250);
+    const t = setTimeout(() => { setVisible(true); }, 2600);
     return () => clearTimeout(t);
   }, [loaderDone]);
 

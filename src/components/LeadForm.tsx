@@ -81,21 +81,21 @@ export default function LeadForm() {
       ref={ref}
       id="lead-form"
       style={{ backgroundColor: DARK }}
-      className="px-5 py-10 md:p-9"
+      className="max-md:px-0 py-6 md:p-9"
       dir="rtl"
     >
-      <div style={{ borderTop: `1px solid ${BORDER_DARK}` }} className="pt-8 md:pt-16">
+      <div style={{ borderTop: `1px solid ${BORDER_DARK}` }} className="pt-5 md:pt-16">
         <div
           style={{
             gridTemplateColumns: '1fr 1fr',
             gap: '80px',
             alignItems: 'start',
           }}
-          className="flex flex-col gap-10 md:grid md:gap-0"
+          className="flex flex-col gap-4 md:grid md:gap-0"
         >
 
           {/* Left: heading */}
-          <div>
+          <div className="px-5 md:px-0">
             <motion.h5
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : {}}
@@ -135,7 +135,7 @@ export default function LeadForm() {
               style={{
                 height: '1px',
                 backgroundColor: BORDER_DARK,
-                margin: '28px 0',
+                margin: '16px 0',
                 transformOrigin: 'right',
               }}
             />
@@ -166,8 +166,8 @@ export default function LeadForm() {
             initial={{ opacity: 0, y: 32 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1], delay: 0.3 }}
-            style={{ paddingTop: '8px' }}
-            className="mt-10 md:mt-0"
+            style={{ paddingTop: '0' }}
+            className="mt-0 md:mt-0"
           >
             <AnimatePresence mode="wait">
               {status === 'success' ? (
@@ -211,7 +211,7 @@ export default function LeadForm() {
                   noValidate
                 >
                   {/* Name field */}
-                  <div style={{ borderTop: `1px solid ${BORDER_DARK}`, padding: '24px 0' }}>
+                  <div className="px-5 md:px-0" style={{ borderTop: `1px solid ${BORDER_DARK}`, paddingTop: '18px', paddingBottom: '18px' }}>
                     <label
                       style={{
                         display: 'block',
@@ -250,7 +250,7 @@ export default function LeadForm() {
                   </div>
 
                   {/* Email field */}
-                  <div style={{ borderTop: `1px solid ${BORDER_DARK}`, padding: '24px 0' }}>
+                  <div className="px-5 md:px-0" style={{ borderTop: `1px solid ${BORDER_DARK}`, paddingTop: '18px', paddingBottom: '18px' }}>
                     <label
                       style={{
                         display: 'block',
@@ -292,7 +292,7 @@ export default function LeadForm() {
                   </div>
 
                   {/* WhatsApp field */}
-                  <div style={{ borderTop: `1px solid ${BORDER_DARK}`, padding: '24px 0' }}>
+                  <div className="px-5 md:px-0" style={{ borderTop: `1px solid ${BORDER_DARK}`, paddingTop: '18px', paddingBottom: '18px' }}>
                     <label
                       style={{
                         display: 'block',
@@ -354,7 +354,7 @@ export default function LeadForm() {
                   </AnimatePresence>
 
                   {/* Submit */}
-                  <div style={{ borderTop: `1px solid ${BORDER_DARK}`, paddingTop: '32px', marginTop: '8px' }}>
+                  <div className="px-5 md:px-0" style={{ borderTop: `1px solid ${BORDER_DARK}`, paddingTop: '24px', marginTop: '4px' }}>
                     <button
                       type="submit"
                       disabled={status === 'loading'}

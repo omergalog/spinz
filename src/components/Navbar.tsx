@@ -118,11 +118,28 @@ export default function Navbar() {
                 el.style.transform = 'translateY(0)';
               }}
             >
-              <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <ShoppingCart size={14} />
-                בואו נדבר
-              </span>
+              בואו נדבר
             </a>
+
+            {/* Cart button */}
+            <button
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: 'transparent',
+                border: `1px solid ${DARK}`,
+                borderRadius: '4px',
+                color: DARK,
+                padding: '6px 8px',
+                cursor: 'pointer',
+                transition: 'background-color 0.25s',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'rgba(0,0,0,0.08)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'; }}
+            >
+              <ShoppingCart size={16} />
+            </button>
 
             {/* Hamburger — hidden (nav always visible) */}
           </div>

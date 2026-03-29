@@ -26,7 +26,7 @@ export default function CookieBanner() {
           initial={{ y: 120, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 120, opacity: 0 }}
-          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 1.5 }}
+          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 3 }}
           style={{
             position: 'fixed',
             bottom: '24px',

@@ -185,6 +185,15 @@ html {
 /* ─────────────────────────────────────────
    LeadForm — mobile card-style fields
 ───────────────────────────────────────── */
+/* Fix browser autofill background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #252525 inset !important;
+  -webkit-text-fill-color: #EDEBE6 !important;
+  caret-color: #EDEBE6;
+}
+
 .lead-form-field {
   border-top: none !important;
   padding-top: 16px !important;

@@ -113,9 +113,16 @@ export default function CartDrawer() {
                           <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: '#888', margin: '0 0 8px' }}>
                             {item.model.tagline}
                           </p>
-                          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 700, color: GOLD }}>
-                            {formatPrice(item.model.price * item.quantity)}
-                          </span>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 700, color: GOLD }}>
+                              {formatPrice(item.model.price * item.quantity)}
+                            </span>
+                            {item.quantity > 1 && (
+                              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#888', backgroundColor: 'rgba(255,255,255,0.08)', padding: '2px 8px', borderRadius: '20px' }}>
+                                x{item.quantity}
+                              </span>
+                            )}
+                          </div>
                         </div>
                         <button
                           onClick={() => removeItem(item.model.id)}

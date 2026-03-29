@@ -18,14 +18,13 @@ function ModelCard({ model, index }: { model: typeof models[number]; index: numb
   const [added, setAdded] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-40px' });
-  const { addItem, openCart } = useCart();
+  const { addItem } = useCart();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
     addItem(model);
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
-    setTimeout(() => openCart(), 400);
   };
 
   return (
@@ -130,35 +129,63 @@ function ModelCard({ model, index }: { model: typeof models[number]; index: numb
             </p>
           </div>
           <div style={{ width: '1px', height: '30px', backgroundColor: '#2A2A2A' }} />
-          <motion.button
-            onClick={handleAddToCart}
-            whileTap={{ scale: 0.92 }}
-            style={{
-              display: 'flex', alignItems: 'center', gap: '6px',
-              backgroundColor: added ? '#2A5A2A' : GOLD,
-              color: added ? '#7FD97F' : DARK,
-              border: 'none', borderRadius: '4px',
-              padding: '8px 14px',
-              fontFamily: "'Heebo', sans-serif",
-              fontSize: '12px', fontWeight: 700,
-              letterSpacing: '0.1em',
-              cursor: 'pointer',
-              whiteSpace: 'nowrap',
-              transition: 'background-color 0.3s, color 0.3s',
-            }}
-          >
-            <AnimatePresence mode="wait">
-              {added ? (
-                <motion.span key="check" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Check size={14} /> נוסף!
-                </motion.span>
-              ) : (
-                <motion.span key="cart" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <ShoppingCart size={14} /> הוסף לעגלה
-                </motion.span>
-              )}
+          <div style={{ position: 'relative' }}>
+            {/* Burst particles */}
+            <AnimatePresence>
+              {added && [0,1,2,3,4].map(i => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 1, x: 0, y: 0, scale: 1 }}
+                  animate={{
+                    opacity: 0,
+                    x: (i - 2) * 18,
+                    y: -28 - i * 4,
+                    scale: 0.4,
+                  }}
+                  transition={{ duration: 0.55, ease: 'easeOut', delay: i * 0.04 }}
+                  style={{
+                    position: 'absolute',
+                    top: '50%', left: '50%',
+                    width: '6px', height: '6px',
+                    borderRadius: '50%',
+                    backgroundColor: GOLD,
+                    pointerEvents: 'none',
+                    zIndex: 10,
+                  }}
+                />
+              ))}
             </AnimatePresence>
-          </motion.button>
+            <motion.button
+              onClick={handleAddToCart}
+              animate={added ? { scale: [1, 1.15, 1] } : { scale: 1 }}
+              transition={{ duration: 0.3 }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '6px',
+                backgroundColor: added ? '#2A5A2A' : GOLD,
+                color: added ? '#7FD97F' : DARK,
+                border: 'none', borderRadius: '4px',
+                padding: '8px 14px',
+                fontFamily: "'Heebo', sans-serif",
+                fontSize: '12px', fontWeight: 700,
+                letterSpacing: '0.1em',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                transition: 'background-color 0.3s, color 0.3s',
+              }}
+            >
+              <AnimatePresence mode="wait">
+                {added ? (
+                  <motion.span key="check" initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} transition={{ duration: 0.2 }} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Check size={14} /> נוסף!
+                  </motion.span>
+                ) : (
+                  <motion.span key="cart" initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} transition={{ duration: 0.2 }} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <ShoppingCart size={14} /> הוסף לעגלה
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </motion.button>
+          </div>
         </div>
       </div>
     </motion.div>

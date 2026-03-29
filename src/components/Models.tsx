@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { ShoppingCart, Check } from 'lucide-react';
 import models from '../data/models';
+import { useCart } from '../context/CartContext';
 
 const DARK        = '#1C1C1C';
 const BEIGE       = '#F5F2EC';
@@ -13,8 +15,18 @@ function formatPrice(n: number) {
 
 function ModelCard({ model, index }: { model: typeof models[number]; index: number }) {
   const [hovered, setHovered] = useState(false);
+  const [added, setAdded] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-40px' });
+  const { addItem, openCart } = useCart();
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    addItem(model);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 2000);
+    setTimeout(() => openCart(), 400);
+  };
 
   return (
     <motion.div
@@ -117,6 +129,36 @@ function ModelCard({ model, index }: { model: typeof models[number]; index: numb
               מחיר
             </p>
           </div>
+          <div style={{ width: '1px', height: '30px', backgroundColor: '#2A2A2A' }} />
+          <motion.button
+            onClick={handleAddToCart}
+            whileTap={{ scale: 0.92 }}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '6px',
+              backgroundColor: added ? '#2A5A2A' : GOLD,
+              color: added ? '#7FD97F' : DARK,
+              border: 'none', borderRadius: '4px',
+              padding: '8px 14px',
+              fontFamily: "'Heebo', sans-serif",
+              fontSize: '12px', fontWeight: 700,
+              letterSpacing: '0.1em',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              transition: 'background-color 0.3s, color 0.3s',
+            }}
+          >
+            <AnimatePresence mode="wait">
+              {added ? (
+                <motion.span key="check" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Check size={14} /> נוסף!
+                </motion.span>
+              ) : (
+                <motion.span key="cart" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <ShoppingCart size={14} /> הוסף לעגלה
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </motion.button>
         </div>
       </div>
     </motion.div>

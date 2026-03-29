@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
 const DARK  = '#1C1C1C';
 const LIGHT = '#F5F2EC';
@@ -21,6 +22,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
   const [scrolled, setScrolled] = useState(false);
+  const { totalCount, openCart } = useCart();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -123,10 +125,10 @@ export default function Navbar() {
 
             {/* Cart button */}
             <button
+              onClick={openCart}
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                position: 'relative',
                 backgroundColor: 'transparent',
                 border: `1px solid ${DARK}`,
                 borderRadius: '4px',
@@ -139,6 +141,17 @@ export default function Navbar() {
               onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'; }}
             >
               <ShoppingCart size={16} />
+              {totalCount > 0 && (
+                <span style={{
+                  position: 'absolute', top: '-6px', left: '-6px',
+                  backgroundColor: GOLD, color: DARK,
+                  fontFamily: "'Heebo', sans-serif", fontSize: '10px', fontWeight: 700,
+                  borderRadius: '50%', width: '18px', height: '18px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}>
+                  {totalCount}
+                </span>
+              )}
             </button>
 
             {/* Hamburger — hidden (nav always visible) */}

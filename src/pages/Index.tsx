@@ -9,6 +9,8 @@ import LeadForm from '../components/LeadForm';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import CustomCursor from '../components/CustomCursor';
+import CartDrawer from '../components/CartDrawer';
+import { CartProvider } from '../context/CartContext';
 import { useLenis } from '../hooks/useLenis';
 
 const alreadyLoaded =
@@ -24,9 +26,10 @@ const Index = () => {
   }, []);
 
   return (
-    <>
+    <CartProvider>
       <CustomCursor />
       {showLoader && <Loader onDone={handleLoaderDone} />}
+      <CartDrawer />
       <main style={{ backgroundColor: '#F5F2EC', minHeight: '100vh' }}>
         <Navbar />
         <Hero />
@@ -37,7 +40,7 @@ const Index = () => {
         <LeadForm />
         <Footer />
       </main>
-    </>
+    </CartProvider>
   );
 };
 

@@ -120,11 +120,14 @@ function ModelCard({ model, index }: { model: typeof models[number]; index: numb
         </div>
         <div className="flex flex-col items-center gap-2 md:flex-row md:items-center md:gap-[14px]">
           <div className="hidden md:block" style={{ width: '1px', height: '30px', backgroundColor: '#2A2A2A' }} />
-          <div className="text-center md:text-right">
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '5px' }}>
             <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', fontWeight: 700, color: GOLD }}>
               {formatPrice(model.price)}
             </span>
-            <p style={{ fontFamily: "'Heebo'", fontSize: '9px', color: '#FFFFFF', margin: '2px 0 0', letterSpacing: '0.1em' }}>
+            <span className="md:hidden" style={{ fontFamily: "'Heebo', sans-serif", fontSize: '8px', color: '#FFFFFF', letterSpacing: '0.1em' }}>
+              מחיר
+            </span>
+            <p className="hidden md:block" style={{ fontFamily: "'Heebo'", fontSize: '9px', color: '#FFFFFF', margin: '2px 0 0', letterSpacing: '0.1em' }}>
               מחיר
             </p>
           </div>

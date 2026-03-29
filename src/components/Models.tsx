@@ -43,6 +43,7 @@ function ModelCard({ model, index }: { model: typeof models[number]; index: numb
           animate={{ scale: hovered ? 1.06 : 1 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           style={{ width: '88%', height: '88%', objectFit: 'contain' }}
+          loading="lazy"
           onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
         />
         <motion.div

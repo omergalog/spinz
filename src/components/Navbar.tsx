@@ -67,16 +67,16 @@ export default function Navbar() {
             <img src="/assets/logo.png" alt="SPINZ" style={{ height: '48px', width: 'auto' }} />
           </a>
 
-          {/* Nav */}
-          <nav className="flex items-center gap-3 md:gap-9">
+          {/* Nav — desktop only */}
+          <nav className="hidden md:flex items-center gap-9">
             {navLinks.map(link => (
               <a
                 key={link.label}
                 href={link.href}
                 onClick={e => { e.preventDefault(); scrollTo(link.href); }}
-                className="text-[11px] md:text-[15px]"
                 style={{
                   fontFamily: "'Heebo', sans-serif",
+                  fontSize: '15px',
                   color: activeSection === link.href ? DARK : '#888',
                   fontWeight: activeSection === link.href ? 600 : 400,
                   textDecoration: 'none',
@@ -90,12 +90,13 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* CTA + mobile toggle */}
+          {/* CTA (desktop) + hamburger (mobile) */}
           <div className="flex items-center gap-3">
+            {/* CTA desktop */}
             <a
               href="#lead-form"
               onClick={e => { e.preventDefault(); scrollTo('#lead-form'); }}
-              className="inline-block font-bold uppercase tracking-widest text-[10px] md:text-xs"
+              className="hidden md:inline-block font-bold uppercase tracking-widest text-xs"
               style={{
                 backgroundColor: GOLD,
                 color: DARK,
@@ -121,13 +122,14 @@ export default function Navbar() {
               בואו נדבר
             </a>
 
+            {/* Hamburger — mobile only */}
             <button
-              className="hidden"
+              className="md:hidden flex items-center justify-center w-10 h-10"
               onClick={() => setMenuOpen(v => !v)}
-              style={{ color: DARK }}
+              style={{ color: DARK, background: 'none', border: 'none', cursor: 'pointer' }}
               aria-label="תפריט"
             >
-              {menuOpen ? <X size={16} /> : <Menu size={16} />}
+              {menuOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>

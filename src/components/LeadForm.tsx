@@ -305,6 +305,7 @@ export default function LeadForm() {
                     </label>
                     <input
                       type="tel"
+                      inputMode="numeric"
                       placeholder="+972 50-000-0000"
                       style={{
                         width: '100%',

@@ -274,7 +274,7 @@ export default function About() {
             marginTop: '64px',
             borderTop: '1px solid #2A2A2A',
           }}
-          className="hidden md:grid"
+          className="grid"
         >
           {[
             { num: '100%', label: 'ישיר מהמפעל', target: 100, suffix: '%' },

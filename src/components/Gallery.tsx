@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 
 
+
 const TEXT = '#111111';
 const TEXT_MUTED = '#8A8880';
 const BG = '#FFFFFF';
@@ -53,6 +54,8 @@ function PhotoCell({ photo, delay }: { photo: (typeof photos)[number]; delay: nu
 export default function Gallery() {
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const headingRef = useRef<HTMLDivElement>(null);
+  const headingInView = useInView(headingRef, { once: true, margin: '-40px' });
 
   return (
     <section
@@ -77,11 +80,10 @@ export default function Gallery() {
             >
               2026 Collection
             </motion.span>
-            <div style={{ overflow: 'hidden' }}>
+            <div ref={headingRef} style={{ overflow: 'hidden' }}>
               <motion.h2
                 initial={{ y: '105%' }}
-                whileInView={{ y: '0%' }}
-                viewport={{ once: true, margin: '-40px' }}
+                animate={headingInView ? { y: '0%' } : {}}
                 transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1], delay: 0.08 }}
                 className="leading-none"
                 style={{

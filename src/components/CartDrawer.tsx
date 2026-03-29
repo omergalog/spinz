@@ -155,10 +155,7 @@ export default function CartDrawer() {
                   </span>
                 </div>
                 <button
-                  onClick={() => {
-                    closeCart();
-                    document.getElementById('lead-form')?.scrollIntoView({ behavior: 'smooth' });
-                  }}
+                  onClick={() => {}}
                   style={{
                     width: '100%',
                     backgroundColor: GOLD, color: DARK,

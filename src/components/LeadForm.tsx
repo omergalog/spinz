@@ -399,7 +399,7 @@ export default function LeadForm() {
           </motion.div>
 
           {/* Brand block — mobile only (on desktop it's inside the left column) */}
-          <BrandBlock className="flex md:hidden" textLight={TEXT_LIGHT} />
+          <BrandBlock className="flex md:hidden w-full" textLight={TEXT_LIGHT} />
 
         </div>
       </div>

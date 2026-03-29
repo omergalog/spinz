@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ShoppingCart } from 'lucide-react';
 
 const DARK  = '#1C1C1C';
 const LIGHT = '#F5F2EC';
 const GOLD  = '#C9A870';
 
 const navLinks = [
-  { label: 'על הספינז', href: '#why-spinz' },
-  { label: 'מודלים',   href: '#models'    },
-  { label: 'גלריה',    href: '#gallery'   },
-  { label: 'צור קשר',  href: '#lead-form' },
+  { label: 'עלינו',  href: '#why-spinz' },
+  { label: 'מודלים', href: '#models'    },
+  { label: 'גלריה',  href: '#gallery'   },
 ];
 
 function scrollTo(href: string) {
@@ -118,7 +118,10 @@ export default function Navbar() {
                 el.style.transform = 'translateY(0)';
               }}
             >
-              בואו נדבר
+              <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <ShoppingCart size={14} />
+                בואו נדבר
+              </span>
             </a>
 
             {/* Hamburger — hidden (nav always visible) */}

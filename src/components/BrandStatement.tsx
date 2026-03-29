@@ -121,7 +121,7 @@ export default function BrandStatement() {
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : {}}
               transition={{ duration: 1, delay: 0.2 }}
-              className="md:hidden flex-shrink-0 w-[50%] overflow-hidden"
+              className="md:hidden flex-shrink-0 w-[58%] overflow-hidden"
               style={{ backgroundColor: '#F5F2EC' }}
             >
               <img

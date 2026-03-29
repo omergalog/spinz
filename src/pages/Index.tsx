@@ -19,11 +19,13 @@ const alreadyLoaded =
 
 const Index = () => {
   const [showLoader, setShowLoader] = useState(!alreadyLoaded);
+  const [loaderDone, setLoaderDone] = useState(alreadyLoaded);
   useLenis();
 
   const handleLoaderDone = useCallback(() => {
     sessionStorage.setItem('spinz-loaded', '1');
     setShowLoader(false);
+    setLoaderDone(true);
   }, []);
 
   return (
@@ -31,7 +33,7 @@ const Index = () => {
       <CustomCursor />
       {showLoader && <Loader onDone={handleLoaderDone} />}
       <CartDrawer />
-      <CookieBanner />
+      <CookieBanner loaderDone={loaderDone} />
       <main style={{ backgroundColor: '#F5F2EC', minHeight: '100vh' }}>
         <Navbar />
         <Hero />

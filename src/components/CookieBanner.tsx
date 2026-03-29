@@ -6,15 +6,16 @@ const DARK = '#1C1C1C';
 const GOLD = '#C9A870';
 const LIGHT = '#F5F2EC';
 
-export default function CookieBanner() {
+export default function CookieBanner({ loaderDone }: { loaderDone: boolean }) {
   const [visible, setVisible] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
 
   useEffect(() => {
+    if (!loaderDone) return;
     try { if (localStorage.getItem('spinz-cookies') === '1') return; } catch {}
-    const t = setTimeout(() => { setVisible(true); }, 3000);
+    const t = setTimeout(() => { setVisible(true); }, 250);
     return () => clearTimeout(t);
-  }, []);
+  }, [loaderDone]);
 
   const accept = () => {
     try { localStorage.setItem('spinz-cookies', '1'); } catch {}

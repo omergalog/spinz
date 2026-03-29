@@ -63,11 +63,11 @@ export default function Navbar() {
             onClick={e => { e.preventDefault(); scrollTo('#'); }}
             style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
           >
-            <img src="/assets/logo.png" alt="SPINZ" className="h-9 md:h-[48px]" style={{ width: 'auto' }} />
+            <img src="/assets/logo.png" alt="SPINZ" className="h-6 md:h-[48px]" style={{ width: 'auto' }} />
           </a>
 
           {/* Nav — all screens */}
-          <nav className="flex items-center gap-4 md:gap-9">
+          <nav className="flex items-center gap-2 md:gap-9">
             {navLinks.map(link => (
               <a
                 key={link.label}
@@ -75,14 +75,13 @@ export default function Navbar() {
                 onClick={e => { e.preventDefault(); scrollTo(link.href); }}
                 style={{
                   fontFamily: "'Heebo', sans-serif",
-                  fontSize: '13px',
                   color: activeSection === link.href ? DARK : '#888',
                   fontWeight: activeSection === link.href ? 600 : 400,
                   textDecoration: 'none',
                   transition: 'opacity 0.2s',
                   whiteSpace: 'nowrap',
                 }}
-                className="md:text-[15px]"
+                className="text-[11px] md:text-[15px]"
                 onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.5'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1'; }}
               >
@@ -97,11 +96,10 @@ export default function Navbar() {
             <a
               href="#lead-form"
               onClick={e => { e.preventDefault(); scrollTo('#lead-form'); }}
-              className="hidden md:inline-block font-bold uppercase tracking-widest text-xs"
+              className="inline-block font-bold uppercase tracking-widest text-[9px] md:text-xs py-1 px-2 md:py-[6px] md:px-[10px]"
               style={{
                 backgroundColor: GOLD,
                 color: DARK,
-                padding: '6px 10px',
                 fontFamily: "'Heebo', sans-serif",
                 borderRadius: '4px',
                 textDecoration: 'none',

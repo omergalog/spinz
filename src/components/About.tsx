@@ -186,9 +186,8 @@ export default function About() {
           {/* Right: story text */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
 
-            {/* Logo + Spinz text — narrow/mobile only */}
+            {/* Logo + Spinz text */}
             <motion.div
-              className="md:hidden"
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : {}}
               transition={{ duration: 0.7, delay: 0.2 }}

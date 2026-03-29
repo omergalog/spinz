@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PrivacyModal from './PrivacyModal';
 
@@ -7,14 +7,20 @@ const GOLD = '#C9A870';
 const LIGHT = '#F5F2EC';
 
 export default function CookieBanner() {
-  const [visible, setVisible] = useState(() => {
-    try { return localStorage.getItem('spinz-cookies') !== '1'; } catch { return true; }
-  });
+  const [shown, setShown] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
+
+  useEffect(() => {
+    try { if (localStorage.getItem('spinz-cookies') === '1') return; } catch {}
+    const t = setTimeout(() => { setShown(true); setVisible(true); }, 3000);
+    return () => clearTimeout(t);
+  }, []);
 
   const accept = () => {
     try { localStorage.setItem('spinz-cookies', '1'); } catch {}
     setVisible(false);
+    setShown(false);
   };
 
   return (
@@ -26,7 +32,7 @@ export default function CookieBanner() {
           initial={{ y: 120, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 120, opacity: 0 }}
-          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 3 }}
+          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           style={{
             position: 'fixed',
             bottom: '24px',

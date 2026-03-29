@@ -72,7 +72,11 @@ export default function CartDrawer() {
             </div>
 
             {/* Items */}
-            <div style={{ flex: 1, overflowY: 'auto', padding: '16px 24px' }}>
+            <div
+              style={{ flex: 1, overflowY: 'auto', padding: '16px 24px' }}
+              onWheel={e => e.stopPropagation()}
+              onTouchMove={e => e.stopPropagation()}
+            >
               {items.length === 0 ? (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '16px', opacity: 0.5 }}>
                   <ShoppingCart size={48} style={{ color: BEIGE }} />

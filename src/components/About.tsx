@@ -283,16 +283,13 @@ export default function About() {
           ].map(({ label, target, suffix }) => (
             <div
               key={label}
-              style={{
-                padding: '32px',
-                backgroundColor: DARK,
-                textAlign: 'center',
-              }}
+              className="py-4 px-2 md:p-8"
+              style={{ backgroundColor: DARK, textAlign: 'center' }}
             >
-              <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '48px', color: GOLD, letterSpacing: '0.04em', margin: 0, lineHeight: 1 }}>
+              <p className="text-[28px] md:text-[48px]" style={{ fontFamily: "'Heebo', sans-serif", color: GOLD, letterSpacing: '0.04em', margin: 0, lineHeight: 1 }}>
                 <CountUp target={target} suffix={suffix} />
               </p>
-              <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#FFFFFF', margin: '8px 0 0' }}>
+              <p className="text-[9px] md:text-[11px]" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: '0.2em', textTransform: 'uppercase', color: '#FFFFFF', margin: '6px 0 0' }}>
                 {label}
               </p>
             </div>

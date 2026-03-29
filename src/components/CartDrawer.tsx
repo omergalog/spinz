@@ -12,7 +12,7 @@ function formatPrice(n: number) {
 }
 
 export default function CartDrawer() {
-  const { items, removeItem, updateQuantity, clearCart, totalCount, isOpen, closeCart } = useCart();
+  const { items, updateQuantity, clearCart, totalCount, isOpen, closeCart } = useCart();
   const total = items.reduce((sum, i) => sum + i.model.price * i.quantity, 0);
 
   return (

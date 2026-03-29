@@ -38,8 +38,8 @@ export default function CustomCursor() {
   return (
     <div
       ref={cursorRef}
-      className="hidden md:block"
       style={{
+        display: window.matchMedia('(pointer: fine)').matches ? 'block' : 'none',
         position: 'fixed',
         top: 0,
         left: 0,

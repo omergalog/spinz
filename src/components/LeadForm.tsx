@@ -15,6 +15,42 @@ const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';
 type FormData = { name: string; email: string; whatsapp?: string };
 type Status   = 'idle' | 'loading' | 'success' | 'error';
 
+function Toast({ show }: { show: boolean }) {
+  return (
+    <AnimatePresence>
+      {show && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          style={{
+            position: 'fixed',
+            top: '80px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 9999,
+            backgroundColor: '#1a1a1a',
+            border: `1px solid ${GOLD}`,
+            borderRadius: '8px',
+            padding: '14px 24px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          <CheckCircle size={18} style={{ color: GOLD, flexShrink: 0 }} />
+          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: TEXT_LIGHT, fontWeight: 500 }}>
+            תודה! פנייתך התקבלה ונחזור אליך בהקדם
+          </span>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 function BrandBlock({ className, textLight }: { className?: string; textLight: string }) {
   return (
     <div className={`flex-col items-center text-center ${className ?? ''}`} style={{ marginTop: '48px', gap: '16px' }}>
@@ -57,6 +93,7 @@ export default function LeadForm() {
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const [status, setStatus] = useState<Status>('idle');
+  const [showToast, setShowToast] = useState(false);
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>();
 
@@ -71,12 +108,16 @@ export default function LeadForm() {
       }, EMAILJS_PUBLIC_KEY);
       setStatus('success');
       reset();
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 4000);
     } catch {
       setStatus('error');
     }
   };
 
   return (
+    <>
+    <Toast show={showToast} />
     <section
       ref={ref}
       id="lead-form"
@@ -404,5 +445,6 @@ export default function LeadForm() {
         </div>
       </div>
     </section>
+    </>
   );
 }

@@ -80,7 +80,8 @@ export default function Gallery() {
             <div style={{ overflow: 'hidden' }}>
               <motion.h2
                 initial={{ y: '105%' }}
-                animate={isInView ? { y: '0%' } : {}}
+                whileInView={{ y: '0%' }}
+                viewport={{ once: true, margin: '-40px' }}
                 transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1], delay: 0.08 }}
                 className="leading-none"
                 style={{

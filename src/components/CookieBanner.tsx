@@ -29,10 +29,13 @@ export default function CookieBanner() {
     <AnimatePresence>
       {visible && (
         <motion.div
-          initial={{ y: 120, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 120, opacity: 0 }}
-          transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+          variants={{
+            hidden: { y: 120, opacity: 0, transition: { duration: 0.2, ease: 'easeIn' } },
+            visible: { y: 0, opacity: 1, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
+          }}
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
           style={{
             position: 'fixed',
             bottom: '24px',

@@ -150,10 +150,10 @@ export default function LeadForm() {
                 fontSize: '15px',
                 color: '#FFFFFF',
                 lineHeight: 1.7,
-                margin: '0 0 24px',
+                margin: 0,
                 maxWidth: '320px',
               }}
-              className="max-md:max-w-full max-md:!mb-0"
+              className="max-md:max-w-full md:mb-6"
             >
               השאר פרטים ונחזור אליך עם כל המידע — מודלים, מחירים, וזמני אספקה.
             </motion.p>

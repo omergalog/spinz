@@ -10,6 +10,7 @@ import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import CustomCursor from '../components/CustomCursor';
 import CartDrawer from '../components/CartDrawer';
+import CookieBanner from '../components/CookieBanner';
 import { CartProvider } from '../context/CartContext';
 import { useLenis } from '../hooks/useLenis';
 
@@ -30,6 +31,7 @@ const Index = () => {
       <CustomCursor />
       {showLoader && <Loader onDone={handleLoaderDone} />}
       <CartDrawer />
+      <CookieBanner />
       <main style={{ backgroundColor: '#F5F2EC', minHeight: '100vh' }}>
         <Navbar />
         <Hero />

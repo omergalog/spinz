@@ -95,7 +95,7 @@ export default function LeadForm() {
         >
 
           {/* Left: heading */}
-          <div className="md:px-0 mb-6 md:mb-0">
+          <div className="md:px-0 mb-2 md:mb-0">
             <motion.h5
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : {}}

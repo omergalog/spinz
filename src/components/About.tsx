@@ -242,7 +242,7 @@ export default function About() {
                 color: GOLD,
                 padding: '12px 0',
                 fontFamily: "'Heebo', sans-serif",
-                fontSize: '14px',
+                fontSize: '18px',
                 fontWeight: 700,
                 letterSpacing: '0.15em',
                 border: 'none',

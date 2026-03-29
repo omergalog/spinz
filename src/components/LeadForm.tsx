@@ -95,7 +95,7 @@ export default function LeadForm() {
         >
 
           {/* Left: heading */}
-          <div className="md:px-0 mb-2 md:mb-0">
+          <div className="md:px-0 mb-0">
             <motion.h5
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : {}}
@@ -153,7 +153,7 @@ export default function LeadForm() {
                 margin: '0 0 24px',
                 maxWidth: '320px',
               }}
-              className="max-md:max-w-full"
+              className="max-md:max-w-full max-md:!mb-0"
             >
               השאר פרטים ונחזור אליך עם כל המידע — מודלים, מחירים, וזמני אספקה.
             </motion.p>

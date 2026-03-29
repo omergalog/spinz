@@ -115,31 +115,18 @@ export default function About() {
             transition={{ duration: 0.8, delay: 0.2 }}
             style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <img
-                src="/assets/logo.png"
-                alt="SPINZ"
-                style={{
-                  height: '48px',
-                  width: 'auto',
-                  maxWidth: '240px',
-                  objectFit: 'contain',
-                  filter: 'invert(1) brightness(2)',
-                  opacity: 0.9,
-                }}
-              />
-              <span
-                style={{
-                  fontFamily: "'Heebo', sans-serif",
-                  fontWeight: 800,
-                  fontSize: '28px',
-                  color: '#EDEBE6',
-                  letterSpacing: '0.08em',
-                }}
-              >
-                Spinz
-              </span>
-            </div>
+            <img
+              src="/assets/logo.png"
+              alt="SPINZ"
+              style={{
+                height: '48px',
+                width: 'auto',
+                maxWidth: '240px',
+                objectFit: 'contain',
+                filter: 'invert(1) brightness(2)',
+                opacity: 0.9,
+              }}
+            />
 
             <div
               style={{

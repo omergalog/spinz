@@ -26,17 +26,15 @@ export default function PrivacyModal({ isOpen, onClose }: Props) {
             style={{ position: 'fixed', inset: 0, zIndex: 998, backgroundColor: 'rgba(0,0,0,0.7)' }}
           />
 
-          {/* Modal */}
+          {/* Modal wrapper — centers without conflicting with framer transform */}
+          <div style={{ position: 'fixed', inset: 0, zIndex: 999, display: 'flex', alignItems: 'center', justifyContent: 'center', pointerEvents: 'none' }}>
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 40 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             style={{
-              position: 'fixed',
-              top: '50%', left: '50%',
-              transform: 'translate(-50%, -50%)',
-              zIndex: 999,
+              pointerEvents: 'all',
               backgroundColor: DARK,
               width: '90%', maxWidth: '680px',
               maxHeight: '85vh',
@@ -123,6 +121,7 @@ export default function PrivacyModal({ isOpen, onClose }: Props) {
               </div>
             </div>
           </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>

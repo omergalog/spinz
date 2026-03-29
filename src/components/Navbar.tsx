@@ -98,7 +98,7 @@ export default function Navbar() {
             <a
               href="#lead-form"
               onClick={e => { e.preventDefault(); scrollTo('#lead-form'); }}
-              className="inline-block font-bold uppercase tracking-widest text-[9px] md:text-xs py-1 px-2 md:py-[6px] md:px-[10px]"
+              className="inline-block font-bold uppercase tracking-widest text-[11px] md:text-xs py-1 px-3 md:py-[6px] md:px-[10px]"
               style={{
                 backgroundColor: GOLD,
                 color: DARK,

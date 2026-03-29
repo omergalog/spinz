@@ -185,24 +185,22 @@ html {
 /* ─────────────────────────────────────────
    LeadForm — mobile card-style fields
 ───────────────────────────────────────── */
-@media (max-width: 767px) {
-  .lead-form-field {
-    border-top: none !important;
-    padding-top: 16px !important;
-    padding-bottom: 16px !important;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid #333333 !important;
-    border-radius: 8px;
-    padding-right: 18px !important;
-    padding-left: 18px !important;
-    margin-bottom: 10px;
-  }
-  .lead-form-field input {
-    border-bottom-color: #444444 !important;
-  }
-  .lead-form-submit {
-    border-top: none !important;
-    padding-top: 0 !important;
-    margin-top: 4px !important;
-  }
+.lead-form-field {
+  border-top: none !important;
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid #333333 !important;
+  border-radius: 8px;
+  padding-right: 18px !important;
+  padding-left: 18px !important;
+  margin-bottom: 10px;
+}
+.lead-form-field input {
+  border-bottom-color: #444444 !important;
+}
+.lead-form-submit {
+  border-top: none !important;
+  padding-top: 0 !important;
+  margin-top: 4px !important;
 }

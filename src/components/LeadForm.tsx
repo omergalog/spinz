@@ -111,7 +111,7 @@ export default function LeadForm() {
       setShowToast(true);
       setTimeout(() => setShowToast(false), 4000);
     } catch {
-      setStatus('error');
+      setStatus('idle');
     }
   };
 

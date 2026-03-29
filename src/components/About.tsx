@@ -277,9 +277,9 @@ export default function About() {
           className="grid"
         >
           {[
-            { num: '100%', label: 'ישיר מהמפעל', target: 100, suffix: '%', duration: 3800 },
             { num: '3', label: 'דגמים בקולקציה', target: 3, suffix: '', duration: 1800 },
             { num: '72H', label: 'אצלך בבית', target: 72, suffix: 'H', duration: 2800 },
+            { num: '100%', label: 'ישיר מהמפעל', target: 100, suffix: '%', duration: 3800 },
           ].map(({ label, target, suffix, duration }) => (
             <div
               key={label}

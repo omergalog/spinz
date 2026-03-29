@@ -230,36 +230,32 @@ export default function About() {
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : {}}
               transition={{ duration: 0.6, delay: 0.7 }}
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => setAboutOpen(true)}
               style={{
-                display: 'inline-block',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '10px',
                 marginTop: '12px',
-                backgroundColor: GOLD,
-                color: DARK,
-                padding: '14px 32px',
+                backgroundColor: 'transparent',
+                color: GOLD,
+                padding: '12px 0',
                 fontFamily: "'Heebo', sans-serif",
-                fontSize: '12px',
+                fontSize: '14px',
                 fontWeight: 700,
-                letterSpacing: '0.2em',
-                textTransform: 'uppercase',
-                borderRadius: '4px',
+                letterSpacing: '0.15em',
                 border: 'none',
+                borderBottom: `2px solid ${GOLD}`,
                 alignSelf: 'flex-start',
                 cursor: 'pointer',
-                transition: 'background-color 0.25s, transform 0.25s',
+                transition: 'opacity 0.2s',
               }}
-              onMouseEnter={e => {
-                const el = e.currentTarget as HTMLButtonElement;
-                el.style.backgroundColor = '#B8933A';
-                el.style.transform = 'translateY(2px)';
-              }}
-              onMouseLeave={e => {
-                const el = e.currentTarget as HTMLButtonElement;
-                el.style.backgroundColor = GOLD;
-                el.style.transform = 'translateY(0)';
-              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '0.7'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '1'; }}
             >
-              עוד עלינו
+              הסיפור שלנו
+              <span style={{ fontSize: '18px', lineHeight: 1 }}>←</span>
             </motion.button>
             <AboutModal isOpen={aboutOpen} onClose={() => setAboutOpen(false)} />
           </div>

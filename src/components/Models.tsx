@@ -126,6 +126,8 @@ function ModelCard({ model, index }: { model: typeof models[number]; index: numb
 export default function Models() {
   const headerRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(headerRef, { once: true, margin: '-60px' });
+  const mobileHeaderRef = useRef<HTMLDivElement>(null);
+  const mobileInView = useInView(mobileHeaderRef, { once: true, margin: '-20px' });
 
   return (
     <section id="models" style={{ backgroundColor: BEIGE }} dir="rtl">
@@ -212,15 +214,25 @@ export default function Models() {
           className="p-5 md:p-9"
         >
           {/* Mobile header — sticky below navbar */}
-          <div className="md:hidden" style={{ paddingBottom: '20px', borderBottom: `1px solid ${BORDER}`, position: 'sticky', top: '64px', backgroundColor: BEIGE, zIndex: 10 }}>
-            <h5
+          <div ref={mobileHeaderRef} className="md:hidden" style={{ paddingBottom: '20px', borderBottom: `1px solid ${BORDER}`, position: 'sticky', top: '64px', backgroundColor: BEIGE, zIndex: 10 }}>
+            <motion.h5
+              initial={{ opacity: 0 }}
+              animate={mobileInView ? { opacity: 1 } : {}}
+              transition={{ duration: 0.6 }}
               style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', letterSpacing: '0.4em', textTransform: 'uppercase', color: GOLD, marginBottom: '10px' }}
             >
               המודלים שלנו
-            </h5>
-            <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '40px', color: DARK, letterSpacing: '-0.01em', margin: 0 }}>
-              בחר את האופניים שלך
-            </h2>
+            </motion.h5>
+            <div style={{ overflow: 'hidden' }}>
+              <motion.h2
+                initial={{ y: '105%' }}
+                animate={mobileInView ? { y: '0%' } : {}}
+                transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1], delay: 0.08 }}
+                style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '40px', color: DARK, letterSpacing: '-0.01em', margin: 0 }}
+              >
+                בחר את האופניים שלך
+              </motion.h2>
+            </div>
           </div>
 
           {models.map((model, i) => (

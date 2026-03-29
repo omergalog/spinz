@@ -1,15 +1,19 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { MessageCircle } from 'lucide-react';
+import PrivacyModal from './PrivacyModal';
 
 const BG = '#1C1C1C';
 const BORDER = '#2A2A2A';
 const WHATSAPP_NUMBER = '+972527565262';
 
 export default function Footer() {
+  const [privacyOpen, setPrivacyOpen] = useState(false);
   const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, '')}?text=${encodeURIComponent('היי, אני מתעניין באופני Spinz')}`;
 
   return (
     <>
+      <PrivacyModal isOpen={privacyOpen} onClose={() => setPrivacyOpen(false)} />
       <footer className="relative overflow-hidden" style={{ backgroundColor: BG }} dir="rtl">
 
         <div className="mx-auto max-w-7xl px-6 lg:px-16">
@@ -19,6 +23,19 @@ export default function Footer() {
             <p className="text-xs" style={{ color: '#FFFFFF', fontFamily: "'Heebo', sans-serif" }}>
               © 2025 Spinz. כל הזכויות שמורות.
             </p>
+            <button
+              onClick={() => setPrivacyOpen(true)}
+              style={{
+                fontFamily: "'Heebo', sans-serif", fontSize: '12px',
+                color: '#888', background: 'none', border: 'none',
+                cursor: 'pointer', textDecoration: 'underline',
+                textUnderlineOffset: '3px', transition: 'color 0.2s',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = '#C9A870'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = '#888'; }}
+            >
+              מדיניות פרטיות ותנאי שימוש
+            </button>
             <p className="text-xs" style={{ color: '#FFFFFF', fontFamily: "'Heebo', sans-serif" }}>
               Built in Tel Aviv
             </p>

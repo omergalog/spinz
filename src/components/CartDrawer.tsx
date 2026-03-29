@@ -49,10 +49,16 @@ export default function CartDrawer() {
             dir="rtl"
           >
             {/* Header */}
-            <div style={{ padding: '24px', borderBottom: `1px solid ${BORDER}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ padding: '20px 24px', borderBottom: `1px solid ${BORDER}` }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <img src="/assets/logo.png" alt="SPINZ" style={{ height: '36px', width: 'auto', objectFit: 'contain', filter: 'invert(1) brightness(2)', opacity: 0.9 }} />
+                <button onClick={closeCart} style={{ color: BEIGE, background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
+                  <X size={22} />
+                </button>
+              </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <ShoppingCart size={20} style={{ color: GOLD }} />
-                <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '20px', color: BEIGE, margin: 0 }}>
+                <ShoppingCart size={18} style={{ color: GOLD }} />
+                <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '18px', color: BEIGE, margin: 0 }}>
                   עגלת קניות
                 </h2>
                 {totalCount > 0 && (
@@ -66,9 +72,6 @@ export default function CartDrawer() {
                   </span>
                 )}
               </div>
-              <button onClick={closeCart} style={{ color: BEIGE, background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
-                <X size={22} />
-              </button>
             </div>
 
             {/* Items */}

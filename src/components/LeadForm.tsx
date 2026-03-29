@@ -91,7 +91,7 @@ export default function LeadForm() {
             gap: '80px',
             alignItems: 'start',
           }}
-          className="flex flex-col gap-4 md:grid md:gap-0"
+          className="flex flex-col gap-0 md:grid md:gap-0"
         >
 
           {/* Left: heading */}
@@ -144,13 +144,13 @@ export default function LeadForm() {
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : {}}
               transition={{ duration: 0.7, delay: 0.5 }}
+              className="md:max-w-[320px]"
               style={{
                 fontFamily: "'Heebo', sans-serif",
                 fontSize: '15px',
                 color: '#FFFFFF',
                 lineHeight: 1.7,
                 margin: 0,
-                maxWidth: '320px',
               }}
             >
               השאר פרטים ונחזור אליך עם כל המידע — מודלים, מחירים, וזמני אספקה.
@@ -211,7 +211,7 @@ export default function LeadForm() {
                   noValidate
                 >
                   {/* Name field */}
-                  <div className="px-5 md:px-0" style={{ borderTop: `1px solid ${BORDER_DARK}`, paddingTop: '18px', paddingBottom: '18px' }}>
+                  <div className="md:px-0" style={{ borderTop: `1px solid ${BORDER_DARK}`, paddingTop: '18px', paddingBottom: '18px' }}>
                     <label
                       style={{
                         display: 'block',
@@ -250,7 +250,7 @@ export default function LeadForm() {
                   </div>
 
                   {/* Email field */}
-                  <div className="px-5 md:px-0" style={{ borderTop: `1px solid ${BORDER_DARK}`, paddingTop: '18px', paddingBottom: '18px' }}>
+                  <div className="md:px-0" style={{ borderTop: `1px solid ${BORDER_DARK}`, paddingTop: '18px', paddingBottom: '18px' }}>
                     <label
                       style={{
                         display: 'block',
@@ -292,7 +292,7 @@ export default function LeadForm() {
                   </div>
 
                   {/* WhatsApp field */}
-                  <div className="px-5 md:px-0" style={{ borderTop: `1px solid ${BORDER_DARK}`, paddingTop: '18px', paddingBottom: '18px' }}>
+                  <div className="md:px-0" style={{ borderTop: `1px solid ${BORDER_DARK}`, paddingTop: '18px', paddingBottom: '18px' }}>
                     <label
                       style={{
                         display: 'block',
@@ -354,7 +354,7 @@ export default function LeadForm() {
                   </AnimatePresence>
 
                   {/* Submit */}
-                  <div className="px-5 md:px-0" style={{ borderTop: `1px solid ${BORDER_DARK}`, paddingTop: '24px', marginTop: '4px' }}>
+                  <div className="md:px-0" style={{ borderTop: `1px solid ${BORDER_DARK}`, paddingTop: '24px', marginTop: '4px' }}>
                     <button
                       type="submit"
                       disabled={status === 'loading'}

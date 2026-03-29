@@ -152,7 +152,7 @@ export default function LeadForm() {
                 lineHeight: 1.7,
                 maxWidth: '320px',
               }}
-              className="max-md:max-w-full mt-4 mb-4 md:mt-4 md:mb-6"
+              className="max-md:max-w-full mt-4 mb-1 md:mt-4 md:mb-6"
             >
               השאר פרטים ונחזור אליך עם כל המידע — מודלים, מחירים, וזמני אספקה.
             </motion.p>

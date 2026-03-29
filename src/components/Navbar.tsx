@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Menu } from 'lucide-react';
 
 const DARK  = '#1C1C1C';
 const LIGHT = '#F5F2EC';
@@ -64,11 +63,11 @@ export default function Navbar() {
             onClick={e => { e.preventDefault(); scrollTo('#'); }}
             style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
           >
-            <img src="/assets/logo.png" alt="SPINZ" style={{ height: '48px', width: 'auto' }} />
+            <img src="/assets/logo.png" alt="SPINZ" className="h-9 md:h-[48px]" style={{ width: 'auto' }} />
           </a>
 
-          {/* Nav — desktop only */}
-          <nav className="hidden md:flex items-center gap-9">
+          {/* Nav — all screens */}
+          <nav className="flex items-center gap-4 md:gap-9">
             {navLinks.map(link => (
               <a
                 key={link.label}
@@ -76,12 +75,14 @@ export default function Navbar() {
                 onClick={e => { e.preventDefault(); scrollTo(link.href); }}
                 style={{
                   fontFamily: "'Heebo', sans-serif",
-                  fontSize: '15px',
+                  fontSize: '13px',
                   color: activeSection === link.href ? DARK : '#888',
                   fontWeight: activeSection === link.href ? 600 : 400,
                   textDecoration: 'none',
                   transition: 'opacity 0.2s',
+                  whiteSpace: 'nowrap',
                 }}
+                className="md:text-[15px]"
                 onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.5'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1'; }}
               >
@@ -122,15 +123,7 @@ export default function Navbar() {
               בואו נדבר
             </a>
 
-            {/* Hamburger — mobile only */}
-            <button
-              className="md:hidden flex items-center justify-center w-10 h-10"
-              onClick={() => setMenuOpen(v => !v)}
-              style={{ color: DARK, background: 'none', border: 'none', cursor: 'pointer' }}
-              aria-label="תפריט"
-            >
-              {menuOpen ? <X size={22} /> : <Menu size={22} />}
-            </button>
+            {/* Hamburger — hidden (nav always visible) */}
           </div>
         </div>
       </header>

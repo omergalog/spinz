@@ -9,7 +9,6 @@ import LeadForm from '../components/LeadForm';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import CustomCursor from '../components/CustomCursor';
-import BottomNav from '../components/BottomNav';
 import { useLenis } from '../hooks/useLenis';
 
 const alreadyLoaded =
@@ -28,7 +27,7 @@ const Index = () => {
     <>
       <CustomCursor />
       {showLoader && <Loader onDone={handleLoaderDone} />}
-      <main style={{ backgroundColor: '#F5F2EC', minHeight: '100vh' }} className="pb-16 md:pb-0">
+      <main style={{ backgroundColor: '#F5F2EC', minHeight: '100vh' }}>
         <Navbar />
         <Hero />
         <BrandStatement />
@@ -38,7 +37,6 @@ const Index = () => {
         <LeadForm />
         <Footer />
       </main>
-      <BottomNav />
     </>
   );
 };

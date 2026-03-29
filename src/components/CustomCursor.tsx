@@ -38,6 +38,7 @@ export default function CustomCursor() {
   return (
     <div
       ref={cursorRef}
+      className="hidden md:block"
       style={{
         position: 'fixed',
         top: 0,

@@ -83,7 +83,7 @@ export default function Navbar() {
                   transition: 'opacity 0.2s',
                   whiteSpace: 'nowrap',
                 }}
-                className="text-[11px] md:text-[15px]"
+                className="text-[13px] md:text-[15px]"
                 onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.5'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1'; }}
               >

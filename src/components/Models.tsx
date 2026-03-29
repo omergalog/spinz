@@ -55,7 +55,8 @@ function ModelCard({ model, index }: { model: typeof models[number]; index: numb
           alt={model.name}
           animate={{ scale: hovered ? 1.06 : 1 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          style={{ width: '88%', height: '88%', objectFit: 'contain' }}
+          className="w-[88%] h-[88%] md:w-[88%] md:h-[88%] max-md:w-full max-md:h-full"
+          style={{ objectFit: 'contain' }}
           loading="lazy"
           onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
         />

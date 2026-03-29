@@ -62,24 +62,8 @@ export default function BrandStatement() {
         {/* RIGHT (first DOM in RTL): heading + intro + services */}
         <div className="min-w-0">
 
-          {/* Mobile: image + label/heading/intro side by side | Desktop: label/heading/intro only */}
+          {/* Mobile: label/heading/intro + image side by side | Desktop: label/heading/intro only */}
           <div className="flex items-start gap-3 md:block">
-
-            {/* Bike image — mobile only, alongside heading */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={isInView ? { opacity: 1 } : {}}
-              transition={{ duration: 1, delay: 0.2 }}
-              className="md:hidden flex-shrink-0 w-[46%] overflow-hidden"
-              style={{ backgroundColor: '#F5F2EC' }}
-            >
-              <img
-                src="/assets/brand-bike.jpg"
-                alt="Spinz bike"
-                style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
-                onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-              />
-            </motion.div>
 
             {/* Label + heading + intro */}
             <div className="flex-1 min-w-0">
@@ -131,6 +115,23 @@ export default function BrandStatement() {
                 אנחנו מאמינים שאופניים טובים הם תהליך רגוע, מדויק ונטול פשרות. כך אנחנו מבטיחים את זה:
               </motion.p>
             </div>
+
+            {/* Bike image — mobile only, alongside heading */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="md:hidden flex-shrink-0 w-[50%] overflow-hidden"
+              style={{ backgroundColor: '#F5F2EC' }}
+            >
+              <img
+                src="/assets/brand-bike.jpg"
+                alt="Spinz bike"
+                style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
+                onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+              />
+            </motion.div>
+
           </div>
 
           {/* Service items — 2-col on both mobile and desktop */}

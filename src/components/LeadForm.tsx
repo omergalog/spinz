@@ -19,8 +19,8 @@ function BrandBlock({ className, textLight }: { className?: string; textLight: s
   return (
     <div className={`flex-col items-center text-center ${className ?? ''}`} style={{ marginTop: '48px', gap: '16px' }}>
       <img src="/assets/logo.png" alt="SPINZ" style={{ height: '70px', width: 'auto', objectFit: 'contain', filter: 'invert(1) brightness(2)' }} />
-      <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: textLight, margin: 0, lineHeight: 1.6 }}>
-        אופני עיר סינגל ספיד. בנויים לרחובות, מעוצבים לבלוט.
+      <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: textLight, margin: 0, lineHeight: 1.8 }}>
+        אופני עיר סינגל ספיד.<br />בנויים לרחובות, מעוצבים לבלוט.
       </p>
       <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
         <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: textLight }}>
@@ -399,7 +399,7 @@ export default function LeadForm() {
           </motion.div>
 
           {/* Brand block — mobile only (on desktop it's inside the left column) */}
-          <BrandBlock className="md:hidden" textLight={TEXT_LIGHT} />
+          <BrandBlock className="flex md:hidden" textLight={TEXT_LIGHT} />
 
         </div>
       </div>

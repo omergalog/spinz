@@ -88,10 +88,9 @@ export default function LeadForm() {
         <div
           style={{
             gridTemplateColumns: '1fr 1fr',
-            gap: '80px',
             alignItems: 'start',
           }}
-          className="flex flex-col gap-0 md:grid md:gap-0"
+          className="flex flex-col gap-0 md:grid md:gap-[80px]"
         >
 
           {/* Left: heading */}

@@ -7,20 +7,18 @@ const GOLD = '#C9A870';
 const LIGHT = '#F5F2EC';
 
 export default function CookieBanner() {
-  const [shown, setShown] = useState(false);
   const [visible, setVisible] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
 
   useEffect(() => {
     try { if (localStorage.getItem('spinz-cookies') === '1') return; } catch {}
-    const t = setTimeout(() => { setShown(true); setVisible(true); }, 3000);
+    const t = setTimeout(() => { setVisible(true); }, 3000);
     return () => clearTimeout(t);
   }, []);
 
   const accept = () => {
     try { localStorage.setItem('spinz-cookies', '1'); } catch {}
     setVisible(false);
-    setShown(false);
   };
 
   return (
@@ -29,13 +27,9 @@ export default function CookieBanner() {
     <AnimatePresence>
       {visible && (
         <motion.div
-          variants={{
-            hidden: { y: 120, opacity: 0, transition: { duration: 0.2, ease: 'easeIn' } },
-            visible: { y: 0, opacity: 1, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
-          }}
-          initial="hidden"
-          animate="visible"
-          exit="hidden"
+          initial={{ y: 120, opacity: 0 }}
+          animate={{ y: 0, opacity: 1, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } }}
+          exit={{ y: 80, opacity: 0, transition: { duration: 0.2, ease: 'easeIn' } }}
           style={{
             position: 'fixed',
             bottom: '24px',

@@ -277,17 +277,17 @@ export default function About() {
           className="grid"
         >
           {[
-            { num: '100%', label: 'ישיר מהמפעל', target: 100, suffix: '%' },
-            { num: '3', label: 'דגמים בקולקציה', target: 3, suffix: '' },
-            { num: '72H', label: 'אצלך בבית', target: 72, suffix: 'H' },
-          ].map(({ label, target, suffix }) => (
+            { num: '100%', label: 'ישיר מהמפעל', target: 100, suffix: '%', duration: 2000 },
+            { num: '3', label: 'דגמים בקולקציה', target: 3, suffix: '', duration: 2500 },
+            { num: '72H', label: 'אצלך בבית', target: 72, suffix: 'H', duration: 3000 },
+          ].map(({ label, target, suffix, duration }) => (
             <div
               key={label}
               className="py-4 px-2 md:p-8"
               style={{ backgroundColor: DARK, textAlign: 'center' }}
             >
               <p className="text-[28px] md:text-[48px]" style={{ fontFamily: "'Heebo', sans-serif", color: GOLD, letterSpacing: '0.04em', margin: 0, lineHeight: 1 }}>
-                <CountUp target={target} suffix={suffix} />
+                <CountUp target={target} suffix={suffix} duration={duration} />
               </p>
               <p className="text-[9px] md:text-[11px]" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: '0.2em', textTransform: 'uppercase', color: '#FFFFFF', margin: '6px 0 0' }}>
                 {label}

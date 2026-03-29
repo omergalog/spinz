@@ -59,7 +59,7 @@ export default function CookieBanner() {
                 letterSpacing: '-0.01em',
               }}
             >
-              רגע לפני שממשיכים לרכוב
+              רגע לפני שממשיכים
             </h4>
             {/* Gold accent line */}
             <div style={{ flex: 1, height: '1px', backgroundColor: '#2A2A2A', marginRight: '4px' }} />
@@ -109,7 +109,7 @@ export default function CookieBanner() {
                 whiteSpace: 'nowrap',
               }}
             >
-              מסכים, יאללה נרכוב! 🚴‍♂️
+              מסכים 🚴‍♂️
             </motion.button>
 
             <motion.button
@@ -129,7 +129,7 @@ export default function CookieBanner() {
                 whiteSpace: 'nowrap',
               }}
             >
-              מדיניות פרטיות
+              מדיניות ופרטיות
             </motion.button>
           </div>
         </motion.div>

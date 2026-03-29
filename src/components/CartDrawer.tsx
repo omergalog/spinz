@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Trash2, ShoppingCart } from 'lucide-react';
+import { X, ShoppingCart, Plus, Minus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
 const DARK  = '#1C1C1C';
@@ -12,7 +12,7 @@ function formatPrice(n: number) {
 }
 
 export default function CartDrawer() {
-  const { items, removeItem, clearCart, totalCount, isOpen, closeCart } = useCart();
+  const { items, removeItem, updateQuantity, clearCart, totalCount, isOpen, closeCart } = useCart();
   const total = items.reduce((sum, i) => sum + i.model.price * i.quantity, 0);
 
   return (
@@ -114,25 +114,27 @@ export default function CartDrawer() {
                           <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '16px', color: BEIGE, margin: '0 0 4px' }}>
                             {item.model.name}
                           </h3>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 700, color: GOLD }}>
-                              {formatPrice(item.model.price * item.quantity)}
-                            </span>
-                            {item.quantity > 1 && (
-                              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#888', backgroundColor: 'rgba(255,255,255,0.08)', padding: '2px 8px', borderRadius: '20px' }}>
-                                x{item.quantity}
-                              </span>
-                            )}
-                          </div>
+                          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 700, color: GOLD }}>
+                            {formatPrice(item.model.price * item.quantity)}
+                          </span>
                         </div>
-                        <button
-                          onClick={() => removeItem(item.model.id)}
-                          style={{ color: '#666', background: 'none', border: 'none', cursor: 'pointer', padding: '4px', flexShrink: 0 }}
-                          onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = '#CC4400'; }}
-                          onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = '#666'; }}
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+                          <button
+                            onClick={() => updateQuantity(item.model.id, item.quantity + 1)}
+                            style={{ width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '4px', color: BEIGE, cursor: 'pointer' }}
+                          >
+                            <Plus size={14} />
+                          </button>
+                          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, color: BEIGE, minWidth: '20px', textAlign: 'center' }}>
+                            {item.quantity}
+                          </span>
+                          <button
+                            onClick={() => updateQuantity(item.model.id, item.quantity - 1)}
+                            style={{ width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '4px', color: item.quantity === 1 ? '#CC4400' : BEIGE, cursor: 'pointer' }}
+                          >
+                            <Minus size={14} />
+                          </button>
+                        </div>
                       </motion.div>
                     ))}
                   </AnimatePresence>

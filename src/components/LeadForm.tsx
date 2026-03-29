@@ -17,7 +17,7 @@ type Status   = 'idle' | 'loading' | 'success' | 'error';
 
 function BrandBlock({ className, textLight }: { className?: string; textLight: string }) {
   return (
-    <div className={className} style={{ marginTop: '48px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '16px' }}>
+    <div className={`flex-col items-center text-center ${className ?? ''}`} style={{ marginTop: '48px', gap: '16px' }}>
       <img src="/assets/logo.png" alt="SPINZ" style={{ height: '70px', width: 'auto', objectFit: 'contain', filter: 'invert(1) brightness(2)' }} />
       <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: textLight, margin: 0, lineHeight: 1.6 }}>
         אופני עיר סינגל ספיד. בנויים לרחובות, מעוצבים לבלוט.

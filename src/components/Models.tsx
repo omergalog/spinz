@@ -41,8 +41,8 @@ function ModelCard({ model, index }: { model: typeof models[number]; index: numb
     >
       {/* Image area */}
       <div
+        className="aspect-[4/3] md:aspect-[3/2]"
         style={{
-          aspectRatio: '3/2',
           position: 'relative',
           overflow: 'hidden',
           display: 'flex',

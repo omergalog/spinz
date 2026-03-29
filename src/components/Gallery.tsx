@@ -77,21 +77,23 @@ export default function Gallery() {
             >
               2026 Collection
             </motion.span>
-            <motion.h2
-              initial={{ opacity: 0, y: 24 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
-              className="leading-none"
-              style={{
-                fontFamily: "'Heebo', sans-serif",
-                fontWeight: 800,
-                fontSize: 'clamp(48px, 7vw, 80px)',
-                color: TEXT,
-                letterSpacing: '-0.02em',
-              }}
-            >
-              כל הצבעים. כל הסגנונות.
-            </motion.h2>
+            <div style={{ overflow: 'hidden' }}>
+              <motion.h2
+                initial={{ y: '105%' }}
+                animate={isInView ? { y: '0%' } : {}}
+                transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1], delay: 0.08 }}
+                className="leading-none"
+                style={{
+                  fontFamily: "'Heebo', sans-serif",
+                  fontWeight: 800,
+                  fontSize: 'clamp(48px, 7vw, 80px)',
+                  color: TEXT,
+                  letterSpacing: '-0.02em',
+                }}
+              >
+                כל הצבעים. כל הסגנונות.
+              </motion.h2>
+            </div>
           </div>
 
           <motion.a

@@ -211,8 +211,8 @@ export default function Models() {
           }}
           className="p-5 md:p-9"
         >
-          {/* Mobile header */}
-          <div className="md:hidden" style={{ paddingBottom: '20px', borderBottom: `1px solid ${BORDER}` }}>
+          {/* Mobile header — sticky below navbar */}
+          <div className="md:hidden" style={{ paddingBottom: '20px', borderBottom: `1px solid ${BORDER}`, position: 'sticky', top: '64px', backgroundColor: BEIGE, zIndex: 10 }}>
             <h5
               style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', letterSpacing: '0.4em', textTransform: 'uppercase', color: GOLD, marginBottom: '10px' }}
             >

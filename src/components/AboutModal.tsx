@@ -58,7 +58,6 @@ export default function AboutModal({ isOpen, onClose }: Props) {
               animate={{ rotateY: 0, opacity: 1 }}
               exit={{ rotateY: -90, opacity: 0 }}
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              style={{ perspective: 1200 }}
               style={{
                 pointerEvents: 'all',
                 backgroundColor: DARK,

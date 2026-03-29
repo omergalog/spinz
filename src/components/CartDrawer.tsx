@@ -34,9 +34,9 @@ export default function CartDrawer() {
 
           {/* Drawer */}
           <motion.div
-            initial={{ x: '-100%' }}
+            initial={{ x: '100%' }}
             animate={{ x: 0 }}
-            exit={{ x: '-100%' }}
+            exit={{ x: '100%' }}
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             style={{
               position: 'fixed', top: 0, right: 0, bottom: 0,
@@ -110,9 +110,6 @@ export default function CartDrawer() {
                           <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '16px', color: BEIGE, margin: '0 0 4px' }}>
                             {item.model.name}
                           </h3>
-                          <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: '#888', margin: '0 0 8px' }}>
-                            {item.model.tagline}
-                          </p>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 700, color: GOLD }}>
                               {formatPrice(item.model.price * item.quantity)}

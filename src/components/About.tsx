@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
+import AboutModal from './AboutModal';
 
 function CountUp({ target, suffix = '', duration = 2800 }: { target: number; suffix?: string; duration?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -43,6 +44,7 @@ function RevealText({ children, delay = 0 }: { children: React.ReactNode; delay?
 export default function About() {
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const [aboutOpen, setAboutOpen] = useState(false);
 
   return (
     <section
@@ -224,12 +226,11 @@ export default function About() {
               </motion.p>
             ))}
 
-            <motion.a
-              href="#lead-form"
+            <motion.button
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : {}}
               transition={{ duration: 0.6, delay: 0.7 }}
-              onClick={e => { e.preventDefault(); document.getElementById('lead-form')?.scrollIntoView({ behavior: 'smooth' }); }}
+              onClick={() => setAboutOpen(true)}
               style={{
                 display: 'inline-block',
                 marginTop: '12px',
@@ -242,23 +243,25 @@ export default function About() {
                 letterSpacing: '0.2em',
                 textTransform: 'uppercase',
                 borderRadius: '4px',
-                textDecoration: 'none',
+                border: 'none',
                 alignSelf: 'flex-start',
+                cursor: 'pointer',
                 transition: 'background-color 0.25s, transform 0.25s',
               }}
               onMouseEnter={e => {
-                const el = e.currentTarget as HTMLAnchorElement;
+                const el = e.currentTarget as HTMLButtonElement;
                 el.style.backgroundColor = '#B8933A';
                 el.style.transform = 'translateY(2px)';
               }}
               onMouseLeave={e => {
-                const el = e.currentTarget as HTMLAnchorElement;
+                const el = e.currentTarget as HTMLButtonElement;
                 el.style.backgroundColor = GOLD;
                 el.style.transform = 'translateY(0)';
               }}
             >
-              דברו איתנו
-            </motion.a>
+              עוד עלינו
+            </motion.button>
+            <AboutModal isOpen={aboutOpen} onClose={() => setAboutOpen(false)} />
           </div>
         </div>
 

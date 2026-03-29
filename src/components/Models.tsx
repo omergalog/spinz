@@ -24,7 +24,9 @@ function ModelCard({ model, index }: { model: typeof models[number]; index: numb
     e.stopPropagation();
     addItem(model);
     setAdded(true);
+    setHovered(true);
     setTimeout(() => setAdded(false), 2000);
+    setTimeout(() => setHovered(false), 2000);
   };
 
   return (

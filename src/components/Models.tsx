@@ -88,11 +88,12 @@ function ModelCard({ model, index, outOfStock }: { model: typeof models[number];
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(28,28,28,0.45)' }}
+            style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-start', backgroundColor: 'rgba(28,28,28,0.25)' }}
           >
             <div style={{
-              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
-              padding: '14px 28px',
+              display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '4px',
+              padding: '10px 16px',
+              margin: '16px',
               backgroundColor: 'rgba(28,28,28,0.85)',
               border: '1px solid rgba(255,255,255,0.08)',
               backdropFilter: 'blur(6px)',

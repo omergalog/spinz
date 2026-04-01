@@ -47,6 +47,25 @@ export default function CartDrawer() {
           total_price: item.model.price * item.quantity,
           status: 'pending',
         });
+
+        // Reduce stock
+        const { data: product } = await supabase
+          .from('products')
+          .select('id, stock')
+          .eq('name', item.model.name)
+          .single();
+
+        if (product) {
+          const newStock = Math.max(0, product.stock - item.quantity);
+          await supabase.from('products').update({ stock: newStock }).eq('id', product.id);
+          await supabase.from('inventory_log').insert({
+            product_id: product.id,
+            product_name: item.model.name,
+            change_amount: -item.quantity,
+            reason: 'sale',
+            note: 'הזמנה מהאתר',
+          });
+        }
       }
       clearCart();
       setOrdered(true);

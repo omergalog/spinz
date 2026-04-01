@@ -55,7 +55,7 @@ function ModelCard({ model, index, outOfStock }: { model: typeof models[number];
         <motion.img
           src={model.image.replace('.png', '.jpg')}
           alt={model.name}
-          animate={{ scale: hovered ? 1.06 : 1, filter: outOfStock ? 'grayscale(60%) brightness(0.85)' : 'none' }}
+          animate={{ scale: hovered ? 1.06 : 1 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="w-[88%] h-[88%] md:w-[88%] md:h-[88%] max-md:w-full max-md:h-full"
           style={{ objectFit: 'contain' }}

@@ -97,10 +97,7 @@ function ModelCard({ model, index, outOfStock }: { model: typeof models[number];
               border: '1px solid rgba(255,255,255,0.08)',
               backdropFilter: 'blur(6px)',
             }}>
-              <span style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '18px', color: '#EDEBE6', letterSpacing: '0.06em' }}>
-                אזל מהמלאי
-              </span>
-              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
+              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 600, color: '#EDEBE6', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
                 OUT OF STOCK
               </span>
             </div>
@@ -167,7 +164,7 @@ function ModelCard({ model, index, outOfStock }: { model: typeof models[number];
                 whiteSpace: 'nowrap',
                 cursor: 'not-allowed',
               }}>
-                אזל מהמלאי
+                OUT OF STOCK
               </div>
             ) : (
               <motion.button

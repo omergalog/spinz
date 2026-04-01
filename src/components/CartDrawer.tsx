@@ -219,7 +219,7 @@ export default function CartDrawer() {
                   </div>
 
                   {/* Form */}
-                  <div style={{ flex: 1, overflowY: 'auto', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <div style={{ flex: 1, overflowY: 'auto', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }} onWheel={e => e.stopPropagation()} onTouchMove={e => e.stopPropagation()}>
                     {[
                       { key: 'name', label: 'שם מלא *', placeholder: 'ישראל ישראלי', type: 'text' },
                       { key: 'phone', label: 'טלפון *', placeholder: '050-0000000', type: 'tel' },

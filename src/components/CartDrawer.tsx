@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShoppingCart, Plus, Minus } from 'lucide-react';
+import { X, ShoppingCart, Plus, Minus, CheckCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { supabase } from '../lib/supabase';
 
 const DARK  = '#1C1C1C';
 const GOLD  = '#C9A870';
@@ -14,6 +16,29 @@ function formatPrice(n: number) {
 export default function CartDrawer() {
   const { items, updateQuantity, clearCart, totalCount, isOpen, closeCart } = useCart();
   const total = items.reduce((sum, i) => sum + i.model.price * i.quantity, 0);
+  const [ordering, setOrdering] = useState(false);
+  const [ordered, setOrdered] = useState(false);
+
+  const handleCheckout = async () => {
+    setOrdering(true);
+    try {
+      for (const item of items) {
+        await supabase.from('orders').insert({
+          product_name: item.model.name,
+          quantity: item.quantity,
+          unit_price: item.model.price,
+          total_price: item.model.price * item.quantity,
+          status: 'pending',
+        });
+      }
+      clearCart();
+      setOrdered(true);
+      setTimeout(() => { setOrdered(false); closeCart(); }, 2500);
+    } catch {
+      // silent
+    }
+    setOrdering(false);
+  };
 
   return (
     <AnimatePresence>
@@ -145,6 +170,20 @@ export default function CartDrawer() {
               )}
             </div>
 
+            {/* Order success */}
+            <AnimatePresence>
+              {ordered && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                  style={{ position: 'absolute', inset: 0, backgroundColor: DARK, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', zIndex: 10 }}
+                >
+                  <CheckCircle size={48} style={{ color: GOLD }} />
+                  <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '22px', color: '#EDEBE6', margin: 0 }}>ההזמנה התקבלה!</h3>
+                  <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: '#888', margin: 0 }}>נחזור אליך בקרוב</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {/* Footer */}
             {items.length > 0 && (
               <div style={{ padding: '24px', borderTop: `1px solid ${BORDER}` }}>
@@ -155,7 +194,8 @@ export default function CartDrawer() {
                   </span>
                 </div>
                 <button
-                  onClick={() => {}}
+                  onClick={handleCheckout}
+                  disabled={ordering}
                   style={{
                     width: '100%',
                     backgroundColor: GOLD, color: DARK,
@@ -164,13 +204,14 @@ export default function CartDrawer() {
                     fontFamily: "'Heebo', sans-serif",
                     fontSize: '14px', fontWeight: 700,
                     letterSpacing: '0.15em', textTransform: 'uppercase',
-                    cursor: 'pointer',
+                    cursor: ordering ? 'not-allowed' : 'pointer',
+                    opacity: ordering ? 0.7 : 1,
                     transition: 'background-color 0.25s',
                   }}
                   onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#B8933A'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = GOLD; }}
                 >
-                  המשך לתשלום
+                  {ordering ? '...' : 'המשך לתשלום'}
                 </button>
                 <button
                   onClick={clearCart}

@@ -2,15 +2,13 @@ import { useRef, useState } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { CheckCircle, AlertCircle } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 const DARK       = '#1C1C1C';
 const GOLD       = '#C9A870';
 const TEXT_LIGHT = '#EDEBE6';
 const BORDER_DARK = '#2A2A2A';
 
-const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID';
-const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';
-const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';
 
 type FormData = { name: string; email: string; whatsapp?: string };
 type Status   = 'idle' | 'loading' | 'success' | 'error';
@@ -100,12 +98,11 @@ export default function LeadForm() {
   const onSubmit = async (data: FormData) => {
     setStatus('loading');
     try {
-      const emailjs = await import('@emailjs/browser');
-      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        from_name:  data.name,
-        from_email: data.email,
-        whatsapp:   data.whatsapp || '—',
-      }, EMAILJS_PUBLIC_KEY);
+      await supabase.from('leads').insert({
+        name: data.name,
+        email: data.email,
+        phone: data.whatsapp || null,
+      });
       setStatus('success');
       reset();
       setShowToast(true);

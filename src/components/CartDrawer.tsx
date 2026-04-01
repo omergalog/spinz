@@ -18,6 +18,19 @@ export default function CartDrawer() {
   const total = items.reduce((sum, i) => sum + i.model.price * i.quantity, 0);
   const [ordering, setOrdering] = useState(false);
   const [ordered, setOrdered] = useState(false);
+  const [step, setStep] = useState<'cart' | 'details'>('cart');
+  const [form, setForm] = useState({ name: '', email: '', phone: '', address: '' });
+  const [formErrors, setFormErrors] = useState<Record<string, boolean>>({});
+
+  const validateAndCheckout = () => {
+    const errors: Record<string, boolean> = {};
+    if (!form.name.trim()) errors.name = true;
+    if (!form.phone.trim()) errors.phone = true;
+    if (!form.address.trim()) errors.address = true;
+    setFormErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+    handleCheckout();
+  };
 
   const handleCheckout = async () => {
     setOrdering(true);
@@ -25,6 +38,10 @@ export default function CartDrawer() {
       for (const item of items) {
         await supabase.from('orders').insert({
           product_name: item.model.name,
+          customer_name: form.name,
+          customer_email: form.email || null,
+          customer_phone: form.phone,
+          notes: form.address,
           quantity: item.quantity,
           unit_price: item.model.price,
           total_price: item.model.price * item.quantity,
@@ -33,6 +50,8 @@ export default function CartDrawer() {
       }
       clearCart();
       setOrdered(true);
+      setStep('cart');
+      setForm({ name: '', email: '', phone: '', address: '' });
       setTimeout(() => { setOrdered(false); closeCart(); }, 2500);
     } catch {
       // silent
@@ -184,6 +203,73 @@ export default function CartDrawer() {
               )}
             </AnimatePresence>
 
+            {/* Details step */}
+            <AnimatePresence>
+              {step === 'details' && (
+                <motion.div
+                  initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
+                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                  style={{ position: 'absolute', inset: 0, backgroundColor: DARK, display: 'flex', flexDirection: 'column', zIndex: 5 }}
+                  dir="rtl"
+                >
+                  {/* Header */}
+                  <div style={{ padding: '20px 24px', borderBottom: `1px solid ${BORDER}`, display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <button onClick={() => setStep('cart')} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', padding: '4px', fontSize: '20px', lineHeight: 1 }}>←</button>
+                    <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '17px', color: BEIGE, margin: 0 }}>פרטי משלוח</h3>
+                  </div>
+
+                  {/* Form */}
+                  <div style={{ flex: 1, overflowY: 'auto', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    {[
+                      { key: 'name', label: 'שם מלא *', placeholder: 'ישראל ישראלי', type: 'text' },
+                      { key: 'phone', label: 'טלפון *', placeholder: '050-0000000', type: 'tel' },
+                      { key: 'email', label: 'מייל', placeholder: 'israel@example.com', type: 'email' },
+                      { key: 'address', label: 'כתובת למשלוח *', placeholder: 'רחוב, עיר, מיקוד', type: 'text' },
+                    ].map(({ key, label, placeholder, type }) => (
+                      <div key={key}>
+                        <label style={{ display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: formErrors[key] ? '#FF6B6B' : '#888', letterSpacing: '0.1em', marginBottom: '6px', textTransform: 'uppercase' }}>
+                          {label}
+                        </label>
+                        <input
+                          type={type}
+                          placeholder={placeholder}
+                          value={form[key as keyof typeof form]}
+                          onChange={e => { setForm(f => ({ ...f, [key]: e.target.value })); setFormErrors(f => ({ ...f, [key]: false })); }}
+                          style={{
+                            width: '100%', padding: '11px 14px',
+                            backgroundColor: '#252525',
+                            border: `1px solid ${formErrors[key] ? '#FF6B6B' : BORDER}`,
+                            borderRadius: '8px', color: BEIGE,
+                            fontFamily: "'Heebo', sans-serif", fontSize: '14px',
+                            outline: 'none', direction: key === 'email' || key === 'phone' ? 'ltr' : 'rtl',
+                            boxSizing: 'border-box',
+                          }}
+                        />
+                        {formErrors[key] && <p style={{ color: '#FF6B6B', fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>שדה חובה</p>}
+                      </div>
+                    ))}
+
+                    {/* Summary */}
+                    <div style={{ backgroundColor: '#252525', border: `1px solid ${BORDER}`, borderRadius: '8px', padding: '14px 16px', marginTop: '8px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                        <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#888' }}>סה"כ להזמנה</span>
+                        <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 700, color: GOLD }}>{formatPrice(total)}</span>
+                      </div>
+                      <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#555', margin: 0 }}>כולל מע"מ ומשלוח</p>
+                    </div>
+                  </div>
+
+                  {/* Submit */}
+                  <div style={{ padding: '20px 24px', borderTop: `1px solid ${BORDER}` }}>
+                    <button onClick={validateAndCheckout} disabled={ordering}
+                      style={{ width: '100%', backgroundColor: GOLD, color: DARK, border: 'none', borderRadius: '4px', padding: '15px', fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: ordering ? 'not-allowed' : 'pointer', opacity: ordering ? 0.7 : 1 }}>
+                      {ordering ? '...' : 'אשר הזמנה'}
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {/* Footer */}
             {items.length > 0 && (
               <div style={{ padding: '24px', borderTop: `1px solid ${BORDER}` }}>
@@ -194,7 +280,7 @@ export default function CartDrawer() {
                   </span>
                 </div>
                 <button
-                  onClick={handleCheckout}
+                  onClick={() => setStep('details')}
                   disabled={ordering}
                   style={{
                     width: '100%',

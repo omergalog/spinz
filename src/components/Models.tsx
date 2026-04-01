@@ -1,8 +1,9 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Check } from 'lucide-react';
 import models from '../data/models';
 import { useCart } from '../context/CartContext';
+import { supabase } from '../lib/supabase';
 
 const DARK        = '#1C1C1C';
 const BEIGE       = '#F5F2EC';
@@ -13,7 +14,7 @@ function formatPrice(n: number) {
   return `₪${n.toLocaleString('he-IL')}`;
 }
 
-function ModelCard({ model, index }: { model: typeof models[number]; index: number }) {
+function ModelCard({ model, index, outOfStock }: { model: typeof models[number]; index: number; outOfStock: boolean }) {
   const [hovered, setHovered] = useState(false);
   const [added, setAdded] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -21,6 +22,7 @@ function ModelCard({ model, index }: { model: typeof models[number]; index: numb
   const { addItem } = useCart();
 
   const handleAddToCart = (e: React.MouseEvent) => {
+    if (outOfStock) return;
     e.stopPropagation();
     addItem(model);
     setAdded(true);
@@ -35,9 +37,9 @@ function ModelCard({ model, index }: { model: typeof models[number]; index: numb
       initial={{ opacity: 0, y: 40 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: index * 0.1 }}
-      onMouseEnter={() => setHovered(true)}
+      onMouseEnter={() => !outOfStock && setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={{ overflow: 'hidden', cursor: 'pointer', border: `1px solid ${BORDER}` }}
+      style={{ overflow: 'hidden', cursor: outOfStock ? 'default' : 'pointer', border: `1px solid ${BORDER}` }}
     >
       {/* Image area */}
       <div
@@ -53,44 +55,57 @@ function ModelCard({ model, index }: { model: typeof models[number]; index: numb
         <motion.img
           src={model.image.replace('.png', '.jpg')}
           alt={model.name}
-          animate={{ scale: hovered ? 1.06 : 1 }}
+          animate={{ scale: hovered ? 1.06 : 1, filter: outOfStock ? 'grayscale(60%) brightness(0.85)' : 'none' }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="w-[88%] h-[88%] md:w-[88%] md:h-[88%] max-md:w-full max-md:h-full"
           style={{ objectFit: 'contain' }}
           loading="lazy"
           onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
         />
-        <motion.div
-          animate={{ opacity: hovered ? 1 : 0 }}
-          transition={{ duration: 0.4 }}
-          style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(28,28,28,0.08)' }}
-        />
-        <motion.div
-          animate={{ opacity: hovered ? 1 : 0, y: hovered ? 0 : 10 }}
-          transition={{ duration: 0.35 }}
-          style={{
-            position: 'absolute',
-            inset: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <span
-            style={{
-              color: DARK,
-              fontFamily: "'Heebo', sans-serif",
-              fontSize: '12px',
-              fontWeight: 700,
-              letterSpacing: '0.25em',
-              textTransform: 'uppercase',
-              borderBottom: `1px solid ${GOLD}`,
-              paddingBottom: '4px',
-            }}
+        {/* Hover overlay — only when in stock */}
+        {!outOfStock && (
+          <>
+            <motion.div
+              animate={{ opacity: hovered ? 1 : 0 }}
+              transition={{ duration: 0.4 }}
+              style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(28,28,28,0.08)' }}
+            />
+            <motion.div
+              animate={{ opacity: hovered ? 1 : 0, y: hovered ? 0 : 10 }}
+              transition={{ duration: 0.35 }}
+              style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+              <span style={{ color: DARK, fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, letterSpacing: '0.25em', textTransform: 'uppercase', borderBottom: `1px solid ${GOLD}`, paddingBottom: '4px' }}>
+                צפייה במודל
+              </span>
+            </motion.div>
+          </>
+        )}
+
+        {/* Out of stock overlay */}
+        {outOfStock && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(28,28,28,0.45)' }}
           >
-            צפייה במודל
-          </span>
-        </motion.div>
+            <div style={{
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
+              padding: '14px 28px',
+              backgroundColor: 'rgba(28,28,28,0.85)',
+              border: '1px solid rgba(255,255,255,0.08)',
+              backdropFilter: 'blur(6px)',
+            }}>
+              <span style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '18px', color: '#EDEBE6', letterSpacing: '0.06em' }}>
+                אזל מהמלאי
+              </span>
+              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#888', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
+                OUT OF STOCK
+              </span>
+            </div>
+          </motion.div>
+        )}
       </div>
 
       {/* Info bar */}
@@ -104,33 +119,23 @@ function ModelCard({ model, index }: { model: typeof models[number]; index: numb
         }}
       >
         <div>
-          <h3
-            style={{
-              fontFamily: "'Heebo', sans-serif",
-              fontWeight: 800,
-              fontSize: '26px',
-              color: '#EDEBE6',
-              letterSpacing: '0',
-              margin: 0,
-              lineHeight: 1,
-            }}
-          >
+          <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '26px', color: outOfStock ? '#555' : '#EDEBE6', letterSpacing: '0', margin: 0, lineHeight: 1 }}>
             {model.name}
           </h3>
-          <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: '#FFFFFF', margin: '4px 0 0' }}>
+          <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: outOfStock ? '#444' : '#FFFFFF', margin: '4px 0 0' }}>
             {model.tagline}
           </p>
         </div>
         <div className="flex flex-col items-center gap-2 md:flex-row md:items-center md:gap-[14px]">
           <div className="hidden md:block" style={{ width: '1px', height: '30px', backgroundColor: '#2A2A2A' }} />
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '5px' }}>
-            <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', fontWeight: 700, color: GOLD }}>
+            <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', fontWeight: 700, color: outOfStock ? '#555' : GOLD }}>
               {formatPrice(model.price)}
             </span>
-            <span className="md:hidden" style={{ fontFamily: "'Heebo', sans-serif", fontSize: '8px', color: '#FFFFFF', letterSpacing: '0.1em' }}>
+            <span className="md:hidden" style={{ fontFamily: "'Heebo', sans-serif", fontSize: '8px', color: outOfStock ? '#444' : '#FFFFFF', letterSpacing: '0.1em' }}>
               מחיר
             </span>
-            <p className="hidden md:block" style={{ fontFamily: "'Heebo'", fontSize: '9px', color: '#FFFFFF', margin: '2px 0 0', letterSpacing: '0.1em' }}>
+            <p className="hidden md:block" style={{ fontFamily: "'Heebo'", fontSize: '9px', color: outOfStock ? '#444' : '#FFFFFF', margin: '2px 0 0', letterSpacing: '0.1em' }}>
               מחיר
             </p>
           </div>
@@ -142,55 +147,60 @@ function ModelCard({ model, index }: { model: typeof models[number]; index: numb
                 <motion.div
                   key={i}
                   initial={{ opacity: 1, x: 0, y: 0, scale: 1 }}
-                  animate={{
-                    opacity: 0,
-                    x: (i - 2) * 18,
-                    y: -28 - i * 4,
-                    scale: 0.4,
-                  }}
+                  animate={{ opacity: 0, x: (i - 2) * 18, y: -28 - i * 4, scale: 0.4 }}
                   transition={{ duration: 0.55, ease: 'easeOut', delay: i * 0.04 }}
-                  style={{
-                    position: 'absolute',
-                    top: '50%', left: '50%',
-                    width: '6px', height: '6px',
-                    borderRadius: '50%',
-                    backgroundColor: GOLD,
-                    pointerEvents: 'none',
-                    zIndex: 10,
-                  }}
+                  style={{ position: 'absolute', top: '50%', left: '50%', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: GOLD, pointerEvents: 'none', zIndex: 10 }}
                 />
               ))}
             </AnimatePresence>
-            <motion.button
-              onClick={handleAddToCart}
-              animate={added ? { scale: [1, 1.15, 1] } : { scale: 1 }}
-              transition={{ duration: 0.3 }}
-              style={{
+            {outOfStock ? (
+              <div style={{
                 display: 'flex', alignItems: 'center', gap: '6px',
-                backgroundColor: added ? '#2A5A2A' : GOLD,
-                color: added ? '#7FD97F' : DARK,
-                border: 'none', borderRadius: '4px',
+                backgroundColor: 'transparent',
+                color: '#555',
+                border: '1px solid #2A2A2A',
+                borderRadius: '4px',
                 padding: '8px 14px',
                 fontFamily: "'Heebo', sans-serif",
                 fontSize: '12px', fontWeight: 700,
                 letterSpacing: '0.1em',
-                cursor: 'pointer',
                 whiteSpace: 'nowrap',
-                transition: 'background-color 0.3s, color 0.3s',
-              }}
-            >
-              <AnimatePresence mode="wait">
-                {added ? (
-                  <motion.span key="check" initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} transition={{ duration: 0.2 }} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Check size={14} /> נוסף!
-                  </motion.span>
-                ) : (
-                  <motion.span key="cart" initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} transition={{ duration: 0.2 }} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <ShoppingCart size={14} /> הוסף לעגלה
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </motion.button>
+                cursor: 'not-allowed',
+              }}>
+                אזל מהמלאי
+              </div>
+            ) : (
+              <motion.button
+                onClick={handleAddToCart}
+                animate={added ? { scale: [1, 1.15, 1] } : { scale: 1 }}
+                transition={{ duration: 0.3 }}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '6px',
+                  backgroundColor: added ? '#2A5A2A' : GOLD,
+                  color: added ? '#7FD97F' : DARK,
+                  border: 'none', borderRadius: '4px',
+                  padding: '8px 14px',
+                  fontFamily: "'Heebo', sans-serif",
+                  fontSize: '12px', fontWeight: 700,
+                  letterSpacing: '0.1em',
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  transition: 'background-color 0.3s, color 0.3s',
+                }}
+              >
+                <AnimatePresence mode="wait">
+                  {added ? (
+                    <motion.span key="check" initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} transition={{ duration: 0.2 }} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <Check size={14} /> נוסף!
+                    </motion.span>
+                  ) : (
+                    <motion.span key="cart" initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} transition={{ duration: 0.2 }} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <ShoppingCart size={14} /> הוסף לעגלה
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </motion.button>
+            )}
           </div>
         </div>
       </div>
@@ -203,6 +213,16 @@ export default function Models() {
   const isInView = useInView(headerRef, { once: true, margin: '-60px' });
   const mobileHeaderRef = useRef<HTMLDivElement>(null);
   const mobileInView = useInView(mobileHeaderRef, { once: true, margin: '-20px' });
+  const [stockMap, setStockMap] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    supabase.from('products').select('name, stock').then(({ data }) => {
+      if (!data) return;
+      const map: Record<string, number> = {};
+      data.forEach(p => { map[p.name.toUpperCase()] = p.stock; });
+      setStockMap(map);
+    });
+  }, []);
 
   return (
     <section id="models" style={{ backgroundColor: BEIGE }} dir="rtl">
@@ -211,61 +231,32 @@ export default function Models() {
         className="block md:grid"
       >
         {/* LEFT sticky panel */}
-        <div
-          className="hidden md:block"
-          style={{ borderLeft: `1px solid ${BORDER}`, minHeight: '100%' }}
-        >
-          <div
-            ref={headerRef}
-            style={{ position: 'sticky', top: '64px', padding: '60px 36px' }}
-          >
+        <div className="hidden md:block" style={{ borderLeft: `1px solid ${BORDER}`, minHeight: '100%' }}>
+          <div ref={headerRef} style={{ position: 'sticky', top: '64px', padding: '60px 36px' }}>
             <motion.h5
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : {}}
               transition={{ duration: 0.7 }}
-              style={{
-                fontFamily: "'Heebo', sans-serif",
-                fontSize: '11px',
-                letterSpacing: '0.4em',
-                textTransform: 'uppercase',
-                color: GOLD,
-                margin: '0 0 16px',
-              }}
+              style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', letterSpacing: '0.4em', textTransform: 'uppercase', color: GOLD, margin: '0 0 16px' }}
             >
               המודלים שלנו
             </motion.h5>
-
             <div style={{ overflow: 'hidden' }}>
               <motion.h1
                 initial={{ y: '105%' }}
                 animate={isInView ? { y: '0%' } : {}}
                 transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1], delay: 0.08 }}
-                style={{
-                  fontFamily: "'Heebo', sans-serif",
-                  fontWeight: 800,
-                  fontSize: 'clamp(38px, 4.5vw, 60px)',
-                  color: DARK,
-                  letterSpacing: '-0.01em',
-                  lineHeight: 1.05,
-                  margin: 0,
-                }}
+                style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(38px, 4.5vw, 60px)', color: DARK, letterSpacing: '-0.01em', lineHeight: 1.05, margin: 0 }}
               >
                 בחר את האופניים שלך
               </motion.h1>
             </div>
-
             <motion.div
               initial={{ scaleX: 0 }}
               animate={isInView ? { scaleX: 1 } : {}}
               transition={{ duration: 0.8, delay: 0.4 }}
-              style={{
-                height: '1px',
-                backgroundColor: BORDER,
-                margin: '28px 0',
-                transformOrigin: 'right',
-              }}
+              style={{ height: '1px', backgroundColor: BORDER, margin: '28px 0', transformOrigin: 'right' }}
             />
-
             <motion.p
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : {}}
@@ -280,12 +271,7 @@ export default function Models() {
 
         {/* RIGHT scrollable cards */}
         <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '24px',
-            borderRight: `1px solid ${BORDER}`,
-          }}
+          style={{ display: 'flex', flexDirection: 'column', gap: '24px', borderRight: `1px solid ${BORDER}` }}
           className="p-5 md:p-9"
         >
           {/* Mobile header — sticky below navbar */}
@@ -310,9 +296,11 @@ export default function Models() {
             </div>
           </div>
 
-          {models.map((model, i) => (
-            <ModelCard key={model.id} model={model} index={i} />
-          ))}
+          {models.map((model, i) => {
+            const stock = stockMap[model.name.toUpperCase()];
+            const outOfStock = stock !== undefined && stock === 0;
+            return <ModelCard key={model.id} model={model} index={i} outOfStock={outOfStock} />;
+          })}
         </div>
       </div>
     </section>

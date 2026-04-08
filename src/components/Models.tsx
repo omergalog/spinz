@@ -211,13 +211,19 @@ export default function Models() {
   const mobileHeaderRef = useRef<HTMLDivElement>(null);
   const mobileInView = useInView(mobileHeaderRef, { once: true, margin: '-20px' });
   const [stockMap, setStockMap] = useState<Record<string, number>>({});
+  const [priceMap, setPriceMap] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    supabase.from('products').select('name, stock').then(({ data }) => {
+    supabase.from('products').select('name, stock, price').then(({ data }) => {
       if (!data) return;
-      const map: Record<string, number> = {};
-      data.forEach(p => { map[p.name.toUpperCase()] = p.stock; });
-      setStockMap(map);
+      const stocks: Record<string, number> = {};
+      const prices: Record<string, number> = {};
+      data.forEach(p => {
+        stocks[p.name.toUpperCase()] = p.stock;
+        if (p.price) prices[p.name.toUpperCase()] = p.price;
+      });
+      setStockMap(stocks);
+      setPriceMap(prices);
     });
   }, []);
 
@@ -294,9 +300,12 @@ export default function Models() {
           </div>
 
           {models.map((model, i) => {
-            const stock = stockMap[model.name.toUpperCase()];
+            const key = model.name.toUpperCase();
+            const stock = stockMap[key];
             const outOfStock = stock !== undefined && stock === 0;
-            return <ModelCard key={model.id} model={model} index={i} outOfStock={outOfStock} />;
+            const livePrice = priceMap[key];
+            const modelWithPrice = livePrice ? { ...model, price: livePrice } : model;
+            return <ModelCard key={model.id} model={modelWithPrice} index={i} outOfStock={outOfStock} />;
           })}
         </div>
       </div>

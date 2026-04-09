@@ -54,7 +54,7 @@ function BrandBlock({ className, textLight }: { className?: string; textLight: s
     <div className={`flex-col items-center text-center ${className ?? ''}`} style={{ marginTop: '48px', gap: '16px' }}>
       <img src="/assets/logo.png" alt="SPINZ" style={{ height: '70px', width: 'auto', objectFit: 'contain', filter: 'invert(1) brightness(2)' }} />
       <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: textLight, margin: 0, lineHeight: 1.8 }}>
-        אופני עיר סינגל ספיד.<br />בנויים לרחובות, מעוצבים לבלוט.
+        העיר לא עוצרת.<br />גם אתה לא.
       </p>
       <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
         <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: textLight }}>
@@ -161,7 +161,7 @@ export default function LeadForm() {
                   margin: '0 0 0',
                 }}
               >
-                מחפש את האופניים ההבאים שלך?
+                תיראה טוב. תרגיש טוב. וסע.
               </h2>
             </RevealText>
 
@@ -191,7 +191,7 @@ export default function LeadForm() {
               }}
               className="max-md:max-w-full mt-4 mb-1 md:mt-4 md:mb-6"
             >
-              השאר פרטים ונחזור אליך עם כל המידע — מודלים, מחירים, וזמני אספקה.
+              השאר פרטים. נחזור אליך תוך 24 שעות עם כל מה שצריך לדעת.
             </motion.p>
 
             {/* Brand block — desktop only (on mobile it appears after the form) */}

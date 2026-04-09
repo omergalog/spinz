@@ -132,12 +132,17 @@ function ModelCard({ model, index, outOfStock, salePrice }: { model: typeof mode
                 <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '22px', fontWeight: 800, color: GOLD, lineHeight: 1 }}>
                   {formatPrice(salePrice)}
                 </span>
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 600, color: '#999', textDecoration: 'line-through', textDecorationColor: '#FF4444', textDecorationThickness: '2px', lineHeight: 1 }}>
-                  {formatPrice(model.price)}
-                </span>
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', fontWeight: 700, color: '#FF4444', backgroundColor: '#FF444422', padding: '2px 7px', borderRadius: '4px', whiteSpace: 'nowrap' }}>
-                  הנחה {Math.round((1 - salePrice / model.price) * 100)}%
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginRight: '6px' }}>
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 600, color: '#999', lineHeight: 1 }}>
+                    <span style={{ textDecoration: 'line-through', textDecorationColor: '#FF4444', textDecorationThickness: '2px' }}>
+                      {model.price.toLocaleString('he-IL')}
+                    </span>
+                    {' '}₪
+                  </span>
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', fontWeight: 700, color: '#FF4444', backgroundColor: '#FF444422', padding: '2px 7px', borderRadius: '4px', whiteSpace: 'nowrap' }}>
+                    {Math.round((1 - salePrice / model.price) * 100)}% הנחה
+                  </span>
+                </div>
               </div>
             ) : (
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '5px' }}>

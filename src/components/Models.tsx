@@ -214,8 +214,7 @@ export default function Models() {
   const [priceMap, setPriceMap] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    supabase.from('products').select('name, stock, price').then(({ data, error }) => {
-      console.log('[Models] Supabase data:', data, 'error:', error);
+    supabase.from('products').select('name, stock, price').then(({ data }) => {
       if (!data) return;
       const stocks: Record<string, number> = {};
       const prices: Record<string, number> = {};
@@ -223,7 +222,6 @@ export default function Models() {
         stocks[p.name.toUpperCase()] = p.stock;
         if (p.price) prices[p.name.toUpperCase()] = p.price;
       });
-      console.log('[Models] priceMap:', prices);
       setStockMap(stocks);
       setPriceMap(prices);
     });

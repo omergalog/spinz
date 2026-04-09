@@ -89,7 +89,7 @@ export default function Gallery() {
                 style={{
                   fontFamily: "'Heebo', sans-serif",
                   fontWeight: 800,
-                  fontSize: 'clamp(48px, 7vw, 80px)',
+                  fontSize: 'clamp(32px, 7vw, 80px)',
                   color: TEXT,
                   letterSpacing: '-0.02em',
                 }}

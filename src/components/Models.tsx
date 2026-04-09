@@ -110,43 +110,46 @@ function ModelCard({ model, index, outOfStock, salePrice }: { model: typeof mode
       <div
         style={{
           backgroundColor: DARK,
-          padding: '18px 24px',
+          padding: '14px 16px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '10px',
         }}
+        className="sm:px-6"
       >
-        <div>
-          <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '26px', color: outOfStock ? '#555' : '#EDEBE6', letterSpacing: '0', margin: 0, lineHeight: 1 }}>
+        <div className="min-w-0">
+          <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(18px, 4.5vw, 26px)', color: outOfStock ? '#555' : '#EDEBE6', letterSpacing: '0', margin: 0, lineHeight: 1 }}>
             {model.name}
           </h3>
           <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: outOfStock ? '#444' : '#FFFFFF', margin: '4px 0 0' }}>
             {model.tagline}
           </p>
         </div>
-        <div className="flex flex-col items-center gap-2 md:flex-row md:items-center md:gap-[14px]">
+        <div className="flex flex-wrap items-center gap-2 md:gap-[14px]">
           <div className="hidden md:block" style={{ width: '1px', height: '30px', backgroundColor: '#2A2A2A' }} />
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '3px' }}>
             {salePrice && !outOfStock ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '22px', fontWeight: 800, color: GOLD, lineHeight: 1, letterSpacing: '0.03em' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px' }}>
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: 'clamp(16px, 4vw, 22px)', fontWeight: 800, color: GOLD, lineHeight: 1, letterSpacing: '0.03em' }}>
                   {formatPrice(salePrice)}
                 </span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginRight: '6px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 600, color: '#999', lineHeight: 1 }}>
                     <span style={{ textDecoration: 'line-through', textDecorationColor: '#FF4444', textDecorationThickness: '2px' }}>
                       {model.price.toLocaleString('he-IL')}
                     </span>
                     {' '}₪
                   </span>
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', fontWeight: 700, color: '#FF4444', backgroundColor: '#FF444422', padding: '2px 7px', borderRadius: '4px', whiteSpace: 'nowrap' }}>
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', fontWeight: 700, color: '#FF4444', backgroundColor: '#FF444422', padding: '2px 6px', borderRadius: '4px' }}>
                     {Math.round((1 - salePrice / model.price) * 100)}% הנחה
                   </span>
                 </div>
               </div>
             ) : (
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '5px' }}>
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', fontWeight: 700, color: outOfStock ? '#555' : GOLD }}>
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: 'clamp(15px, 4vw, 18px)', fontWeight: 700, color: outOfStock ? '#555' : GOLD }}>
                   {formatPrice(model.price)}
                 </span>
                 <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '9px', color: outOfStock ? '#444' : '#FFFFFF', letterSpacing: '0.1em' }}>
@@ -176,11 +179,10 @@ function ModelCard({ model, index, outOfStock, salePrice }: { model: typeof mode
                 color: '#555',
                 border: '1px solid #2A2A2A',
                 borderRadius: '4px',
-                padding: '8px 14px',
+                padding: '8px 12px',
                 fontFamily: "'Heebo', sans-serif",
-                fontSize: '12px', fontWeight: 700,
-                letterSpacing: '0.1em',
-                whiteSpace: 'nowrap',
+                fontSize: '11px', fontWeight: 700,
+                letterSpacing: '0.08em',
                 cursor: 'not-allowed',
               }}>
                 OUT OF STOCK
@@ -195,12 +197,11 @@ function ModelCard({ model, index, outOfStock, salePrice }: { model: typeof mode
                   backgroundColor: added ? '#2A5A2A' : GOLD,
                   color: added ? '#7FD97F' : DARK,
                   border: 'none', borderRadius: '4px',
-                  padding: '8px 14px',
+                  padding: '8px 12px',
                   fontFamily: "'Heebo', sans-serif",
                   fontSize: '12px', fontWeight: 700,
-                  letterSpacing: '0.1em',
+                  letterSpacing: '0.08em',
                   cursor: 'pointer',
-                  whiteSpace: 'nowrap',
                   transition: 'background-color 0.3s, color 0.3s',
                 }}
               >
@@ -316,7 +317,7 @@ export default function Models() {
                 initial={{ y: '105%' }}
                 animate={mobileInView ? { y: '0%' } : {}}
                 transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1], delay: 0.08 }}
-                style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '40px', color: DARK, letterSpacing: '-0.01em', margin: 0 }}
+                style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(28px, 8vw, 40px)', color: DARK, letterSpacing: '-0.01em', margin: 0 }}
               >
                 בחר את האופניים שלך
               </motion.h2>

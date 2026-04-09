@@ -32,6 +32,7 @@ export default function Hero() {
 
       {/* Content — centered in remaining space */}
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center text-center px-6 pb-6">
+        <div className="w-full max-w-4xl mx-auto flex flex-col items-center">
         {/* Label */}
         <motion.p
           initial={{ opacity: 0, y: 10 }}
@@ -167,6 +168,7 @@ export default function Hero() {
             צור קשר
           </a>
         </motion.div>
+        </div>
       </div>
 
     </section>

@@ -31,12 +31,12 @@ function Toast({ show }: { show: boolean }) {
             backgroundColor: '#1a1a1a',
             border: `1px solid ${GOLD}`,
             borderRadius: '8px',
-            padding: '14px 24px',
+            padding: '14px 20px',
             display: 'flex',
             alignItems: 'center',
             gap: '10px',
             boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
-            whiteSpace: 'nowrap',
+            maxWidth: 'calc(100vw - 32px)',
           }}
         >
           <CheckCircle size={18} style={{ color: GOLD, flexShrink: 0 }} />

@@ -63,13 +63,13 @@ export default function Navbar() {
           <a
             href="#"
             onClick={e => { e.preventDefault(); scrollTo('#'); }}
-            style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}
+            style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', flexShrink: 0 }}
           >
             <img src="/assets/logo.png" alt="SPINZ" className="h-6 md:h-[48px]" style={{ width: 'auto' }} />
           </a>
 
-          {/* Nav — all screens */}
-          <nav className="flex items-center gap-2 md:gap-9">
+          {/* Nav — hidden on xs, visible on sm+ */}
+          <nav className="hidden sm:flex items-center gap-2 md:gap-9">
             {navLinks.map(link => (
               <a
                 key={link.label}
@@ -92,13 +92,13 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* CTA (desktop) + hamburger (mobile) */}
-          <div className="flex items-center gap-3">
-            {/* CTA desktop */}
+          {/* CTA + cart + hamburger */}
+          <div className="flex items-center gap-2 md:gap-3">
+            {/* CTA — hidden on xs to save space */}
             <a
               href="#lead-form"
               onClick={e => { e.preventDefault(); scrollTo('#lead-form'); }}
-              className="inline-block font-bold uppercase tracking-widest text-[11px] md:text-xs py-1 px-3 md:py-[6px] md:px-[10px]"
+              className="hidden sm:inline-block font-bold uppercase tracking-widest text-[11px] md:text-xs py-1 px-3 md:py-[6px] md:px-[10px]"
               style={{
                 backgroundColor: GOLD,
                 color: DARK,
@@ -136,6 +136,7 @@ export default function Navbar() {
                 padding: '6px 8px',
                 cursor: 'pointer',
                 transition: 'background-color 0.25s',
+                flexShrink: 0,
               }}
               onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'rgba(0,0,0,0.08)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'; }}
@@ -154,7 +155,17 @@ export default function Navbar() {
               )}
             </button>
 
-            {/* Hamburger — hidden (nav always visible) */}
+            {/* Hamburger — xs only */}
+            <button
+              className="sm:hidden flex flex-col justify-center items-center gap-[5px]"
+              onClick={() => setMenuOpen(v => !v)}
+              aria-label="תפריט"
+              style={{ width: '36px', height: '36px', backgroundColor: 'transparent', border: `1px solid ${DARK}`, borderRadius: '4px', cursor: 'pointer', flexShrink: 0 }}
+            >
+              <span style={{ display: 'block', width: '16px', height: '1.5px', backgroundColor: DARK, transition: 'transform 0.3s, opacity 0.3s', transform: menuOpen ? 'translateY(6.5px) rotate(45deg)' : 'none' }} />
+              <span style={{ display: 'block', width: '16px', height: '1.5px', backgroundColor: DARK, transition: 'opacity 0.3s', opacity: menuOpen ? 0 : 1 }} />
+              <span style={{ display: 'block', width: '16px', height: '1.5px', backgroundColor: DARK, transition: 'transform 0.3s, opacity 0.3s', transform: menuOpen ? 'translateY(-6.5px) rotate(-45deg)' : 'none' }} />
+            </button>
           </div>
         </div>
       </header>

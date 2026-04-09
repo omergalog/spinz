@@ -130,7 +130,7 @@ function ModelCard({ model, index, outOfStock, salePrice }: { model: typeof mode
             {salePrice && !outOfStock ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '22px', fontWeight: 800, color: GOLD, lineHeight: 1 }}>
-                  {formatPrice(salePrice)}
+                  ₪{'\u00A0'}{salePrice.toLocaleString('he-IL')}
                 </span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginRight: '6px' }}>
                   <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 600, color: '#999', lineHeight: 1 }}>

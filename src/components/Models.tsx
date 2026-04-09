@@ -185,7 +185,7 @@ function ModelCard({ model, index, outOfStock, salePrice }: { model: typeof mode
                 letterSpacing: '0.08em',
                 cursor: 'not-allowed',
               }}>
-                OUT OF STOCK
+                אזל במלאי
               </div>
             ) : (
               <motion.button

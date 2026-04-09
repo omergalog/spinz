@@ -112,7 +112,7 @@ export default function BrandStatement() {
                   margin: 0,
                 }}
               >
-                Spinz מדבר ישירות. מוכר סטייל ולייפסטייל. הנה למה.
+                אנחנו לא מוכרים רק אופניים. אנחנו מוכרים סטייל ולייפסטייל. הנה למה.
               </motion.p>
             </div>
 

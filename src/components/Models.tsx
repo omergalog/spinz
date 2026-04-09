@@ -129,8 +129,8 @@ function ModelCard({ model, index, outOfStock, salePrice }: { model: typeof mode
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '3px' }}>
             {salePrice && !outOfStock ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '22px', fontWeight: 800, color: GOLD, lineHeight: 1 }}>
-                  ₪{'\u00A0'}{salePrice.toLocaleString('he-IL')}
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '22px', fontWeight: 800, color: GOLD, lineHeight: 1, letterSpacing: '0.03em' }}>
+                  {formatPrice(salePrice)}
                 </span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginRight: '6px' }}>
                   <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 600, color: '#999', lineHeight: 1 }}>

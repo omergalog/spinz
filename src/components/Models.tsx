@@ -135,7 +135,7 @@ function ModelCard({ model, index, outOfStock, salePrice }: { model: typeof mode
                 <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: 'clamp(16px, 4vw, 22px)', fontWeight: 800, color: GOLD, lineHeight: 1, letterSpacing: '0.03em' }}>
                   {formatPrice(salePrice)}
                 </span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginRight: '8px' }}>
                   <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 600, color: '#999', lineHeight: 1 }}>
                     <span style={{ textDecoration: 'line-through', textDecorationColor: '#FF4444', textDecorationThickness: '2px' }}>
                       {model.price.toLocaleString('he-IL')}

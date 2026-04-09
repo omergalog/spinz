@@ -129,6 +129,9 @@ function ModelCard({ model, index, outOfStock, salePrice }: { model: typeof mode
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '3px' }}>
             {salePrice && !outOfStock ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', fontWeight: 700, color: '#FF4444', backgroundColor: '#FF444422', padding: '2px 7px', borderRadius: '4px', whiteSpace: 'nowrap' }}>
+                  הנחה {Math.round((1 - salePrice / model.price) * 100)}%
+                </span>
                 <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 600, color: '#999', textDecoration: 'line-through', textDecorationColor: '#FF4444', textDecorationThickness: '2px', lineHeight: 1 }}>
                   {formatPrice(model.price)}
                 </span>

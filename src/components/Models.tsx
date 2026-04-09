@@ -267,7 +267,7 @@ export default function Models() {
               transition={{ duration: 0.7 }}
               style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', letterSpacing: '0.4em', textTransform: 'uppercase', color: GOLD, margin: '0 0 16px' }}
             >
-              המודלים שלנו
+              הדגמים שלנו
             </motion.h5>
             <div style={{ overflow: 'hidden' }}>
               <motion.h1
@@ -310,7 +310,7 @@ export default function Models() {
               transition={{ duration: 0.6 }}
               style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', letterSpacing: '0.4em', textTransform: 'uppercase', color: GOLD, marginBottom: '10px' }}
             >
-              המודלים שלנו
+              הדגמים שלנו
             </motion.h5>
             <div style={{ overflow: 'hidden' }}>
               <motion.h2

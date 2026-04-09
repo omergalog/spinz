@@ -209,7 +209,7 @@ export default function About() {
                   color: big ? CREAM : '#D0CEC9',
                   lineHeight: 1.8,
                   margin: 0,
-                  textAlign: 'right',
+                  textAlign: 'center',
                 }}
               >
                 {text}

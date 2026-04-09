@@ -54,6 +54,7 @@ export default function About() {
       className="px-5 py-10 md:p-9"
       dir="rtl"
     >
+      <div className="mx-auto max-w-7xl">
       <div style={{ borderTop: '1px solid #2A2A2A' }} className="pt-8 md:pt-16">
 
         {/* Top: label + headline */}
@@ -295,6 +296,7 @@ export default function About() {
           ))}
         </motion.div>
 
+      </div>
       </div>
     </section>
   );

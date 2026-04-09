@@ -109,7 +109,7 @@ export default function Gallery() {
             onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = TEXT)}
             onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = TEXT_MUTED)}
           >
-            לכל המודלים
+            לכל הדגמים
           </motion.a>
         </div>
 

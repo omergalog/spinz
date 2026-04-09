@@ -56,6 +56,7 @@ export default function BrandStatement() {
       className="px-5 py-10 md:p-9"
       dir="rtl"
     >
+      <div className="mx-auto max-w-7xl">
       {/* Desktop: 2-col grid | Mobile: single column */}
       <div className="md:grid md:grid-cols-2 md:gap-9">
 
@@ -192,6 +193,7 @@ export default function BrandStatement() {
           />
         </motion.div>
 
+      </div>
       </div>
     </section>
   );

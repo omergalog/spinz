@@ -252,6 +252,7 @@ export default function Models() {
 
   return (
     <section id="models" style={{ backgroundColor: BEIGE }} dir="rtl">
+      <div className="mx-auto max-w-7xl">
       <div
         style={{ gridTemplateColumns: '1fr 1.3fr' }}
         className="block md:grid"
@@ -332,6 +333,7 @@ export default function Models() {
             return <ModelCard key={model.id} model={modelWithPrice} index={i} outOfStock={outOfStock} salePrice={liveSalePrice} />;
           })}
         </div>
+      </div>
       </div>
     </section>
   );

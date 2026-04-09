@@ -122,6 +122,7 @@ export default function LeadForm() {
       className="px-5 py-8 md:p-9"
       dir="rtl"
     >
+      <div className="mx-auto max-w-5xl">
       <div style={{ borderTop: `1px solid ${BORDER_DARK}` }} className="pt-5 md:pt-16">
         <div
           style={{
@@ -440,6 +441,7 @@ export default function LeadForm() {
           <BrandBlock className="flex md:hidden w-full" textLight={TEXT_LIGHT} />
 
         </div>
+      </div>
       </div>
     </section>
     </>

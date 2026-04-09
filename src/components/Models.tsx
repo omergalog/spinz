@@ -129,7 +129,7 @@ function ModelCard({ model, index, outOfStock, salePrice }: { model: typeof mode
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '3px' }}>
             {salePrice && !outOfStock ? (
               <>
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '17px', fontWeight: 700, color: '#666', textDecoration: 'line-through', lineHeight: 1 }}>
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '17px', fontWeight: 700, color: '#EDEBE6', textDecoration: 'line-through', textDecorationColor: '#FF4444', lineHeight: 1 }}>
                   {formatPrice(model.price)}
                 </span>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>

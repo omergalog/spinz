@@ -24,6 +24,7 @@ function CountUp({ target, suffix = '', duration = 2800 }: { target: number; suf
 
 const DARK = '#1C1C1C';
 const GOLD = '#C9A870';
+const CREAM = '#EDEBE6';
 
 function RevealText({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -63,7 +64,7 @@ export default function About() {
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: '36px',
           }}
-          className="block md:grid mb-8 md:mb-16"
+          className="block md:grid mb-16 md:mb-24"
         >
           <div style={{ gridColumn: 'span 3' }}>
             <motion.h5
@@ -87,7 +88,7 @@ export default function About() {
                   fontFamily: "'Heebo', sans-serif",
                   fontWeight: 800,
                   fontSize: 'clamp(36px, 5vw, 64px)',
-                  color: '#EDEBE6',
+                  color: CREAM,
                   letterSpacing: '-0.01em',
                   lineHeight: 1.05,
                   margin: 0,
@@ -131,7 +132,7 @@ export default function About() {
 
             <div
               style={{
-                borderRight: `3px solid ${GOLD}`,
+                borderRight: `4px solid ${GOLD}`,
                 paddingRight: '24px',
               }}
             >
@@ -139,10 +140,10 @@ export default function About() {
                 style={{
                   fontFamily: "'Heebo', sans-serif",
                   fontWeight: 700,
-                  fontSize: 'clamp(22px, 3vw, 32px)',
-                  color: '#EDEBE6',
+                  fontSize: 'clamp(20px, 3vw, 30px)',
+                  color: CREAM,
                   letterSpacing: '-0.01em',
-                  lineHeight: 1.2,
+                  lineHeight: 1.3,
                   margin: 0,
                 }}
               >
@@ -176,7 +177,7 @@ export default function About() {
                 <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: GOLD, letterSpacing: '0.2em' }}>
                   {num}
                 </span>
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', color: '#EDEBE6' }}>
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', color: CREAM }}>
                   {label}
                 </span>
               </motion.div>
@@ -218,9 +219,10 @@ export default function About() {
                   fontFamily: "'Heebo', sans-serif",
                   fontSize: big ? '18px' : '15px',
                   fontWeight: big ? 500 : 400,
-                  color: big ? '#EDEBE6' : '#FFFFFF',
-                  lineHeight: 1.75,
+                  color: big ? CREAM : '#D0CEC9',
+                  lineHeight: 1.8,
                   margin: 0,
+                  textAlign: 'right',
                 }}
               >
                 {text}
@@ -277,9 +279,9 @@ export default function About() {
           className="grid"
         >
           {[
-            { num: '3', label: 'דגמים בקולקציה', target: 3, suffix: '', duration: 1800 },
-            { num: '72H', label: 'אצלך בבית', target: 72, suffix: 'H', duration: 2800 },
-            { num: '100%', label: 'ישיר מהמפעל', target: 100, suffix: '%', duration: 3800 },
+            { label: 'דגמי קולקציה', target: 3, suffix: '' , duration: 1800 },
+            { label: 'אצלך בבית',     target: 72, suffix: 'H', duration: 2800 },
+            { label: 'ישיר מהמפעל',   target: 100, suffix: '%', duration: 3800 },
           ].map(({ label, target, suffix, duration }) => (
             <div
               key={label}
@@ -289,7 +291,7 @@ export default function About() {
               <p className="text-[28px] md:text-[48px]" style={{ fontFamily: "'Heebo', sans-serif", color: GOLD, letterSpacing: '0.04em', margin: 0, lineHeight: 1 }}>
                 <CountUp target={target} suffix={suffix} duration={duration} />
               </p>
-              <p className="text-[9px] md:text-[11px]" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: '0.2em', textTransform: 'uppercase', color: '#FFFFFF', margin: '6px 0 0' }}>
+              <p className="text-[9px] md:text-[11px]" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: '0.2em', textTransform: 'uppercase', color: CREAM, margin: '6px 0 0' }}>
                 {label}
               </p>
             </div>

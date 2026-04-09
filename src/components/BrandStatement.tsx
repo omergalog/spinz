@@ -181,13 +181,13 @@ export default function BrandStatement() {
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ duration: 1, delay: 0.2 }}
-          className="hidden md:flex min-w-0 items-start justify-center"
-          style={{ overflow: 'hidden', backgroundColor: '#F5F2EC' }}
+          className="hidden md:flex min-w-0 items-center justify-center"
+          style={{ overflow: 'hidden', backgroundColor: '#F5F2EC', maxHeight: '520px' }}
         >
           <img
             src="/assets/brand-bike.jpg"
             alt="Spinz bike"
-            style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
             onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
           />
         </motion.div>

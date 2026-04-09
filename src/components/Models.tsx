@@ -142,7 +142,7 @@ function ModelCard({ model, index, outOfStock, salePrice }: { model: typeof mode
                     </span>
                     {' '}₪
                   </span>
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', fontWeight: 700, color: '#FF4444', backgroundColor: '#FF444422', padding: '2px 6px', borderRadius: '4px' }}>
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', fontWeight: 700, color: '#FF4444', backgroundColor: '#2A2A2A', border: '1px solid #3A3A3A', padding: '2px 6px', borderRadius: '4px' }}>
                     {Math.round((1 - salePrice / model.price) * 100)}% הנחה
                   </span>
                 </div>

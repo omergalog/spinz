@@ -276,7 +276,7 @@ export default function Models() {
                 transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1], delay: 0.08 }}
                 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(38px, 4.5vw, 60px)', color: DARK, letterSpacing: '-0.01em', lineHeight: 1.05, margin: 0 }}
               >
-                בחר את האופניים שלך
+                בחר את ה-Spinz שלך
               </motion.h1>
             </div>
             <motion.div
@@ -319,7 +319,7 @@ export default function Models() {
                 transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1], delay: 0.08 }}
                 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(28px, 8vw, 40px)', color: DARK, letterSpacing: '-0.01em', margin: 0 }}
               >
-                בחר את האופניים שלך
+                בחר את ה-Spinz שלך
               </motion.h2>
             </div>
           </div>

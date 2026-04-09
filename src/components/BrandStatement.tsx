@@ -135,7 +135,7 @@ export default function BrandStatement() {
           </div>
 
           {/* Service items — 2-col on both mobile and desktop */}
-          <div className="grid grid-cols-2 gap-4 md:gap-6 mt-5 md:mt-8">
+          <div className="grid grid-cols-2 gap-4 md:gap-x-16 md:gap-y-6 mt-5 md:mt-8">
             {services.map(({ num, title, body }, i) => (
               <motion.div
                 key={num}

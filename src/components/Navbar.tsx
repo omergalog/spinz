@@ -9,7 +9,7 @@ const GOLD  = '#C9A870';
 
 const navLinks = [
   { label: 'עלינו',  href: '#why-spinz' },
-  { label: 'מודלים', href: '#models'    },
+  { label: 'דגמים', href: '#models'    },
   { label: 'גלריה',  href: '#gallery'   },
 ];
 
@@ -120,7 +120,7 @@ export default function Navbar() {
                 el.style.transform = 'translateY(0)';
               }}
             >
-              בואו נדבר
+              Let's Talk
             </a>
 
             {/* Cart button */}
@@ -219,7 +219,7 @@ export default function Navbar() {
                   textDecoration: 'none',
                 }}
               >
-                בואו נדבר
+                Let's Talk
               </a>
             </div>
           </motion.div>

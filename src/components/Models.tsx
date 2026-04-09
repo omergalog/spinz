@@ -59,7 +59,7 @@ function ModelCard({ model, index, outOfStock, salePrice }: { model: typeof mode
           animate={{ scale: hovered ? 1.06 : 1 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           className="w-[88%] h-[88%] md:w-[88%] md:h-[88%] max-md:w-full max-md:h-full"
-          style={{ objectFit: 'contain' }}
+          style={{ objectFit: 'contain', opacity: outOfStock ? 0.6 : 1, transition: 'opacity 0.3s' }}
           loading="lazy"
           onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
         />
@@ -120,10 +120,10 @@ function ModelCard({ model, index, outOfStock, salePrice }: { model: typeof mode
         className="sm:px-6"
       >
         <div className="min-w-0">
-          <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(18px, 4.5vw, 26px)', color: outOfStock ? '#555' : '#EDEBE6', letterSpacing: '0', margin: 0, lineHeight: 1 }}>
+          <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(18px, 4.5vw, 26px)', color: outOfStock ? '#888' : '#EDEBE6', letterSpacing: '0', margin: 0, lineHeight: 1 }}>
             {model.name}
           </h3>
-          <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: outOfStock ? '#444' : '#FFFFFF', margin: '4px 0 0' }}>
+          <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: outOfStock ? '#666' : '#FFFFFF', margin: '4px 0 0' }}>
             {model.tagline}
           </p>
         </div>

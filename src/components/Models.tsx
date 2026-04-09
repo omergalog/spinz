@@ -291,8 +291,7 @@ export default function Models() {
               transition={{ duration: 0.7, delay: 0.5 }}
               style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', color: '#666', lineHeight: 1.7, margin: 0 }}
             >
-              אנחנו מתמחים באופניי עיר סינגל ספיד, מבוצעים בתהליך שקוף, מדויק ומושלם.
-              התוצאה: אופניים שנראים כמו פסל ורוכבים כמו חלום.
+              סינגל ספיד אורבני נקי, בלי פשרות על עיצוב ובלי אותיות קטנות. שלדה שחותכת את העיר, ועיצוב שאי אפשר להתעלם ממנו.
             </motion.p>
           </div>
         </div>

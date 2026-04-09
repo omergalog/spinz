@@ -128,17 +128,14 @@ function ModelCard({ model, index, outOfStock, salePrice }: { model: typeof mode
           <div className="hidden md:block" style={{ width: '1px', height: '30px', backgroundColor: '#2A2A2A' }} />
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '3px' }}>
             {salePrice && !outOfStock ? (
-              <>
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '17px', fontWeight: 700, color: '#EDEBE6', textDecoration: 'line-through', textDecorationColor: '#FF4444', lineHeight: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 600, color: '#999', textDecoration: 'line-through', textDecorationColor: '#FF4444', textDecorationThickness: '2px', lineHeight: 1 }}>
                   {formatPrice(model.price)}
                 </span>
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '22px', fontWeight: 800, color: GOLD, lineHeight: 1 }}>
-                    {formatPrice(salePrice)}
-                  </span>
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '9px', color: GOLD, letterSpacing: '0.1em', opacity: 0.8 }}>מבצע</span>
-                </div>
-              </>
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '22px', fontWeight: 800, color: GOLD, lineHeight: 1 }}>
+                  {formatPrice(salePrice)}
+                </span>
+              </div>
             ) : (
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '5px' }}>
                 <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', fontWeight: 700, color: outOfStock ? '#555' : GOLD }}>

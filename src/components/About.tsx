@@ -117,19 +117,6 @@ export default function About() {
             transition={{ duration: 0.8, delay: 0.2 }}
             style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
           >
-            <img
-              src="/assets/logo.png"
-              alt="SPINZ"
-              style={{
-                height: '48px',
-                width: 'auto',
-                maxWidth: '240px',
-                objectFit: 'contain',
-                filter: 'invert(1) brightness(2)',
-                opacity: 0.9,
-              }}
-            />
-
             <div
               style={{
                 borderRight: `4px solid ${GOLD}`,

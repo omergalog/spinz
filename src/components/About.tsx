@@ -237,7 +237,7 @@ export default function About() {
                 letterSpacing: '0.15em',
                 border: 'none',
                 borderBottom: `2px solid ${GOLD}`,
-                alignSelf: 'flex-start',
+                alignSelf: 'center',
                 cursor: 'pointer',
                 transition: 'opacity 0.2s',
               }}

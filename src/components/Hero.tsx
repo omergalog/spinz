@@ -115,7 +115,7 @@ export default function Hero() {
               el.style.transform = 'translateY(0)';
             }}
           >
-            גלה מודלים
+            לכל הדגמים
           </a>
 
           {/* Scroll indicator */}

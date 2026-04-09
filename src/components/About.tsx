@@ -64,7 +64,7 @@ export default function About() {
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: '36px',
           }}
-          className="block md:grid mb-10 md:mb-16"
+          className="block md:grid mb-6 md:mb-10"
         >
           <div style={{ gridColumn: 'span 3' }}>
             <motion.h5

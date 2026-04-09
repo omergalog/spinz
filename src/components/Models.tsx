@@ -14,7 +14,7 @@ function formatPrice(n: number) {
   return `₪${n.toLocaleString('he-IL')}`;
 }
 
-function ModelCard({ model, index, outOfStock }: { model: typeof models[number]; index: number; outOfStock: boolean }) {
+function ModelCard({ model, index, outOfStock, salePrice }: { model: typeof models[number]; index: number; outOfStock: boolean; salePrice?: number }) {
   const [hovered, setHovered] = useState(false);
   const [added, setAdded] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -24,7 +24,8 @@ function ModelCard({ model, index, outOfStock }: { model: typeof models[number];
   const handleAddToCart = (e: React.MouseEvent) => {
     if (outOfStock) return;
     e.stopPropagation();
-    addItem(model);
+    const modelToAdd = salePrice ? { ...model, price: salePrice } : model;
+    addItem(modelToAdd);
     setAdded(true);
     setHovered(true);
     setTimeout(() => setAdded(false), 2000);
@@ -125,16 +126,34 @@ function ModelCard({ model, index, outOfStock }: { model: typeof models[number];
         </div>
         <div className="flex flex-col items-center gap-2 md:flex-row md:items-center md:gap-[14px]">
           <div className="hidden md:block" style={{ width: '1px', height: '30px', backgroundColor: '#2A2A2A' }} />
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '5px' }}>
-            <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', fontWeight: 700, color: outOfStock ? '#555' : GOLD }}>
-              {formatPrice(model.price)}
-            </span>
-            <span className="md:hidden" style={{ fontFamily: "'Heebo', sans-serif", fontSize: '8px', color: outOfStock ? '#444' : '#FFFFFF', letterSpacing: '0.1em' }}>
-              מחיר
-            </span>
-            <p className="hidden md:block" style={{ fontFamily: "'Heebo'", fontSize: '9px', color: outOfStock ? '#444' : '#FFFFFF', margin: '2px 0 0', letterSpacing: '0.1em' }}>
-              מחיר
-            </p>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
+            {salePrice && !outOfStock ? (
+              <>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', fontWeight: 600, color: '#FF6B6B', backgroundColor: '#FF6B6B22', padding: '1px 6px', borderRadius: '3px', letterSpacing: '0.05em' }}>
+                    -{Math.round((1 - salePrice / model.price) * 100)}%
+                  </span>
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#555', textDecoration: 'line-through' }}>
+                    {formatPrice(model.price)}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '20px', fontWeight: 800, color: GOLD }}>
+                    {formatPrice(salePrice)}
+                  </span>
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '9px', color: '#FFFFFF', letterSpacing: '0.1em' }}>מחיר מבצע</span>
+                </div>
+              </>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '5px' }}>
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', fontWeight: 700, color: outOfStock ? '#555' : GOLD }}>
+                  {formatPrice(model.price)}
+                </span>
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '9px', color: outOfStock ? '#444' : '#FFFFFF', letterSpacing: '0.1em' }}>
+                  מחיר
+                </span>
+              </div>
+            )}
           </div>
           <div className="hidden md:block" style={{ width: '1px', height: '30px', backgroundColor: '#2A2A2A' }} />
           <div style={{ position: 'relative' }}>
@@ -212,18 +231,22 @@ export default function Models() {
   const mobileInView = useInView(mobileHeaderRef, { once: true, margin: '-20px' });
   const [stockMap, setStockMap] = useState<Record<string, number>>({});
   const [priceMap, setPriceMap] = useState<Record<string, number>>({});
+  const [salePriceMap, setSalePriceMap] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    supabase.from('products').select('name, stock, price').then(({ data }) => {
+    supabase.from('products').select('name, stock, price, sale_price').then(({ data }) => {
       if (!data) return;
       const stocks: Record<string, number> = {};
       const prices: Record<string, number> = {};
-      data.forEach(p => {
+      const salePrices: Record<string, number> = {};
+      data.forEach((p: { name: string; stock: number; price: number; sale_price: number | null }) => {
         stocks[p.name.toUpperCase()] = p.stock;
         if (p.price) prices[p.name.toUpperCase()] = p.price;
+        if (p.sale_price) salePrices[p.name.toUpperCase()] = p.sale_price;
       });
       setStockMap(stocks);
       setPriceMap(prices);
+      setSalePriceMap(salePrices);
     });
   }, []);
 
@@ -304,8 +327,9 @@ export default function Models() {
             const stock = stockMap[key];
             const outOfStock = stock !== undefined && stock === 0;
             const livePrice = priceMap[key];
-            const modelWithPrice = livePrice ? { ...model, price: livePrice } : model;
-            return <ModelCard key={model.id} model={modelWithPrice} index={i} outOfStock={outOfStock} />;
+            const liveSalePrice = salePriceMap[key];
+            const modelWithPrice = { ...model, price: livePrice || model.price };
+            return <ModelCard key={model.id} model={modelWithPrice} index={i} outOfStock={outOfStock} salePrice={liveSalePrice} />;
           })}
         </div>
       </div>

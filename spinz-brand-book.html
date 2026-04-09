@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spinz — ספר מותג</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --dark:    #1C1C1C;
+      --beige:   #F5F2EC;
+      --gold:    #C9A870;
+      --gold2:   #B8933A;
+      --text:    #EDEBE6;
+      --muted:   #D0CEC9;
+      --border-dark: #2A2A2A;
+      --border-light: #E2DED8;
+      --white:   #FFFFFF;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #111;
+      color: var(--text);
+      font-family: 'Heebo', sans-serif;
+      direction: rtl;
+    }
+
+    @media print {
+      body { background: #111 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .page {
+        page-break-after: always;
+        break-after: page;
+        page-break-inside: avoid;
+        break-inside: avoid;
+        overflow: hidden;
+        max-height: 297mm;
+      }
+      .no-break { page-break-inside: avoid; break-inside: avoid; }
+      .inner-dark, .inner-beige, .cover, .back-cover {
+        max-height: 297mm;
+        overflow: hidden;
+      }
+    }
+
+    /* ── PAGE WRAPPER ── */
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto 2px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ════════════════════════════════
+       COVER
+    ════════════════════════════════ */
+    .cover {
+      background: var(--dark);
+      min-height: 297mm;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover-accent-line {
+      position: absolute;
+      top: 0; right: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--gold);
+    }
+
+    .cover-body {
+      padding: 72px 64px 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .cover-eyebrow {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 56px;
+    }
+
+    .cover-title {
+      font-family: 'Heebo', sans-serif;
+      font-weight: 800;
+      font-size: 120px;
+      line-height: 0.92;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .cover-title span { color: var(--gold); }
+
+    .cover-sub {
+      margin-top: 32px;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    .cover-divider {
+      margin-top: 64px;
+      height: 1px;
+      background: var(--border-dark);
+    }
+
+    .cover-footer {
+      padding: 32px 64px 64px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .cover-footer-label {
+      font-size: 11px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .cover-footer-year {
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      color: #888;
+    }
+
+    /* ════════════════════════════════
+       INNER DARK PAGE
+    ════════════════════════════════ */
+    .inner-dark {
+      background: var(--dark);
+      min-height: 297mm;
+      padding: 56px 64px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    /* ════════════════════════════════
+       INNER BEIGE PAGE
+    ════════════════════════════════ */
+    .inner-beige {
+      background: var(--beige);
+      min-height: 297mm;
+      padding: 56px 64px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    /* ── PAGE HEADER ── */
+    .ph {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-dark);
+    }
+    .inner-beige .ph { border-bottom-color: var(--border-light); }
+
+    .ph-brand {
+      font-family: 'Heebo', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: 0.15em;
+      color: var(--gold);
+    }
+    .inner-beige .ph-brand { color: var(--gold2); }
+
+    .ph-section {
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── SECTION HEADING ── */
+    .eyebrow {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    .inner-beige .eyebrow { color: var(--gold2); }
+
+    .heading {
+      font-family: 'Heebo', sans-serif;
+      font-weight: 800;
+      font-size: 56px;
+      line-height: 1;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 28px;
+    }
+    .inner-beige .heading { color: var(--dark); }
+
+    .heading.sm { font-size: 36px; }
+
+    /* ── BODY TEXT ── */
+    .body {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.85;
+      color: var(--muted);
+      max-width: 520px;
+    }
+    .inner-beige .body { color: #555; }
+
+    .body strong { font-weight: 700; color: var(--text); }
+    .inner-beige .body strong { color: var(--dark); }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: var(--border-dark);
+      border: none;
+    }
+    .inner-beige .divider { background: var(--border-light); }
+
+    /* ── QUOTE ── */
+    .quote {
+      border-right: 2px solid var(--gold);
+      padding: 20px 28px;
+    }
+    .inner-beige .quote { border-right-color: var(--gold2); background: rgba(201,168,112,0.06); }
+
+    .quote p {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.5;
+      color: var(--text);
+    }
+    .inner-beige .quote p { color: var(--dark); }
+
+    .quote-attr {
+      margin-top: 10px;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* ── 2-COL ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+    }
+
+    /* ── TABLE OF CONTENTS ── */
+    .toc-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--border-dark);
+    }
+    .toc-row:last-child { border-bottom: none; }
+
+    .toc-num {
+      display: none;
+    }
+
+    .toc-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text);
+      flex: 1;
+    }
+
+    .toc-pg {
+      font-family: 'Heebo', sans-serif;
+      font-weight: 800;
+      font-size: 24px;
+      color: #666;
+    }
+
+    /* ── VALUE CARDS ── */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px;
+      background: var(--border-dark);
+    }
+    .inner-beige .grid-3 { background: var(--border-light); }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border-dark);
+    }
+    .inner-beige .grid-2 { background: var(--border-light); }
+
+    .val-card {
+      background: var(--dark);
+      padding: 28px 24px;
+    }
+    .inner-beige .val-card { background: var(--beige); }
+
+    .val-card-num {
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    .inner-beige .val-card-num { color: var(--gold2); }
+
+    .val-card-title {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .inner-beige .val-card-title { color: var(--dark); }
+
+    .val-card-body {
+      font-size: 13px;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+
+    /* ── TONE EXAMPLES ── */
+    .tone-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border-dark);
+      margin-bottom: 1px;
+    }
+
+    .tone-no {
+      background: var(--dark);
+      padding: 20px 24px;
+    }
+
+    .tone-yes {
+      background: var(--dark);
+      padding: 20px 24px;
+      border: 1px solid var(--gold);
+    }
+
+    .tone-pair + .tone-pair .tone-yes {
+      border-top: none;
+    }
+
+    .tone-tag {
+      font-size: 9px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .tone-no .tone-tag { color: #888; }
+    .tone-yes .tone-tag { color: var(--gold); }
+
+    .tone-no p {
+      font-size: 14px;
+      color: #888;
+      text-decoration: line-through;
+      text-decoration-color: #555;
+    }
+
+    .tone-yes p {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* ── COLOR SWATCHES ── */
+    .swatch-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border-dark);
+    }
+
+    .swatch {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .swatch-color { height: 80px; }
+
+    .swatch-info {
+      background: var(--dark);
+      padding: 14px 16px;
+    }
+
+    .swatch-name {
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--text);
+      margin-bottom: 3px;
+      letter-spacing: 0.05em;
+    }
+
+    .swatch-hex {
+      font-size: 11px;
+      color: var(--muted);
+      font-family: monospace;
+      letter-spacing: 0.05em;
+      direction: ltr;
+      text-align: left;
+    }
+
+    .swatch-role {
+      font-size: 10px;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    /* ── TYPOGRAPHY SPECIMEN ── */
+    .type-block {
+      padding: 32px;
+      background: var(--dark);
+      border: 1px solid var(--border-dark);
+    }
+
+    .type-label {
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    /* ── LOGO BOXES ── */
+    .logo-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border-dark);
+    }
+
+    .logo-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 32px;
+    }
+
+    .logo-box img { max-width: 220px; height: auto; }
+
+    /* ── MODEL CARDS ── */
+    .model-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px;
+      background: var(--border-light);
+    }
+
+    .model-card {
+      background: var(--beige);
+    }
+
+    .model-accent { height: 3px; }
+
+    .model-body {
+      padding: 20px;
+    }
+
+    .model-name {
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--dark);
+      letter-spacing: -0.01em;
+      margin-bottom: 4px;
+    }
+
+    .model-tagline {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 16px;
+    }
+
+    .model-spec {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+
+    .model-spec strong { color: var(--dark); font-weight: 700; }
+
+    /* ── TAGLINES ── */
+    .tagline-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--border-light);
+    }
+
+    .tagline-item {
+      background: var(--beige);
+      padding: 20px 24px;
+      display: flex;
+      align-items: baseline;
+      gap: 20px;
+    }
+
+    .tagline-num {
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      color: var(--gold2);
+      flex-shrink: 0;
+    }
+
+    .tagline-text {
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--dark);
+      letter-spacing: -0.01em;
+    }
+
+    /* ── PAGE FOOTER ── */
+    .pf {
+      margin-top: auto;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-dark);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .inner-beige .pf { border-top-color: var(--border-light); }
+
+    .pf-brand {
+      font-weight: 800;
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      color: #666;
+    }
+    .inner-beige .pf-brand { color: #bbb; }
+
+    .pf-note {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: #666;
+    }
+    .inner-beige .pf-note { color: #bbb; }
+
+    /* ── BACK COVER ── */
+    .back-cover {
+      background: var(--beige);
+      min-height: 297mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 0;
+      position: relative;
+    }
+
+    .back-cover-accent {
+      position: absolute;
+      top: 0; right: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--gold2);
+    }
+
+    .back-cover-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 72px 64px;
+    }
+
+    .back-cover-heading {
+      font-weight: 800;
+      font-size: 80px;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      color: var(--dark);
+    }
+
+    .back-cover-heading span { color: var(--gold2); }
+
+    .back-cover-sub {
+      margin-top: 32px;
+      font-size: 13px;
+      font-weight: 300;
+      color: #888;
+      letter-spacing: 0.05em;
+    }
+
+    .back-cover-footer {
+      padding: 32px 64px;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .back-cover-brand {
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.2em;
+      color: var(--dark);
+    }
+
+    .back-cover-note {
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      color: #888;
+    }
+
+    /* ── PERSONA TABLE ── */
+    .persona-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border-dark);
+      margin-bottom: 1px;
+    }
+
+    .persona-cell {
+      background: var(--dark);
+      padding: 20px 24px;
+    }
+
+    .persona-label {
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .persona-value {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--text);
+    }
+
+    .persona-quote-row {
+      background: var(--dark);
+      padding: 24px;
+      border-top: 1px solid var(--border-dark);
+    }
+
+    .persona-quote-row p {
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--gold);
+    }
+
+    /* ── TAGS ── */
+    .tag {
+      display: inline-block;
+      border: 1px solid var(--border-dark);
+      padding: 5px 14px;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      margin-left: 6px;
+      margin-bottom: 6px;
+    }
+
+    .tag.gold {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    /* ── DIFF TABLE ── */
+    .diff-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border-dark);
+    }
+
+    .diff-old {
+      background: var(--dark);
+      padding: 24px;
+    }
+
+    .diff-new {
+      background: var(--dark);
+      padding: 24px;
+      border: 1px solid var(--gold);
+    }
+
+    .diff-title {
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .diff-old .diff-title { color: #888; }
+    .diff-new .diff-title { color: var(--gold); }
+
+    .diff-item {
+      font-size: 13px;
+      color: #999;
+      margin-bottom: 6px;
+    }
+
+    .diff-new .diff-item { color: var(--muted); }
+
+    /* ── LOGO RULES ── */
+    .rules-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border-dark);
+    }
+
+    .rule-cell {
+      background: var(--dark);
+      padding: 20px 24px;
+    }
+
+    .rule-cell-title {
+      font-size: 10px;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .rule-ok .rule-cell-title { color: var(--gold); }
+    .rule-no .rule-cell-title { color: #777; }
+
+    .rule-item {
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .rule-ok .rule-item { color: var(--muted); }
+    .rule-no .rule-item { color: #777; text-decoration: line-through; text-decoration-color: #555; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ PAGE 1 — COVER ═══════════════════════════════ -->
+<div class="page">
+  <div class="cover">
+    <div class="cover-accent-line"></div>
+
+    <div class="cover-body">
+      <div class="cover-eyebrow">Brand Book — ספר מותג</div>
+      <div class="cover-title">SPIN<span>Z</span><span style="color:var(--border-dark);">.</span></div>
+      <div class="cover-sub">אופני סינגל ספיד עירוניים — ישראל</div>
+      <div class="cover-divider"></div>
+    </div>
+
+    <div class="cover-footer">
+      <div class="cover-footer-label">זהות &nbsp;·&nbsp; קול &nbsp;·&nbsp; ערכים &nbsp;·&nbsp; עיצוב</div>
+      <div class="cover-footer-year">Brand Book — 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PAGE 2 — תוכן עניינים ═══════════════════════════════ -->
+<div class="page">
+  <div class="inner-dark">
+    <div class="ph">
+      <div class="ph-brand">SPINZ.</div>
+      <div class="ph-section">תוכן עניינים</div>
+    </div>
+
+    <div>
+      <div class="eyebrow">Index</div>
+      <div class="heading">מה בפנים</div>
+    </div>
+
+    <div style="flex:1;">
+      <div class="toc-row">
+        <span class="toc-num">01</span>
+        <span class="toc-title">סיפור המותג</span>
+        <span class="toc-pg">03</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-num">02</span>
+        <span class="toc-title">משימה וחזון</span>
+        <span class="toc-pg">04</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-num">03</span>
+        <span class="toc-title">קהל היעד</span>
+        <span class="toc-pg">05</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-num">04</span>
+        <span class="toc-title">מודל עסקי ותמחור</span>
+        <span class="toc-pg">06</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-num">05</span>
+        <span class="toc-title">ערכי ליבה</span>
+        <span class="toc-pg">07</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-num">06</span>
+        <span class="toc-title">טון דיבור</span>
+        <span class="toc-pg">08</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-num">07</span>
+        <span class="toc-title">לוגו ושימושים</span>
+        <span class="toc-pg">09</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-num">08</span>
+        <span class="toc-title">פלטת צבעים</span>
+        <span class="toc-pg">10</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-num">09</span>
+        <span class="toc-title">טיפוגרפיה</span>
+        <span class="toc-pg">11</span>
+      </div>
+      <div class="toc-row">
+        <span class="toc-num">10</span>
+        <span class="toc-title">הדגמים</span>
+        <span class="toc-pg">12</span>
+      </div>
+    </div>
+
+    <div class="pf">
+      <div class="pf-brand">SPINZ.</div>
+      <div class="pf-note">Brand Book — 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PAGE 3 — סיפור המותג ═══════════════════════════════ -->
+<div class="page">
+  <div class="inner-dark">
+    <div class="ph">
+      <div class="ph-brand">SPINZ.</div>
+      <div class="ph-section">03 — סיפור המותג</div>
+    </div>
+
+    <div>
+      <div class="eyebrow">Origin Story</div>
+      <div class="heading">איך זה התחיל</div>
+    </div>
+
+    <div class="body">
+      <p>
+        Spinz נולד מתוך פער פשוט שניצב בפנינו ברחובות: <strong>אין מותג ישראלי אמיתי לאופניים שנראים טוב.</strong> חסר מותג שמדבר אל הצעירים בגובה העיניים – כזה שמוכר קודם כל סטייל, ולא רק חתיכת ברזל.
+      </p>
+      <br/>
+      <p>
+        הכל התחיל משאלה אחת – מה אם אפשר להביא לתל אביב אופניים מעוצבים, כאלה שיסובבו ראשים ברחוב, ועדיין יהיו במחיר שסטודנט יכול להרשות לעצמו?
+      </p>
+      <br/>
+      <p>
+        ויש גם משהו אחר בסיפור. <strong>בעידן שבו כולם רוכבים על חשמלי</strong>, הבנו שיש קהל
+        שרוצה לחזור למשהו פשוט. להרגיש את הרחוב. לא להטעין סוללה.
+        לרכוב כמו פעם — רק עם design שמדבר 2026.
+      </p>
+    </div>
+
+    <div class="quote no-break">
+      <p>"אנחנו לא מוכרים אופניים. אנחנו מוכרים את הרגע שמישהו עוצר אותך ברחוב ושואל — וואו, מאיפה הם?"</p>
+      <div class="quote-attr">— הרוח מאחורי Spinz</div>
+    </div>
+
+    <div class="pf">
+      <div class="pf-brand">SPINZ.</div>
+      <div class="pf-note">Brand Book — 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PAGE 4 — משימה וחזון ═══════════════════════════════ -->
+<div class="page">
+  <div class="inner-dark">
+    <div class="ph">
+      <div class="ph-brand">SPINZ.</div>
+      <div class="ph-section">04 — משימה וחזון</div>
+    </div>
+
+    <div class="two-col" style="align-items:start;">
+      <div>
+        <div class="eyebrow">Mission</div>
+        <div class="heading sm">למה אנחנו קיימים</div>
+        <div class="body" style="font-size:14px;">
+          להפוך אופניים מעוצבים לנגישים עבור כל צעיר ישראלי שרוצה לרכוב על משהו שמושך מבטים.
+          <br/><br/>
+          Spinz הוא הגשר בין <strong>סטייל אמיתי</strong> למחיר שפוי.
+        </div>
+      </div>
+      <div>
+        <div class="eyebrow">Vision</div>
+        <div class="heading sm">לאן אנחנו הולכים</div>
+        <div class="body" style="font-size:14px;">
+          בעוד 3 שנים, כל תל אביבי יכיר את Spinz. לא מפרסומות – מהרחוב.
+          <br/><br/>
+          מותג שיוצר שיחה. מותג שצומח מהעדשה של הרוכבים שלו.
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div>
+      <div class="eyebrow" style="margin-bottom:16px;">הבידול שלנו</div>
+      <div class="diff-grid no-break">
+        <div class="diff-old">
+          <div class="diff-title">המתחרים הישנים</div>
+          <div class="diff-item">תקועים באופליין</div>
+          <div class="diff-item">רודפים אחרי לקוחות</div>
+          <div class="diff-item">מוצר גנרי, בלי זהות</div>
+          <div class="diff-item">מוכרים חתיכת ברזל</div>
+        </div>
+        <div class="diff-new">
+          <div class="diff-title">Spinz</div>
+          <div class="diff-item">נולדו לדיגיטל</div>
+          <div class="diff-item">קהילה שמוכרת את עצמה</div>
+          <div class="diff-item">מותג עם אופי ושפה ייחודית</div>
+          <div class="diff-item">מוכרים סטייל ולייפסטייל</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pf">
+      <div class="pf-brand">SPINZ.</div>
+      <div class="pf-note">Brand Book — 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PAGE 5 — קהל היעד ═══════════════════════════════ -->
+<div class="page">
+  <div class="inner-dark">
+    <div class="ph">
+      <div class="ph-brand">SPINZ.</div>
+      <div class="ph-section">05 — קהל היעד</div>
+    </div>
+
+    <div>
+      <div class="eyebrow">Target Audience</div>
+      <div class="heading">מי הלקוח שלנו</div>
+    </div>
+
+    <div class="no-break">
+      <div class="persona-grid">
+        <div class="persona-cell">
+          <div class="persona-label">גיל</div>
+          <div class="persona-value">20 — 35</div>
+        </div>
+        <div class="persona-cell">
+          <div class="persona-label">מיקום</div>
+          <div class="persona-value">ת"א, ב"ש ומרכזים אורבניים</div>
+        </div>
+        <div class="persona-cell">
+          <div class="persona-label">סטטוס</div>
+          <div class="persona-value">סטודנט / בתחילת הקריירה</div>
+        </div>
+        <div class="persona-cell">
+          <div class="persona-label">מה הוא מחפש</div>
+          <div class="persona-value">לתפוס מבטים ברחוב</div>
+        </div>
+      </div>
+      <div class="persona-quote-row">
+        <p>"כולם ישאלו אותך מאיפה."</p>
+      </div>
+    </div>
+
+    <div>
+      <div class="eyebrow" style="margin-bottom:12px;">תחומי עניין</div>
+      <div>
+        <span class="tag gold">עיצוב ואסתטיקה</span>
+        <span class="tag gold">תרבות עירונית</span>
+        <span class="tag gold">Instagram / TikTok</span>
+        <span class="tag">Streetwear</span>
+        <span class="tag">סביבה ואקולוגיה</span>
+        <span class="tag">תנועה עצמאית בעיר</span>
+        <span class="tag">קפה, ברים, סצנה ת"א</span>
+      </div>
+    </div>
+
+    <div class="body" style="font-size:13px; margin-top:8px;">
+      הלקוח שלנו לא מחפש אופניים. הוא מחפש <strong>זהות</strong>. משהו שיגדיר אותו כשהוא רוכב בדיזנגוף. משהו שיגרום לאנשים לעצור ולשאול. Spinz מוכר בדיוק את הרגע הזה — ובמחיר שהוא יכול להרשות לעצמו.
+    </div>
+
+    <div class="pf">
+      <div class="pf-brand">SPINZ.</div>
+      <div class="pf-note">Brand Book — 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PAGE 6 — מודל עסקי ═══════════════════════════════ -->
+<div class="page">
+  <div class="inner-dark">
+    <div class="ph">
+      <div class="ph-brand">SPINZ.</div>
+      <div class="ph-section">06 — מודל עסקי ותמחור</div>
+    </div>
+
+    <div>
+      <div class="eyebrow">Business Model</div>
+      <div class="heading">למה המחיר שלנו שפוי</div>
+    </div>
+
+    <div class="body">
+      המתחרים משלמים על אולמות תצוגה, מתווכים, ועלויות תפעול מיושנות —
+      ומגלגלים את העלויות האלה ישר ללקוח.
+      אנחנו עובדים אחרת.
+    </div>
+
+    <div class="quote no-break">
+      <p>"משלמים על האופניים, לא על החנות ברוטשילד."</p>
+    </div>
+
+    <div class="grid-3 no-break">
+      <div class="val-card">
+        <div class="val-card-num">D2C</div>
+        <div class="val-card-title">ישירות ללקוח</div>
+        <div class="val-card-body">אנחנו מוכרים ישירות — בלי חנות פיזית, בלי מתווכים, בלי עלויות מיותרות. החיסכון עובר ישירות אליך.</div>
+      </div>
+      <div class="val-card">
+        <div class="val-card-num">נולדו לאונליין</div>
+        <div class="val-card-title">מודל רזה</div>
+        <div class="val-card-body">פעולות דיגיטליות, תפעול מינימלי, עלויות שיווק נמוכות. ככה שומרים על מחיר נגיש באמת.</div>
+      </div>
+      <div class="val-card">
+        <div class="val-card-num">המחיר</div>
+        <div class="val-card-title">תמורה מקסימלית</div>
+        <div class="val-card-body">לא "מחיר הוגן". המחיר הכי אטרקטיבי שאפשר להציע — בלי להתפשר על מילימטר של עיצוב ואיכות.</div>
+      </div>
+    </div>
+
+    <div class="diff-grid no-break">
+      <div class="diff-old">
+        <div class="diff-title">המתחרים</div>
+        <div class="diff-item">חנויות פיזיות יקרות</div>
+        <div class="diff-item">שרשרת מתווכים</div>
+        <div class="diff-item">מחיר שמממן את החנות שלהם</div>
+        <div class="diff-item">הלקוח משלם על הכל</div>
+      </div>
+      <div class="diff-new">
+        <div class="diff-title">Spinz</div>
+        <div class="diff-item">מכירה ישירה אונליין</div>
+        <div class="diff-item">אפס מתווכים</div>
+        <div class="diff-item">מחיר שנגיש לסטודנטים</div>
+        <div class="diff-item">משלמים על האופניים בלבד</div>
+      </div>
+    </div>
+
+    <div class="pf">
+      <div class="pf-brand">SPINZ.</div>
+      <div class="pf-note">Brand Book — 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PAGE 6 — ערכי ליבה ═══════════════════════════════ -->
+<div class="page">
+  <div class="inner-dark">
+    <div class="ph">
+      <div class="ph-brand">SPINZ.</div>
+      <div class="ph-section">07 — ערכי ליבה</div>
+    </div>
+
+    <div>
+      <div class="eyebrow">Core Values</div>
+      <div class="heading">מה שמנחה אותנו</div>
+    </div>
+
+    <div class="grid-3 no-break" style="flex:1;">
+      <div class="val-card">
+        <div class="val-card-num">01</div>
+        <div class="val-card-title">תופס עיניים</div>
+        <div class="val-card-body">כל מוצר שיוצא מ-Spinz חייב לגרום לאנשים להסתכל. אם זה לא מסובב ראשים ברחוב — זה לא Spinz.</div>
+      </div>
+      <div class="val-card">
+        <div class="val-card-num">02</div>
+        <div class="val-card-title">נגיש באמת</div>
+        <div class="val-card-body">סטייל לא אמור לעלות ביוקר. מחירים מהנמוכים בשוק — בלי שהסטודנט יצטרך להתפשר.</div>
+      </div>
+      <div class="val-card">
+        <div class="val-card-num">03</div>
+        <div class="val-card-title">פשוט וטהור</div>
+        <div class="val-card-body">סינגל ספיד זו פילוסופיה. פחות מנגנונים, יותר חופש. חזרה לרכיבה האמיתית.</div>
+      </div>
+      <div class="val-card">
+        <div class="val-card-num">04</div>
+        <div class="val-card-title">נולדו לדיגיטל</div>
+        <div class="val-card-body">בעוד המתחרים עובדים ישן — אנחנו בונים קהילה. ככה מותג גדל ב-2026.</div>
+      </div>
+      <div class="val-card">
+        <div class="val-card-num">05</div>
+        <div class="val-card-title">ישראלי בנשמה</div>
+        <div class="val-card-body">Spinz לא מנסה להיות אירופאי. אנחנו מדברים עברית ומכירים את הרחוב הישראלי.</div>
+      </div>
+      <div class="val-card">
+        <div class="val-card-num">06</div>
+        <div class="val-card-title">קהילה קודם</div>
+        <div class="val-card-body">כל מי שרוכב על Spinz הופך לשגריר שלו. האופניים עצמם הם הפרסומת הכי טובה ברחוב.</div>
+      </div>
+    </div>
+
+    <div class="pf">
+      <div class="pf-brand">SPINZ.</div>
+      <div class="pf-note">Brand Book — 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PAGE 7 — טון דיבור ═══════════════════════════════ -->
+<div class="page">
+  <div class="inner-dark">
+    <div class="ph">
+      <div class="ph-brand">SPINZ.</div>
+      <div class="ph-section">08 — טון דיבור</div>
+    </div>
+
+    <div>
+      <div class="eyebrow">Tone of Voice</div>
+      <div class="heading">איך Spinz מדבר</div>
+    </div>
+
+    <div class="body" style="margin-bottom:8px;">
+      Spinz מדבר כמו <strong>חבר שמכיר את הרחוב</strong> — לא כמו מותג שמנסה למכור.
+      ישיר, בוטח, קצת חצוף. עברית ראשית עם אנגלית שנכנסת טבעי.
+    </div>
+
+    <div class="no-break" style="display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border-dark);">
+      <!-- עמודת לא Spinz -->
+      <div style="display:flex; flex-direction:column; gap:1px; background:var(--border-dark);">
+        <div class="tone-no" style="flex:1;">
+          <div class="tone-tag">❌ לא Spinz</div>
+          <p>"אופניים איכותיים במחיר משתלם לאורבן סטייל"</p>
+        </div>
+        <div class="tone-no" style="flex:1;">
+          <div class="tone-tag">❌ לא Spinz</div>
+          <p>"עיצוב מרשים המתאים לרחובות העיר המודרנית"</p>
+        </div>
+        <div class="tone-no" style="flex:1;">
+          <div class="tone-tag">❌ לא Spinz</div>
+          <p>"מוצר ידידותי לסביבה לקהל הצעיר"</p>
+        </div>
+      </div>
+      <!-- עמודת Spinz — קוביה אחת עם מסגרת זהב -->
+      <div style="border:1px solid var(--gold); display:flex; flex-direction:column;">
+        <div class="tone-yes" style="flex:1; border:none; border-bottom:1px solid var(--border-dark);">
+          <div class="tone-tag">✓ Spinz</div>
+          <p>"כולם ישאלו אותך מאיפה."</p>
+        </div>
+        <div class="tone-yes" style="flex:1; border:none; border-bottom:1px solid var(--border-dark);">
+          <div class="tone-tag">✓ Spinz</div>
+          <p>"העיר לא עוצרת. גם אתה לא."</p>
+        </div>
+        <div class="tone-yes" style="flex:1; border:none;">
+          <div class="tone-tag">✓ Spinz</div>
+          <p>"תיראה טוב. תרגיש טוב. וסע."</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2 no-break">
+      <div class="val-card">
+        <div class="val-card-num">כלל 01</div>
+        <div class="val-card-title">גוף שני תמיד</div>
+        <div class="val-card-body">"אתה", "תרכב", "תיראה" — פונים ישירות לאדם. לא "הלקוח שלנו".</div>
+      </div>
+      <div class="val-card">
+        <div class="val-card-num">כלל 02</div>
+        <div class="val-card-title">משפטים קצרים</div>
+        <div class="val-card-body">3-6 מילים לכל משפט. נקודה. משפט חדש. ללא ג'רגון שיווקי.</div>
+      </div>
+      <div class="val-card">
+        <div class="val-card-num">כלל 03</div>
+        <div class="val-card-title">עברית + אנגלית</div>
+        <div class="val-card-body">"הלוק של ה-street" — שילוב טבעי. לא מתורגם. לא מאולץ.</div>
+      </div>
+      <div class="val-card">
+        <div class="val-card-num">כלל 04</div>
+        <div class="val-card-title">ביטחון — לא יהירות</div>
+        <div class="val-card-body">Spinz לא מדבר רע על אחרים. פשוט מצהיר מי הוא.</div>
+      </div>
+    </div>
+
+    <div class="pf">
+      <div class="pf-brand">SPINZ.</div>
+      <div class="pf-note">Brand Book — 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PAGE 8 — לוגו ═══════════════════════════════ -->
+<div class="page">
+  <div class="inner-dark">
+    <div class="ph">
+      <div class="ph-brand">SPINZ.</div>
+      <div class="ph-section">09 — לוגו</div>
+    </div>
+
+    <div>
+      <div class="eyebrow">The Hidden Geometry — Designed with Intention</div>
+      <div class="heading">הלוגו</div>
+    </div>
+
+    <div class="logo-pair no-break">
+      <div class="logo-box" style="background:var(--dark); border:1px solid var(--border-dark);">
+        <div>
+          <div style="font-size:10px; letter-spacing:0.35em; color:var(--muted); margin-bottom:20px; text-align:center; text-transform:uppercase;">על רקע כהה</div>
+          <img src="public/assets/logo.png" alt="Spinz Logo" style="filter:brightness(10) sepia(1) saturate(0.5) hue-rotate(10deg) brightness(2);" />
+        </div>
+      </div>
+      <div class="logo-box" style="background:var(--beige);">
+        <div>
+          <div style="font-size:10px; letter-spacing:0.35em; color:#888; margin-bottom:20px; text-align:center; text-transform:uppercase;">על רקע בהיר</div>
+          <img src="public/assets/logo.png" alt="Spinz Logo" />
+        </div>
+      </div>
+    </div>
+
+    <div class="body" style="font-size:13px;">
+      הלוגו בנוי מ<strong>תנועה סיבובית אחת רציפה</strong> — כמחווה ישירה לגלגלי האופניים.
+      הצורה אינה אקראית; בתוך המבנה המינימליסטי מסתתרות האותיות <strong>S, Z</strong> — כרמז עדין לשם SPINZ.
+      <br/><br/>
+      האותיות נטמעות בתוך התנועה, באופן כמעט בלתי מורגש במבט ראשון — אך בולטות וברורות למי שמתבונן לעומק.
+      כך נוצר לוגו שמרגיש פשוט, אך טומן בתוכו משמעות.
+    </div>
+
+    <div class="rules-grid no-break">
+      <div class="rule-cell rule-ok">
+        <div class="rule-cell-title">מה מותר ✓</div>
+        <div class="rule-item">לבן על רקע כהה</div>
+        <div class="rule-item">כהה על רקע בהיר / קרם</div>
+        <div class="rule-item">זהב (#C9A870) על כהה</div>
+        <div class="rule-item">שחור מלא</div>
+      </div>
+      <div class="rule-cell rule-no">
+        <div class="rule-cell-title">מה אסור ✗</div>
+        <div class="rule-item">לשנות פרופורציות</div>
+        <div class="rule-item">להוסיף צלליות או אפקטים</div>
+        <div class="rule-item">על רקע צבעוני</div>
+        <div class="rule-item">לסובב את הלוגו</div>
+      </div>
+    </div>
+
+    <div class="pf">
+      <div class="pf-brand">SPINZ.</div>
+      <div class="pf-note">Brand Book — 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PAGE 9 — פלטת צבעים ═══════════════════════════════ -->
+<div class="page">
+  <div class="inner-dark">
+    <div class="ph">
+      <div class="ph-brand">SPINZ.</div>
+      <div class="ph-section">10 — פלטת צבעים</div>
+    </div>
+
+    <div>
+      <div class="eyebrow">Color Palette</div>
+      <div class="heading">הצבעים שלנו</div>
+    </div>
+
+    <div class="swatch-row no-break">
+      <div class="swatch">
+        <div class="swatch-color" style="background:#1C1C1C;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Charcoal Dark</div>
+          <div class="swatch-hex">#1C1C1C</div>
+          <div class="swatch-role">רקע ראשי — Hero, Footer</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#C9A870;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Warm Gold</div>
+          <div class="swatch-hex">#C9A870</div>
+          <div class="swatch-role">Accent ראשי — CTA, הדגשות</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#F5F2EC;"></div>
+        <div class="swatch-info" style="background:#1a1814;">
+          <div class="swatch-name">Warm Cream</div>
+          <div class="swatch-hex">#F5F2EC</div>
+          <div class="swatch-role">רקע משני — סקשנים בהירים</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#EDEBE6;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Off White</div>
+          <div class="swatch-hex">#EDEBE6</div>
+          <div class="swatch-role">טקסט ראשי על כהה</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#888888;"></div>
+        <div class="swatch-info">
+          <div class="swatch-name">Muted Gray</div>
+          <div class="swatch-hex">#888888</div>
+          <div class="swatch-role">טקסט משני, תיאורים</div>
+        </div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:#E2DED8;"></div>
+        <div class="swatch-info" style="background:#1a1814;">
+          <div class="swatch-name">Light Border</div>
+          <div class="swatch-hex">#E2DED8</div>
+          <div class="swatch-role">גבולות על רקע קרם</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="body" style="font-size:13px; margin-top:8px;">
+      <strong>הכלל:</strong> כהה או קרם — לא ביניהם. הזהב מדגיש. לעולם לא יותר מ-accent אחד בסקשן.
+      פלטה חמה ומינימלית — כמו האופניים עצמם.
+    </div>
+
+    <div class="pf">
+      <div class="pf-brand">SPINZ.</div>
+      <div class="pf-note">Brand Book — 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PAGE 10 — טיפוגרפיה ═══════════════════════════════ -->
+<div class="page">
+  <div class="inner-dark">
+    <div class="ph">
+      <div class="ph-brand">SPINZ.</div>
+      <div class="ph-section">11 — טיפוגרפיה</div>
+    </div>
+
+    <div>
+      <div class="eyebrow">Typography</div>
+      <div class="heading">הפונטים שלנו</div>
+    </div>
+
+    <div class="type-block no-break">
+      <div class="type-label">Display — כותרות ראשיות (לוגו, שמות מודלים)</div>
+      <div style="font-family:'Heebo', sans-serif; font-weight:800; font-size:80px; line-height:1; letter-spacing:0.01em; color:var(--text);">
+        SPINZ.
+      </div>
+      <div style="margin-top:12px; font-size:12px; color:var(--muted); letter-spacing:0.05em;">
+        A B C D E F G H I J K L M N O P Q R S T U V W X Y Z &nbsp;|&nbsp; 0 1 2 3 4 5 6 7 8 9
+      </div>
+      <div style="margin-top:10px; font-size:11px; color:#888;">
+        שימוש: שם המותג SPINZ, שמות מודלים — Heebo 800, אותיות גדולות
+      </div>
+    </div>
+
+    <div class="type-block no-break">
+      <div class="type-label">Primary — כותרות וטקסט עברי</div>
+      <div style="font-family:'Heebo', sans-serif; font-weight:800; font-size:64px; line-height:1; letter-spacing:-0.02em; color:var(--text);">
+        Heebo
+      </div>
+      <div style="font-family:'Heebo', sans-serif; font-weight:300; font-size:18px; line-height:1.8; color:var(--muted); margin-top:12px;">
+        א ב ג ד ה ו ז ח ט י כ ך ל מ ם נ ן ס ע פ ף צ ץ ק ר ש ת — Light 300 / Regular 400 / Bold 700 / Black 800
+      </div>
+      <div style="margin-top:10px; font-size:11px; color:#888;">
+        שימוש: כל הטקסט העברי, כותרות ראשיות, תיאורים, UI
+      </div>
+    </div>
+
+    <div class="grid-2 no-break">
+      <div class="val-card">
+        <div class="val-card-num">היררכיה</div>
+        <div class="val-card-body">
+          H1: Heebo 800 / clamp(38px–60px)<br/>
+          H2: Heebo 800 / clamp(26px–40px)<br/>
+          Body: Heebo 300–400 / 15-16px<br/>
+          Label: Heebo 500 / 10-11px / spacing
+        </div>
+      </div>
+      <div class="val-card">
+        <div class="val-card-num">כללים</div>
+        <div class="val-card-body">
+          מינימום 15px לטקסט גוף<br/>
+          Heebo 800 לשמות ולוגו<br/>
+          letter-spacing על labels תמיד<br/>
+          אף פעם לא italic בעברית
+        </div>
+      </div>
+    </div>
+
+    <div class="pf">
+      <div class="pf-brand">SPINZ.</div>
+      <div class="pf-note">Brand Book — 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PAGE 11 — הדגמים ═══════════════════════════════ -->
+<div class="page">
+  <div class="inner-beige">
+    <div class="ph">
+      <div class="ph-brand">SPINZ.</div>
+      <div class="ph-section">12 — הדגמים</div>
+    </div>
+
+    <div>
+      <div class="eyebrow">The Collection</div>
+      <div class="heading">הקולקציה</div>
+    </div>
+
+    <div class="body" style="font-size:14px;">
+      שלושה דגמים — שלוש אישיויות. כל אחד עם vibe משלו, אבל כולם מדברים את שפת Spinz.
+    </div>
+
+    <div class="model-grid no-break">
+      <div class="model-card">
+        <div class="model-accent" style="background:#C5C9B5;"></div>
+        <div style="display:flex; align-items:center; justify-content:center; background:#F5F2EC; padding:16px;">
+          <img src="public/assets/model-1.jpg" alt="STREET 01" style="width:100%; height:140px; object-fit:contain;" />
+        </div>
+        <div class="model-body">
+          <div class="model-name">STREET 01</div>
+          <div class="model-tagline">הקלאסיק של הרחוב</div>
+          <hr style="border:none; border-top:1px solid var(--border-light); margin:12px 0;" />
+          <div class="model-spec"><strong>פריים</strong> — Chromoly Steel</div>
+          <div class="model-spec"><strong>גלגלים</strong> — 700c</div>
+          <div class="model-spec"><strong>צבע</strong> — Army Green / Tan</div>
+        </div>
+      </div>
+      <div class="model-card">
+        <div class="model-accent" style="background:#8B2020;"></div>
+        <div style="display:flex; align-items:center; justify-content:center; background:#F5F2EC; padding:16px;">
+          <img src="public/assets/model-2.jpg" alt="URBAN X" style="width:100%; height:140px; object-fit:contain;" />
+        </div>
+        <div class="model-body">
+          <div class="model-name">URBAN X</div>
+          <div class="model-tagline">אגרסיבי. קל. מהיר.</div>
+          <hr style="border:none; border-top:1px solid var(--border-light); margin:12px 0;" />
+          <div class="model-spec"><strong>פריים</strong> — Butted Aluminum</div>
+          <div class="model-spec"><strong>גלגלים</strong> — 700c Deep-V</div>
+          <div class="model-spec"><strong>צבע</strong> — Burgundy / Gold</div>
+        </div>
+      </div>
+      <div class="model-card">
+        <div class="model-accent" style="background:#3A5CA0;"></div>
+        <div style="display:flex; align-items:center; justify-content:center; background:#F5F2EC; padding:16px;">
+          <img src="public/assets/model-3.jpg" alt="TRACK R" style="width:100%; height:140px; object-fit:contain;" />
+        </div>
+        <div class="model-body">
+          <div class="model-name">TRACK R</div>
+          <div class="model-tagline">נולד בפיסטה. גדל בעיר.</div>
+          <hr style="border:none; border-top:1px solid var(--border-light); margin:12px 0;" />
+          <div class="model-spec"><strong>פריים</strong> — Hi-Ten Track Geo</div>
+          <div class="model-spec"><strong>גלגלים</strong> — 700c Deep-V</div>
+          <div class="model-spec"><strong>צבע</strong> — Graphite / Electric Blue</div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="eyebrow" style="margin-bottom:12px;">סלוגנים מרכזיים</div>
+      <div class="tagline-list no-break">
+        <div class="tagline-item">
+          <span class="tagline-num">01</span>
+          <span class="tagline-text">כולם ישאלו אותך מאיפה.</span>
+        </div>
+        <div class="tagline-item">
+          <span class="tagline-num">02</span>
+          <span class="tagline-text">העיר לא עוצרת. גם אתה לא.</span>
+        </div>
+        <div class="tagline-item">
+          <span class="tagline-num">03</span>
+          <span class="tagline-text">תיראה טוב. תרגיש טוב. וסע.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pf">
+      <div class="pf-brand">SPINZ.</div>
+      <div class="pf-note">Brand Book — 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ PAGE 12 — BACK COVER ═══════════════════════════════ -->
+<div class="page">
+  <div class="back-cover">
+    <div class="back-cover-accent"></div>
+
+    <div class="back-cover-body">
+      <div style="font-size:10px; letter-spacing:0.4em; text-transform:uppercase; color:#888; margin-bottom:48px;">
+        Spinz — אופני סינגל ספיד עירוניים
+      </div>
+      <div class="back-cover-heading">
+        העיר לא<br/>
+        עוצרת.<br/>
+        <span>גם אתה לא.</span>
+      </div>
+      <div class="back-cover-sub">
+        משלמים על האופניים, לא על החנות ברוטשילד.
+      </div>
+    </div>
+
+    <div class="back-cover-footer">
+      <div class="back-cover-brand">SPINZ.</div>
+      <div class="back-cover-note">Brand Book 2026 — Built in Tel Aviv</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

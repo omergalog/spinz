@@ -126,22 +126,17 @@ function ModelCard({ model, index, outOfStock, salePrice }: { model: typeof mode
         </div>
         <div className="flex flex-col items-center gap-2 md:flex-row md:items-center md:gap-[14px]">
           <div className="hidden md:block" style={{ width: '1px', height: '30px', backgroundColor: '#2A2A2A' }} />
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '3px' }}>
             {salePrice && !outOfStock ? (
               <>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', fontWeight: 600, color: '#FF6B6B', backgroundColor: '#FF6B6B22', padding: '1px 6px', borderRadius: '3px', letterSpacing: '0.05em' }}>
-                    -{Math.round((1 - salePrice / model.price) * 100)}%
-                  </span>
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#555', textDecoration: 'line-through' }}>
-                    {formatPrice(model.price)}
-                  </span>
-                </div>
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '17px', fontWeight: 700, color: '#666', textDecoration: 'line-through', lineHeight: 1 }}>
+                  {formatPrice(model.price)}
+                </span>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '20px', fontWeight: 800, color: GOLD }}>
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '22px', fontWeight: 800, color: GOLD, lineHeight: 1 }}>
                     {formatPrice(salePrice)}
                   </span>
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '9px', color: '#FFFFFF', letterSpacing: '0.1em' }}>מחיר מבצע</span>
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '9px', color: GOLD, letterSpacing: '0.1em', opacity: 0.8 }}>מבצע</span>
                 </div>
               </>
             ) : (

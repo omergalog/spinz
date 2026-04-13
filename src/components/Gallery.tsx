@@ -105,12 +105,12 @@ export default function Gallery() {
             animate={isInView ? { opacity: 1 } : {}}
             transition={{ duration: 0.7, delay: 0.2 }}
             href="#models"
-            className="flex items-center gap-2 pb-1 text-xs font-bold uppercase tracking-widest transition-all duration-200 whitespace-nowrap"
+            className="flex items-center gap-2 pb-1 text-sm font-bold uppercase tracking-widest transition-all duration-200 whitespace-nowrap"
             style={{ color: '#C9A870', fontFamily: "'Heebo', sans-serif", textDecoration: 'none' }}
             onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#A8885A'; (e.currentTarget as HTMLAnchorElement).style.gap = '10px'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#C9A870'; (e.currentTarget as HTMLAnchorElement).style.gap = '8px'; }}
           >
-            ← לכל הדגמים
+            לכל הדגמים ←
           </motion.a>
         </div>
 

@@ -70,7 +70,7 @@ export default function Gallery() {
       <div className="mx-auto max-w-7xl px-6 lg:px-16 pt-16 lg:pt-20" dir="rtl">
 
         {/* Header */}
-        <div className="mb-14 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <div className="mb-14 flex flex-row items-end justify-between">
           <div>
             <motion.span
               initial={{ opacity: 0 }}
@@ -105,12 +105,12 @@ export default function Gallery() {
             animate={isInView ? { opacity: 1 } : {}}
             transition={{ duration: 0.7, delay: 0.2 }}
             href="#models"
-            className="flex items-center gap-2 self-start text-xs font-bold uppercase tracking-widest md:self-auto transition-colors duration-200"
-            style={{ color: TEXT_MUTED, fontFamily: "'Heebo', sans-serif", textDecoration: 'none' }}
-            onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = TEXT)}
-            onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = TEXT_MUTED)}
+            className="flex items-center gap-2 pb-1 text-xs font-bold uppercase tracking-widest transition-all duration-200 whitespace-nowrap"
+            style={{ color: '#C9A870', fontFamily: "'Heebo', sans-serif", textDecoration: 'none' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#A8885A'; (e.currentTarget as HTMLAnchorElement).style.gap = '10px'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#C9A870'; (e.currentTarget as HTMLAnchorElement).style.gap = '8px'; }}
           >
-            לכל הדגמים
+            ← לכל הדגמים
           </motion.a>
         </div>
 

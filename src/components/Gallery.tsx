@@ -5,7 +5,7 @@ import { motion, useInView } from 'framer-motion';
 
 const TEXT = '#111111';
 const TEXT_MUTED = '#8A8880';
-const BG = '#FFFFFF';
+const BG = '#F5F2EC';
 const BORDER = '#E0DCD4';
 
 const photos = [
@@ -27,7 +27,7 @@ function PhotoCell({ photo, delay }: { photo: (typeof photos)[number]; delay: nu
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay }}
       className={`${photo.span} relative overflow-hidden`}
-      style={{ backgroundColor: '#EAE7E0', minHeight: '180px' }}
+      style={{ backgroundColor: '#F5F2EC', minHeight: '180px' }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -37,6 +37,7 @@ function PhotoCell({ photo, delay }: { photo: (typeof photos)[number]; delay: nu
         animate={{ scale: hovered ? 1.04 : 1 }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         className="absolute inset-0 h-full w-full object-cover"
+        style={{ mixBlendMode: 'multiply' }}
         loading="lazy"
         onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
       />
@@ -130,12 +131,13 @@ export default function Gallery() {
               viewport={{ once: true, margin: '-30px' }}
               transition={{ duration: 0.7, delay: i * 0.06 }}
               className="relative overflow-hidden"
-              style={{ backgroundColor: '#EAE7E0', aspectRatio: '1/1' }}
+              style={{ backgroundColor: '#F5F2EC', aspectRatio: '1/1' }}
             >
               <img
                 src={photo.src}
                 alt={photo.alt}
                 className="absolute inset-0 h-full w-full object-cover"
+                style={{ mixBlendMode: 'multiply' }}
                 loading="lazy"
                 onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
               />

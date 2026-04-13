@@ -95,7 +95,7 @@ export default function Gallery() {
                   letterSpacing: '-0.02em',
                 }}
               >
-                כל הצבעים. כל הסגנונות.
+                העיר שלך. הצבע שלך.
               </motion.h2>
             </div>
           </div>
@@ -115,14 +115,14 @@ export default function Gallery() {
         </div>
 
         {/* Desktop grid */}
-        <div className="hidden gap-px md:grid md:grid-cols-4 md:grid-rows-3" style={{ backgroundColor: BORDER }}>
+        <div className="hidden gap-2 md:grid md:grid-cols-4 md:grid-rows-3" style={{ backgroundColor: BG }}>
           {photos.map((photo, i) => (
             <PhotoCell key={photo.id} photo={photo} delay={i * 0.07} />
           ))}
         </div>
 
         {/* Mobile 2-col */}
-        <div className="grid grid-cols-2 gap-px md:hidden" style={{ backgroundColor: BORDER }}>
+        <div className="grid grid-cols-2 gap-2 md:hidden" style={{ backgroundColor: BG }}>
           {photos.map((photo, i) => (
             <motion.div
               key={photo.id}

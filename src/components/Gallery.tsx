@@ -9,12 +9,12 @@ const BG = '#F5F2EC';
 const BORDER = '#E0DCD4';
 
 const photos = [
-  { id: 1, src: '/assets/gallery-1.jpg', span: 'col-span-2 row-span-2', alt: 'Spinz Pink — white rims',  fit: 'cover' },
-  { id: 2, src: '/assets/gallery-2.jpg', span: 'col-span-1 row-span-1', alt: 'Spinz Sage Green',         fit: 'contain' },
-  { id: 3, src: '/assets/gallery-3.jpg', span: 'col-span-1 row-span-1', alt: 'Spinz — front view',       fit: 'contain' },
-  { id: 4, src: '/assets/gallery-4.jpg', span: 'col-span-1 row-span-1', alt: 'Spinz Army Green',         fit: 'contain' },
-  { id: 5, src: '/assets/gallery-5.jpg', span: 'col-span-1 row-span-1', alt: 'Spinz Burgundy',           fit: 'contain' },
-  { id: 6, src: '/assets/gallery-6.jpg', span: 'col-span-2 row-span-1', alt: 'Spinz 2026 Collection',    fit: 'cover' },
+  { id: 1, src: '/assets/gallery-1.jpg', span: 'col-span-2 row-span-2', alt: 'Spinz Pink — white rims' },
+  { id: 2, src: '/assets/gallery-2.jpg', span: 'col-span-1 row-span-1', alt: 'Spinz Sage Green' },
+  { id: 3, src: '/assets/gallery-3.jpg', span: 'col-span-1 row-span-1', alt: 'Spinz — front view' },
+  { id: 4, src: '/assets/gallery-4.jpg', span: 'col-span-1 row-span-1', alt: 'Spinz Army Green' },
+  { id: 5, src: '/assets/gallery-5.jpg', span: 'col-span-1 row-span-1', alt: 'Spinz Burgundy' },
+  { id: 6, src: '/assets/gallery-6.jpg', span: 'col-span-2 row-span-1', alt: 'Spinz 2026 Collection' },
 ];
 
 function PhotoCell({ photo, delay }: { photo: (typeof photos)[number]; delay: number }) {
@@ -27,7 +27,7 @@ function PhotoCell({ photo, delay }: { photo: (typeof photos)[number]; delay: nu
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay }}
       className={`${photo.span} relative overflow-hidden`}
-      style={{ backgroundColor: '#F5F2EC', minHeight: '180px' }}
+      style={{ backgroundColor: '#EDEAE4', minHeight: '180px' }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -36,8 +36,8 @@ function PhotoCell({ photo, delay }: { photo: (typeof photos)[number]; delay: nu
         alt={photo.alt}
         animate={{ scale: hovered ? 1.04 : 1 }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className="absolute inset-0 h-full w-full"
-        style={{ objectFit: photo.fit as 'cover' | 'contain', mixBlendMode: 'multiply' }}
+        className="absolute inset-0 h-full w-full object-cover"
+        style={{ mixBlendMode: 'multiply' }}
         loading="lazy"
         onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
       />
@@ -131,7 +131,7 @@ export default function Gallery() {
               viewport={{ once: true, margin: '-30px' }}
               transition={{ duration: 0.7, delay: i * 0.06 }}
               className="relative overflow-hidden"
-              style={{ backgroundColor: '#F5F2EC', aspectRatio: '1/1' }}
+              style={{ backgroundColor: '#EDEAE4', aspectRatio: '1/1' }}
             >
               <img
                 src={photo.src}

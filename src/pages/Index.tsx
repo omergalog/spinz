@@ -4,6 +4,7 @@ import Hero from '../components/Hero';
 import BrandStatement from '../components/BrandStatement';
 import Models from '../components/Models';
 import Gallery from '../components/Gallery';
+import Specs from '../components/Specs';
 import About from '../components/About';
 import LeadForm from '../components/LeadForm';
 import Footer from '../components/Footer';
@@ -40,6 +41,7 @@ const Index = () => {
         <BrandStatement />
         <About />
         <Models />
+        <Specs />
         <Gallery />
         <LeadForm />
         <Footer />

@@ -11,7 +11,7 @@ const specs = [
   {
     num: '01',
     title: 'קלילות עירונית',
-    sub: '9–9.5 ק"ג בלבד',
+    sub: 'שלדת אלומיניום',
     body: 'שלדת אלומיניום המעניקה תחושת קלילות יוצאת דופן. מאפשרת זינוק זריז בכל רמזור ונוחה לנשיאה אל תוך הדירה או המשרד באפס מאמץ.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">

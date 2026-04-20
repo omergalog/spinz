@@ -10,9 +10,9 @@ const BORDER = '#2A2A2A';
 const specs = [
   {
     num: '01',
-    title: 'משקל נוצה',
+    title: 'קלילות עירונית',
     sub: '9–9.5 ק"ג בלבד',
-    body: 'שלדת אלומיניום קלילה במיוחד שתאפשר לך להרים את האופניים לדירה או למשרד באפס מאמץ, ולזנק מהר יותר בכל רמזור.',
+    body: 'שלדת אלומיניום המעניקה תחושת קלילות יוצאת דופן. מאפשרת זינוק זריז בכל רמזור ונוחה לנשיאה אל תוך הדירה או המשרד באפס מאמץ.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 2L8 8H4l4 4-2 6 6-3 6 3-2-6 4-4h-4L12 2z"/>

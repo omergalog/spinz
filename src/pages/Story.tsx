@@ -55,14 +55,13 @@ function Section({ section, index }: { section: typeof sections[0]; index: numbe
           fontSize: 'clamp(15px, 2vw, 19px)',
           color: GOLD,
           margin: '0 0 14px',
-          letterSpacing: '0.02em',
         }}>
           {section.title}
         </h3>
       )}
       <p style={{
         fontFamily: "'Heebo', sans-serif",
-        fontSize: 'clamp(14px, 1.6vw, 17px)',
+        fontSize: 'clamp(14px, 1.5vw, 17px)',
         color: '#CCCCCC',
         lineHeight: 1.9,
         margin: 0,
@@ -78,18 +77,19 @@ export default function Story() {
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
   return (
-    <div style={{ backgroundColor: DARK }} dir="rtl">
+    <div style={{ backgroundColor: DARK, minHeight: '100vh' }} dir="rtl">
       <CustomCursor />
 
-      {/* Sticky top bar */}
+      {/* Top bar */}
       <header style={{
-        position: 'sticky', top: 0, zIndex: 50,
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
         backgroundColor: DARK,
         borderBottom: `1px solid ${BORDER}`,
+        height: '64px',
       }}>
         <div style={{
-          maxWidth: '1200px', margin: '0 auto',
-          padding: '0 32px', height: '64px',
+          maxWidth: '1400px', margin: '0 auto',
+          padding: '0 32px', height: '100%',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
           <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
@@ -115,104 +115,109 @@ export default function Story() {
         </div>
       </header>
 
-      {/* Sticky hero — stays behind while content scrolls over */}
-      <div style={{ position: 'relative' }}>
-        <div style={{
-          position: 'sticky',
-          top: '64px',
-          height: 'calc(100vh - 64px)',
-          overflow: 'hidden',
-          zIndex: 0,
-        }}>
-          {/* Image — fade in */}
-          <motion.img
-            src="/assets/story-hero.webp"
-            alt="Spinz rider"
-            initial={{ opacity: 0, scale: 1.04 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.4, ease: 'easeOut' }}
-            style={{
-              position: 'absolute', inset: 0,
-              width: '100%', height: '100%',
-              objectFit: 'cover', objectPosition: 'center',
-            }}
-          />
+      {/* Main layout: two columns on desktop, stacked on mobile */}
+      <div style={{ paddingTop: '64px', display: 'flex', minHeight: 'calc(100vh - 64px)' }}>
 
-          {/* Overlay */}
+        {/* LEFT: sticky image (desktop only) */}
+        <div
+          className="hidden md:block"
+          style={{ width: '50%', flexShrink: 0, position: 'relative' }}
+        >
           <div style={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(to left, rgba(0,0,0,0.1), rgba(0,0,0,0.52))',
-          }} />
-
-          {/* Bottom fade into content */}
-          <div style={{
-            position: 'absolute', bottom: 0, left: 0, right: 0, height: '180px',
-            background: `linear-gradient(to bottom, transparent, ${DARK})`,
-          }} />
-
-          {/* Gold accent line */}
-          <div style={{
-            position: 'absolute', top: '48px', right: '48px',
-            width: '3px', height: '72px', backgroundColor: GOLD, opacity: 0.6,
-          }} />
-
-          {/* Heading */}
-          <div style={{
-            position: 'absolute', inset: 0, zIndex: 2,
-            display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
-            padding: 'clamp(32px, 5vw, 64px)',
+            position: 'sticky',
+            top: '64px',
+            height: 'calc(100vh - 64px)',
+            overflow: 'hidden',
           }}>
-            <motion.span
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.7, delay: 0.3 }}
+            <motion.img
+              src="/assets/story-hero.webp"
+              alt="Spinz rider"
+              initial={{ opacity: 0, scale: 1.06 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.4, ease: 'easeOut' }}
               style={{
-                display: 'block', marginBottom: '12px',
-                fontFamily: "'Heebo', sans-serif",
-                fontSize: '11px', letterSpacing: '0.4em',
-                textTransform: 'uppercase', color: GOLD,
+                width: '100%', height: '100%',
+                objectFit: 'cover', objectPosition: 'center',
               }}
-            >
-              הסיפור שלנו
-            </motion.span>
-            <div style={{ overflow: 'hidden' }}>
-              <motion.h1
-                initial={{ y: '105%' }}
-                animate={{ y: '0%' }}
-                transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1], delay: 0.45 }}
+            />
+            {/* Overlay with text */}
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)',
+            }} />
+            {/* Bottom text */}
+            <div style={{
+              position: 'absolute', bottom: 0, left: 0, right: 0,
+              padding: '40px',
+            }}>
+              <motion.span
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.5 }}
                 style={{
+                  display: 'block', marginBottom: '10px',
                   fontFamily: "'Heebo', sans-serif",
-                  fontWeight: 800,
-                  fontSize: 'clamp(32px, 6vw, 76px)',
-                  color: CREAM,
-                  letterSpacing: '-0.02em',
-                  lineHeight: 1,
-                  margin: 0,
+                  fontSize: '11px', letterSpacing: '0.4em',
+                  textTransform: 'uppercase', color: GOLD,
                 }}
               >
-                נעים להכיר, אנחנו Spinz.
-              </motion.h1>
+                הסיפור שלנו
+              </motion.span>
+              <div style={{ overflow: 'hidden' }}>
+                <motion.h1
+                  initial={{ y: '105%' }}
+                  animate={{ y: '0%' }}
+                  transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1], delay: 0.65 }}
+                  style={{
+                    fontFamily: "'Heebo', sans-serif",
+                    fontWeight: 800,
+                    fontSize: 'clamp(28px, 3.5vw, 52px)',
+                    color: CREAM,
+                    letterSpacing: '-0.02em',
+                    lineHeight: 1.05,
+                    margin: 0,
+                  }}
+                >
+                  נעים להכיר,<br />אנחנו Spinz.
+                </motion.h1>
+              </div>
             </div>
+            {/* Gold accent */}
+            <div style={{
+              position: 'absolute', top: '40px', right: '40px',
+              width: '3px', height: '64px', backgroundColor: GOLD, opacity: 0.7,
+            }} />
           </div>
         </div>
 
-        {/* Content — slides over the sticky hero */}
-        <div style={{
-          position: 'relative',
-          zIndex: 1,
-          backgroundColor: DARK,
-          marginTop: '-60px',
-        }}>
-          {/* Top fade */}
-          <div style={{
-            height: '60px',
-            background: `linear-gradient(to bottom, transparent, ${DARK})`,
-            marginTop: '-60px',
-            position: 'relative', zIndex: 2,
-            pointerEvents: 'none',
-          }} />
+        {/* RIGHT: scrollable content */}
+        <div style={{ flex: 1, minWidth: 0 }}>
 
-          <div style={{ maxWidth: '760px', margin: '0 auto', padding: '0 32px 100px' }}>
+          {/* Mobile hero (shown only on mobile) */}
+          <div
+            className="md:hidden"
+            style={{ position: 'relative', height: '55vw', minHeight: '240px', overflow: 'hidden' }}
+          >
+            <motion.img
+              src="/assets/story-hero.webp"
+              alt="Spinz rider"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1.2 }}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: 'linear-gradient(to top, rgba(28,28,28,1) 0%, rgba(0,0,0,0.3) 60%, transparent 100%)',
+            }} />
+            <div style={{ position: 'absolute', bottom: '24px', right: '24px' }}>
+              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', letterSpacing: '0.4em', textTransform: 'uppercase', color: GOLD, display: 'block', marginBottom: '8px' }}>הסיפור שלנו</span>
+              <h1 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 8vw, 42px)', color: CREAM, margin: 0, lineHeight: 1.05 }}>נעים להכיר,<br />אנחנו Spinz.</h1>
+            </div>
+          </div>
+
+          {/* Text content */}
+          <div style={{ padding: 'clamp(40px, 5vw, 72px) clamp(24px, 5vw, 64px) 100px' }}>
             {sections.map((section, i) => (
               <Section key={i} section={section} index={i} />
             ))}
@@ -229,11 +234,7 @@ export default function Story() {
               }}
             >
               <div style={{ width: '3px', height: '48px', backgroundColor: GOLD, flexShrink: 0 }} />
-              <p style={{
-                fontFamily: "'Heebo', sans-serif",
-                fontSize: '13px', color: MUTED,
-                lineHeight: 1.7, margin: 0,
-              }}>
+              <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: MUTED, lineHeight: 1.7, margin: 0 }}>
                 Spinz · Designed in Tel Aviv · spinz.bikes@gmail.com
               </p>
             </motion.div>

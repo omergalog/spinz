@@ -135,7 +135,7 @@ export default function Story() {
       >
         {/* Hero image */}
         <img
-          src="/assets/story-hero.jpg"
+          src="/assets/story-hero.webp"
           alt="Spinz rider"
           style={{
             position: 'absolute', inset: 0,

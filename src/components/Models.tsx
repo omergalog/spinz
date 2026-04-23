@@ -288,7 +288,7 @@ export default function Models() {
               transition={{ duration: 0.6, delay: 0.5 }}
               style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: MUTED, marginTop: '14px', textAlign: 'center' }}
             >
-              משלוח עד 5 ימי עסקים · עד 13 תשלומים · TÜV מאושר
+              משלוח עד 5 ימי עסקים · עד 13 תשלומים
             </motion.p>
 
           </div>

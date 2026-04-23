@@ -179,9 +179,6 @@ export default function Models() {
                 <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: DARK, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                   מידה
                 </span>
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: MUTED }}>
-                  {size.range}
-                </span>
               </div>
               <div style={{ display: 'flex', gap: '10px' }}>
                 {sizeVariants.map((s, i) => (

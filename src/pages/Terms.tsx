@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 const DARK   = '#1C1C1C';
@@ -93,8 +94,16 @@ export default function Terms() {
   const [tab, setTab] = useState<'terms' | 'privacy'>('terms');
   const sections = tab === 'privacy' ? privacySections : termsSections;
 
+  useEffect(() => { window.scrollTo(0, 0); }, []);
+
   return (
-    <div style={{ backgroundColor: DARK, minHeight: '100vh' }} dir="rtl">
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      style={{ backgroundColor: DARK, minHeight: '100vh' }}
+      dir="rtl"
+    >
 
       {/* Top bar */}
       <header style={{
@@ -230,6 +239,6 @@ export default function Terms() {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

@@ -20,7 +20,7 @@ export default function Footer() {
           {/* Bottom bar */}
           <div className="flex flex-col items-center justify-between gap-2 py-6 md:flex-row" style={{ borderTop: `1px solid ${BORDER}` }}>
             <p className="text-xs" style={{ color: '#FFFFFF', fontFamily: "'Heebo', sans-serif" }}>
-              © 2025 Spinz. כל הזכויות שמורות.
+              © 2026 Spinz. כל הזכויות שמורות.
             </p>
             <button
               onClick={() => setPrivacyOpen(true)}
@@ -36,7 +36,7 @@ export default function Footer() {
               מדיניות פרטיות ותנאי שימוש
             </button>
             <p className="text-xs" style={{ color: '#FFFFFF', fontFamily: "'Heebo', sans-serif" }}>
-              Built in Tel Aviv
+              Designed in Tel Aviv
             </p>
           </div>
         </div>

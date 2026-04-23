@@ -221,7 +221,7 @@ export default function CartDrawer() {
                   {/* Form */}
                   <div style={{ flex: 1, overflowY: 'auto', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }} onWheel={e => e.stopPropagation()} onTouchMove={e => e.stopPropagation()}>
                     {[
-                      { key: 'name', label: 'שם מלא *', placeholder: 'ישראל ישראלי', type: 'text' },
+                      { key: 'name', label: 'שם מלא *', placeholder: 'שם מלא', type: 'text' },
                       { key: 'phone', label: 'טלפון *', placeholder: '050-0000000', type: 'tel' },
                       { key: 'email', label: 'מייל', placeholder: 'israel@example.com', type: 'email' },
                       { key: 'address', label: 'כתובת למשלוח *', placeholder: 'רחוב, עיר, מיקוד', type: 'text' },

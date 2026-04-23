@@ -201,7 +201,7 @@ export default function Reviews() {
                     type="text"
                     value={form.name}
                     onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                    placeholder="ישראל ישראלי"
+                    placeholder="שם מלא"
                     style={inputStyle}
                   />
                 </div>

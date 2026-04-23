@@ -150,8 +150,8 @@ export default function About() {
             />
 
             {[
-              { num: '01', label: 'ישיר מהמפעל' },
-              { num: '02', label: 'ללא פערי תיווך' },
+              { num: '01', label: 'ישירות מהיצרן אלייך' },
+              { num: '02', label: 'בלי מתווכים מיותרים' },
               { num: '03', label: 'עיצוב ללא פשרות' },
             ].map(({ num, label }, i) => (
               <motion.div
@@ -267,8 +267,8 @@ export default function About() {
         >
           {[
             { label: 'דגמי קולקציה', target: 3, suffix: '' , duration: 1800 },
-            { label: 'אצלך בבית',     target: 72, suffix: 'H', duration: 2800 },
-            { label: 'ישיר מהמפעל',   target: 100, suffix: '%', duration: 3800 },
+            { label: 'ימי עסקים למשלוח', target: 5, suffix: '', duration: 1800 },
+            { label: 'ישירות מהיצרן',   target: 100, suffix: '%', duration: 3800 },
           ].map(({ label, target, suffix, duration }) => (
             <div
               key={label}

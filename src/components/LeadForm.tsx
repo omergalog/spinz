@@ -192,7 +192,7 @@ export default function LeadForm() {
               }}
               className="max-md:max-w-full mt-4 mb-1 md:mt-4 md:mb-6"
             >
-              השאר פרטים. נחזור אליך תוך 24 שעות עם כל מה שצריך לדעת.
+              השאר פרטים. נחזור אליך תוך יום עסקים אחד עם כל מה שצריך לדעת.
             </motion.p>
 
             {/* Brand block — desktop only (on mobile it appears after the form) */}
@@ -230,7 +230,7 @@ export default function LeadForm() {
                     קיבלנו! נחזור אליך בקרוב.
                   </h3>
                   <p style={{ fontFamily: "'Heebo', sans-serif", color: '#FFFFFF', fontSize: '14px', margin: 0 }}>
-                    תגובה תוך 24 שעות.
+                    תגובה תוך יום עסקים אחד.
                   </p>
                   <button
                     onClick={() => setStatus('idle')}
@@ -266,7 +266,7 @@ export default function LeadForm() {
                     </label>
                     <input
                       type="text"
-                      placeholder="ישראל ישראלי"
+                      placeholder="שם מלא"
                       style={{
                         width: '100%',
                         background: 'none',
@@ -348,7 +348,7 @@ export default function LeadForm() {
                     <input
                       type="tel"
                       inputMode="numeric"
-                      placeholder="+972 50-000-0000"
+                      placeholder="05X-XXX-XXXX"
                       style={{
                         width: '100%',
                         background: 'none',
@@ -428,7 +428,7 @@ export default function LeadForm() {
                       {status === 'loading' ? 'שולח...' : 'שלח פנייה'}
                     </button>
                     <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#FFFFFF', margin: '16px 0 0', textAlign: 'center' }}>
-                      לא שולחים ספאם. מגיבים תוך 24 שעות.
+                      לא שולחים ספאם. מגיבים תוך יום עסקים אחד.
                     </p>
                   </div>
 

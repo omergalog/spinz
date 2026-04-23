@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import AboutModal from './AboutModal';
+import { useNavigate } from 'react-router-dom';
 
 function CountUp({ target, suffix = '', duration = 2800 }: { target: number; suffix?: string; duration?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -45,7 +45,7 @@ function RevealText({ children, delay = 0 }: { children: React.ReactNode; delay?
 export default function About() {
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
-  const [aboutOpen, setAboutOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <section
@@ -222,7 +222,7 @@ export default function About() {
               transition={{ duration: 0.6, delay: 0.7 }}
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
-              onClick={() => setAboutOpen(true)}
+              onClick={() => navigate('/story')}
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -247,7 +247,6 @@ export default function About() {
               הסיפור שלנו
               <span style={{ fontSize: '18px', lineHeight: 1 }}>←</span>
             </motion.button>
-            <AboutModal isOpen={aboutOpen} onClose={() => setAboutOpen(false)} />
           </div>
         </div>
 

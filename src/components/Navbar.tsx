@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
 const DARK  = '#1C1C1C';
@@ -90,6 +91,22 @@ export default function Navbar() {
                 {link.label}
               </a>
             ))}
+            <Link
+              to="/story"
+              style={{
+                fontFamily: "'Heebo', sans-serif",
+                color: '#888',
+                fontWeight: 400,
+                textDecoration: 'none',
+                transition: 'opacity 0.2s',
+                whiteSpace: 'nowrap',
+              }}
+              className="text-[13px] md:text-[15px]"
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.5'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1'; }}
+            >
+              הסיפור שלנו
+            </Link>
           </nav>
 
           {/* CTA + cart + hamburger */}
@@ -210,6 +227,28 @@ export default function Navbar() {
                   {link.label}
                 </motion.a>
               ))}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.15 + navLinks.length * 0.07 }}
+              >
+                <Link
+                  to="/story"
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    color: GOLD,
+                    fontFamily: "'Heebo', sans-serif",
+                    fontSize: '26px',
+                    fontWeight: 600,
+                    padding: '18px 36px',
+                    borderBottom: '1px solid #2A2A2A',
+                    textDecoration: 'none',
+                    display: 'block',
+                  }}
+                >
+                  הסיפור שלנו
+                </Link>
+              </motion.div>
             </nav>
             <div style={{ padding: '36px' }}>
               <a

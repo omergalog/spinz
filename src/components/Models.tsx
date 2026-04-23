@@ -88,7 +88,7 @@ export default function Models() {
                   maxWidth: '520px',
                   height: 'auto',
                   objectFit: 'contain',
-                  filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.18))',
+                  mixBlendMode: 'multiply',
                 }}
               />
             </AnimatePresence>

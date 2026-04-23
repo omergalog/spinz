@@ -197,27 +197,31 @@ export default function SpinzVibe() {
             </motion.div>
           </div>
 
-          {/* Desktop image — visible only on lg+ */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+          {/* Desktop image — visible only on lg+, sticky wrapper must NOT have overflow:hidden */}
+          <div
             className="hidden lg:block w-[42%] flex-shrink-0"
-            style={{ ...imageCard, position: 'sticky', top: '88px', alignSelf: 'flex-start' }}
+            style={{ position: 'sticky', top: '88px', alignSelf: 'flex-start' }}
           >
-            <img
-              src="/assets/brand-bike.jpg"
-              alt="Spinz Urban bike"
-              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
-              onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-            />
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 55%)' }} />
-            <div style={{ position: 'absolute', top: '20px', right: '20px', width: '2px', height: '40px', backgroundColor: GOLD, opacity: 0.7 }} />
-            <div style={{ position: 'absolute', bottom: '20px', right: '20px', left: '20px', display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)' }}>SPINZ Urban</span>
-              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', letterSpacing: '0.2em', color: GOLD, fontWeight: 700 }}>2026</span>
-            </div>
-          </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+              style={{ ...imageCard }}
+            >
+              <img
+                src="/assets/brand-bike.jpg"
+                alt="Spinz Urban bike"
+                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
+                onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+              />
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 55%)' }} />
+              <div style={{ position: 'absolute', top: '20px', right: '20px', width: '2px', height: '40px', backgroundColor: GOLD, opacity: 0.7 }} />
+              <div style={{ position: 'absolute', bottom: '20px', right: '20px', left: '20px', display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)' }}>SPINZ Urban</span>
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', letterSpacing: '0.2em', color: GOLD, fontWeight: 700 }}>2026</span>
+              </div>
+            </motion.div>
+          </div>
 
         </div>
       </div>

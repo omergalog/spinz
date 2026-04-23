@@ -214,7 +214,6 @@ export default function SpinzVibe() {
                 onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
               />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 55%)' }} />
-              <div style={{ position: 'absolute', top: '20px', right: '20px', width: '2px', height: '40px', backgroundColor: GOLD, opacity: 0.7 }} />
               <div style={{ position: 'absolute', bottom: '20px', right: '20px', left: '20px', display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', letterSpacing: '0.3em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.6)' }}>SPINZ Urban</span>
                 <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', letterSpacing: '0.2em', color: GOLD, fontWeight: 700 }}>2026</span>

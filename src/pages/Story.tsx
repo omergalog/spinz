@@ -133,29 +133,22 @@ export default function Story() {
           display: 'flex', alignItems: 'flex-end',
         }}
       >
-        {/* Placeholder texture */}
-        <div style={{
-          position: 'absolute', inset: 0,
-          background: 'repeating-linear-gradient(135deg, #1a1a1a 0px, #1a1a1a 1px, transparent 1px, transparent 60px)',
-          opacity: 0.6,
-        }} />
+        {/* Hero image */}
+        <img
+          src="/assets/story-hero.jpg"
+          alt="Spinz rider"
+          style={{
+            position: 'absolute', inset: 0,
+            width: '100%', height: '100%',
+            objectFit: 'cover', objectPosition: 'center',
+          }}
+        />
 
-        {/* Placeholder label */}
+        {/* Dark overlay */}
         <div style={{
           position: 'absolute', inset: 0,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          flexDirection: 'column', gap: '12px',
-        }}>
-          <div style={{ width: '48px', height: '1px', backgroundColor: BORDER }} />
-          <span style={{
-            fontFamily: "'Heebo', sans-serif",
-            fontSize: '11px', letterSpacing: '0.35em',
-            textTransform: 'uppercase', color: '#333',
-          }}>
-            תמונה בקרוב
-          </span>
-          <div style={{ width: '48px', height: '1px', backgroundColor: BORDER }} />
-        </div>
+          background: 'linear-gradient(to left, rgba(0,0,0,0.15), rgba(0,0,0,0.5))',
+        }} />
 
         {/* Gold line decoration */}
         <div style={{

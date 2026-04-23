@@ -84,181 +84,231 @@ export default function SpinzVibe() {
 
       <div className="mx-auto max-w-7xl px-6 lg:px-16">
 
-        {/* Header */}
-        <div className="mb-16 lg:mb-20">
-          <motion.span
-            initial={{ opacity: 0 }}
-            animate={isInView ? { opacity: 1 } : {}}
-            transition={{ duration: 0.6 }}
-            style={{
-              display: 'block', marginBottom: '12px',
-              fontFamily: "'Heebo', sans-serif",
-              fontSize: '11px', letterSpacing: '0.4em',
-              textTransform: 'uppercase', color: '#888',
-            }}
-          >
-            Why Spinz
-          </motion.span>
+        {/* Main grid: content right | image left */}
+        <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-start">
 
-          <RevealText delay={0.08}>
-            <h2 style={{
-              fontFamily: "'Heebo', sans-serif",
-              fontWeight: 800,
-              fontSize: 'clamp(32px, 6vw, 76px)',
-              color: DARK,
-              letterSpacing: '-0.01em',
-              lineHeight: 1,
-              margin: '0 0 20px',
-            }}>
-              אנחנו לא מוכרים אופניים.
-            </h2>
-          </RevealText>
+          {/* RIGHT (first in RTL): content */}
+          <div className="flex-1 min-w-0 flex flex-col gap-10">
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.18 }}
-            style={{
-              fontFamily: "'Heebo', sans-serif",
-              fontSize: 'clamp(15px, 1.8vw, 20px)',
-              fontWeight: 500,
-              color: DARK,
-              lineHeight: 1.55,
-              margin: 0,
-              maxWidth: '640px',
-            }}
-          >
-            אנחנו מוכרים את הרגע שמישהו עוצר אותך ברחוב ושואל — וואו, מאיפה הם?
-          </motion.p>
-        </div>
-
-        {/* 2-col: story left, values right */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 mb-16 lg:mb-20">
-
-          {/* Story */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}
-          >
-            <div style={{ borderRight: `4px solid ${GOLD}`, paddingRight: '24px' }}>
-              <p style={{
-                fontFamily: "'Heebo', sans-serif",
-                fontSize: 'clamp(14px, 1.5vw, 17px)',
-                color: '#555',
-                lineHeight: 1.85,
-                margin: 0,
-              }}>
-                Spinz נולד מתוך שלושה חברים שגדלו בין הפרדסים של עמק חפר — ועברו לתל אביב עם אופניים שלא הרגישו "זה". ניסינו הכל. ושום דבר לא ענה על מה שרצינו: משהו פשוט, יפה, ומחיר שאפשר להרשות לעצמנו.
-              </p>
-            </div>
-            <p style={{
-              fontFamily: "'Heebo', sans-serif",
-              fontSize: 'clamp(14px, 1.5vw, 17px)',
-              color: '#555',
-              lineHeight: 1.85,
-              margin: 0,
-            }}>
-              ככה נולד Spinz — סינגל-ספיד שנראה מעולה, נוסע חלק, ומגיע ישירות מהיצרן אלייך בלי מתווכים שגוזרים קופון בדרך.
-            </p>
-
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={() => navigate('/story')}
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: '10px',
-                alignSelf: 'flex-start',
-                marginTop: '8px',
-                backgroundColor: 'transparent',
-                color: GOLD,
-                padding: '10px 0',
-                fontFamily: "'Heebo', sans-serif",
-                fontSize: '16px', fontWeight: 700,
-                letterSpacing: '0.1em',
-                border: 'none',
-                borderBottom: `2px solid ${GOLD}`,
-                cursor: 'pointer',
-                transition: 'opacity 0.2s',
-              }}
-              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '0.7'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '1'; }}
-            >
-              הסיפור המלא ←
-            </motion.button>
-          </motion.div>
-
-          {/* Values grid */}
-          <div className="grid grid-cols-2 gap-4">
-            {values.map(({ num, title, body }, i) => (
-              <motion.div
-                key={num}
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.65, delay: 0.28 + i * 0.08 }}
-                style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}
+            {/* Header */}
+            <div>
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : {}}
+                transition={{ duration: 0.6 }}
+                style={{
+                  display: 'block', marginBottom: '12px',
+                  fontFamily: "'Heebo', sans-serif",
+                  fontSize: '11px', letterSpacing: '0.4em',
+                  textTransform: 'uppercase', color: '#888',
+                }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ width: '2px', height: '18px', backgroundColor: GOLD, flexShrink: 0 }} />
-                  <h4 style={{
-                    fontFamily: "'Heebo', sans-serif",
-                    fontWeight: 700,
-                    fontSize: 'clamp(12px, 1.3vw, 15px)',
-                    color: DARK, margin: 0, lineHeight: 1.3,
-                  }}>
-                    {title}
-                  </h4>
-                </div>
+                Why Spinz
+              </motion.span>
+
+              <RevealText delay={0.08}>
+                <h2 style={{
+                  fontFamily: "'Heebo', sans-serif",
+                  fontWeight: 800,
+                  fontSize: 'clamp(28px, 5vw, 64px)',
+                  color: DARK,
+                  letterSpacing: '-0.01em',
+                  lineHeight: 1,
+                  margin: '0 0 16px',
+                }}>
+                  אנחנו לא מוכרים אופניים.
+                </h2>
+              </RevealText>
+
+              <motion.p
+                initial={{ opacity: 0, y: 16 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.7, delay: 0.18 }}
+                style={{
+                  fontFamily: "'Heebo', sans-serif",
+                  fontSize: 'clamp(14px, 1.6vw, 18px)',
+                  fontWeight: 500,
+                  color: DARK,
+                  lineHeight: 1.55,
+                  margin: 0,
+                }}
+              >
+                אנחנו מוכרים את הרגע שמישהו עוצר אותך ברחוב ושואל — וואו, מאיפה הם?
+              </motion.p>
+            </div>
+
+            {/* Story + button */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, delay: 0.22 }}
+              style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}
+            >
+              <div style={{ borderRight: `3px solid ${GOLD}`, paddingRight: '20px' }}>
                 <p style={{
                   fontFamily: "'Heebo', sans-serif",
-                  fontSize: 'clamp(11px, 1vw, 13px)',
-                  color: MUTED, lineHeight: 1.6,
-                  margin: 0, paddingRight: '12px',
+                  fontSize: 'clamp(13px, 1.3vw, 16px)',
+                  color: '#555', lineHeight: 1.85, margin: 0,
                 }}>
-                  {body}
+                  Spinz נולד מתוך שלושה חברים שגדלו בין הפרדסים של עמק חפר — ועברו לתל אביב עם אופניים שלא הרגישו "זה". ניסינו הכל. ושום דבר לא ענה על מה שרצינו: משהו פשוט, יפה, ומחיר שאפשר להרשות לעצמנו.
                 </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+              </div>
+              <p style={{
+                fontFamily: "'Heebo', sans-serif",
+                fontSize: 'clamp(13px, 1.3vw, 16px)',
+                color: '#555', lineHeight: 1.85, margin: 0,
+              }}>
+                ככה נולד Spinz — סינגל-ספיד שנראה מעולה, נוסע חלק, ומגיע ישירות מהיצרן אלייך.
+              </p>
 
-        {/* Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.5 }}
-          className="grid grid-cols-3"
-          style={{
-            borderTop: `1px solid ${BORDER}`,
-            backgroundColor: 'rgba(0,0,0,0.03)',
-            borderRadius: '12px',
-            overflow: 'hidden',
-          }}
-        >
-          {[
-            { label: 'צבעים לבחירה',      target: 4,   suffix: '',  duration: 1400 },
-            { label: 'ימי עסקים למשלוח',   target: 5,   suffix: '',  duration: 1800 },
-            { label: 'ישירות מהיצרן',       target: 100, suffix: '%', duration: 3200 },
-          ].map(({ label, target, suffix, duration }, i) => (
-            <div
-              key={label}
-              className="py-6 px-4 md:py-8 md:px-8"
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={() => navigate('/story')}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '8px',
+                  alignSelf: 'flex-start',
+                  backgroundColor: 'transparent', color: GOLD,
+                  padding: '8px 0',
+                  fontFamily: "'Heebo', sans-serif",
+                  fontSize: '15px', fontWeight: 700,
+                  letterSpacing: '0.08em',
+                  border: 'none', borderBottom: `2px solid ${GOLD}`,
+                  cursor: 'pointer', transition: 'opacity 0.2s',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '0.7'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.opacity = '1'; }}
+              >
+                הסיפור המלא ←
+              </motion.button>
+            </motion.div>
+
+            {/* Values */}
+            <div className="grid grid-cols-2 gap-x-6 gap-y-5">
+              {values.map(({ num, title, body }, i) => (
+                <motion.div
+                  key={num}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.6, delay: 0.3 + i * 0.08 }}
+                  style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ width: '2px', height: '16px', backgroundColor: GOLD, flexShrink: 0 }} />
+                    <h4 style={{
+                      fontFamily: "'Heebo', sans-serif", fontWeight: 700,
+                      fontSize: 'clamp(12px, 1.2vw, 14px)',
+                      color: DARK, margin: 0,
+                    }}>
+                      {title}
+                    </h4>
+                  </div>
+                  <p style={{
+                    fontFamily: "'Heebo', sans-serif",
+                    fontSize: 'clamp(11px, 0.95vw, 13px)',
+                    color: MUTED, lineHeight: 1.6,
+                    margin: 0, paddingRight: '10px',
+                  }}>
+                    {body}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Stats */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, delay: 0.55 }}
+              className="grid grid-cols-3"
               style={{
-                textAlign: 'center',
-                borderLeft: i > 0 ? `1px solid ${BORDER}` : 'none',
+                borderTop: `1px solid ${BORDER}`,
+                borderBottom: `1px solid ${BORDER}`,
               }}
             >
-              <p className="text-[28px] md:text-[44px]" style={{ fontFamily: "'Heebo', sans-serif", color: GOLD, letterSpacing: '0.04em', margin: 0, lineHeight: 1 }}>
-                <CountUp target={target} suffix={suffix} duration={duration} />
-              </p>
-              <p className="text-[9px] md:text-[11px]" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: '0.2em', textTransform: 'uppercase', color: MUTED, margin: '8px 0 0' }}>
-                {label}
-              </p>
-            </div>
-          ))}
-        </motion.div>
+              {[
+                { label: 'צבעים לבחירה',    target: 4,   suffix: '',  duration: 1400 },
+                { label: 'ימי עסקים למשלוח', target: 5,   suffix: '',  duration: 1800 },
+                { label: 'ישירות מהיצרן',    target: 100, suffix: '%', duration: 3200 },
+              ].map(({ label, target, suffix, duration }, i) => (
+                <div
+                  key={label}
+                  className="py-5 px-2 md:py-6"
+                  style={{
+                    textAlign: 'center',
+                    borderLeft: i > 0 ? `1px solid ${BORDER}` : 'none',
+                  }}
+                >
+                  <p className="text-[26px] md:text-[36px]" style={{ fontFamily: "'Heebo', sans-serif", color: GOLD, letterSpacing: '0.02em', margin: 0, lineHeight: 1 }}>
+                    <CountUp target={target} suffix={suffix} duration={duration} />
+                  </p>
+                  <p className="text-[9px] md:text-[10px]" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: '0.18em', textTransform: 'uppercase', color: MUTED, margin: '6px 0 0' }}>
+                    {label}
+                  </p>
+                </div>
+              ))}
+            </motion.div>
+          </div>
 
+          {/* LEFT (second in RTL): bike image */}
+          <motion.div
+            initial={{ opacity: 0, x: -24 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+            className="hidden lg:flex w-[42%] flex-shrink-0"
+            style={{
+              position: 'sticky',
+              top: '88px',
+              alignSelf: 'flex-start',
+              borderRadius: '16px',
+              overflow: 'hidden',
+              backgroundColor: '#EAE7E1',
+              aspectRatio: '3/4',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            {/* Gold accent top-right */}
+            <div style={{
+              position: 'absolute', top: '24px', right: '24px',
+              width: '2px', height: '48px',
+              backgroundColor: GOLD, opacity: 0.5,
+            }} />
+            {/* Label */}
+            <div style={{
+              position: 'absolute', bottom: '24px', right: '24px', left: '24px',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            }}>
+              <span style={{
+                fontFamily: "'Heebo', sans-serif",
+                fontSize: '10px', letterSpacing: '0.35em',
+                textTransform: 'uppercase', color: MUTED,
+              }}>
+                SPINZ Urban
+              </span>
+              <span style={{
+                fontFamily: "'Heebo', sans-serif",
+                fontSize: '10px', letterSpacing: '0.2em',
+                color: GOLD, fontWeight: 700,
+              }}>
+                2026
+              </span>
+            </div>
+            <img
+              src="/assets/brand-bike.jpg"
+              alt="Spinz Urban bike"
+              style={{
+                width: '90%',
+                height: '85%',
+                objectFit: 'contain',
+                objectPosition: 'center',
+                mixBlendMode: 'multiply',
+              }}
+              onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+            />
+          </motion.div>
+
+        </div>
       </div>
 
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', backgroundColor: BORDER }} />

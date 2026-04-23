@@ -205,6 +205,34 @@ export default function Models() {
               </div>
             </motion.div>
 
+            {/* Quick specs */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.36 }}
+              style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '28px' }}
+            >
+              {[
+                { icon: '⬡', label: 'שלדת אלומיניום', sub: 'גיאומטריה עירונית' },
+                { icon: '◎', label: 'Kenda 700×32c', sub: 'עמידים לפנצ\'ר' },
+                { icon: '⚙', label: 'סינגל-ספיד 46T/16T', sub: 'מכויל לעיר' },
+                { icon: '◈', label: 'גלגלי 700c', sub: 'פרופיל גבוה 30 מ"מ' },
+              ].map(({ icon, label, sub }) => (
+                <div key={label} style={{
+                  backgroundColor: '#EAE7E1',
+                  borderRadius: '8px',
+                  padding: '10px 12px',
+                  display: 'flex', alignItems: 'flex-start', gap: '8px',
+                }}>
+                  <span style={{ fontSize: '14px', color: '#C9A870', flexShrink: 0, marginTop: '1px' }}>{icon}</span>
+                  <div>
+                    <div style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: DARK, lineHeight: 1.3 }}>{label}</div>
+                    <div style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: MUTED, lineHeight: 1.3 }}>{sub}</div>
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+
             {/* Price */}
             <motion.div
               initial={{ opacity: 0, y: 10 }}

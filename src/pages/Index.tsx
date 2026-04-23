@@ -1,14 +1,13 @@
 import { useState, useCallback } from 'react';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
-import BrandStatement from '../components/BrandStatement';
+import SpinzVibe from '../components/SpinzVibe';
 import Models from '../components/Models';
-import Gallery from '../components/Gallery';
-import Specs from '../components/Specs';
 import Lifestyle from '../components/Lifestyle';
+import Gallery from '../components/Gallery';
 import Reviews from '../components/Reviews';
+import Specs from '../components/Specs';
 import FAQ from '../components/FAQ';
-import About from '../components/About';
 import LeadForm from '../components/LeadForm';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
@@ -41,13 +40,12 @@ const Index = () => {
       <main style={{ backgroundColor: '#F5F2EC', minHeight: '100vh' }}>
         <Navbar />
         <Hero />
-        <BrandStatement />
-        <About />
+        <SpinzVibe />
         <Models />
-        <Specs />
         <Lifestyle />
         <Gallery />
         <Reviews />
+        <Specs />
         <FAQ />
         <LeadForm />
         <Footer />

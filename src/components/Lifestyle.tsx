@@ -123,13 +123,6 @@ export default function Lifestyle() {
         />
       </div>
 
-      {/* Gold bottom line */}
-      <div style={{
-        position: 'absolute',
-        bottom: 0, left: 0, right: 0,
-        height: '2px',
-        background: `linear-gradient(to right, transparent, ${GOLD}, transparent)`,
-      }} />
     </section>
   );
 }

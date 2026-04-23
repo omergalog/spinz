@@ -65,7 +65,6 @@ export default function Gallery() {
       className="relative py-24 lg:py-32"
       style={{ backgroundColor: BG }}
     >
-      <div className="w-full h-px" style={{ backgroundColor: BORDER }} />
 
       <div className="mx-auto max-w-7xl px-6 lg:px-16 pt-16 lg:pt-20" dir="rtl">
 

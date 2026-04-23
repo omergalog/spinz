@@ -67,6 +67,53 @@ function RevealText({ children, delay = 0 }: { children: React.ReactNode; delay?
   );
 }
 
+function BikeImage({ isInView, className, sticky }: { isInView: boolean; className?: string; sticky?: boolean }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+      className={className}
+      style={{
+        position: sticky ? 'sticky' : 'relative',
+        top: sticky ? '88px' : undefined,
+        alignSelf: sticky ? 'flex-start' : undefined,
+        borderRadius: '16px',
+        overflow: 'hidden',
+        backgroundColor: '#FFFFFF',
+        aspectRatio: '3/4',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: '0 4px 32px rgba(0,0,0,0.07)',
+      }}
+    >
+      <div style={{
+        position: 'absolute', top: '20px', right: '20px',
+        width: '2px', height: '40px',
+        backgroundColor: GOLD, opacity: 0.6,
+      }} />
+      <div style={{
+        position: 'absolute', bottom: '20px', right: '20px', left: '20px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      }}>
+        <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', letterSpacing: '0.3em', textTransform: 'uppercase', color: '#BBB' }}>
+          SPINZ Urban
+        </span>
+        <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', letterSpacing: '0.2em', color: GOLD, fontWeight: 700 }}>
+          2026
+        </span>
+      </div>
+      <img
+        src="/assets/brand-bike.jpg"
+        alt="Spinz Urban bike"
+        style={{ width: '85%', height: '80%', objectFit: 'contain', objectPosition: 'center' }}
+        onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+      />
+    </motion.div>
+  );
+}
+
 export default function SpinzVibe() {
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
@@ -136,6 +183,9 @@ export default function SpinzVibe() {
                 אנחנו מוכרים את הרגע שמישהו עוצר אותך ברחוב ושואל — וואו, מאיפה הם?
               </motion.p>
             </div>
+
+            {/* Mobile bike image */}
+            <BikeImage isInView={isInView} className="lg:hidden w-full max-w-[340px] mx-auto" />
 
             {/* Story + button */}
             <motion.div
@@ -250,63 +300,8 @@ export default function SpinzVibe() {
             </motion.div>
           </div>
 
-          {/* LEFT (second in RTL): bike image */}
-          <motion.div
-            initial={{ opacity: 0, x: -24 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
-            className="hidden lg:flex w-[42%] flex-shrink-0"
-            style={{
-              position: 'sticky',
-              top: '88px',
-              alignSelf: 'flex-start',
-              borderRadius: '16px',
-              overflow: 'hidden',
-              backgroundColor: '#EAE7E1',
-              aspectRatio: '3/4',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            {/* Gold accent top-right */}
-            <div style={{
-              position: 'absolute', top: '24px', right: '24px',
-              width: '2px', height: '48px',
-              backgroundColor: GOLD, opacity: 0.5,
-            }} />
-            {/* Label */}
-            <div style={{
-              position: 'absolute', bottom: '24px', right: '24px', left: '24px',
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            }}>
-              <span style={{
-                fontFamily: "'Heebo', sans-serif",
-                fontSize: '10px', letterSpacing: '0.35em',
-                textTransform: 'uppercase', color: MUTED,
-              }}>
-                SPINZ Urban
-              </span>
-              <span style={{
-                fontFamily: "'Heebo', sans-serif",
-                fontSize: '10px', letterSpacing: '0.2em',
-                color: GOLD, fontWeight: 700,
-              }}>
-                2026
-              </span>
-            </div>
-            <img
-              src="/assets/brand-bike.jpg"
-              alt="Spinz Urban bike"
-              style={{
-                width: '90%',
-                height: '85%',
-                objectFit: 'contain',
-                objectPosition: 'center',
-                mixBlendMode: 'multiply',
-              }}
-              onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-            />
-          </motion.div>
+          {/* LEFT (second in RTL): bike image — desktop only */}
+          <BikeImage isInView={isInView} className="hidden lg:flex w-[42%] flex-shrink-0" sticky />
 
         </div>
       </div>

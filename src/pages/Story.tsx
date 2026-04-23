@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import CustomCursor from '../components/CustomCursor';
 
@@ -78,6 +78,9 @@ export default function Story() {
   const heroRef = useRef<HTMLDivElement>(null);
   const heroInView = useInView(heroRef, { once: true });
 
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
+  const imgY = useTransform(scrollYProgress, [0, 1], ['0%', '25%']);
+
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
   return (
@@ -133,21 +136,25 @@ export default function Story() {
           display: 'flex', alignItems: 'flex-end',
         }}
       >
-        {/* Hero image */}
-        <img
-          src="/assets/story-hero.webp"
-          alt="Spinz rider"
+        {/* Parallax image */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.2, ease: 'easeOut' }}
           style={{
-            position: 'absolute', inset: 0,
-            width: '100%', height: '100%',
-            objectFit: 'cover', objectPosition: 'center',
+            y: imgY,
+            position: 'absolute',
+            inset: '-15% 0',
+            backgroundImage: 'url(/assets/story-hero.webp)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
           }}
         />
 
         {/* Dark overlay */}
         <div style={{
           position: 'absolute', inset: 0,
-          background: 'linear-gradient(to left, rgba(0,0,0,0.15), rgba(0,0,0,0.5))',
+          background: 'linear-gradient(to left, rgba(0,0,0,0.15), rgba(0,0,0,0.55))',
         }} />
 
         {/* Gold line decoration */}

@@ -5,6 +5,9 @@ import BrandStatement from '../components/BrandStatement';
 import Models from '../components/Models';
 import Gallery from '../components/Gallery';
 import Specs from '../components/Specs';
+import Lifestyle from '../components/Lifestyle';
+import Reviews from '../components/Reviews';
+import FAQ from '../components/FAQ';
 import About from '../components/About';
 import LeadForm from '../components/LeadForm';
 import Footer from '../components/Footer';
@@ -42,7 +45,10 @@ const Index = () => {
         <About />
         <Models />
         <Specs />
+        <Lifestyle />
         <Gallery />
+        <Reviews />
+        <FAQ />
         <LeadForm />
         <Footer />
       </main>

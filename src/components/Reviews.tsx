@@ -1,5 +1,6 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
+import { supabase } from '../lib/supabase';
 
 const DARK   = '#1C1C1C';
 const GOLD   = '#C9A870';
@@ -7,115 +8,27 @@ const MUTED  = '#6A6862';
 const BG     = '#F5F2EC';
 const BORDER = '#E0DCD4';
 
-const reviews = [
-  {
-    quote: 'קניתי לפני חודש ומאז אני נוסע לעבודה כל יום. האופניים פשוט מושלמים לעיר — קלים, נראים מדהים, ולא פעם אחת עצרו אותי ברחוב לשאול מאיפה.',
-    name: 'יואב כ.',
-    city: 'תל אביב',
-    stars: 5,
-  },
-  {
-    quote: 'הייתי סקפטית בהתחלה לגבי סינגל ספיד, אבל אחרי שבוע של רכיבה הבנתי שזה בדיוק מה שחיפשתי. פשוט, נקי, ומהנה להפליא.',
-    name: 'מיכל ר.',
-    city: 'תל אביב',
-    stars: 5,
-  },
-  {
-    quote: 'ההרכבה לקחה לי 20 דקות עם הסרטון. האופניים הגיעו אלינו מהר ובמצב מושלם. עיצוב יוצא מן הכלל ביחס למחיר.',
-    name: 'עמית ל.',
-    city: 'רמת גן',
-    stars: 5,
-  },
-];
-
-function Stars({ count }: { count: number }) {
+function StarPicker({ value, onChange }: { value: number; onChange: (n: number) => void }) {
+  const [hovered, setHovered] = useState(0);
   return (
-    <div style={{ display: 'flex', gap: '3px', marginBottom: '16px' }}>
-      {Array.from({ length: count }).map((_, i) => (
-        <svg key={i} width="14" height="14" viewBox="0 0 24 24" fill={GOLD}>
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-        </svg>
+    <div style={{ display: 'flex', gap: '6px' }}>
+      {[1, 2, 3, 4, 5].map(n => (
+        <button
+          key={n}
+          type="button"
+          onClick={() => onChange(n)}
+          onMouseEnter={() => setHovered(n)}
+          onMouseLeave={() => setHovered(0)}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24"
+            fill={(hovered || value) >= n ? GOLD : 'none'}
+            stroke={GOLD} strokeWidth="1.5">
+            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+          </svg>
+        </button>
       ))}
     </div>
-  );
-}
-
-function ReviewCard({ review, index }: { review: typeof reviews[0]; index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-40px' });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 28 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: index * 0.1 }}
-      style={{
-        backgroundColor: '#FFFFFF',
-        border: `1px solid ${BORDER}`,
-        borderRadius: '16px',
-        padding: 'clamp(20px, 3vw, 32px)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '0',
-      }}
-    >
-      {/* Gold quote mark */}
-      <span style={{
-        fontFamily: 'Georgia, serif',
-        fontSize: '56px',
-        color: GOLD,
-        lineHeight: 0.8,
-        marginBottom: '12px',
-        display: 'block',
-        opacity: 0.6,
-      }}>"</span>
-
-      <Stars count={review.stars} />
-
-      <p style={{
-        fontFamily: "'Heebo', sans-serif",
-        fontSize: 'clamp(13px, 1.3vw, 15px)',
-        color: DARK,
-        lineHeight: 1.7,
-        margin: '0 0 auto',
-        flexGrow: 1,
-      }}>{review.quote}</p>
-
-      <div style={{
-        marginTop: '24px',
-        paddingTop: '16px',
-        borderTop: `1px solid ${BORDER}`,
-        display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-      }}>
-        {/* Avatar placeholder */}
-        <div style={{
-          width: '38px',
-          height: '38px',
-          borderRadius: '50%',
-          backgroundColor: GOLD + '22',
-          border: `1px solid ${GOLD}44`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-        }}>
-          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, color: GOLD }}>
-            {review.name[0]}
-          </span>
-        </div>
-        <div>
-          <div style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '13px', color: DARK }}>
-            {review.name}
-          </div>
-          <div style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: MUTED }}>
-            {review.city}
-          </div>
-        </div>
-      </div>
-    </motion.div>
   );
 }
 
@@ -124,6 +37,40 @@ export default function Reviews() {
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const headingRef = useRef<HTMLDivElement>(null);
   const headingInView = useInView(headingRef, { once: true, margin: '-40px' });
+
+  const [form, setForm] = useState({ name: '', city: '', quote: '', stars: 5 });
+  const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name.trim() || !form.quote.trim()) return;
+    setStatus('sending');
+    const { error } = await supabase.from('reviews').insert([{
+      name: form.name.trim(),
+      city: form.city.trim(),
+      quote: form.quote.trim(),
+      stars: form.stars,
+    }]);
+    if (error) {
+      setStatus('error');
+    } else {
+      setStatus('done');
+      setForm({ name: '', city: '', quote: '', stars: 5 });
+    }
+  };
+
+  const inputStyle: React.CSSProperties = {
+    fontFamily: "'Heebo', sans-serif",
+    fontSize: '14px',
+    color: DARK,
+    backgroundColor: '#FFFFFF',
+    border: `1px solid ${BORDER}`,
+    borderRadius: '10px',
+    padding: '12px 14px',
+    width: '100%',
+    outline: 'none',
+    boxSizing: 'border-box',
+  };
 
   return (
     <section
@@ -176,12 +123,131 @@ export default function Reviews() {
           </div>
         </div>
 
-        {/* Cards grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {reviews.map((review, i) => (
-            <ReviewCard key={i} review={review} index={i} />
-          ))}
-        </div>
+        {/* Review submission form */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.2 }}
+          style={{
+            backgroundColor: '#FFFFFF',
+            border: `1px solid ${BORDER}`,
+            borderRadius: '20px',
+            padding: 'clamp(24px, 4vw, 40px)',
+            maxWidth: '600px',
+          }}
+        >
+          <h3 style={{
+            fontFamily: "'Heebo', sans-serif",
+            fontWeight: 800,
+            fontSize: 'clamp(17px, 2vw, 22px)',
+            color: DARK,
+            margin: '0 0 6px',
+          }}>
+            שתפו אותנו בחוויה שלכם
+          </h3>
+          <p style={{
+            fontFamily: "'Heebo', sans-serif",
+            fontSize: '13px',
+            color: MUTED,
+            margin: '0 0 24px',
+          }}>
+            קניתם? נשמח לשמוע.
+          </p>
+
+          {status === 'done' ? (
+            <div style={{
+              textAlign: 'center',
+              padding: '32px 0',
+              fontFamily: "'Heebo', sans-serif",
+            }}>
+              <div style={{ fontSize: '36px', marginBottom: '12px' }}>🙏</div>
+              <p style={{ fontWeight: 700, fontSize: '17px', color: DARK, margin: '0 0 6px' }}>תודה על הביקורת!</p>
+              <p style={{ fontSize: '13px', color: MUTED, margin: 0 }}>אנחנו מעריכים את זה.</p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+
+              {/* Stars */}
+              <div>
+                <label style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: MUTED, display: 'block', marginBottom: '8px' }}>
+                  דירוג
+                </label>
+                <StarPicker value={form.stars} onChange={stars => setForm(f => ({ ...f, stars }))} />
+              </div>
+
+              {/* Quote */}
+              <div>
+                <label style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: MUTED, display: 'block', marginBottom: '6px' }}>
+                  הביקורת שלך *
+                </label>
+                <textarea
+                  required
+                  rows={3}
+                  value={form.quote}
+                  onChange={e => setForm(f => ({ ...f, quote: e.target.value }))}
+                  placeholder="ספרו על החוויה שלכם..."
+                  style={{ ...inputStyle, resize: 'none' }}
+                />
+              </div>
+
+              {/* Name + City */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                <div>
+                  <label style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: MUTED, display: 'block', marginBottom: '6px' }}>
+                    שם *
+                  </label>
+                  <input
+                    required
+                    type="text"
+                    value={form.name}
+                    onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                    placeholder="ישראל ישראלי"
+                    style={inputStyle}
+                  />
+                </div>
+                <div>
+                  <label style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: MUTED, display: 'block', marginBottom: '6px' }}>
+                    עיר
+                  </label>
+                  <input
+                    type="text"
+                    value={form.city}
+                    onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
+                    placeholder="תל אביב"
+                    style={inputStyle}
+                  />
+                </div>
+              </div>
+
+              {status === 'error' && (
+                <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#c0392b', margin: 0 }}>
+                  משהו השתבש. נסו שוב.
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={status === 'sending'}
+                style={{
+                  fontFamily: "'Heebo', sans-serif",
+                  fontWeight: 700,
+                  fontSize: '14px',
+                  color: '#1C1C1C',
+                  backgroundColor: GOLD,
+                  border: 'none',
+                  borderRadius: '10px',
+                  padding: '13px 28px',
+                  cursor: status === 'sending' ? 'wait' : 'pointer',
+                  alignSelf: 'flex-start',
+                  opacity: status === 'sending' ? 0.7 : 1,
+                  transition: 'opacity 0.2s',
+                }}
+              >
+                {status === 'sending' ? 'שולח...' : 'שלח ביקורת'}
+              </button>
+            </form>
+          )}
+        </motion.div>
 
       </div>
 

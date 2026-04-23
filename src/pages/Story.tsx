@@ -1,6 +1,7 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import CustomCursor from '../components/CustomCursor';
 
 const DARK   = '#1C1C1C';
 const GOLD   = '#C9A870';
@@ -77,8 +78,11 @@ export default function Story() {
   const heroRef = useRef<HTMLDivElement>(null);
   const heroInView = useInView(heroRef, { once: true });
 
+  useEffect(() => { window.scrollTo(0, 0); }, []);
+
   return (
     <div style={{ backgroundColor: DARK, minHeight: '100vh' }} dir="rtl">
+      <CustomCursor />
 
       {/* Top bar */}
       <header style={{

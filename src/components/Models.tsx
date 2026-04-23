@@ -79,10 +79,10 @@ export default function Models() {
                 key={color.id}
                 src={color.image}
                 alt={color.label}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.03 }}
+                transition={{ duration: 0.22, ease: 'easeOut' }}
                 style={{
                   width: '100%',
                   maxWidth: '520px',

@@ -73,7 +73,7 @@ export default function Models() {
         <div className="flex flex-col lg:flex-row min-h-[80vh]">
 
           {/* RIGHT — image */}
-          <div className="lg:flex-1 flex items-center justify-center bg-[#F0EDE7] p-8 lg:p-16 order-1 lg:order-2 min-h-[50vw] lg:min-h-0">
+          <div className="lg:flex-1 flex items-center justify-center bg-white p-8 lg:p-16 order-1 lg:order-2 min-h-[50vw] lg:min-h-0">
             <AnimatePresence mode="wait">
               <motion.img
                 key={color.id}

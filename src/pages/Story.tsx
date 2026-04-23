@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import { motion, useInView, useScroll, useTransform } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import CustomCursor from '../components/CustomCursor';
 
@@ -75,19 +75,13 @@ function Section({ section, index }: { section: typeof sections[0]; index: numbe
 }
 
 export default function Story() {
-  const heroRef = useRef<HTMLDivElement>(null);
-  const heroInView = useInView(heroRef, { once: true });
-
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const imgY = useTransform(scrollYProgress, [0, 1], ['0%', '25%']);
-
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
   return (
-    <div style={{ backgroundColor: DARK, minHeight: '100vh' }} dir="rtl">
+    <div style={{ backgroundColor: DARK }} dir="rtl">
       <CustomCursor />
 
-      {/* Top bar */}
+      {/* Sticky top bar */}
       <header style={{
         position: 'sticky', top: 0, zIndex: 50,
         backgroundColor: DARK,
@@ -95,8 +89,7 @@ export default function Story() {
       }}>
         <div style={{
           maxWidth: '1200px', margin: '0 auto',
-          padding: '0 32px',
-          height: '64px',
+          padding: '0 32px', height: '64px',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
           <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
@@ -109,13 +102,10 @@ export default function Story() {
           <Link
             to="/"
             style={{
-              display: 'flex', alignItems: 'center', gap: '8px',
               fontFamily: "'Heebo', sans-serif",
               fontSize: '13px', fontWeight: 600,
-              color: MUTED,
-              textDecoration: 'none',
-              letterSpacing: '0.05em',
-              transition: 'color 0.2s',
+              color: MUTED, textDecoration: 'none',
+              letterSpacing: '0.05em', transition: 'color 0.2s',
             }}
             onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = CREAM; }}
             onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = MUTED; }}
@@ -125,114 +115,130 @@ export default function Story() {
         </div>
       </header>
 
-      {/* Hero — photo placeholder */}
-      <div
-        ref={heroRef}
-        style={{
-          position: 'relative',
-          height: 'clamp(340px, 55vh, 640px)',
-          backgroundColor: '#141414',
+      {/* Sticky hero — stays behind while content scrolls over */}
+      <div style={{ position: 'relative' }}>
+        <div style={{
+          position: 'sticky',
+          top: '64px',
+          height: 'calc(100vh - 64px)',
           overflow: 'hidden',
-          display: 'flex', alignItems: 'flex-end',
-        }}
-      >
-        {/* Parallax image */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.2, ease: 'easeOut' }}
-          style={{
-            y: imgY,
-            position: 'absolute',
-            inset: '-15% 0',
-            backgroundImage: 'url(/assets/story-hero.webp)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-          }}
-        />
-
-        {/* Dark overlay */}
-        <div style={{
-          position: 'absolute', inset: 0,
-          background: 'linear-gradient(to left, rgba(0,0,0,0.15), rgba(0,0,0,0.55))',
-        }} />
-
-        {/* Gold line decoration */}
-        <div style={{
-          position: 'absolute', top: '40px', right: '48px',
-          width: '3px', height: '80px', backgroundColor: GOLD, opacity: 0.5,
-        }} />
-
-        {/* Heading overlay */}
-        <div style={{ position: 'relative', zIndex: 2, padding: 'clamp(32px, 5vw, 64px)' }}>
-          <motion.span
-            initial={{ opacity: 0 }}
-            animate={heroInView ? { opacity: 1 } : {}}
-            transition={{ duration: 0.6 }}
+          zIndex: 0,
+        }}>
+          {/* Image — fade in */}
+          <motion.img
+            src="/assets/story-hero.webp"
+            alt="Spinz rider"
+            initial={{ opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.4, ease: 'easeOut' }}
             style={{
-              display: 'block', marginBottom: '12px',
-              fontFamily: "'Heebo', sans-serif",
-              fontSize: '11px', letterSpacing: '0.4em',
-              textTransform: 'uppercase', color: GOLD,
+              position: 'absolute', inset: 0,
+              width: '100%', height: '100%',
+              objectFit: 'cover', objectPosition: 'center',
             }}
-          >
-            הסיפור שלנו
-          </motion.span>
-          <div style={{ overflow: 'hidden' }}>
-            <motion.h1
-              initial={{ y: '105%' }}
-              animate={heroInView ? { y: '0%' } : {}}
-              transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1], delay: 0.08 }}
+          />
+
+          {/* Overlay */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(to left, rgba(0,0,0,0.1), rgba(0,0,0,0.52))',
+          }} />
+
+          {/* Bottom fade into content */}
+          <div style={{
+            position: 'absolute', bottom: 0, left: 0, right: 0, height: '180px',
+            background: `linear-gradient(to bottom, transparent, ${DARK})`,
+          }} />
+
+          {/* Gold accent line */}
+          <div style={{
+            position: 'absolute', top: '48px', right: '48px',
+            width: '3px', height: '72px', backgroundColor: GOLD, opacity: 0.6,
+          }} />
+
+          {/* Heading */}
+          <div style={{
+            position: 'absolute', inset: 0, zIndex: 2,
+            display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+            padding: 'clamp(32px, 5vw, 64px)',
+          }}>
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.7, delay: 0.3 }}
               style={{
+                display: 'block', marginBottom: '12px',
                 fontFamily: "'Heebo', sans-serif",
-                fontWeight: 800,
-                fontSize: 'clamp(32px, 6vw, 76px)',
-                color: CREAM,
-                letterSpacing: '-0.02em',
-                lineHeight: 1,
-                margin: 0,
+                fontSize: '11px', letterSpacing: '0.4em',
+                textTransform: 'uppercase', color: GOLD,
               }}
             >
-              נעים להכיר, אנחנו Spinz.
-            </motion.h1>
+              הסיפור שלנו
+            </motion.span>
+            <div style={{ overflow: 'hidden' }}>
+              <motion.h1
+                initial={{ y: '105%' }}
+                animate={{ y: '0%' }}
+                transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1], delay: 0.45 }}
+                style={{
+                  fontFamily: "'Heebo', sans-serif",
+                  fontWeight: 800,
+                  fontSize: 'clamp(32px, 6vw, 76px)',
+                  color: CREAM,
+                  letterSpacing: '-0.02em',
+                  lineHeight: 1,
+                  margin: 0,
+                }}
+              >
+                נעים להכיר, אנחנו Spinz.
+              </motion.h1>
+            </div>
           </div>
         </div>
 
-        {/* Bottom gradient */}
+        {/* Content — slides over the sticky hero */}
         <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0, height: '120px',
-          background: `linear-gradient(to bottom, transparent, ${DARK})`,
-        }} />
-      </div>
+          position: 'relative',
+          zIndex: 1,
+          backgroundColor: DARK,
+          marginTop: '-60px',
+        }}>
+          {/* Top fade */}
+          <div style={{
+            height: '60px',
+            background: `linear-gradient(to bottom, transparent, ${DARK})`,
+            marginTop: '-60px',
+            position: 'relative', zIndex: 2,
+            pointerEvents: 'none',
+          }} />
 
-      {/* Content */}
-      <div style={{ maxWidth: '760px', margin: '0 auto', padding: 'clamp(40px, 6vw, 80px) 32px 100px' }}>
-        {sections.map((section, i) => (
-          <Section key={i} section={section} index={i} />
-        ))}
+          <div style={{ maxWidth: '760px', margin: '0 auto', padding: '0 32px 100px' }}>
+            {sections.map((section, i) => (
+              <Section key={i} section={section} index={i} />
+            ))}
 
-        {/* Footer note */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.3 }}
-          style={{
-            marginTop: '60px',
-            paddingTop: '40px',
-            borderTop: `1px solid ${BORDER}`,
-            display: 'flex', alignItems: 'center', gap: '20px',
-          }}
-        >
-          <div style={{ width: '3px', height: '48px', backgroundColor: GOLD, flexShrink: 0 }} />
-          <p style={{
-            fontFamily: "'Heebo', sans-serif",
-            fontSize: '13px', color: MUTED,
-            lineHeight: 1.7, margin: 0,
-          }}>
-            Spinz · Designed in Tel Aviv · spinz.bikes@gmail.com
-          </p>
-        </motion.div>
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              style={{
+                marginTop: '60px', paddingTop: '40px',
+                borderTop: `1px solid ${BORDER}`,
+                display: 'flex', alignItems: 'center', gap: '20px',
+              }}
+            >
+              <div style={{ width: '3px', height: '48px', backgroundColor: GOLD, flexShrink: 0 }} />
+              <p style={{
+                fontFamily: "'Heebo', sans-serif",
+                fontSize: '13px', color: MUTED,
+                lineHeight: 1.7, margin: 0,
+              }}>
+                Spinz · Designed in Tel Aviv · spinz.bikes@gmail.com
+              </p>
+            </motion.div>
+          </div>
+        </div>
       </div>
     </div>
   );

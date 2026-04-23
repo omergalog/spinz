@@ -180,7 +180,7 @@ export default function SpinzVibe() {
               style={{ borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}
             >
               {[
-                { label: 'צבעים לבחירה',    target: 4,   suffix: '',  duration: 1400 },
+                { label: 'צבעים לבחירה',    target: 3,   suffix: '',  duration: 1400 },
                 { label: 'ימי עסקים למשלוח', target: 5,   suffix: '',  duration: 1800 },
                 { label: 'ישירות מהיצרן',    target: 100, suffix: '%', duration: 3200 },
               ].map(({ label, target, suffix, duration }, i) => (

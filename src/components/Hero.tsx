@@ -1,40 +1,38 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 const DARK       = '#1C1C1C';
 const LIGHT      = '#F5F2EC';
 const GOLD       = '#C9A870';
 const TEXT_LIGHT = '#EDEBE6';
 
-const bikes = [
-  { src: '/assets/bike-black.png', label: 'Matte Black' },
-  { src: '/assets/bike-rust.png',  label: 'Rust' },
-  { src: '/assets/bike-green.png', label: 'Olive Green' },
-  { src: '/assets/bike-gray.png',  label: 'Urban Gray' },
-];
-
 export default function Hero() {
-  const [current, setCurrent] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => setCurrent(c => (c + 1) % bikes.length), 3500);
-    return () => clearInterval(timer);
-  }, []);
-
   return (
     <section
       className="relative flex h-[68vh] md:min-h-screen flex-col overflow-hidden"
       style={{ backgroundColor: DARK }}
-      dir="rtl"
     >
+      {/* Background photo with dark overlay */}
+      <div className="absolute inset-0">
+        <img
+          src="/assets/hero-bike.jpg"
+          alt=""
+          className="h-full w-full object-cover"
+          style={{ opacity: 0.45 }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `linear-gradient(180deg, ${DARK}BB 0%, ${DARK}DD 60%, ${DARK} 100%)`,
+          }}
+        />
+      </div>
+
       {/* Navbar spacer */}
       <div className="h-16 md:h-20 flex-shrink-0" />
 
-      {/* Content */}
-      <div className="relative z-10 flex flex-1 flex-col md:flex-row items-center px-6 md:px-16 lg:px-24 pb-6 gap-8">
-
-        {/* Text — right side (RTL = first) */}
-        <div className="flex flex-col items-start justify-center flex-1 min-w-0">
+      {/* Content — centered */}
+      <div className="relative z-10 flex flex-1 flex-col items-center justify-center text-center px-6 pb-6">
+        <div className="w-full max-w-4xl mx-auto flex flex-col items-center">
 
           <motion.p
             initial={{ opacity: 0, y: 10 }}
@@ -52,7 +50,7 @@ export default function Hero() {
             Single Speed Urban Bikes
           </motion.p>
 
-          <div style={{ overflow: 'hidden', marginBottom: '0' }}>
+          <div style={{ overflow: 'hidden' }}>
             <motion.h1
               initial={{ y: '110%' }}
               animate={{ y: '0%' }}
@@ -60,7 +58,7 @@ export default function Hero() {
               style={{
                 fontFamily: "'Bebas Neue', sans-serif",
                 color: TEXT_LIGHT,
-                fontSize: 'clamp(72px, 14vw, 160px)',
+                fontSize: 'clamp(80px, 18vw, 200px)',
                 lineHeight: 0.9,
                 margin: 0,
               }}
@@ -76,56 +74,21 @@ export default function Hero() {
             style={{
               color: '#FFFFFF',
               fontFamily: "'Heebo', sans-serif",
-              fontSize: 'clamp(13px, 1.5vw, 18px)',
+              fontSize: 'clamp(15px, 1.8vw, 20px)',
               fontWeight: 300,
-              marginTop: '20px',
-              maxWidth: '380px',
-              lineHeight: 1.6,
+              marginTop: '24px',
             }}
           >
             משלמים על האופניים, לא על החנות ברוטשילד
           </motion.p>
-
-          {/* Color dots indicator */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.7, delay: 1.1 }}
-            style={{ display: 'flex', gap: '8px', marginTop: '28px', alignItems: 'center' }}
-          >
-            {bikes.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrent(i)}
-                style={{
-                  width: i === current ? '24px' : '8px',
-                  height: '8px',
-                  borderRadius: '4px',
-                  backgroundColor: i === current ? GOLD : `${TEXT_LIGHT}30`,
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: 0,
-                  transition: 'all 0.4s ease',
-                }}
-              />
-            ))}
-            <span style={{
-              fontFamily: "'Heebo', sans-serif",
-              fontSize: '11px',
-              color: `${TEXT_LIGHT}50`,
-              marginRight: '8px',
-              letterSpacing: '0.1em',
-            }}>
-              {bikes[current].label}
-            </span>
-          </motion.div>
 
           {/* CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 1.3 }}
-            style={{ display: 'flex', gap: '16px', alignItems: 'center', marginTop: '32px', flexWrap: 'wrap' }}
+            style={{ display: 'flex', gap: '16px', alignItems: 'center', marginTop: '40px', flexWrap: 'wrap', justifyContent: 'center' }}
+            dir="rtl"
           >
             <a
               href="#models"
@@ -148,6 +111,25 @@ export default function Hero() {
             >
               לכל הדגמים
             </a>
+
+            {/* Scroll indicator */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 1.8 }}
+              style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}
+            >
+              <div style={{ width: '1px', height: '48px', backgroundColor: `${TEXT_LIGHT}25`, position: 'relative', overflow: 'hidden' }}>
+                <motion.div
+                  animate={{ y: ['-100%', '200%'] }}
+                  transition={{ duration: 1.6, ease: 'linear', repeat: Infinity }}
+                  style={{ width: '100%', height: '40%', backgroundColor: GOLD, position: 'absolute', top: 0 }}
+                />
+              </div>
+              <span style={{ color: `${TEXT_LIGHT}50`, fontSize: '9px', letterSpacing: '0.4em', fontFamily: "'Heebo', sans-serif", textTransform: 'uppercase' }}>
+                גלול
+              </span>
+            </motion.div>
 
             <a
               href="#lead-form"
@@ -172,61 +154,7 @@ export default function Hero() {
             </a>
           </motion.div>
         </div>
-
-        {/* Bike image — left side (RTL = second), hidden on small mobile */}
-        <div
-          className="hidden md:flex flex-1 items-center justify-center"
-          style={{ position: 'relative', minHeight: '420px' }}
-        >
-          <AnimatePresence mode="wait">
-            <motion.img
-              key={current}
-              src={bikes[current].src}
-              alt={bikes[current].label}
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -30 }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              style={{
-                width: '100%',
-                maxWidth: '560px',
-                height: 'auto',
-                objectFit: 'contain',
-                filter: 'drop-shadow(0 24px 48px rgba(0,0,0,0.5))',
-              }}
-            />
-          </AnimatePresence>
-        </div>
-
       </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 1.8 }}
-        style={{
-          position: 'absolute',
-          bottom: '32px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '6px',
-        }}
-      >
-        <div style={{ width: '1px', height: '48px', backgroundColor: `${TEXT_LIGHT}25`, position: 'relative', overflow: 'hidden' }}>
-          <motion.div
-            animate={{ y: ['-100%', '200%'] }}
-            transition={{ duration: 1.6, ease: 'linear', repeat: Infinity }}
-            style={{ width: '100%', height: '40%', backgroundColor: GOLD, position: 'absolute', top: 0 }}
-          />
-        </div>
-        <span style={{ color: `${TEXT_LIGHT}50`, fontSize: '9px', letterSpacing: '0.4em', fontFamily: "'Heebo', sans-serif", textTransform: 'uppercase' }}>
-          גלול
-        </span>
-      </motion.div>
     </section>
   );
 }

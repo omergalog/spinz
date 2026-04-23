@@ -8,46 +8,46 @@ export interface BikeModel {
   accentColor: string;
 }
 
+// Legacy export kept for cart compatibility
 const models: BikeModel[] = [
   {
-    id: 'street-01',
-    name: 'STREET 01',
-    tagline: 'הקלאסיק של הרחוב',
-    image: '/assets/model-1.png',
-    price: 100000,
-    accentColor: '#C5C9B5',
+    id: 'spinz-54',
+    name: 'SPINZ 54',
+    tagline: 'מידה S — גובה 160–175 ס"מ',
+    image: '/assets/bike-black.png',
+    price: 2290,
+    accentColor: '#C9A870',
     features: [
-      { label: 'פריים', value: 'Chromoly Steel' },
+      { label: 'שלדה', value: 'אלומיניום 54' },
       { label: 'גלגלים', value: '700c' },
-      { label: 'צבע', value: 'Army Green / Tan' },
+      { label: 'מנגנון', value: 'סינגל ספיד' },
     ],
   },
   {
-    id: 'urban-x',
-    name: 'URBAN X',
-    tagline: 'אגרסיבי. קל. מהיר.',
-    image: '/assets/model-2.png',
-    price: 100000,
-    accentColor: '#8B2020',
+    id: 'spinz-57',
+    name: 'SPINZ 57',
+    tagline: 'מידה L — גובה 175–190 ס"מ',
+    image: '/assets/bike-black.png',
+    price: 2290,
+    accentColor: '#C9A870',
     features: [
-      { label: 'פריים', value: 'Butted Aluminum' },
-      { label: 'גלגלים', value: '700c Deep-V' },
-      { label: 'צבע', value: 'Burgundy / Gold' },
+      { label: 'שלדה', value: 'אלומיניום 57' },
+      { label: 'גלגלים', value: '700c' },
+      { label: 'מנגנון', value: 'סינגל ספיד' },
     ],
   },
-  {
-    id: 'track-r',
-    name: 'TRACK R',
-    tagline: 'נולד בפיסטה. גדל בעיר.',
-    image: '/assets/model-3.png',
-    price: 100000,
-    accentColor: '#3A5CA0',
-    features: [
-      { label: 'פריים', value: 'Hi-Ten Track Geo' },
-      { label: 'גלגלים', value: '700c Deep-V' },
-      { label: 'צבע', value: 'Graphite / Electric Blue' },
-    ],
-  },
+];
+
+export const colorVariants = [
+  { id: 'black', label: 'מאט שחור', image: '/assets/bike-black.png', hex: '#2A2A2A' },
+  { id: 'rust',  label: 'ראסט',     image: '/assets/bike-rust.png',  hex: '#A0431A' },
+  { id: 'green', label: 'ירוק זית', image: '/assets/bike-green.png', hex: '#6B7C5C' },
+  { id: 'gray',  label: 'אפור עירוני', image: '/assets/bike-gray.png', hex: '#808080' },
+];
+
+export const sizeVariants = [
+  { id: '54', label: '54', range: 'גובה 160–175 ס"מ' },
+  { id: '57', label: '57', range: 'גובה 175–190 ס"מ' },
 ];
 
 export default models;

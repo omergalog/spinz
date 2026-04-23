@@ -69,15 +69,14 @@ export default function SpinzVibe() {
       id="why-spinz"
       dir="rtl"
       style={{ backgroundColor: LIGHT, position: 'relative' }}
-      className="py-20 lg:py-28"
     >
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', backgroundColor: BORDER }} />
 
       <div className="mx-auto max-w-7xl px-6 lg:px-16">
         <div className="flex flex-col lg:flex-row gap-10 lg:gap-16 items-start">
 
-          {/* Content column */}
-          <div className="flex-1 min-w-0 flex flex-col gap-10">
+          {/* Content column — padding here so image can be full-height sticky */}
+          <div className="flex-1 min-w-0 flex flex-col gap-10 py-20 lg:py-28">
 
             {/* Header */}
             <div>
@@ -197,16 +196,16 @@ export default function SpinzVibe() {
             </motion.div>
           </div>
 
-          {/* Desktop image — visible only on lg+, sticky wrapper must NOT have overflow:hidden */}
+          {/* Desktop image — sticky, fills full viewport height below navbar */}
           <div
             className="hidden lg:block w-[42%] flex-shrink-0"
-            style={{ position: 'sticky', top: '88px', alignSelf: 'flex-start' }}
+            style={{ position: 'sticky', top: '88px', height: 'calc(100vh - 88px)', alignSelf: 'flex-start', padding: '24px 0' }}
           >
             <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              initial={{ opacity: 0, x: -20 }}
+              animate={isInView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
-              style={{ ...imageCard }}
+              style={{ height: '100%', borderRadius: '16px', overflow: 'hidden', position: 'relative' }}
             >
               <img
                 src="/assets/brand-bike.jpg"

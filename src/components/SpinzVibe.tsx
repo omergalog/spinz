@@ -205,7 +205,7 @@ export default function SpinzVibe() {
               initial={{ opacity: 0, x: -20 }}
               animate={isInView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
-              style={{ height: '100%', borderRadius: '16px', overflow: 'hidden', position: 'relative' }}
+              style={{ height: '100%', borderRadius: '16px', overflow: 'hidden', position: 'relative', boxShadow: '0 8px 48px rgba(0,0,0,0.18)' }}
             >
               <img
                 src="/assets/brand-bike.jpg"

@@ -94,13 +94,17 @@ export default function Models() {
                   style={{
                     position: 'absolute', top: '50%', left: 0, right: 0,
                     transform: 'translateY(-50%)',
-                    backgroundColor: 'rgba(0,0,0,0.6)',
+                    backgroundColor: 'rgba(0,0,0,0.25)',
+                    backdropFilter: 'blur(5px)',
+                    WebkitBackdropFilter: 'blur(5px)',
                     color: '#FFFFFF',
                     fontFamily: "'Heebo', sans-serif",
-                    fontSize: '13px', fontWeight: 700,
-                    letterSpacing: '2px', textTransform: 'uppercase',
-                    padding: '14px 0',
+                    fontSize: '13px', fontWeight: 600,
+                    letterSpacing: '2.5px', textTransform: 'uppercase',
+                    padding: '10px 0',
                     textAlign: 'center',
+                    borderTop: '1px solid rgba(255,255,255,0.15)',
+                    borderBottom: '1px solid rgba(255,255,255,0.15)',
                   }}
                 >
                   Out of Stock

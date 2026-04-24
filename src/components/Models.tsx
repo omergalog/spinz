@@ -93,16 +93,14 @@ export default function Models() {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.25 }}
                     style={{
-                      position: 'absolute', bottom: '8px', left: '50%',
-                      transform: 'translateX(-50%)',
-                      backgroundColor: 'rgba(28,28,28,0.75)',
+                      position: 'absolute', top: '0', right: '0',
+                      backgroundColor: '#1C1C1C',
                       color: '#F5F2EC',
                       fontFamily: "'Heebo', sans-serif",
-                      fontSize: '11px', fontWeight: 700,
-                      letterSpacing: '0.25em', textTransform: 'uppercase',
-                      padding: '8px 22px', borderRadius: '40px',
+                      fontSize: '10px', fontWeight: 700,
+                      letterSpacing: '0.2em', textTransform: 'uppercase',
+                      padding: '7px 14px', borderRadius: '0 0 0 6px',
                       whiteSpace: 'nowrap',
-                      backdropFilter: 'blur(6px)',
                     }}
                   >
                     Out of Stock

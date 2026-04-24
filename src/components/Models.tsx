@@ -72,24 +72,43 @@ export default function Models() {
 
           {/* RIGHT — image */}
           <div className="lg:flex-1 flex items-center justify-center bg-[#F0EDE7] p-8 lg:p-16 order-1 lg:order-2 min-h-[50vw] lg:min-h-0">
-            <AnimatePresence mode="wait">
-              <motion.img
-                key={color.id}
-                src={color.image}
-                alt={color.label}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: outOfStock ? 0.35 : 1, y: 0, filter: outOfStock ? 'grayscale(1)' : 'grayscale(0)' }}
-                exit={{ opacity: 0, y: -30 }}
-                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                style={{
-                  width: '100%',
-                  maxWidth: '520px',
-                  height: 'auto',
-                  objectFit: 'contain',
-                  mixBlendMode: 'multiply',
-                }}
-              />
-            </AnimatePresence>
+            <div style={{ position: 'relative', width: '100%', maxWidth: '520px' }}>
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={color.id}
+                  src={color.image}
+                  alt={color.label}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: outOfStock ? 0.35 : 1, y: 0, filter: outOfStock ? 'grayscale(1)' : 'grayscale(0)' }}
+                  exit={{ opacity: 0, y: -30 }}
+                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  style={{ width: '100%', height: 'auto', objectFit: 'contain', mixBlendMode: 'multiply', display: 'block' }}
+                />
+              </AnimatePresence>
+              <AnimatePresence>
+                {outOfStock && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.25 }}
+                    style={{
+                      position: 'absolute', top: '50%', left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      backgroundColor: 'rgba(28,28,28,0.82)',
+                      color: '#F5F2EC',
+                      fontFamily: "'Heebo', sans-serif",
+                      fontSize: '15px', fontWeight: 700,
+                      letterSpacing: '0.15em', textTransform: 'uppercase',
+                      padding: '12px 28px', borderRadius: '4px',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    אזל המלאי
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           {/* LEFT — selector */}

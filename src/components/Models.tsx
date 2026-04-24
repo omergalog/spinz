@@ -93,18 +93,19 @@ export default function Models() {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.25 }}
                     style={{
-                      position: 'absolute', top: '50%', left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      backgroundColor: 'rgba(28,28,28,0.82)',
+                      position: 'absolute', bottom: '8px', left: '50%',
+                      transform: 'translateX(-50%)',
+                      backgroundColor: 'rgba(28,28,28,0.75)',
                       color: '#F5F2EC',
                       fontFamily: "'Heebo', sans-serif",
-                      fontSize: '15px', fontWeight: 700,
-                      letterSpacing: '0.15em', textTransform: 'uppercase',
-                      padding: '12px 28px', borderRadius: '4px',
+                      fontSize: '11px', fontWeight: 700,
+                      letterSpacing: '0.25em', textTransform: 'uppercase',
+                      padding: '8px 22px', borderRadius: '40px',
                       whiteSpace: 'nowrap',
+                      backdropFilter: 'blur(6px)',
                     }}
                   >
-                    אזל המלאי
+                    Out of Stock
                   </motion.div>
                 )}
               </AnimatePresence>

@@ -39,10 +39,9 @@ const models: BikeModel[] = [
 ];
 
 export const colorVariants = [
-  { id: 'black', label: 'מאט שחור', image: '/assets/bike-black.png', hex: '#2A2A2A' },
-  { id: 'rust',  label: 'ראסט',     image: '/assets/bike-rust.png',  hex: '#A0431A' },
-  { id: 'green', label: 'ירוק זית', image: '/assets/bike-green.png', hex: '#6B7C5C' },
-  { id: 'gray',  label: 'אפור עירוני', image: '/assets/bike-gray.png', hex: '#808080' },
+  { id: 'rust',  label: 'ראסט',        image: '/assets/bike-rust.png',  hex: '#A0431A', slug: 'rust' },
+  { id: 'green', label: 'ירוק זית',    image: '/assets/bike-green.png', hex: '#6B7C5C', slug: 'green' },
+  { id: 'gray',  label: 'אפור עירוני', image: '/assets/bike-gray.png',  hex: '#808080', slug: 'gray' },
 ];
 
 export const sizeVariants = [

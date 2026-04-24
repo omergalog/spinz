@@ -31,16 +31,14 @@ export default function Models() {
   const size  = sizeVariants[selectedSize];
 
   useEffect(() => {
-    supabase.from('products').select('name, stock, price, sale_price').then(({ data }) => {
+    const slug = `spinz-${color.id}-${size.id}`;
+    supabase.from('products').select('stock, price, sale_price').eq('slug', slug).single().then(({ data }) => {
       if (!data) return;
-      // Use first product for stock/price reference
-      const p = data[0];
-      if (!p) return;
-      if (p.stock === 0) setOutOfStock(true);
-      if (p.price) setPrice(p.price);
-      if (p.sale_price) setSalePrice(p.sale_price);
+      setOutOfStock(data.stock === 0);
+      if (data.price) setPrice(data.price);
+      setSalePrice(data.sale_price ?? null);
     });
-  }, []);
+  }, [selectedColor, selectedSize]);
 
   const handleAddToCart = () => {
     if (outOfStock) return;

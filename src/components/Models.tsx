@@ -101,7 +101,7 @@ export default function Models() {
                     fontFamily: "'Heebo', sans-serif",
                     fontSize: '13px', fontWeight: 600,
                     letterSpacing: '2.5px', textTransform: 'uppercase',
-                    padding: '10px 0',
+                    padding: '6px 0',
                     textAlign: 'center',
                     borderTop: '1px solid rgba(255,255,255,0.15)',
                     borderBottom: '1px solid rgba(255,255,255,0.15)',

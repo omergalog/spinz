@@ -71,44 +71,42 @@ export default function Models() {
         <div className="flex flex-col lg:flex-row min-h-[80vh]">
 
           {/* RIGHT — image */}
-          <div className="lg:flex-1 flex items-center justify-center bg-[#F0EDE7] p-8 lg:p-16 order-1 lg:order-2 min-h-[50vw] lg:min-h-0">
-            <div style={{ position: 'relative', width: '100%', maxWidth: '520px' }}>
-              <AnimatePresence mode="wait">
-                <motion.img
-                  key={color.id}
-                  src={color.image}
-                  alt={color.label}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: outOfStock ? 0.35 : 1, y: 0, filter: outOfStock ? 'grayscale(1)' : 'grayscale(0)' }}
-                  exit={{ opacity: 0, y: -30 }}
-                  transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                  style={{ width: '100%', height: 'auto', objectFit: 'contain', mixBlendMode: 'multiply', display: 'block' }}
-                />
-              </AnimatePresence>
-              <AnimatePresence>
-                {outOfStock && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.25 }}
-                    style={{
-                      position: 'absolute', top: '50%', left: 0, right: 0,
-                      transform: 'translateY(-50%)',
-                      backgroundColor: 'rgba(0,0,0,0.70)',
-                      color: '#F5F2EC',
-                      fontFamily: "'Heebo', sans-serif",
-                      fontSize: '12px', fontWeight: 700,
-                      letterSpacing: '0.28em', textTransform: 'uppercase',
-                      padding: '14px 0',
-                      textAlign: 'center',
-                    }}
-                  >
-                    Out of Stock
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+          <div className="lg:flex-1 flex items-center justify-center bg-[#F0EDE7] p-8 lg:p-16 order-1 lg:order-2 min-h-[50vw] lg:min-h-0" style={{ position: 'relative' }}>
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={color.id}
+                src={color.image}
+                alt={color.label}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: outOfStock ? 0.35 : 1, y: 0, filter: outOfStock ? 'grayscale(1)' : 'grayscale(0)' }}
+                exit={{ opacity: 0, y: -30 }}
+                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                style={{ width: '100%', maxWidth: '520px', height: 'auto', objectFit: 'contain', mixBlendMode: 'multiply' }}
+              />
+            </AnimatePresence>
+            <AnimatePresence>
+              {outOfStock && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  style={{
+                    position: 'absolute', top: '50%', left: 0, right: 0,
+                    transform: 'translateY(-50%)',
+                    backgroundColor: 'rgba(0,0,0,0.6)',
+                    color: '#FFFFFF',
+                    fontFamily: "'Heebo', sans-serif",
+                    fontSize: '13px', fontWeight: 700,
+                    letterSpacing: '2px', textTransform: 'uppercase',
+                    padding: '14px 0',
+                    textAlign: 'center',
+                  }}
+                >
+                  Out of Stock
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* LEFT — selector */}

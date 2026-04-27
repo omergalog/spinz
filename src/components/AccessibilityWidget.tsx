@@ -42,18 +42,39 @@ function applySettings(s: Settings) {
   })();
   style.textContent = s.underlineLinks ? 'a { text-decoration: underline !important; }' : '';
 
-  // Pause animations — notify MotionConfig wrapper in main.tsx
+  // Pause animations
   setPauseMotion(s.pauseAnimations);
-  // Also freeze plain CSS animations
   const anim = document.getElementById('a11y-anim-style') ?? (() => {
     const el = document.createElement('style');
     el.id = 'a11y-anim-style';
     document.head.appendChild(el);
     return el;
   })();
-  anim.textContent = s.pauseAnimations
-    ? '*, *::before, *::after { animation-play-state: paused !important; transition-duration: 0.001ms !important; }'
-    : '';
+
+  if (s.pauseAnimations) {
+    // Pause all currently running WAAPI animations (Framer Motion uses these)
+    document.getAnimations().forEach(a => a.pause());
+    // Intercept new WAAPI animations so they auto-pause
+    if (!(Element.prototype.animate as any).__paused) {
+      const orig = Element.prototype.animate;
+      (Element.prototype.animate as any) = function(this: Element, ...args: Parameters<typeof orig>) {
+        const a = orig.apply(this, args);
+        a.pause();
+        return a;
+      };
+      (Element.prototype.animate as any).__paused = true;
+      (Element.prototype.animate as any).__orig = orig;
+    }
+    anim.textContent = '*, *::before, *::after { animation-play-state: paused !important; transition: none !important; }';
+  } else {
+    // Restore original animate and resume
+    const patched = Element.prototype.animate as any;
+    if (patched.__paused) {
+      Element.prototype.animate = patched.__orig;
+    }
+    document.getAnimations().forEach(a => a.play());
+    anim.textContent = '';
+  }
 
   // Big cursor
   root.style.cursor = s.bigCursor ? 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewBox=\'0 0 32 32\'%3E%3Cpath d=\'M8 2l18 18-8-1-5 9-5-26z\' fill=\'%23fff\' stroke=\'%23000\' stroke-width=\'2\'/%3E%3C/svg%3E") 0 0, auto' : '';

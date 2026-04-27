@@ -41,7 +41,9 @@ function applySettings(s: Settings) {
   })();
   style.textContent = s.underlineLinks ? 'a { text-decoration: underline !important; }' : '';
 
-  // Pause animations
+  // Pause animations — notify MotionConfig wrapper in main.tsx
+  window.dispatchEvent(new CustomEvent('a11y-pause-motion', { detail: s.pauseAnimations }));
+  // Also freeze plain CSS animations
   const anim = document.getElementById('a11y-anim-style') ?? (() => {
     const el = document.createElement('style');
     el.id = 'a11y-anim-style';
@@ -49,7 +51,7 @@ function applySettings(s: Settings) {
     return el;
   })();
   anim.textContent = s.pauseAnimations
-    ? '*, *::before, *::after { animation-play-state: paused !important; transition: none !important; }'
+    ? '*, *::before, *::after { animation-play-state: paused !important; transition-duration: 0.001ms !important; }'
     : '';
 
   // Big cursor

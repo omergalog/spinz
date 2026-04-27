@@ -5,6 +5,7 @@ import './styles/globals.css';
 import Index from './pages/Index';
 import Story from './pages/Story';
 import Terms from './pages/Terms';
+import Accessibility from './pages/Accessibility';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -13,6 +14,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Route path="/" element={<Index />} />
         <Route path="/story" element={<Story />} />
         <Route path="/terms" element={<Terms />} />
+        <Route path="/accessibility" element={<Accessibility />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>,

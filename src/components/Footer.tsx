@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const BG = '#1C1C1C';
 const BORDER = '#2A2A2A';
@@ -20,19 +20,33 @@ export default function Footer() {
             <p className="text-xs" style={{ color: '#FFFFFF', fontFamily: "'Heebo', sans-serif" }}>
               © 2026 Spinz. כל הזכויות שמורות.
             </p>
-            <button
-              onClick={() => navigate('/terms')}
-              style={{
-                fontFamily: "'Heebo', sans-serif", fontSize: '12px',
-                color: '#888', background: 'none', border: 'none',
-                cursor: 'pointer', textDecoration: 'underline',
-                textUnderlineOffset: '3px', transition: 'color 0.2s',
-              }}
-              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = '#C9A870'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = '#888'; }}
-            >
-              מדיניות פרטיות ותנאי שימוש
-            </button>
+            <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+              <button
+                onClick={() => navigate('/terms')}
+                style={{
+                  fontFamily: "'Heebo', sans-serif", fontSize: '12px',
+                  color: '#888', background: 'none', border: 'none',
+                  cursor: 'pointer', textDecoration: 'underline',
+                  textUnderlineOffset: '3px', transition: 'color 0.2s',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = '#C9A870'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = '#888'; }}
+              >
+                מדיניות פרטיות ותנאי שימוש
+              </button>
+              <Link
+                to="/accessibility"
+                style={{
+                  fontFamily: "'Heebo', sans-serif", fontSize: '12px',
+                  color: '#888', textDecoration: 'underline',
+                  textUnderlineOffset: '3px', transition: 'color 0.2s',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#C9A870'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#888'; }}
+              >
+                הצהרת נגישות
+              </Link>
+            </div>
             <p className="text-xs" style={{ color: '#FFFFFF', fontFamily: "'Heebo', sans-serif" }}>
               Designed in Tel Aviv
             </p>

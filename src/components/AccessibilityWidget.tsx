@@ -144,35 +144,50 @@ export default function AccessibilityWidget() {
             position: 'absolute',
             bottom: '64px',
             right: 0,
-            width: '260px',
-            backgroundColor: '#111',
-            border: `1px solid #2A2A2A`,
-            borderRadius: '16px',
+            width: '272px',
+            backgroundColor: '#F5F0E8',
+            border: `1px solid #D8D0C0`,
+            borderRadius: '18px',
             padding: '20px',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
+            boxShadow: '0 16px 48px rgba(0,0,0,0.18)',
           }}
         >
           {/* Header */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-            <span style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '14px', color: '#fff' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+            <span style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '15px', color: '#1C1C1C' }}>
               נגישות
             </span>
-            {!isDefault && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              {!isDefault && (
+                <button
+                  onClick={reset}
+                  style={{
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    fontFamily: "'Heebo', sans-serif", fontSize: '12px',
+                    color: '#8A7A5A', padding: 0, textDecoration: 'underline',
+                    textUnderlineOffset: '2px',
+                  }}
+                >
+                  איפוס
+                </button>
+              )}
               <button
-                onClick={reset}
+                onClick={() => setOpen(false)}
+                aria-label="סגור תפריט נגישות"
                 style={{
-                  background: 'none', border: 'none', cursor: 'pointer',
-                  fontFamily: "'Heebo', sans-serif", fontSize: '12px',
-                  color: GOLD, padding: 0,
+                  width: '26px', height: '26px', borderRadius: '50%',
+                  backgroundColor: '#E8E0D0', border: 'none', cursor: 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: '#5A5040', fontSize: '14px', fontWeight: 700, lineHeight: 1,
                 }}
               >
-                איפוס
+                ✕
               </button>
-            )}
+            </div>
           </div>
 
           {/* Controls */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '7px' }}>
             {CONTROLS.map(ctrl => {
               const val = settings[ctrl.key];
               const active = ctrl.type === 'toggle' ? !!val : (val as number) !== 0;
@@ -183,17 +198,16 @@ export default function AccessibilityWidget() {
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                     padding: '10px 12px',
                     borderRadius: '10px',
-                    backgroundColor: active ? `${GOLD}18` : '#1C1C1C',
-                    border: `1px solid ${active ? GOLD + '44' : '#2A2A2A'}`,
-                    transition: 'all 0.2s',
+                    backgroundColor: active ? `${GOLD}22` : '#EDE7DA',
+                    border: `1px solid ${active ? GOLD + '88' : '#CEC6B4'}`,
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <span style={{ fontSize: '16px', width: '20px', textAlign: 'center' }}>{ctrl.icon}</span>
+                    <span style={{ fontSize: '15px', width: '20px', textAlign: 'center' }}>{ctrl.icon}</span>
                     <span style={{
                       fontFamily: "'Heebo', sans-serif", fontSize: '13px',
-                      color: active ? '#fff' : '#888',
-                      fontWeight: active ? 600 : 400,
+                      color: active ? '#1C1C1C' : '#5A5040',
+                      fontWeight: active ? 700 : 400,
                     }}>
                       {ctrl.label}
                     </span>
@@ -207,9 +221,9 @@ export default function AccessibilityWidget() {
                       style={{
                         width: '36px', height: '20px',
                         borderRadius: '10px',
-                        backgroundColor: active ? GOLD : '#333',
+                        backgroundColor: active ? GOLD : '#C8BFB0',
                         border: 'none', cursor: 'pointer',
-                        position: 'relative', transition: 'background 0.2s',
+                        position: 'relative',
                         flexShrink: 0,
                       }}
                     >
@@ -231,14 +245,15 @@ export default function AccessibilityWidget() {
                         aria-label="הקטן טקסט"
                         style={{
                           width: '24px', height: '24px', borderRadius: '6px',
-                          backgroundColor: '#2A2A2A', border: 'none', cursor: 'pointer',
-                          color: '#fff', fontSize: '14px', fontWeight: 700,
+                          backgroundColor: '#D8D0C0', border: 'none', cursor: 'pointer',
+                          color: '#1C1C1C', fontSize: '14px', fontWeight: 700,
                           opacity: (settings.fontSize as number) <= -2 ? 0.3 : 1,
                         }}
                       >−</button>
                       <span style={{
                         fontFamily: "'Heebo', sans-serif", fontSize: '12px',
-                        color: active ? GOLD : '#555', minWidth: '16px', textAlign: 'center',
+                        color: active ? '#8A6830' : '#8A7A6A', minWidth: '16px', textAlign: 'center',
+                        fontWeight: 600,
                       }}>
                         {(settings.fontSize as number) > 0 ? `+${settings.fontSize}` : settings.fontSize}
                       </span>
@@ -248,8 +263,8 @@ export default function AccessibilityWidget() {
                         aria-label="הגדל טקסט"
                         style={{
                           width: '24px', height: '24px', borderRadius: '6px',
-                          backgroundColor: '#2A2A2A', border: 'none', cursor: 'pointer',
-                          color: '#fff', fontSize: '14px', fontWeight: 700,
+                          backgroundColor: '#D8D0C0', border: 'none', cursor: 'pointer',
+                          color: '#1C1C1C', fontSize: '14px', fontWeight: 700,
                           opacity: (settings.fontSize as number) >= 4 ? 0.3 : 1,
                         }}
                       >+</button>
@@ -262,11 +277,11 @@ export default function AccessibilityWidget() {
 
           {/* Footer */}
           <p style={{
-            fontFamily: "'Heebo', sans-serif", fontSize: '10px', color: '#444',
-            margin: '16px 0 0', textAlign: 'center', lineHeight: 1.6,
+            fontFamily: "'Heebo', sans-serif", fontSize: '10px', color: '#8A7A6A',
+            margin: '14px 0 0', textAlign: 'center', lineHeight: 1.6,
           }}>
-            לפנייה בנושא נגישות:{' '}
-            <a href="mailto:info@spinzbikes.com" style={{ color: GOLD }}>
+            פנייה בנושא נגישות:{' '}
+            <a href="mailto:info@spinzbikes.com" style={{ color: '#8A6830' }}>
               info@spinzbikes.com
             </a>
           </p>

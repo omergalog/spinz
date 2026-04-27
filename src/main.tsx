@@ -6,16 +6,37 @@ import Index from './pages/Index';
 import Story from './pages/Story';
 import Terms from './pages/Terms';
 import Accessibility from './pages/Accessibility';
+import AccessibilityWidget from './components/AccessibilityWidget';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/story" element={<Story />} />
-        <Route path="/terms" element={<Terms />} />
-        <Route path="/accessibility" element={<Accessibility />} />
-      </Routes>
+      {/* Skip to main content — מקלדת */}
+      <a
+        href="#main-content"
+        style={{
+          position: 'absolute', top: '-100px', right: 0, zIndex: 99999,
+          padding: '12px 20px', backgroundColor: '#C9A870', color: '#1C1C1C',
+          fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '14px',
+          textDecoration: 'none', borderRadius: '0 0 8px 8px',
+          transition: 'top 0.2s',
+        }}
+        onFocus={e => { e.currentTarget.style.top = '0'; }}
+        onBlur={e => { e.currentTarget.style.top = '-100px'; }}
+      >
+        דלג לתוכן הראשי
+      </a>
+
+      <main id="main-content">
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/story" element={<Story />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/accessibility" element={<Accessibility />} />
+        </Routes>
+      </main>
+
+      <AccessibilityWidget />
     </BrowserRouter>
   </React.StrictMode>,
 );

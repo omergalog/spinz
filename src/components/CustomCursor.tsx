@@ -46,7 +46,7 @@ export default function CustomCursor() {
         width: '24px',
         height: '24px',
         pointerEvents: 'none',
-        zIndex: 9999,
+        zIndex: 999999,
         willChange: 'transform',
       }}
     >

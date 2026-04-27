@@ -158,19 +158,20 @@ export default function AccessibilityWidget() {
               נגישות
             </span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              {!isDefault && (
-                <button
-                  onClick={reset}
-                  style={{
-                    background: 'none', border: 'none', cursor: 'pointer',
-                    fontFamily: "'Heebo', sans-serif", fontSize: '12px',
-                    color: '#8A7A5A', padding: 0, textDecoration: 'underline',
-                    textUnderlineOffset: '2px',
-                  }}
-                >
-                  איפוס
-                </button>
-              )}
+              <button
+                onClick={reset}
+                disabled={isDefault}
+                style={{
+                  background: 'none', border: 'none', cursor: isDefault ? 'default' : 'pointer',
+                  fontFamily: "'Heebo', sans-serif", fontSize: '12px',
+                  color: isDefault ? '#C0B8A8' : '#8A6830', padding: 0,
+                  textDecoration: isDefault ? 'none' : 'underline',
+                  textUnderlineOffset: '2px',
+                  transition: 'color 0.2s',
+                }}
+              >
+                איפוס
+              </button>
               <button
                 onClick={() => setOpen(false)}
                 aria-label="סגור תפריט נגישות"

@@ -8,20 +8,12 @@ import Story from './pages/Story';
 import Terms from './pages/Terms';
 import Accessibility from './pages/Accessibility';
 import AccessibilityWidget from './components/AccessibilityWidget';
+import { getPauseMotion, onPauseMotionChange } from './utils/motionStore';
 
 function Root() {
-  const [pauseMotion, setPauseMotion] = useState(() => {
-    try {
-      const saved = localStorage.getItem('a11y_settings');
-      return saved ? !!JSON.parse(saved).pauseAnimations : false;
-    } catch { return false; }
-  });
+  const [pauseMotion, setPauseMotionState] = useState(getPauseMotion);
 
-  useEffect(() => {
-    const handler = (e: Event) => setPauseMotion((e as CustomEvent<boolean>).detail);
-    window.addEventListener('a11y-pause-motion', handler);
-    return () => window.removeEventListener('a11y-pause-motion', handler);
-  }, []);
+  useEffect(() => onPauseMotionChange(setPauseMotionState), []);
 
   return (
     <MotionConfig reducedMotion={pauseMotion ? 'always' : 'never'}>

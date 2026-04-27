@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { setPauseMotion } from '../utils/motionStore';
 
 const GOLD = '#C9A870';
 const DARK = '#1C1C1C';
@@ -42,7 +43,7 @@ function applySettings(s: Settings) {
   style.textContent = s.underlineLinks ? 'a { text-decoration: underline !important; }' : '';
 
   // Pause animations — notify MotionConfig wrapper in main.tsx
-  window.dispatchEvent(new CustomEvent('a11y-pause-motion', { detail: s.pauseAnimations }));
+  setPauseMotion(s.pauseAnimations);
   // Also freeze plain CSS animations
   const anim = document.getElementById('a11y-anim-style') ?? (() => {
     const el = document.createElement('style');

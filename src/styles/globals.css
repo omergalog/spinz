@@ -30,6 +30,21 @@ body {
   overflow-x: clip;
 }
 
+/* ─── Pause animations (accessibility widget) ─── */
+html[data-pause-motion="true"] *,
+html[data-pause-motion="true"] *::before,
+html[data-pause-motion="true"] *::after {
+  animation-play-state: paused !important;
+  animation-duration: 0.001ms !important;
+  transition: none !important;
+}
+/* Force Framer Motion elements to their visible final state */
+html[data-pause-motion="true"] [style*="opacity: 0"] { opacity: 1 !important; }
+html[data-pause-motion="true"] [style*="opacity:0"]  { opacity: 1 !important; }
+html[data-pause-motion="true"] [style*="translateY"] { transform: none !important; }
+html[data-pause-motion="true"] [style*="translateX"] { transform: none !important; }
+html[data-pause-motion="true"] [style*="scaleX(0)"]  { transform: scaleX(1) !important; }
+
 /* Hide default cursor on desktop for custom cursor */
 @media (pointer: fine) {
   *, *::before, *::after {

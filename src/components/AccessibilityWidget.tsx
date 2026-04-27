@@ -52,6 +52,7 @@ function applySettings(s: Settings) {
   })();
 
   if (s.pauseAnimations) {
+    document.documentElement.setAttribute('data-pause-motion', 'true');
     // Pause all currently running WAAPI animations (Framer Motion uses these)
     document.getAnimations().forEach(a => a.pause());
     // Intercept new WAAPI animations so they auto-pause

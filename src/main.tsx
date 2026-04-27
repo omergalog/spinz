@@ -16,7 +16,10 @@ function Root() {
   useEffect(() => onPauseMotionChange(setPauseMotionState), []);
 
   return (
-    <MotionConfig reducedMotion={pauseMotion ? 'always' : 'never'}>
+    <MotionConfig
+      reducedMotion={pauseMotion ? 'always' : 'never'}
+      transition={pauseMotion ? { duration: 0, delay: 0 } : undefined}
+    >
       <BrowserRouter>
         {/* Skip to main content — מקלדת */}
         <a

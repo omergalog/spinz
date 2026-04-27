@@ -22,6 +22,10 @@ function CountUp({ target, suffix = '', duration = 2800 }: { target: number; suf
 
   useEffect(() => {
     if (!inView) return;
+    if (document.documentElement.hasAttribute('data-pause-motion')) {
+      setValue(target);
+      return;
+    }
     let start = 0;
     const step = (timestamp: number) => {
       if (!start) start = timestamp;

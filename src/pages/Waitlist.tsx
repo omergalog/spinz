@@ -35,7 +35,7 @@ const SPECS = [
   },
   {
     num: '04', title: 'הנדסת חומרים חכמה', sub: 'אלומיניום + פלדה',
-    body: 'שלדת אלומיניום קלה עם מזלג פלדה קדמי — סופג רעידות מהכביש ומעניק חוויית רכיבה חלקה.',
+    body: 'מזלג פלדה קדמי שסופג את הזעזועים של הכביש. השילוב המושלם לשלדת האלומיניום — חלק, שקט, ובלי להרגיש כל בור.',
     icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="8.5" x2="22" y2="8.5"/><line x1="2" y1="15.5" x2="22" y2="15.5"/></svg>,
   },
   {
@@ -45,7 +45,7 @@ const SPECS = [
   },
   {
     num: '06', title: 'התאמה בשנייה', sub: 'Quick Release',
-    body: 'שחרור מהיר למושב — כוונון גובה מיידי ללא כלים. מושלם לכמה רוכבים באותה משפחה.',
+    body: 'כיוון מהיר ללא כלים. נוח להתאמה מיידית — או סתם אם חבר רוצה לעשות סיבוב.',
     icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>,
   },
   {
@@ -298,8 +298,7 @@ export default function Waitlist() {
           {/* Price teaser */}
           <FadeSection delay={0.15}>
             <div style={{ marginTop: '40px', padding: '24px 28px', borderRight: `3px solid ${GOLD}`, backgroundColor: '#1F1F1F' }}>
-              <p style={{ color: CREAM, fontWeight: 700, fontSize: '16px', margin: '0 0 6px' }}>מחיר שסטודנט יכול להרשות לעצמו.</p>
-              <p style={{ color: MUTED, fontSize: '13px', fontWeight: 400, margin: 0, letterSpacing: '0.04em' }}>Priced for students. Designed to turn heads.</p>
+              <p style={{ color: CREAM, fontWeight: 700, fontSize: '16px', margin: 0 }}>מחיר שסטודנט יכול להרשות לעצמו.</p>
             </div>
           </FadeSection>
         </div>

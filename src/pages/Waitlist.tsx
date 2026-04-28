@@ -61,8 +61,8 @@ const SPECS = [
 ];
 
 const SIZES = [
-  { size: '54"', desc: '160–175 ס"מ', descEn: 'Fits 160–175 cm' },
-  { size: '57"', desc: '175–190 ס"מ', descEn: 'Fits 175–190 cm' },
+  { size: '54', desc: '170–178 ס"מ' },
+  { size: '57', desc: '178–185 ס"מ' },
 ];
 
 function FadeSection({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
@@ -84,6 +84,7 @@ export default function Waitlist() {
   const [name, setName]       = useState('');
   const [contact, setContact] = useState('');
   const [color, setColor]     = useState('');
+  const [size, setSize]       = useState('');
   const [loading, setLoading] = useState(false);
   const [done, setDone]       = useState(false);
   const [error, setError]     = useState('');
@@ -93,7 +94,7 @@ export default function Waitlist() {
     setLoading(true);
     setError('');
     const isEmail = contact.includes('@');
-    const message = `[Waitlist]${color ? ` · צבע: ${color}` : ''}`;
+    const message = `[Waitlist]${color ? ` · צבע: ${color}` : ''}${size ? ` · מידה: ${size}` : ''}`;
     const { error: err } = await supabase.from('leads').insert([{
       name: name.trim(),
       email: isEmail ? contact.trim() : null,
@@ -368,6 +369,35 @@ export default function Waitlist() {
                       />
                     ))}
                     {color && <span style={{ color: '#6B5E4A', fontSize: '13px' }}>{color}</span>}
+                  </div>
+                </div>
+
+                {/* Size preference */}
+                <div style={{ paddingTop: '4px' }}>
+                  <p style={{ color: '#9A8C7A', fontSize: '11px', fontWeight: 500, letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: '12px' }}>
+                    SIZE · מידה מועדפת (אופציונלי)
+                  </p>
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    {SIZES.map(s => (
+                      <button
+                        key={s.size}
+                        onClick={() => setSize(size === s.size ? '' : s.size)}
+                        style={{
+                          flex: 1,
+                          padding: '10px 12px',
+                          borderRadius: '8px',
+                          border: `1.5px solid ${size === s.size ? GOLD : '#C8BFB0'}`,
+                          backgroundColor: size === s.size ? `${GOLD}18` : '#FBF7F2',
+                          cursor: 'pointer',
+                          fontFamily: "'Heebo', sans-serif",
+                          textAlign: 'center',
+                          transition: 'border-color 0.2s, background-color 0.2s',
+                        }}
+                      >
+                        <p style={{ color: size === s.size ? '#8A6830' : BEIGE_DARK, fontWeight: 800, fontSize: '18px', margin: 0, letterSpacing: '-0.02em' }}>{s.size}</p>
+                        <p style={{ color: '#9A8C7A', fontSize: '11px', margin: 0 }}>{s.desc}</p>
+                      </button>
+                    ))}
                   </div>
                 </div>
 

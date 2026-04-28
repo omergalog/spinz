@@ -160,9 +160,9 @@ export default function Waitlist() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            style={{ display: 'block', marginBottom: '16px', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: GOLD }}
+            style={{ display: 'block', marginBottom: '16px', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: GOLD, textShadow: '0 1px 8px rgba(0,0,0,0.8)' }}
           >
-            COMING SOON · בקרוב
+            SPINZ · COMING SOON
           </motion.span>
 
           <div style={{ overflow: 'hidden' }}>
@@ -170,7 +170,7 @@ export default function Waitlist() {
               initial={{ y: '110%' }}
               animate={{ y: '0%' }}
               transition={{ duration: 1.0, ease: [0.76, 0, 0.24, 1], delay: 0.5 }}
-              style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(40px, 9vw, 80px)', color: CREAM, letterSpacing: '-0.02em', lineHeight: 1.0, margin: '0 0 20px' }}
+              style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(40px, 9vw, 80px)', color: CREAM, letterSpacing: '-0.02em', lineHeight: 1.0, margin: '0 0 20px', textShadow: '0 2px 24px rgba(0,0,0,0.6)' }}
             >
               כולם ישאלו אותך<br />מאיפה.
             </motion.h1>
@@ -180,34 +180,38 @@ export default function Waitlist() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.9, delay: 1.0 }}
-            style={{ fontSize: 'clamp(15px, 2vw, 18px)', fontWeight: 300, color: CREAM, margin: '0 0 6px', opacity: 0.85 }}
+            style={{ fontSize: 'clamp(15px, 2vw, 18px)', fontWeight: 300, color: CREAM, margin: '0 0 32px', opacity: 0.85, textShadow: '0 1px 12px rgba(0,0,0,0.7)' }}
           >
             אופניים שמסובבים ראשים. מחיר שסטודנט יכול להרשות לעצמו.
           </motion.p>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.9, delay: 1.2 }}
-            style={{ fontSize: '12px', fontWeight: 400, color: MUTED, letterSpacing: '0.06em' }}
-          >
-            The bike everyone stops to ask about.
-          </motion.p>
-
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1.8 }}
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', marginTop: '40px' }}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 1.3 }}
           >
-            <div style={{ width: '1px', height: '48px', backgroundColor: `${CREAM}25`, position: 'relative', overflow: 'hidden' }}>
-              <motion.div
-                animate={{ y: ['-100%', '200%'] }}
-                transition={{ duration: 1.6, ease: 'linear', repeat: Infinity }}
-                style={{ width: '100%', height: '40%', backgroundColor: GOLD, position: 'absolute', top: 0 }}
-              />
-            </div>
-            <span style={{ color: `${CREAM}50`, fontSize: '9px', letterSpacing: '0.4em', textTransform: 'uppercase' }}>גלול</span>
+            <button
+              onClick={() => document.getElementById('wl-form')?.scrollIntoView({ behavior: 'smooth' })}
+              style={{
+                padding: '14px 32px',
+                borderRadius: '6px',
+                backgroundColor: GOLD,
+                border: 'none',
+                color: DARK,
+                fontSize: '13px',
+                fontWeight: 800,
+                cursor: 'pointer',
+                fontFamily: "'Heebo', sans-serif",
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                boxShadow: '0 4px 24px rgba(0,0,0,0.4)',
+                transition: 'transform 0.2s, background-color 0.2s',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'; }}
+            >
+              שמרו לי זוג ←
+            </button>
           </motion.div>
         </div>
       </div>
@@ -300,6 +304,7 @@ export default function Waitlist() {
 
       {/* ── FORM — BEIGE ── */}
       <section
+        id="wl-form"
         className="wl-form-section"
         style={{ padding: 'clamp(56px, 8vw, 96px) 32px 96px', backgroundColor: BEIGE }}
       >

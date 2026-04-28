@@ -210,7 +210,7 @@ export default function Waitlist() {
               onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)'; }}
               onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'; }}
             >
-              שמרו לי זוג ←
+              שמרו לי זוג ↓
             </button>
           </motion.div>
         </div>

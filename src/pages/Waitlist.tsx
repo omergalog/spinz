@@ -244,19 +244,20 @@ export default function Waitlist() {
           <FadeSection delay={0.15}>
             <div style={{ borderTop: `1px solid ${BORDER}`, paddingTop: '28px' }}>
               <p style={{ color: MUTED, fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '16px' }}>SIZES · מידות שלדה</p>
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {SIZES.map(s => (
                   <div key={s.size} style={{
-                    display: 'flex', alignItems: 'center', gap: '16px',
+                    display: 'flex', alignItems: 'center', gap: '20px',
                     border: `1px solid ${BORDER}`,
                     borderRadius: '10px',
                     padding: '14px 20px',
                     backgroundColor: '#1F1F1F',
-                    flex: '1 1 160px',
                   }}>
-                    <p style={{ color: GOLD, fontSize: '24px', fontWeight: 800, margin: 0, letterSpacing: '-0.02em', flexShrink: 0 }}>{s.size}</p>
-                    <p style={{ color: MUTED, fontSize: '11px', margin: '0 0 2px' }}>מיועד ל</p>
-                    <p style={{ color: CREAM, fontSize: '13px', fontWeight: 500, margin: 0 }}>{s.desc}</p>
+                    <p style={{ color: GOLD, fontSize: '28px', fontWeight: 800, margin: 0, letterSpacing: '-0.02em', flexShrink: 0, minWidth: '36px' }}>{s.size}</p>
+                    <div>
+                      <p style={{ color: MUTED, fontSize: '11px', margin: '0 0 2px' }}>מיועד ל</p>
+                      <p style={{ color: CREAM, fontSize: '13px', fontWeight: 500, margin: 0 }}>{s.desc}</p>
+                    </div>
                   </div>
                 ))}
               </div>

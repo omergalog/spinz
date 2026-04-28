@@ -8,6 +8,8 @@ const DARK   = '#1C1C1C';
 const CREAM  = '#EDEBE6';
 const MUTED  = '#888888';
 const BORDER = '#2A2A2A';
+const BEIGE  = '#F2EDE4';
+const BEIGE_DARK = '#1C1812';
 
 const COLORS = [
   { name: 'שחור מאט', nameEn: 'Matte Black', hex: '#2A2A2A', border: '#555' },
@@ -15,13 +17,47 @@ const COLORS = [
   { name: "בז'",       nameEn: 'Beige',         hex: '#C8B99A', border: '#A89070' },
 ];
 
-const HIGHLIGHTS = [
-  { label: 'שלדה',        labelEn: 'Frame',     value: 'אלומיניום',    valueEn: 'Aluminium' },
-  { label: 'מזלג',        labelEn: 'Fork',      value: 'פלדה',         valueEn: 'Steel' },
-  { label: 'צמיגים',      labelEn: 'Tires',     value: 'Kenda 32mm',   valueEn: 'Kenda 32mm' },
-  { label: 'גלגל שיניים', labelEn: 'Chainring', value: '46T',          valueEn: '46T' },
-  { label: 'חישוקים',     labelEn: 'Rims',      value: 'פרופיל 30mm',  valueEn: '30mm profile' },
-  { label: 'מושב',        labelEn: 'Saddle',    value: 'Quick Release', valueEn: 'Quick Release' },
+const SPECS = [
+  {
+    num: '01', title: 'קלילות עירונית', sub: 'שלדת אלומיניום',
+    body: 'שלדת אלומיניום המעניקה תחושת קלילות יוצאת דופן. זינוק זריז בכל רמזור ונוחה לנשיאה אל תוך הדירה.',
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L8 8H4l4 4-2 6 6-3 6 3-2-6 4-4h-4L12 2z"/></svg>,
+  },
+  {
+    num: '02', title: "צמיגים עמידים לפנצ'ר", sub: 'Kenda 32 מ"מ',
+    body: 'אחיזה בטוחה וראש שקט. צמיגים אורבניים רחבים שבולעים את מהמורות העיר ופסי הרכבת הקלה.',
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></svg>,
+  },
+  {
+    num: '03', title: 'יחס העברה חכם לעיר', sub: 'גלגל שיניים 46T',
+    body: 'האיזון המושלם בין מהירות לשיוט קל. מכויל בדיוק לעליות המתונות ולמישורים של הרחובות.',
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>,
+  },
+  {
+    num: '04', title: 'הנדסת חומרים חכמה', sub: 'אלומיניום + פלדה',
+    body: 'שלדת אלומיניום קלה עם מזלג פלדה קדמי — סופג רעידות מהכביש ומעניק חוויית רכיבה חלקה.',
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="8.5" x2="22" y2="8.5"/><line x1="2" y1="15.5" x2="22" y2="15.5"/></svg>,
+  },
+  {
+    num: '05', title: 'חישוקים מחוזקים', sub: 'פרופיל גבוה 30 מ"מ',
+    body: 'גלגלים בעלי פרופיל גבוה — מראה אורבני מוקפד ועמידות גבוהה מול בורות ושפות מדרכה.',
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/><line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/></svg>,
+  },
+  {
+    num: '06', title: 'התאמה בשנייה', sub: 'Quick Release',
+    body: 'שחרור מהיר למושב — כוונון גובה מיידי ללא כלים. מושלם לכמה רוכבים באותה משפחה.',
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>,
+  },
+  {
+    num: '07', title: 'בטיחות ללא פשרות', sub: 'תקנים בינלאומיים',
+    body: 'תוכנן ונבנה בהתאם לתקני בטיחות בינלאומיים מחמירים. כי על בטיחות לא מתפשרים.',
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>,
+  },
+  {
+    num: '08', title: 'פדלים רחבים משודרגים', sub: 'יציבות מלאה',
+    body: 'פדלים רחבים מפלסטיק קשיח — שטח פנים גדול לאחיזה בטוחה ודיווש נוח בכל נעל.',
+    icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="10" width="20" height="5" rx="2"/><line x1="7" y1="10" x2="7" y2="15"/><line x1="12" y1="10" x2="12" y2="15"/><line x1="17" y1="10" x2="17" y2="15"/></svg>,
+  },
 ];
 
 const SIZES = [
@@ -85,15 +121,12 @@ export default function Waitlist() {
           .wl-colors-row { flex-direction: column !important; gap: 16px !important; }
           .wl-hero-text  { padding: 0 20px !important; bottom: 10% !important; }
           .wl-section    { padding: 48px 20px !important; }
-          .wl-form       { padding: 48px 20px 72px !important; }
-          .wl-spec-item  { padding-left: 0 !important; }
+          .wl-form-section { padding: 56px 20px 72px !important; }
         }
       `}</style>
 
       {/* ── HERO ── */}
       <div style={{ position: 'relative', height: '100svh', minHeight: '580px', overflow: 'hidden' }}>
-
-        {/* Ken Burns image */}
         <img
           src="/assets/lifestyle-hero.jpg"
           alt="Spinz"
@@ -105,14 +138,11 @@ export default function Waitlist() {
             transformOrigin: 'center center',
           }}
         />
-
-        {/* Gradient overlay */}
         <div style={{
           position: 'absolute', inset: 0,
           background: 'linear-gradient(to bottom, rgba(28,28,28,0.45) 0%, rgba(28,28,28,0.08) 35%, rgba(28,28,28,0.88) 100%)',
         }} />
 
-        {/* Logo */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -122,25 +152,15 @@ export default function Waitlist() {
           <img src="/assets/logo.png" alt="SPINZ" style={{ height: '32px', filter: 'invert(1) brightness(2)', opacity: 0.95 }} />
         </motion.div>
 
-        {/* Hero text */}
         <div
           className="wl-hero-text"
-          style={{
-            position: 'absolute', bottom: '8%', right: 0, left: 0,
-            padding: '0 32px',
-            maxWidth: '720px', margin: '0 auto',
-            textAlign: 'center',
-          }}
+          style={{ position: 'absolute', bottom: '8%', right: 0, left: 0, padding: '0 32px', maxWidth: '720px', margin: '0 auto', textAlign: 'center' }}
         >
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            style={{
-              display: 'block', marginBottom: '16px',
-              fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em',
-              textTransform: 'uppercase', color: GOLD,
-            }}
+            style={{ display: 'block', marginBottom: '16px', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: GOLD }}
           >
             COMING SOON · בקרוב
           </motion.span>
@@ -150,15 +170,7 @@ export default function Waitlist() {
               initial={{ y: '110%' }}
               animate={{ y: '0%' }}
               transition={{ duration: 1.0, ease: [0.76, 0, 0.24, 1], delay: 0.5 }}
-              style={{
-                fontFamily: "'Heebo', sans-serif",
-                fontWeight: 800,
-                fontSize: 'clamp(40px, 9vw, 80px)',
-                color: CREAM,
-                letterSpacing: '-0.02em',
-                lineHeight: 1.0,
-                margin: '0 0 20px',
-              }}
+              style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(40px, 9vw, 80px)', color: CREAM, letterSpacing: '-0.02em', lineHeight: 1.0, margin: '0 0 20px' }}
             >
               כולם ישאלו אותך<br />מאיפה.
             </motion.h1>
@@ -182,7 +194,6 @@ export default function Waitlist() {
             The bike everyone stops to ask about.
           </motion.p>
 
-          {/* Scroll indicator */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -196,9 +207,7 @@ export default function Waitlist() {
                 style={{ width: '100%', height: '40%', backgroundColor: GOLD, position: 'absolute', top: 0 }}
               />
             </div>
-            <span style={{ color: `${CREAM}50`, fontSize: '9px', letterSpacing: '0.4em', textTransform: 'uppercase' }}>
-              גלול
-            </span>
+            <span style={{ color: `${CREAM}50`, fontSize: '9px', letterSpacing: '0.4em', textTransform: 'uppercase' }}>גלול</span>
           </motion.div>
         </div>
       </div>
@@ -207,25 +216,14 @@ export default function Waitlist() {
       <section className="wl-section" style={{ padding: 'clamp(56px, 8vw, 96px) 32px', borderBottom: `1px solid ${BORDER}` }}>
         <div style={{ maxWidth: '860px', margin: '0 auto' }}>
           <FadeSection>
-            <span style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: MUTED, marginBottom: '10px' }}>
-              COLORS · צבעים
-            </span>
-            <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 44px)', color: CREAM, margin: '0 0 36px', letterSpacing: '-0.02em' }}>
-              3 צבעים. תבחר צד.
-            </h2>
+            <span style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: MUTED, marginBottom: '10px' }}>COLORS · צבעים</span>
+            <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 44px)', color: CREAM, margin: '0 0 36px', letterSpacing: '-0.02em' }}>3 צבעים. תבחר צד.</h2>
           </FadeSection>
-
           <div className="wl-colors-row" style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
             {COLORS.map((c, i) => (
               <FadeSection key={c.name} delay={i * 0.1}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: '1 1 200px' }}>
-                  <div style={{
-                    width: '52px', height: '52px', borderRadius: '50%',
-                    backgroundColor: c.hex,
-                    border: `2px solid ${c.border}`,
-                    boxShadow: '0 4px 16px rgba(0,0,0,0.5)',
-                    flexShrink: 0,
-                  }} />
+                  <div style={{ width: '52px', height: '52px', borderRadius: '50%', backgroundColor: c.hex, border: `2px solid ${c.border}`, boxShadow: '0 4px 16px rgba(0,0,0,0.5)', flexShrink: 0 }} />
                   <div>
                     <p style={{ color: CREAM, fontWeight: 700, fontSize: '16px', margin: 0 }}>{c.name}</p>
                     <p style={{ color: MUTED, fontSize: '12px', margin: 0, letterSpacing: '0.06em' }}>{c.nameEn}</p>
@@ -239,32 +237,28 @@ export default function Waitlist() {
 
       {/* ── SPECS ── */}
       <section className="wl-section" style={{ padding: 'clamp(56px, 8vw, 96px) 32px', borderBottom: `1px solid ${BORDER}` }}>
-        <div style={{ maxWidth: '860px', margin: '0 auto' }}>
+        <div style={{ maxWidth: '960px', margin: '0 auto' }}>
           <FadeSection>
-            <span style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: MUTED, marginBottom: '10px' }}>
-              SPECS · מפרט
-            </span>
-            <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 44px)', color: CREAM, margin: '0 0 36px', letterSpacing: '-0.02em' }}>
-              מפרט ללא פשרות.
-            </h2>
+            <span style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: MUTED, marginBottom: '10px' }}>SPECS · מפרט</span>
+            <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 44px)', color: CREAM, margin: '0 0 8px', letterSpacing: '-0.02em' }}>מפרט ללא פשרות.</h2>
+            <p style={{ color: MUTED, fontSize: 'clamp(13px, 1.4vw, 15px)', fontWeight: 300, margin: '0 0 48px', lineHeight: 1.6 }}>
+              כל פרט תוכנן בקפידה לחוויית רכיבה חלקה, בטוחה ונטולת מאמץ ברחובות העיר.
+            </p>
           </FadeSection>
 
-          <div className="wl-specs-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)' }}>
-            {HIGHLIGHTS.map((h, i) => (
-              <FadeSection key={i} delay={(i % 2) * 0.1}>
-                <div
-                  className="wl-spec-item"
-                  style={{
-                    borderTop: `1px solid ${BORDER}`,
-                    padding: '20px 0',
-                    paddingLeft: i % 2 !== 0 ? '32px' : '0',
-                  }}
-                >
-                  <p style={{ color: GOLD, fontSize: '11px', fontWeight: 500, letterSpacing: '0.3em', textTransform: 'uppercase', margin: '0 0 8px' }}>
-                    {h.label} · {h.labelEn}
-                  </p>
-                  <p style={{ color: CREAM, fontSize: '17px', fontWeight: 700, margin: '0 0 2px' }}>{h.value}</p>
-                  <p style={{ color: MUTED, fontSize: '12px', margin: 0 }}>{h.valueEn}</p>
+          <div className="wl-specs-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', columnGap: '24px' }}>
+            {SPECS.map((spec, i) => (
+              <FadeSection key={spec.num} delay={(i % 2) * 0.08}>
+                <div style={{ borderTop: `1px solid ${BORDER}`, padding: '20px 0', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ color: GOLD }}>{spec.icon}</div>
+                    <span style={{ fontSize: '11px', fontWeight: 700, color: BORDER, letterSpacing: '0.2em' }}>{spec.num}</span>
+                  </div>
+                  <div>
+                    <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(14px, 1.8vw, 17px)', color: CREAM, margin: '0 0 3px', lineHeight: 1.2 }}>{spec.title}</h3>
+                    <span style={{ fontSize: '11px', fontWeight: 600, color: GOLD, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{spec.sub}</span>
+                  </div>
+                  <p style={{ fontSize: 'clamp(12px, 1.2vw, 13.5px)', color: MUTED, lineHeight: 1.65, margin: 0 }}>{spec.body}</p>
                 </div>
               </FadeSection>
             ))}
@@ -272,19 +266,11 @@ export default function Waitlist() {
 
           {/* Sizes */}
           <FadeSection delay={0.1}>
-            <div style={{ marginTop: '48px' }}>
-              <p style={{ color: MUTED, fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '20px' }}>
-                SIZES · מידות שלדה
-              </p>
+            <div style={{ marginTop: '56px' }}>
+              <p style={{ color: MUTED, fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '20px' }}>SIZES · מידות שלדה</p>
               <div className="wl-sizes-grid" style={{ display: 'flex', gap: '16px' }}>
                 {SIZES.map(s => (
-                  <div key={s.size} style={{
-                    flex: '1 1 180px',
-                    border: `1px solid ${BORDER}`,
-                    borderRadius: '12px',
-                    padding: '24px',
-                    backgroundColor: '#242424',
-                  }}>
+                  <div key={s.size} style={{ flex: '1 1 180px', border: `1px solid ${BORDER}`, borderRadius: '12px', padding: '24px', backgroundColor: '#242424' }}>
                     <p style={{ color: GOLD, fontSize: '32px', fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.02em' }}>{s.size}</p>
                     <p style={{ color: CREAM, fontSize: '15px', fontWeight: 400, margin: '0 0 2px' }}>{s.desc}</p>
                     <p style={{ color: MUTED, fontSize: '12px', margin: 0 }}>{s.descEn}</p>
@@ -296,25 +282,19 @@ export default function Waitlist() {
 
           {/* Price teaser */}
           <FadeSection delay={0.15}>
-            <div style={{
-              marginTop: '40px',
-              padding: '24px 28px',
-              borderRight: `3px solid ${GOLD}`,
-              backgroundColor: '#1F1F1F',
-            }}>
-              <p style={{ color: CREAM, fontWeight: 700, fontSize: '16px', margin: '0 0 6px' }}>
-                מחיר שסטודנט יכול להרשות לעצמו.
-              </p>
-              <p style={{ color: MUTED, fontSize: '13px', fontWeight: 400, margin: 0, letterSpacing: '0.04em' }}>
-                Priced for students. Designed to turn heads.
-              </p>
+            <div style={{ marginTop: '40px', padding: '24px 28px', borderRight: `3px solid ${GOLD}`, backgroundColor: '#1F1F1F' }}>
+              <p style={{ color: CREAM, fontWeight: 700, fontSize: '16px', margin: '0 0 6px' }}>מחיר שסטודנט יכול להרשות לעצמו.</p>
+              <p style={{ color: MUTED, fontSize: '13px', fontWeight: 400, margin: 0, letterSpacing: '0.04em' }}>Priced for students. Designed to turn heads.</p>
             </div>
           </FadeSection>
         </div>
       </section>
 
-      {/* ── FORM ── */}
-      <section className="wl-form" style={{ padding: 'clamp(56px, 8vw, 96px) 32px 96px' }}>
+      {/* ── FORM — BEIGE ── */}
+      <section
+        className="wl-form-section"
+        style={{ padding: 'clamp(56px, 8vw, 96px) 32px 96px', backgroundColor: BEIGE }}
+      >
         <div style={{ maxWidth: '460px', margin: '0 auto' }}>
           {done ? (
             <motion.div
@@ -323,32 +303,16 @@ export default function Waitlist() {
               transition={{ duration: 0.5 }}
               style={{ textAlign: 'center', padding: '48px 0' }}
             >
-              <div style={{
-                width: '56px', height: '56px', borderRadius: '50%',
-                border: `2px solid ${GOLD}`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                margin: '0 auto 24px',
-                color: GOLD, fontSize: '22px',
-              }}>✓</div>
-              <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 36px)', color: CREAM, margin: '0 0 12px', letterSpacing: '-0.02em' }}>
-                אתה ברשימה.
-              </h2>
-              <p style={{ color: MUTED, fontSize: '15px', fontWeight: 300, margin: '0 0 6px' }}>
-                נחזור אליך ראשון ברגע שהאופניים מגיעות.
-              </p>
-              <p style={{ color: MUTED, fontSize: '12px', letterSpacing: '0.05em' }}>
-                We'll reach out the moment bikes arrive.
-              </p>
+              <div style={{ width: '56px', height: '56px', borderRadius: '50%', border: `2px solid ${GOLD}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', color: GOLD, fontSize: '22px' }}>✓</div>
+              <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 36px)', color: BEIGE_DARK, margin: '0 0 12px', letterSpacing: '-0.02em' }}>אתה ברשימה.</h2>
+              <p style={{ color: '#6B5E4A', fontSize: '15px', fontWeight: 300, margin: '0 0 6px' }}>נחזור אליך ראשון ברגע שהאופניים מגיעות.</p>
+              <p style={{ color: '#9A8C7A', fontSize: '12px', letterSpacing: '0.05em' }}>We'll reach out the moment bikes arrive.</p>
             </motion.div>
           ) : (
             <FadeSection>
-              <span style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: MUTED, marginBottom: '10px' }}>
-                JOIN · הצטרף
-              </span>
-              <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 40px)', color: CREAM, margin: '0 0 12px', letterSpacing: '-0.02em' }}>
-                תהיה ראשון.
-              </h2>
-              <p style={{ color: MUTED, fontSize: '15px', fontWeight: 300, margin: '0 0 32px', lineHeight: 1.6 }}>
+              <span style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: '#9A8C7A', marginBottom: '10px' }}>JOIN · הצטרף</span>
+              <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 40px)', color: BEIGE_DARK, margin: '0 0 12px', letterSpacing: '-0.02em' }}>תהיה ראשון.</h2>
+              <p style={{ color: '#6B5E4A', fontSize: '15px', fontWeight: 300, margin: '0 0 32px', lineHeight: 1.6 }}>
                 השאר פרטים. נחזור אליך ברגע שהאופניים נוחתות בארץ.
               </p>
 
@@ -369,9 +333,8 @@ export default function Waitlist() {
                   style={{ ...inputStyle, textAlign: 'left' }}
                 />
 
-                {/* Color preference */}
                 <div style={{ paddingTop: '4px' }}>
-                  <p style={{ color: MUTED, fontSize: '11px', fontWeight: 500, letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: '12px' }}>
+                  <p style={{ color: '#9A8C7A', fontSize: '11px', fontWeight: 500, letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: '12px' }}>
                     PREFERRED COLOR · צבע מועדף (אופציונלי)
                   </p>
                   <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
@@ -391,15 +354,11 @@ export default function Waitlist() {
                         }}
                       />
                     ))}
-                    {color && (
-                      <span style={{ color: MUTED, fontSize: '13px', fontWeight: 400 }}>{color}</span>
-                    )}
+                    {color && <span style={{ color: '#6B5E4A', fontSize: '13px' }}>{color}</span>}
                   </div>
                 </div>
 
-                {error && (
-                  <p style={{ color: '#FF6B6B', fontSize: '13px', margin: 0 }}>{error}</p>
-                )}
+                {error && <p style={{ color: '#CC3333', fontSize: '13px', margin: 0 }}>{error}</p>}
 
                 <button
                   onClick={submit}
@@ -424,6 +383,19 @@ export default function Waitlist() {
                 >
                   {loading ? '...' : 'אני רוצה להיות ראשון ←'}
                 </button>
+
+                {/* GDPR / תקנה 13 */}
+                <p style={{ color: '#9A8C7A', fontSize: '11px', lineHeight: 1.7, margin: '4px 0 0', textAlign: 'center' }}>
+                  בלחיצה על הכפתור מסכים/ה לקבל עדכון חד-פעמי על השקת SPINZ.
+                  המידע לא יועבר לצד שלישי.{' '}
+                  <a href="https://www.spinzbikes.com/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#8A7A6A', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+                    מדיניות פרטיות
+                  </a>
+                  .{' '}לביטול או מחיקת המידע:{' '}
+                  <a href="mailto:info@spinzbikes.com" style={{ color: '#8A7A6A', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+                    info@spinzbikes.com
+                  </a>
+                </p>
               </div>
             </FadeSection>
           )}
@@ -431,9 +403,12 @@ export default function Waitlist() {
       </section>
 
       {/* Footer */}
-      <div style={{ borderTop: `1px solid ${BORDER}`, padding: '20px 32px', textAlign: 'center' }}>
-        <p style={{ color: '#444', fontSize: '11px', fontWeight: 400, letterSpacing: '0.1em', margin: 0 }}>
-          © 2026 SPINZ. ALL RIGHTS RESERVED.
+      <div style={{ backgroundColor: BEIGE, borderTop: `1px solid #D8D0C0`, padding: '20px 32px', textAlign: 'center' }}>
+        <p style={{ color: '#9A8C7A', fontSize: '11px', fontWeight: 400, letterSpacing: '0.1em', margin: 0 }}>
+          © 2026 SPINZ. ALL RIGHTS RESERVED.{' '}
+          <a href="https://www.spinzbikes.com/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#8A7A6A', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+            תנאים ופרטיות
+          </a>
         </p>
       </div>
     </div>
@@ -444,9 +419,9 @@ const inputStyle: React.CSSProperties = {
   width: '100%',
   padding: '14px 16px',
   borderRadius: '10px',
-  border: '1px solid #2A2A2A',
-  backgroundColor: '#242424',
-  color: '#EDEBE6',
+  border: '1px solid #C8BFB0',
+  backgroundColor: '#FBF7F2',
+  color: '#1C1812',
   fontSize: '15px',
   fontWeight: 400,
   outline: 'none',

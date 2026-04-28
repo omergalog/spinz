@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import CustomCursor from '../components/CustomCursor';

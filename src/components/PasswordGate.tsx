@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 const PASSWORD = 'spinz2026';
 const SESSION_KEY = 'spinz_auth';

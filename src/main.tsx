@@ -9,6 +9,7 @@ import Terms from './pages/Terms';
 import Accessibility from './pages/Accessibility';
 import AccessibilityWidget from './components/AccessibilityWidget';
 import { getPauseMotion, onPauseMotionChange } from './utils/motionStore';
+import PasswordGate from './components/PasswordGate';
 
 function Root() {
   const [pauseMotion, setPauseMotionState] = useState(getPauseMotion);
@@ -16,6 +17,7 @@ function Root() {
   useEffect(() => onPauseMotionChange(setPauseMotionState), []);
 
   return (
+    <PasswordGate>
     <MotionConfig
       reducedMotion={pauseMotion ? 'always' : 'never'}
       transition={pauseMotion ? { duration: 0, delay: 0 } : undefined}
@@ -49,6 +51,7 @@ function Root() {
         <AccessibilityWidget />
       </BrowserRouter>
     </MotionConfig>
+    </PasswordGate>
   );
 }
 

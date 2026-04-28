@@ -255,7 +255,7 @@ export default function Waitlist() {
                     flex: '1 1 160px',
                   }}>
                     <p style={{ color: GOLD, fontSize: '24px', fontWeight: 800, margin: 0, letterSpacing: '-0.02em', flexShrink: 0 }}>{s.size}</p>
-                    <p style={{ color: CREAM, fontSize: '13px', fontWeight: 500, margin: 0 }}>{s.desc}</p>
+                    <p style={{ color: CREAM, fontSize: '13px', fontWeight: 500, margin: 0 }}>מיועד ל‑{s.desc}</p>
                   </div>
                 ))}
               </div>

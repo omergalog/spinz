@@ -160,7 +160,7 @@ export default function Waitlist() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            style={{ display: 'block', marginBottom: '16px', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: GOLD, textShadow: '0 1px 8px rgba(0,0,0,0.8)' }}
+            style={{ display: 'inline-block', marginBottom: '20px', fontSize: '11px', fontWeight: 700, letterSpacing: '0.45em', textTransform: 'uppercase', color: CREAM, backgroundColor: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(6px)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '100px', padding: '6px 16px' }}
           >
             SPINZ · COMING SOON
           </motion.span>

@@ -212,26 +212,53 @@ export default function Waitlist() {
         </div>
       </div>
 
-      {/* ── COLORS ── */}
+      {/* ── COLORS + SIZES ── */}
       <section className="wl-section" style={{ padding: 'clamp(56px, 8vw, 96px) 32px', borderBottom: `1px solid ${BORDER}` }}>
         <div style={{ maxWidth: '860px', margin: '0 auto' }}>
           <FadeSection>
-            <span style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: MUTED, marginBottom: '10px' }}>COLORS · צבעים</span>
+            <span style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: MUTED, marginBottom: '10px' }}>COLORS & SIZES · צבעים ומידות</span>
             <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 44px)', color: CREAM, margin: '0 0 36px', letterSpacing: '-0.02em' }}>3 צבעים. תבחר צד.</h2>
           </FadeSection>
-          <div className="wl-colors-row" style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+
+          {/* Colors */}
+          <div className="wl-colors-row" style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '40px' }}>
             {COLORS.map((c, i) => (
               <FadeSection key={c.name} delay={i * 0.1}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: '1 1 200px' }}>
-                  <div style={{ width: '52px', height: '52px', borderRadius: '50%', backgroundColor: c.hex, border: `2px solid ${c.border}`, boxShadow: '0 4px 16px rgba(0,0,0,0.5)', flexShrink: 0 }} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: '1 1 180px' }}>
+                  <div style={{ width: '44px', height: '44px', borderRadius: '50%', backgroundColor: c.hex, border: `2px solid ${c.border}`, boxShadow: '0 4px 12px rgba(0,0,0,0.5)', flexShrink: 0 }} />
                   <div>
-                    <p style={{ color: CREAM, fontWeight: 700, fontSize: '16px', margin: 0 }}>{c.name}</p>
-                    <p style={{ color: MUTED, fontSize: '12px', margin: 0, letterSpacing: '0.06em' }}>{c.nameEn}</p>
+                    <p style={{ color: CREAM, fontWeight: 700, fontSize: '14px', margin: 0 }}>{c.name}</p>
+                    <p style={{ color: MUTED, fontSize: '11px', margin: 0, letterSpacing: '0.06em' }}>{c.nameEn}</p>
                   </div>
                 </div>
               </FadeSection>
             ))}
           </div>
+
+          {/* Sizes */}
+          <FadeSection delay={0.15}>
+            <div style={{ borderTop: `1px solid ${BORDER}`, paddingTop: '28px' }}>
+              <p style={{ color: MUTED, fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '16px' }}>SIZES · מידות שלדה</p>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                {SIZES.map(s => (
+                  <div key={s.size} style={{
+                    display: 'flex', alignItems: 'center', gap: '16px',
+                    border: `1px solid ${BORDER}`,
+                    borderRadius: '10px',
+                    padding: '14px 20px',
+                    backgroundColor: '#1F1F1F',
+                    flex: '1 1 160px',
+                  }}>
+                    <p style={{ color: GOLD, fontSize: '24px', fontWeight: 800, margin: 0, letterSpacing: '-0.02em', flexShrink: 0 }}>{s.size}</p>
+                    <div>
+                      <p style={{ color: CREAM, fontSize: '13px', fontWeight: 500, margin: 0 }}>{s.desc}</p>
+                      <p style={{ color: MUTED, fontSize: '11px', margin: 0 }}>{s.descEn}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </FadeSection>
         </div>
       </section>
 
@@ -263,22 +290,6 @@ export default function Waitlist() {
               </FadeSection>
             ))}
           </div>
-
-          {/* Sizes */}
-          <FadeSection delay={0.1}>
-            <div style={{ marginTop: '56px' }}>
-              <p style={{ color: MUTED, fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '20px' }}>SIZES · מידות שלדה</p>
-              <div className="wl-sizes-grid" style={{ display: 'flex', gap: '16px' }}>
-                {SIZES.map(s => (
-                  <div key={s.size} style={{ flex: '1 1 180px', border: `1px solid ${BORDER}`, borderRadius: '12px', padding: '24px', backgroundColor: '#242424' }}>
-                    <p style={{ color: GOLD, fontSize: '32px', fontWeight: 800, margin: '0 0 8px', letterSpacing: '-0.02em' }}>{s.size}</p>
-                    <p style={{ color: CREAM, fontSize: '15px', fontWeight: 400, margin: '0 0 2px' }}>{s.desc}</p>
-                    <p style={{ color: MUTED, fontSize: '12px', margin: 0 }}>{s.descEn}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </FadeSection>
 
           {/* Price teaser */}
           <FadeSection delay={0.15}>

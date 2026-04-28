@@ -10,7 +10,7 @@ export default function PasswordGate({ children }: { children: React.ReactNode }
   const [shake, setShake] = useState(false);
 
   useEffect(() => {
-    if (window.location.pathname === '/waitlist') { setAuthed(true); return; }
+    if (window.location.pathname === '/waitlist' || window.location.hostname === 'waitlist.spinzbikes.com') { setAuthed(true); return; }
     if (sessionStorage.getItem(SESSION_KEY) === 'ok') setAuthed(true);
   }, []);
 

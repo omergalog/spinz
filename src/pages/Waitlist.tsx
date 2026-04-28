@@ -250,10 +250,7 @@ export default function Waitlist() {
                     flex: '1 1 160px',
                   }}>
                     <p style={{ color: GOLD, fontSize: '24px', fontWeight: 800, margin: 0, letterSpacing: '-0.02em', flexShrink: 0 }}>{s.size}</p>
-                    <div>
-                      <p style={{ color: CREAM, fontSize: '13px', fontWeight: 500, margin: 0 }}>{s.desc}</p>
-                      <p style={{ color: MUTED, fontSize: '11px', margin: 0 }}>{s.descEn}</p>
-                    </div>
+                    <p style={{ color: CREAM, fontSize: '13px', fontWeight: 500, margin: 0 }}>{s.desc}</p>
                   </div>
                 ))}
               </div>

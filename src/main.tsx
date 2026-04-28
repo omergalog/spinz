@@ -41,13 +41,17 @@ function Root() {
         </a>
 
         <main id="main-content">
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/story" element={<Story />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/accessibility" element={<Accessibility />} />
-          <Route path="/waitlist" element={<Waitlist />} />
-          </Routes>
+          {window.location.hostname === 'waitlist.spinzbikes.com' ? (
+            <Waitlist />
+          ) : (
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/story" element={<Story />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/accessibility" element={<Accessibility />} />
+              <Route path="/waitlist" element={<Waitlist />} />
+            </Routes>
+          )}
         </main>
 
         <AccessibilityWidget />

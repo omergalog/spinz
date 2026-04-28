@@ -4,15 +4,13 @@ const PASSWORD = 'spinz2026';
 const SESSION_KEY = 'spinz_auth';
 
 export default function PasswordGate({ children }: { children: React.ReactNode }) {
-  const [authed, setAuthed] = useState(false);
+  const [authed, setAuthed] = useState(() => {
+    if (window.location.pathname === '/waitlist' || window.location.hostname === 'waitlist.spinzbikes.com') return true;
+    return sessionStorage.getItem(SESSION_KEY) === 'ok';
+  });
   const [input, setInput] = useState('');
   const [error, setError] = useState(false);
   const [shake, setShake] = useState(false);
-
-  useEffect(() => {
-    if (window.location.pathname === '/waitlist' || window.location.hostname === 'waitlist.spinzbikes.com') { setAuthed(true); return; }
-    if (sessionStorage.getItem(SESSION_KEY) === 'ok') setAuthed(true);
-  }, []);
 
   const submit = () => {
     if (input === PASSWORD) {

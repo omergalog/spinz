@@ -93,8 +93,11 @@ export default function Waitlist() {
 
   const submit = async () => {
     if (!name.trim()) { setError('יש למלא שם מלא'); return; }
-    const phoneClean = phone.trim().replace(/[-\s]/g, '');
+    let phoneClean = phone.trim().replace(/[-\s]/g, '');
     if (!phoneClean) { setError('יש למלא מספר טלפון'); return; }
+    if (phoneClean.startsWith('+972')) phoneClean = '0' + phoneClean.slice(4);
+    else if (phoneClean.startsWith('00972')) phoneClean = '0' + phoneClean.slice(5);
+    else if (phoneClean.startsWith('972') && phoneClean.length === 12) phoneClean = '0' + phoneClean.slice(3);
     if (!/^0(5[0-9]|[2-9])\d{7}$/.test(phoneClean)) { setError('מספר טלפון לא תקין — יש להזין מספר ישראלי תקני'); return; }
     if (!agreed) { setError('יש לאשר את תנאי השימוש ומדיניות הפרטיות'); return; }
     setLoading(true);
@@ -128,6 +131,13 @@ export default function Waitlist() {
           .wl-hero-text  { padding: 0 20px !important; bottom: 10% !important; }
           .wl-section    { padding: 48px 20px !important; }
           .wl-form-section { padding: 56px 20px 72px !important; }
+        }
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus {
+          -webkit-box-shadow: 0 0 0 30px #FBF7F2 inset !important;
+          -webkit-text-fill-color: #1C1812 !important;
+          caret-color: #1C1812;
         }
       `}</style>
 

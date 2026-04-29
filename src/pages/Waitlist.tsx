@@ -455,7 +455,7 @@ export default function Waitlist() {
                   onMouseEnter={e => { if (!loading && agreed) (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'; }}
                 >
-                  {loading ? '...' : 'Join the waitlist →'}
+                  {loading ? '...' : '← Join the waitlist'}
                 </button>
 
               </div>

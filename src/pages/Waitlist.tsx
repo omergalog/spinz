@@ -81,17 +81,22 @@ function FadeSection({ children, delay = 0 }: { children: React.ReactNode; delay
 }
 
 export default function Waitlist() {
-  const [name, setName]     = useState('');
-  const [phone, setPhone]   = useState('');
-  const [email, setEmail]   = useState('');
-  const [color, setColor]   = useState('');
-  const [size, setSize]     = useState('');
+  const [name, setName]       = useState('');
+  const [phone, setPhone]     = useState('');
+  const [email, setEmail]     = useState('');
+  const [color, setColor]     = useState('');
+  const [size, setSize]       = useState('');
+  const [agreed, setAgreed]   = useState(false);
   const [loading, setLoading] = useState(false);
   const [done, setDone]       = useState(false);
   const [error, setError]     = useState('');
 
   const submit = async () => {
-    if (!name.trim() || !phone.trim()) { setError('יש למלא שם וטלפון'); return; }
+    if (!name.trim()) { setError('יש למלא שם מלא'); return; }
+    const phoneClean = phone.trim().replace(/[-\s]/g, '');
+    if (!phoneClean) { setError('יש למלא מספר טלפון'); return; }
+    if (!/^0(5[0-9]|[2-9])\d{7}$/.test(phoneClean)) { setError('מספר טלפון לא תקין — יש להזין מספר ישראלי תקני'); return; }
+    if (!agreed) { setError('יש לאשר את תנאי השימוש ומדיניות הפרטיות'); return; }
     setLoading(true);
     setError('');
     const message = `[Waitlist]${color ? ` · צבע: ${color}` : ''}${size ? ` · מידה: ${size}` : ''}`;
@@ -334,7 +339,7 @@ export default function Waitlist() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <input
                   type="text"
-                  placeholder="שם מלא"
+                  placeholder="שם מלא *"
                   value={name}
                   onChange={e => { setName(e.target.value); setError(''); }}
                   autoComplete="name"
@@ -411,6 +416,21 @@ export default function Waitlist() {
                     ))}
                   </div>
                 </div>
+
+                {/* Consent checkbox */}
+                <label style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer', paddingTop: '4px' }}>
+                  <input
+                    type="checkbox"
+                    checked={agreed}
+                    onChange={e => { setAgreed(e.target.checked); setError(''); }}
+                    style={{ marginTop: '3px', accentColor: GOLD, flexShrink: 0, width: '16px', height: '16px', cursor: 'pointer' }}
+                  />
+                  <span style={{ color: '#6B5E4A', fontSize: '12px', lineHeight: 1.6 }}>
+                    קראתי ואני מסכים/ה ל
+                    <a href="https://www.spinzbikes.com/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#8A6830', textDecoration: 'underline', textUnderlineOffset: '2px' }}>תנאי השימוש ומדיניות הפרטיות</a>
+                    , ולקבל עדכון מ-SPINZ כשהאופניים מגיעים.
+                  </span>
+                </label>
 
                 {error && <p style={{ color: '#CC3333', fontSize: '13px', margin: 0 }}>{error}</p>}
 

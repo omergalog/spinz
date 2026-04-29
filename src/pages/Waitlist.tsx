@@ -300,12 +300,6 @@ export default function Waitlist() {
             ))}
           </div>
 
-          {/* Price teaser */}
-          <FadeSection delay={0.15}>
-            <div style={{ marginTop: '40px', padding: '24px 28px', borderRight: `3px solid ${GOLD}`, backgroundColor: '#1F1F1F' }}>
-              <p style={{ color: CREAM, fontWeight: 700, fontSize: '16px', margin: 0 }}>מחיר שאפשר להרשות לעצמו.</p>
-            </div>
-          </FadeSection>
         </div>
       </section>
 

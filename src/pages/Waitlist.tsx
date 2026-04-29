@@ -230,6 +230,22 @@ export default function Waitlist() {
             <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 44px)', color: CREAM, margin: '0 0 36px', letterSpacing: '-0.02em' }}>הצבע שלך, העיר שלך.</h2>
           </FadeSection>
 
+          {/* Bike image */}
+          <FadeSection delay={0.1}>
+            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+              <img
+                src="/assets/שחור לעמוד נחיתה.jpg"
+                alt="SPINZ Matte Black"
+                style={{
+                  maxWidth: '100%',
+                  width: '480px',
+                  objectFit: 'contain',
+                  mixBlendMode: 'screen',
+                }}
+              />
+            </div>
+          </FadeSection>
+
           {/* Colors */}
           <div className="wl-colors-row" style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '40px' }}>
             {COLORS.map((c, i) => (

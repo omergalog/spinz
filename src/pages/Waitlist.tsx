@@ -221,7 +221,7 @@ export default function Waitlist() {
       <section className="wl-section" style={{ padding: 'clamp(56px, 8vw, 96px) 32px', borderBottom: `1px solid ${BORDER}` }}>
         <div style={{ maxWidth: '860px', margin: '0 auto' }}>
           <FadeSection>
-            <span style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: MUTED, marginBottom: '10px' }}>COLORS & SIZES · צבעים ומידות</span>
+            <span style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: MUTED, marginBottom: '10px' }}>צבעים ומידות · COLORS & SIZES</span>
             <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 44px)', color: CREAM, margin: '0 0 36px', letterSpacing: '-0.02em' }}>הצבע שלך, העיר שלך.</h2>
           </FadeSection>
 
@@ -243,7 +243,7 @@ export default function Waitlist() {
           {/* Sizes */}
           <FadeSection delay={0.15}>
             <div style={{ borderTop: `1px solid ${BORDER}`, paddingTop: '28px' }}>
-              <p style={{ color: MUTED, fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '16px' }}>SIZES · מידות שלדה</p>
+              <p style={{ color: MUTED, fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '16px' }}>מידות שלדה · SIZES</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {SIZES.map(s => (
                   <div key={s.size} style={{
@@ -270,7 +270,7 @@ export default function Waitlist() {
       <section className="wl-section" style={{ padding: 'clamp(56px, 8vw, 96px) 32px', borderBottom: `1px solid ${BORDER}` }}>
         <div style={{ maxWidth: '960px', margin: '0 auto' }}>
           <FadeSection>
-            <span style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: MUTED, marginBottom: '10px' }}>SPECS · מפרט</span>
+            <span style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: MUTED, marginBottom: '10px' }}>מפרט · SPECS</span>
             <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 44px)', color: CREAM, margin: '0 0 8px', letterSpacing: '-0.02em' }}>מפרט ללא פשרות.</h2>
             <p style={{ color: MUTED, fontSize: 'clamp(13px, 1.4vw, 15px)', fontWeight: 300, margin: '0 0 48px', lineHeight: 1.6 }}>
               כל פרט תוכנן בקפידה לחוויית רכיבה חלקה, בטוחה ונטולת מאמץ ברחובות העיר.
@@ -325,7 +325,7 @@ export default function Waitlist() {
             </motion.div>
           ) : (
             <FadeSection>
-              <span style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: '#9A8C7A', marginBottom: '10px' }}>JOIN · הצטרף</span>
+              <span style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: '#9A8C7A', marginBottom: '10px' }}>הצטרף · JOIN</span>
               <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 40px)', color: BEIGE_DARK, margin: '0 0 12px', letterSpacing: '-0.02em' }}>תהיה ראשון.</h2>
               <p style={{ color: '#6B5E4A', fontSize: '15px', fontWeight: 300, margin: '0 0 32px', lineHeight: 1.6 }}>
                 השאר פרטים. נחזור אליך ברגע שהאופניים נוחתים בארץ.
@@ -358,7 +358,7 @@ export default function Waitlist() {
 
                 <div style={{ paddingTop: '4px' }}>
                   <p style={{ color: '#9A8C7A', fontSize: '11px', fontWeight: 500, letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: '12px' }}>
-                    PREFERRED COLOR · צבע מועדף (אופציונלי)
+                    צבע מועדף (אופציונלי) · PREFERRED COLOR
                   </p>
                   <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                     {COLORS.map(c => (
@@ -384,7 +384,7 @@ export default function Waitlist() {
                 {/* Size preference */}
                 <div style={{ paddingTop: '4px' }}>
                   <p style={{ color: '#9A8C7A', fontSize: '11px', fontWeight: 500, letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: '12px' }}>
-                    SIZE · מידה מועדפת (אופציונלי)
+                    מידה מועדפת (אופציונלי) · SIZE
                   </p>
                   <div style={{ display: 'flex', gap: '10px' }}>
                     {SIZES.map(s => (

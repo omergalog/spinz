@@ -24,7 +24,7 @@ export default function WaitlistTerms() {
             display: 'flex', alignItems: 'center', gap: '6px',
           }}
         >
-          חזרה →
+          חזרה
         </button>
         <img src="/assets/logo.png" alt="SPINZ" style={{ height: '28px', filter: 'invert(1) brightness(2)', opacity: 0.8 }} />
       </div>
@@ -115,7 +115,7 @@ export default function WaitlistTerms() {
               fontFamily: "'Heebo', sans-serif",
             }}
           >
-            ← חזרה לרשימת ההמתנה
+            חזרה לרשימת ההמתנה
           </button>
         </div>
       </div>

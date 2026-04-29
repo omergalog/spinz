@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import CustomCursor from '../components/CustomCursor';
@@ -90,6 +90,10 @@ export default function Waitlist() {
   const [loading, setLoading] = useState(false);
   const [done, setDone]       = useState(false);
   const [error, setError]     = useState('');
+
+  useEffect(() => {
+    COLORS.forEach(c => { const img = new Image(); img.src = c.bike; });
+  }, []);
 
   const submit = async () => {
     if (!name.trim()) { setError('יש למלא שם מלא'); return; }
@@ -242,17 +246,17 @@ export default function Waitlist() {
 
           {/* Bike image */}
           <FadeSection delay={0.1}>
-            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+            <div style={{ position: 'relative', height: '320px', marginBottom: '32px', overflow: 'hidden' }}>
               <AnimatePresence mode="wait">
                 <motion.img
                   key={color || 'שחור מאט'}
                   src={(COLORS.find(c => c.name === color) ?? COLORS[0]).bike}
                   alt={color || 'שחור מאט'}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.25 }}
-                  style={{ maxWidth: '100%', width: '480px', objectFit: 'contain', display: 'block', margin: '0 auto', mixBlendMode: (COLORS.find(c => c.name === color) ?? COLORS[0]).blend ? 'screen' : 'normal' }}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', objectPosition: 'bottom center' }}
                 />
               </AnimatePresence>
             </div>

@@ -12,9 +12,9 @@ const BEIGE  = '#F2EDE4';
 const BEIGE_DARK = '#1C1812';
 
 const COLORS = [
-  { name: 'שחור מאט', nameEn: 'Matte Black', hex: '#2A2A2A', border: '#555',    bike: '/assets/צבעים עומר/שחור מט רקע שקוף.png' },
-  { name: 'ירוק זית',  nameEn: 'Olive Green',  hex: '#5C6A3E', border: '#7A8A52', bike: '/assets/צבעים/ירוק זית.png' },
-  { name: "בז'",       nameEn: 'Beige',         hex: '#C8B99A', border: '#A89070', bike: "/assets/צבעים עומר/בז' אמור להיות רקע שקוף.png" },
+  { name: 'שחור מאט', nameEn: 'Matte Black', hex: '#2A2A2A', border: '#555',    bike: '/assets/צבעים עומר/שחור מט רקע שקוף.png', blend: false },
+  { name: 'ירוק זית',  nameEn: 'Olive Green',  hex: '#5C6A3E', border: '#7A8A52', bike: '/assets/צבעים/ירוק זית.png',               blend: false },
+  { name: "בז'",       nameEn: 'Beige',         hex: '#C8B99A', border: '#A89070', bike: "/assets/צבעים עומר/בז' אמור להיות רקע שקוף.png", blend: true },
 ];
 
 const SPECS = [
@@ -252,7 +252,7 @@ export default function Waitlist() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.25 }}
-                  style={{ maxWidth: '100%', width: '480px', objectFit: 'contain', display: 'block', margin: '0 auto' }}
+                  style={{ maxWidth: '100%', width: '480px', objectFit: 'contain', display: 'block', margin: '0 auto', mixBlendMode: (COLORS.find(c => c.name === color) ?? COLORS[0]).blend ? 'screen' : 'normal' }}
                 />
               </AnimatePresence>
             </div>

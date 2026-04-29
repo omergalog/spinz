@@ -81,24 +81,24 @@ function FadeSection({ children, delay = 0 }: { children: React.ReactNode; delay
 }
 
 export default function Waitlist() {
-  const [name, setName]       = useState('');
-  const [contact, setContact] = useState('');
-  const [color, setColor]     = useState('');
-  const [size, setSize]       = useState('');
+  const [name, setName]     = useState('');
+  const [phone, setPhone]   = useState('');
+  const [email, setEmail]   = useState('');
+  const [color, setColor]   = useState('');
+  const [size, setSize]     = useState('');
   const [loading, setLoading] = useState(false);
   const [done, setDone]       = useState(false);
   const [error, setError]     = useState('');
 
   const submit = async () => {
-    if (!name.trim() || !contact.trim()) { setError('יש למלא שם ואמצעי קשר'); return; }
+    if (!name.trim() || !phone.trim()) { setError('יש למלא שם וטלפון'); return; }
     setLoading(true);
     setError('');
-    const isEmail = contact.includes('@');
     const message = `[Waitlist]${color ? ` · צבע: ${color}` : ''}${size ? ` · מידה: ${size}` : ''}`;
     const { error: err } = await supabase.from('leads').insert([{
       name: name.trim(),
-      email: isEmail ? contact.trim() : null,
-      phone: !isEmail ? contact.trim() : null,
+      phone: phone.trim(),
+      email: email.trim() || null,
       message,
       status: 'new',
     }]);
@@ -328,7 +328,7 @@ export default function Waitlist() {
               <span style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: '#9A8C7A', marginBottom: '10px' }}>JOIN · הצטרף</span>
               <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 40px)', color: BEIGE_DARK, margin: '0 0 12px', letterSpacing: '-0.02em' }}>תהיה ראשון.</h2>
               <p style={{ color: '#6B5E4A', fontSize: '15px', fontWeight: 300, margin: '0 0 32px', lineHeight: 1.6 }}>
-                השאר פרטים. נחזור אליך ברגע שהאופניים נוחתות בארץ.
+                השאר פרטים. נחזור אליך ברגע שהאופניים נוחתים בארץ.
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -340,10 +340,18 @@ export default function Waitlist() {
                   style={inputStyle}
                 />
                 <input
-                  type="text"
-                  placeholder="טלפון או מייל"
-                  value={contact}
-                  onChange={e => { setContact(e.target.value); setError(''); }}
+                  type="tel"
+                  placeholder="טלפון *"
+                  value={phone}
+                  onChange={e => { setPhone(e.target.value); setError(''); }}
+                  dir="ltr"
+                  style={{ ...inputStyle, textAlign: 'left' }}
+                />
+                <input
+                  type="email"
+                  placeholder="אימייל (אופציונלי)"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
                   dir="ltr"
                   style={{ ...inputStyle, textAlign: 'left' }}
                 />

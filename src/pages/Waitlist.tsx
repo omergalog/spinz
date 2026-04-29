@@ -14,7 +14,7 @@ const BEIGE_DARK = '#1C1812';
 const COLORS = [
   { name: 'שחור מאט', nameEn: 'Matte Black', hex: '#2A2A2A', border: '#555',    bike: '/assets/צבעים עומר/שחור מט רקע שקוף.png' },
   { name: 'ירוק זית',  nameEn: 'Olive Green',  hex: '#5C6A3E', border: '#7A8A52', bike: '/assets/צבעים/ירוק זית.png' },
-  { name: "בז'",       nameEn: 'Beige',         hex: '#C8B99A', border: '#A89070', bike: '/assets/צבעים/בז.png' },
+  { name: "בז'",       nameEn: 'Beige',         hex: '#C8B99A', border: '#A89070', bike: "/assets/צבעים עומר/בז' אמור להיות רקע שקוף.png" },
 ];
 
 const SPECS = [

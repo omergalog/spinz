@@ -14,7 +14,7 @@ export default function WaitlistTerms() {
       <CustomCursor />
 
       {/* Top bar */}
-      <div style={{ borderBottom: '1px solid #2A2A2A', padding: '20px 32px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+      <div style={{ borderBottom: '1px solid #2A2A2A', padding: '20px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <button
           onClick={() => navigate(-1)}
           style={{
@@ -24,7 +24,7 @@ export default function WaitlistTerms() {
             display: 'flex', alignItems: 'center', gap: '6px',
           }}
         >
-          ← חזרה
+          חזרה →
         </button>
         <img src="/assets/logo.png" alt="SPINZ" style={{ height: '28px', filter: 'invert(1) brightness(2)', opacity: 0.8 }} />
       </div>

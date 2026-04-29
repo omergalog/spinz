@@ -128,6 +128,11 @@ export default function Waitlist() {
           from { transform: scale(1.08); }
           to   { transform: scale(1.0); }
         }
+        @media (min-width: 601px) {
+          .wl-colors-row { justify-content: center !important; }
+          .wl-sizes-desktop { display: flex; justify-content: center; gap: 16px; }
+          .wl-bike-container { height: 420px !important; }
+        }
         @media (max-width: 600px) {
           .wl-specs-grid { grid-template-columns: 1fr !important; }
           .wl-sizes-grid { flex-direction: column !important; }
@@ -246,7 +251,7 @@ export default function Waitlist() {
 
           {/* Bike image */}
           <FadeSection delay={0.1}>
-            <div style={{ position: 'relative', height: '320px', marginBottom: '32px', overflow: 'hidden' }}>
+            <div className="wl-bike-container" style={{ position: 'relative', height: '320px', marginBottom: '32px', overflow: 'hidden' }}>
               <AnimatePresence mode="wait">
                 <motion.img
                   key={color || 'שחור מאט'}

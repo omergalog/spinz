@@ -188,7 +188,7 @@ export default function Waitlist() {
             transition={{ duration: 0.9, delay: 1.0 }}
             style={{ fontSize: 'clamp(15px, 2vw, 18px)', fontWeight: 300, color: CREAM, margin: '0 0 32px', opacity: 0.85, textShadow: '0 1px 12px rgba(0,0,0,0.7)', lineHeight: 1.8 }}
           >
-            אופניים שמסובבים ראשים.<br />מחיר שסטודנט יכול להרשות לעצמו.
+            אופניים שמסובבים ראשים.<br />מחיר שאפשר להרשות לעצמו.
           </motion.p>
 
           <motion.div
@@ -303,7 +303,7 @@ export default function Waitlist() {
           {/* Price teaser */}
           <FadeSection delay={0.15}>
             <div style={{ marginTop: '40px', padding: '24px 28px', borderRight: `3px solid ${GOLD}`, backgroundColor: '#1F1F1F' }}>
-              <p style={{ color: CREAM, fontWeight: 700, fontSize: '16px', margin: 0 }}>מחיר שסטודנט יכול להרשות לעצמו.</p>
+              <p style={{ color: CREAM, fontWeight: 700, fontSize: '16px', margin: 0 }}>מחיר שאפשר להרשות לעצמו.</p>
             </div>
           </FadeSection>
         </div>
@@ -324,16 +324,16 @@ export default function Waitlist() {
               style={{ textAlign: 'center', padding: '48px 0' }}
             >
               <div style={{ width: '56px', height: '56px', borderRadius: '50%', border: `2px solid ${GOLD}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', color: GOLD, fontSize: '22px' }}>✓</div>
-              <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 36px)', color: BEIGE_DARK, margin: '0 0 12px', letterSpacing: '-0.02em' }}>אתה ברשימה.</h2>
-              <p style={{ color: '#6B5E4A', fontSize: '15px', fontWeight: 300, margin: '0 0 6px' }}>נחזור אליך ראשון ברגע שהאופניים מגיעים.</p>
+              <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 36px)', color: BEIGE_DARK, margin: '0 0 12px', letterSpacing: '-0.02em' }}>You're in.</h2>
+              <p style={{ color: '#6B5E4A', fontSize: '15px', fontWeight: 300, margin: '0 0 6px' }}>נחזור אליך ברגע שהאופניים מגיעים.</p>
               <p style={{ color: '#9A8C7A', fontSize: '12px', letterSpacing: '0.05em' }}>We'll reach out the moment bikes arrive.</p>
             </motion.div>
           ) : (
             <FadeSection>
-              <span style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: '#9A8C7A', marginBottom: '10px' }}>הצטרף · JOIN</span>
-              <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 40px)', color: BEIGE_DARK, margin: '0 0 12px', letterSpacing: '-0.02em' }}>תהיה ראשון.</h2>
+              <span style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: '#9A8C7A', marginBottom: '10px' }}>JOIN</span>
+              <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 40px)', color: BEIGE_DARK, margin: '0 0 12px', letterSpacing: '-0.02em' }}>Be first.</h2>
               <p style={{ color: '#6B5E4A', fontSize: '15px', fontWeight: 300, margin: '0 0 32px', lineHeight: 1.6 }}>
-                השאר פרטים. נחזור אליך ברגע שהאופניים נוחתים בארץ.
+                כמה פרטים ונחזור אליך ברגע שהאופניים נוחתים בארץ.
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -455,7 +455,7 @@ export default function Waitlist() {
                   onMouseEnter={e => { if (!loading && agreed) (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'; }}
                 >
-                  {loading ? '...' : 'אני רוצה להיות ראשון ←'}
+                  {loading ? '...' : 'Join the waitlist →'}
                 </button>
 
               </div>

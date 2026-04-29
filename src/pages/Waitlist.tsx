@@ -337,6 +337,7 @@ export default function Waitlist() {
                   placeholder="שם מלא"
                   value={name}
                   onChange={e => { setName(e.target.value); setError(''); }}
+                  autoComplete="name"
                   style={inputStyle}
                 />
                 <input
@@ -344,16 +345,16 @@ export default function Waitlist() {
                   placeholder="טלפון *"
                   value={phone}
                   onChange={e => { setPhone(e.target.value); setError(''); }}
-                  dir="ltr"
-                  style={{ ...inputStyle, textAlign: 'left' }}
+                  autoComplete="tel"
+                  style={inputStyle}
                 />
                 <input
                   type="email"
                   placeholder="אימייל (אופציונלי)"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  dir="ltr"
-                  style={{ ...inputStyle, textAlign: 'left' }}
+                  autoComplete="email"
+                  style={inputStyle}
                 />
 
                 <div style={{ paddingTop: '4px' }}>

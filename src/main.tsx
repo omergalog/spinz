@@ -8,6 +8,7 @@ import Story from './pages/Story';
 import Terms from './pages/Terms';
 import Accessibility from './pages/Accessibility';
 import Waitlist from './pages/Waitlist';
+import WaitlistTerms from './pages/WaitlistTerms';
 import AccessibilityWidget from './components/AccessibilityWidget';
 import { getPauseMotion, onPauseMotionChange } from './utils/motionStore';
 import PasswordGate from './components/PasswordGate';
@@ -42,7 +43,10 @@ function Root() {
 
         <main id="main-content">
           {window.location.hostname === 'waitlist.spinzbikes.com' ? (
-            <Waitlist />
+            <Routes>
+              <Route path="/" element={<Waitlist />} />
+              <Route path="/terms" element={<WaitlistTerms />} />
+            </Routes>
           ) : (
             <Routes>
               <Route path="/" element={<Index />} />
@@ -50,6 +54,7 @@ function Root() {
               <Route path="/terms" element={<Terms />} />
               <Route path="/accessibility" element={<Accessibility />} />
               <Route path="/waitlist" element={<Waitlist />} />
+              <Route path="/waitlist-terms" element={<WaitlistTerms />} />
             </Routes>
           )}
         </main>

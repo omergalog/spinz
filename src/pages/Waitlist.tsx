@@ -427,7 +427,7 @@ export default function Waitlist() {
                   />
                   <span style={{ color: '#6B5E4A', fontSize: '12px', lineHeight: 1.6 }}>
                     קראתי ואני מסכים/ה ל
-                    <a href="https://www.spinzbikes.com/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#8A6830', textDecoration: 'underline', textUnderlineOffset: '2px' }}>תנאי השימוש ומדיניות הפרטיות</a>
+                    <a href="/terms" style={{ color: '#8A6830', textDecoration: 'underline', textUnderlineOffset: '2px' }}>תנאי השימוש ומדיניות הפרטיות</a>
                     , ולקבל עדכון מ-SPINZ כשהאופניים מגיעים.
                   </span>
                 </label>
@@ -440,19 +440,19 @@ export default function Waitlist() {
                   style={{
                     padding: '15px',
                     borderRadius: '10px',
-                    backgroundColor: GOLD,
+                    backgroundColor: agreed ? GOLD : '#C8BFB0',
                     border: 'none',
-                    color: DARK,
+                    color: agreed ? DARK : '#8A8078',
                     fontSize: '15px',
                     fontWeight: 800,
-                    cursor: loading ? 'wait' : 'pointer',
+                    cursor: loading ? 'wait' : agreed ? 'pointer' : 'not-allowed',
                     fontFamily: "'Heebo', sans-serif",
                     opacity: loading ? 0.7 : 1,
                     marginTop: '8px',
                     letterSpacing: '0.02em',
-                    transition: 'opacity 0.2s, transform 0.15s',
+                    transition: 'background-color 0.25s, color 0.25s, transform 0.15s',
                   }}
-                  onMouseEnter={e => { if (!loading) (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)'; }}
+                  onMouseEnter={e => { if (!loading && agreed) (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'; }}
                 >
                   {loading ? '...' : 'אני רוצה להיות ראשון ←'}

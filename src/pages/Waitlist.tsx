@@ -12,9 +12,9 @@ const BEIGE  = '#F2EDE4';
 const BEIGE_DARK = '#1C1812';
 
 const COLORS = [
-  { name: 'שחור מאט', nameEn: 'Matte Black', hex: '#2A2A2A', border: '#555' },
-  { name: 'ירוק זית',  nameEn: 'Olive Green',  hex: '#5C6A3E', border: '#7A8A52' },
-  { name: "בז'",       nameEn: 'Beige',         hex: '#C8B99A', border: '#A89070' },
+  { name: 'שחור מאט', nameEn: 'Matte Black', hex: '#2A2A2A', border: '#555',    bike: '/assets/צבעים עומר/שחור מט רקע שקוף.png' },
+  { name: 'ירוק זית',  nameEn: 'Olive Green',  hex: '#5C6A3E', border: '#7A8A52', bike: '/assets/צבעים/ירוק זית.png' },
+  { name: "בז'",       nameEn: 'Beige',         hex: '#C8B99A', border: '#A89070', bike: '/assets/צבעים/בז.png' },
 ];
 
 const SPECS = [
@@ -234,12 +234,14 @@ export default function Waitlist() {
           <FadeSection delay={0.1}>
             <div style={{ textAlign: 'center', marginBottom: '32px' }}>
               <img
-                src="/assets/צבעים עומר/שחור מט רקע שקוף.png"
-                alt="SPINZ Matte Black"
+                key={color || 'שחור מאט'}
+                src={(COLORS.find(c => c.name === color) ?? COLORS[0]).bike}
+                alt={color || 'שחור מאט'}
                 style={{
                   maxWidth: '100%',
                   width: '480px',
                   objectFit: 'contain',
+                  transition: 'opacity 0.3s ease',
                 }}
               />
             </div>

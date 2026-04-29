@@ -251,13 +251,16 @@ export default function Waitlist() {
           <div className="wl-colors-row" style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '40px' }}>
             {COLORS.map((c, i) => (
               <FadeSection key={c.name} delay={i * 0.1}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: '1 1 180px' }}>
-                  <div style={{ width: '44px', height: '44px', borderRadius: '50%', backgroundColor: c.hex, border: `2px solid ${c.border}`, boxShadow: '0 4px 12px rgba(0,0,0,0.5)', flexShrink: 0 }} />
+                <button
+                  onClick={() => setColor(color === c.name ? '' : c.name)}
+                  style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: '1 1 180px', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textAlign: 'right' }}
+                >
+                  <div style={{ width: '44px', height: '44px', borderRadius: '50%', backgroundColor: c.hex, border: `2px solid ${color === c.name ? GOLD : c.border}`, boxShadow: color === c.name ? `0 0 0 3px ${GOLD}55` : '0 4px 12px rgba(0,0,0,0.5)', flexShrink: 0, transition: 'border-color 0.2s, box-shadow 0.2s' }} />
                   <div>
-                    <p style={{ color: CREAM, fontWeight: 700, fontSize: '14px', margin: 0 }}>{c.name}</p>
+                    <p style={{ color: color === c.name ? GOLD : CREAM, fontWeight: 700, fontSize: '14px', margin: 0, transition: 'color 0.2s' }}>{c.name}</p>
                     <p style={{ color: MUTED, fontSize: '11px', margin: 0, letterSpacing: '0.06em' }}>{c.nameEn}</p>
                   </div>
-                </div>
+                </button>
               </FadeSection>
             ))}
           </div>

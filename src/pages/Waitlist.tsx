@@ -186,9 +186,9 @@ export default function Waitlist() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.9, delay: 1.0 }}
-            style={{ fontSize: 'clamp(15px, 2vw, 18px)', fontWeight: 300, color: CREAM, margin: '0 0 32px', opacity: 0.85, textShadow: '0 1px 12px rgba(0,0,0,0.7)' }}
+            style={{ fontSize: 'clamp(15px, 2vw, 18px)', fontWeight: 300, color: CREAM, margin: '0 0 32px', opacity: 0.85, textShadow: '0 1px 12px rgba(0,0,0,0.7)', lineHeight: 1.8 }}
           >
-            אופניים שמסובבים ראשים. מחיר שסטודנט יכול להרשות לעצמו.
+            אופניים שמסובבים ראשים.<br />מחיר שסטודנט יכול להרשות לעצמו.
           </motion.p>
 
           <motion.div

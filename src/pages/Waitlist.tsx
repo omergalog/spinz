@@ -188,7 +188,7 @@ export default function Waitlist() {
             transition={{ duration: 0.9, delay: 1.0 }}
             style={{ fontSize: 'clamp(15px, 2vw, 18px)', fontWeight: 300, color: CREAM, margin: '0 0 32px', opacity: 0.85, textShadow: '0 1px 12px rgba(0,0,0,0.7)', lineHeight: 1.8 }}
           >
-            אופניים שמסובבים ראשים.<br />מחיר שאפשר להרשות לעצמו.
+            אופניים שמסובבים ראשים.<br />מחיר שסטודנטים יכולים להרשות לעצמם.
           </motion.p>
 
           <motion.div

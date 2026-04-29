@@ -234,13 +234,12 @@ export default function Waitlist() {
           <FadeSection delay={0.1}>
             <div style={{ textAlign: 'center', marginBottom: '32px' }}>
               <img
-                src="/assets/שחור לעמוד נחיתה.jpg"
+                src="/assets/צבעים/שחור מאט.png"
                 alt="SPINZ Matte Black"
                 style={{
                   maxWidth: '100%',
                   width: '480px',
                   objectFit: 'contain',
-                  mixBlendMode: 'screen',
                 }}
               />
             </div>

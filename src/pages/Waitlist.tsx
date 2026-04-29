@@ -478,8 +478,9 @@ export default function Waitlist() {
 
       {/* Footer */}
       <div style={{ backgroundColor: BEIGE, borderTop: `1px solid #D8D0C0`, padding: '20px 32px', textAlign: 'center' }}>
-        <p style={{ color: '#9A8C7A', fontSize: '11px', fontWeight: 400, letterSpacing: '0.1em', margin: 0 }}>
-          © 2026 SPINZ. ALL RIGHTS RESERVED.{' '}
+        <p style={{ color: '#9A8C7A', fontSize: '11px', fontWeight: 400, letterSpacing: '0.05em', margin: 0, lineHeight: 1.9 }}>
+          © 2026 SPINZ. All Rights Reserved.
+          <br />
           <a href="/terms" style={{ color: '#8A7A6A', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
             תנאים ופרטיות
           </a>

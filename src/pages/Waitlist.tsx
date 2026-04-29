@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import CustomCursor from '../components/CustomCursor';
 
@@ -233,17 +233,18 @@ export default function Waitlist() {
           {/* Bike image */}
           <FadeSection delay={0.1}>
             <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-              <img
-                key={color || 'שחור מאט'}
-                src={(COLORS.find(c => c.name === color) ?? COLORS[0]).bike}
-                alt={color || 'שחור מאט'}
-                style={{
-                  maxWidth: '100%',
-                  width: '480px',
-                  objectFit: 'contain',
-                  transition: 'opacity 0.3s ease',
-                }}
-              />
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={color || 'שחור מאט'}
+                  src={(COLORS.find(c => c.name === color) ?? COLORS[0]).bike}
+                  alt={color || 'שחור מאט'}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  style={{ maxWidth: '100%', width: '480px', objectFit: 'contain', display: 'block', margin: '0 auto' }}
+                />
+              </AnimatePresence>
             </div>
           </FadeSection>
 

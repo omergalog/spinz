@@ -134,7 +134,7 @@ export default function Waitlist() {
       {/* ── HERO ── */}
       <div style={{ position: 'relative', height: '100svh', minHeight: '580px', overflow: 'hidden' }}>
         <img
-          src="/assets/lifestyle-hero.jpg"
+          src="/assets/ירוק זית11.png"
           alt="Spinz"
           style={{
             position: 'absolute', inset: 0,

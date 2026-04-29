@@ -325,7 +325,7 @@ export default function Waitlist() {
             >
               <div style={{ width: '56px', height: '56px', borderRadius: '50%', border: `2px solid ${GOLD}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', color: GOLD, fontSize: '22px' }}>✓</div>
               <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 36px)', color: BEIGE_DARK, margin: '0 0 12px', letterSpacing: '-0.02em' }}>אתה ברשימה.</h2>
-              <p style={{ color: '#6B5E4A', fontSize: '15px', fontWeight: 300, margin: '0 0 6px' }}>נחזור אליך ראשון ברגע שהאופניים מגיעות.</p>
+              <p style={{ color: '#6B5E4A', fontSize: '15px', fontWeight: 300, margin: '0 0 6px' }}>נחזור אליך ראשון ברגע שהאופניים מגיעים.</p>
               <p style={{ color: '#9A8C7A', fontSize: '12px', letterSpacing: '0.05em' }}>We'll reach out the moment bikes arrive.</p>
             </motion.div>
           ) : (

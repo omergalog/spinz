@@ -462,7 +462,7 @@ export default function Waitlist() {
                 <p style={{ color: '#9A8C7A', fontSize: '11px', lineHeight: 1.7, margin: '4px 0 0', textAlign: 'center' }}>
                   בלחיצה על הכפתור מסכים/ה לקבל עדכון חד-פעמי על השקת SPINZ.
                   המידע לא יועבר לצד שלישי.{' '}
-                  <a href="https://www.spinzbikes.com/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#8A7A6A', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+                  <a href="/terms" style={{ color: '#8A7A6A', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
                     מדיניות פרטיות
                   </a>
                   .{' '}לביטול או מחיקת המידע:{' '}
@@ -480,7 +480,7 @@ export default function Waitlist() {
       <div style={{ backgroundColor: BEIGE, borderTop: `1px solid #D8D0C0`, padding: '20px 32px', textAlign: 'center' }}>
         <p style={{ color: '#9A8C7A', fontSize: '11px', fontWeight: 400, letterSpacing: '0.1em', margin: 0 }}>
           © 2026 SPINZ. ALL RIGHTS RESERVED.{' '}
-          <a href="https://www.spinzbikes.com/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#8A7A6A', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+          <a href="/terms" style={{ color: '#8A7A6A', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
             תנאים ופרטיות
           </a>
         </p>

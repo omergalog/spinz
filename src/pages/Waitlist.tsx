@@ -458,18 +458,6 @@ export default function Waitlist() {
                   {loading ? '...' : 'אני רוצה להיות ראשון ←'}
                 </button>
 
-                {/* GDPR / תקנה 13 */}
-                <p style={{ color: '#9A8C7A', fontSize: '11px', lineHeight: 1.7, margin: '4px 0 0', textAlign: 'center' }}>
-                  בלחיצה על הכפתור מסכים/ה לקבל עדכון חד-פעמי על השקת SPINZ.
-                  המידע לא יועבר לצד שלישי.{' '}
-                  <a href="/terms" style={{ color: '#8A7A6A', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
-                    מדיניות פרטיות
-                  </a>
-                  .{' '}לביטול או מחיקת המידע:{' '}
-                  <a href="mailto:info@spinzbikes.com" style={{ color: '#8A7A6A', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
-                    info@spinzbikes.com
-                  </a>
-                </p>
               </div>
             </FadeSection>
           )}

@@ -346,6 +346,7 @@ export default function Waitlist() {
                   value={phone}
                   onChange={e => { setPhone(e.target.value); setError(''); }}
                   autoComplete="tel"
+                  dir="rtl"
                   style={inputStyle}
                 />
                 <input

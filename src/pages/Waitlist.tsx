@@ -12,9 +12,9 @@ const BEIGE  = '#F2EDE4';
 const BEIGE_DARK = '#1C1812';
 
 const COLORS = [
-  { name: 'שחור מאט', nameEn: 'Matte Black', hex: '#2A2A2A', border: '#555',    bike: '/assets/צבעים עומר/שקופים/שחור מט שקוף.jpg', blend: false },
-  { name: 'ירוק זית',  nameEn: 'Olive Green',  hex: '#5C6A3E', border: '#7A8A52', bike: '/assets/צבעים עומר/שקופים/ירוק זית שקוף.jpg', blend: false },
-  { name: "בז'",       nameEn: 'Beige',         hex: '#C8B99A', border: '#A89070', bike: '/assets/צבעים עומר/שקופים/בז שקוף.jpg',        blend: false },
+  { name: 'שחור מאט', nameEn: 'Matte Black', hex: '#2A2A2A', border: '#555',    bike: '/assets/צבעים עומר/שקופים/שחור מט ללא רקע.png', blend: false },
+  { name: 'ירוק זית',  nameEn: 'Olive Green',  hex: '#5C6A3E', border: '#7A8A52', bike: '/assets/צבעים עומר/שקופים/ירוק זית ללא רקע.png', blend: false },
+  { name: "בז'",       nameEn: 'Beige',         hex: '#C8B99A', border: '#A89070', bike: '/assets/צבעים עומר/שקופים/בז ללא רקע.png',        blend: false },
 ];
 
 const SPECS = [

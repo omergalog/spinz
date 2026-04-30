@@ -287,21 +287,21 @@ export default function Waitlist() {
 
           {/* Sizes */}
           <FadeSection delay={0.15}>
-            <div style={{ borderTop: `1px solid ${BORDER}`, paddingTop: '28px' }}>
-              <p style={{ color: MUTED, fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '16px' }}>מידות שלדה · SIZES</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ borderTop: `1px solid ${BORDER}`, paddingTop: '24px' }}>
+              <p style={{ color: MUTED, fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '14px' }}>מידות שלדה · SIZES</p>
+              <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
                 {SIZES.map(s => (
                   <div key={s.size} style={{
-                    display: 'flex', alignItems: 'center', gap: '20px',
+                    display: 'flex', alignItems: 'center', gap: '12px',
                     border: `1px solid ${BORDER}`,
                     borderRadius: '10px',
-                    padding: '14px 20px',
+                    padding: '10px 18px',
                     backgroundColor: '#1F1F1F',
                   }}>
-                    <p style={{ color: GOLD, fontSize: '28px', fontWeight: 800, margin: 0, letterSpacing: '-0.02em', flexShrink: 0, minWidth: '36px' }}>{s.size}</p>
+                    <p style={{ color: GOLD, fontSize: '22px', fontWeight: 800, margin: 0, letterSpacing: '-0.02em' }}>{s.size}</p>
                     <div>
-                      <p style={{ color: MUTED, fontSize: '11px', margin: '0 0 2px' }}>מיועד ל</p>
-                      <p style={{ color: CREAM, fontSize: '13px', fontWeight: 500, margin: 0 }}>{s.desc}</p>
+                      <p style={{ color: MUTED, fontSize: '10px', margin: '0 0 1px' }}>מיועד ל</p>
+                      <p style={{ color: CREAM, fontSize: '12px', fontWeight: 500, margin: 0 }}>{s.desc}</p>
                     </div>
                   </div>
                 ))}

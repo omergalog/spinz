@@ -506,6 +506,9 @@ export default function Waitlist() {
             תנאים ופרטיות
           </a>
         </p>
+        <p style={{ color: '#B0A898', fontSize: '10px', fontWeight: 300, margin: '10px 0 0', lineHeight: 1.6, letterSpacing: '0.02em' }}>
+          התמונות באתר מציגות אב-טיפוס ונועדו להמחשה. ייתכנו שינויים קלים במוצר הסופי.
+        </p>
       </div>
     </div>
   );

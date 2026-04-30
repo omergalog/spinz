@@ -364,8 +364,8 @@ export default function Waitlist() {
             </motion.div>
           ) : (
             <FadeSection>
-              <span dir="ltr" style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: '#9A8C7A', marginBottom: '10px', textAlign: 'left' }}>JOIN</span>
-              <h2 dir="ltr" style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 40px)', color: BEIGE_DARK, margin: '0 0 12px', letterSpacing: '-0.02em', textAlign: 'left' }}>Be first.</h2>
+              <span dir="ltr" style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: '#9A8C7A', marginBottom: '10px', textAlign: 'center' }}>JOIN</span>
+              <h2 dir="ltr" style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 40px)', color: BEIGE_DARK, margin: '0 0 12px', letterSpacing: '-0.02em', textAlign: 'center' }}>Be first.</h2>
               <p style={{ color: '#6B5E4A', fontSize: '15px', fontWeight: 300, margin: '0 0 32px', lineHeight: 1.6 }}>
                 כמה פרטים ונחזור אליך ברגע שהאופניים נוחתים בארץ.
               </p>

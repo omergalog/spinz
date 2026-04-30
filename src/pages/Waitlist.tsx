@@ -12,7 +12,7 @@ const BEIGE  = '#F2EDE4';
 const BEIGE_DARK = '#1C1812';
 
 const COLORS = [
-  { name: 'שחור מאט', nameEn: 'Matte Black', hex: '#2A2A2A', border: '#555',    bike: '/assets/צבעים עומר/שקופים/שחור מט שקוף.webp', blend: false },
+  { name: 'שחור מט', nameEn: 'Matte Black', hex: '#2A2A2A', border: '#555',    bike: '/assets/צבעים עומר/שקופים/שחור מט שקוף.webp', blend: false },
   { name: 'ירוק זית',  nameEn: 'Olive Green',  hex: '#5C6A3E', border: '#7A8A52', bike: '/assets/צבעים עומר/שקופים/ירוק זית שקוף.webp', blend: false },
   { name: "בז'",       nameEn: 'Beige',         hex: '#C8B99A', border: '#A89070', bike: '/assets/צבעים עומר/שקופים/בז שקוף.webp',        blend: false },
 ];
@@ -254,9 +254,9 @@ export default function Waitlist() {
             <div className="wl-bike-container" style={{ position: 'relative', height: '320px', marginBottom: '32px', overflow: 'hidden' }}>
               <AnimatePresence mode="wait">
                 <motion.img
-                  key={color || 'שחור מאט'}
+                  key={color || 'שחור מט'}
                   src={(COLORS.find(c => c.name === color) ?? COLORS[0]).bike}
-                  alt={color || 'שחור מאט'}
+                  alt={color || 'שחור מט'}
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -12 }}

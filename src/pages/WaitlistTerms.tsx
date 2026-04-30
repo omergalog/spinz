@@ -43,7 +43,7 @@ export default function WaitlistTerms() {
         {[
           {
             title: '1. מי אוסף את המידע',
-            body: 'מותג SPINZ (להלן: "המותג") אוסף את המידע שאתם מזינים בטופס רשימת ההמתנה באתר waitlist.spinzbikes.com. כתובת הדוא"ל לפניות: info@spinzbikes.com.',
+            body: 'מותג SPINZ (להלן: "המותג"), המנוהל על ידי עומר גל, עומר דונוביץ\' ואורי שחר, אוסף את המידע שאתם מזינים בטופס רשימת ההמתנה באתר waitlist.spinzbikes.com. כתובת הדוא"ל לפניות: info@spinzbikes.com.',
           },
           {
             title: '2. איזה מידע נאסף',

@@ -4,11 +4,15 @@ import { BikeModel } from '../data/models';
 export interface CartItem {
   model: BikeModel;
   quantity: number;
+  colorId: string;
+  colorLabel: string;
+  colorSkuCode: string;
+  size: string;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (model: BikeModel) => void;
+  addItem: (model: BikeModel, colorId: string, colorLabel: string, colorSkuCode: string, size: string) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
@@ -24,7 +28,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>(() => {
     try {
       const saved = localStorage.getItem('spinz-cart');
-      return saved ? JSON.parse(saved) : [];
+      if (!saved) return [];
+      const parsed = JSON.parse(saved);
+      return parsed.filter((i: CartItem) => i.colorId && i.size);
     } catch { return []; }
   });
   const [isOpen, setIsOpen] = useState(false);
@@ -33,13 +39,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('spinz-cart', JSON.stringify(items));
   }, [items]);
 
-  const addItem = (model: BikeModel) => {
+  const addItem = (model: BikeModel, colorId: string, colorLabel: string, colorSkuCode: string, size: string) => {
     setItems(prev => {
       const existing = prev.find(i => i.model.id === model.id);
       if (existing) {
         return prev.map(i => i.model.id === model.id ? { ...i, quantity: i.quantity + 1 } : i);
       }
-      return [...prev, { model, quantity: 1 }];
+      return [...prev, { model, quantity: 1, colorId, colorLabel, colorSkuCode, size }];
     });
   };
 

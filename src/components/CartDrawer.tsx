@@ -35,7 +35,27 @@ export default function CartDrawer() {
   const handleCheckout = async () => {
     setOrdering(true);
     try {
+      // Get all currently allocated SKU IDs (from non-cancelled orders)
+      const { data: usedOrderData } = await supabase
+        .from('orders')
+        .select('sku_id')
+        .not('sku_id', 'is', null)
+        .neq('status', 'cancelled');
+      const usedSkuIds = new Set((usedOrderData ?? []).map(o => o.sku_id).filter(Boolean));
+
       for (const item of items) {
+        // Find first available SKU matching size + color
+        const { data: matchingSkus } = await supabase
+          .from('skus')
+          .select('id, sku')
+          .eq('size', item.size)
+          .eq('color', item.colorSkuCode)
+          .is('deleted_at', null)
+          .order('created_at', { ascending: true });
+
+        const availableSku = (matchingSkus ?? []).find(s => !usedSkuIds.has(s.id)) ?? null;
+        if (availableSku) usedSkuIds.add(availableSku.id);
+
         await supabase.from('orders').insert({
           product_name: item.model.name,
           customer_name: form.name,
@@ -46,6 +66,10 @@ export default function CartDrawer() {
           unit_price: item.model.price,
           total_price: item.model.price * item.quantity,
           status: 'pending',
+          size: item.size,
+          color: item.colorId,
+          sku_id: availableSku?.id ?? null,
+          sku_code: availableSku?.sku ?? null,
         });
       }
       clearCart();

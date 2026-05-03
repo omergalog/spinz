@@ -42,15 +42,21 @@ export default function Models() {
 
   const handleAddToCart = () => {
     if (outOfStock) return;
-    addItem({
-      id: `spinz-${size.id}-${color.id}`,
-      name: `SPINZ ${size.id} — ${color.label}`,
-      tagline: size.range,
-      image: color.image,
-      price: salePrice ?? price,
-      accentColor: color.hex,
-      features: [],
-    });
+    addItem(
+      {
+        id: `spinz-${size.id}-${color.id}`,
+        name: `SPINZ ${size.id} — ${color.label}`,
+        tagline: size.range,
+        image: color.image,
+        price: salePrice ?? price,
+        accentColor: color.hex,
+        features: [],
+      },
+      color.id,
+      color.label,
+      color.skuCode,
+      size.id,
+    );
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };

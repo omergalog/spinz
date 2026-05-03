@@ -71,6 +71,20 @@ export default function CartDrawer() {
           sku_id: availableSku?.id ?? null,
           sku_code: availableSku?.sku ?? null,
         });
+
+        // Decrement stock
+        const slug = `spinz-${item.colorId}-${item.size}`;
+        const { data: product } = await supabase
+          .from('products')
+          .select('id, stock')
+          .eq('slug', slug)
+          .single();
+        if (product) {
+          await supabase
+            .from('products')
+            .update({ stock: Math.max(0, product.stock - item.quantity) })
+            .eq('id', product.id);
+        }
       }
       clearCart();
       setOrdered(true);

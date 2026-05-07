@@ -29,10 +29,10 @@ export default function VideoSection() {
   return (
     <section
       ref={sectionRef}
+      className="h-[50vw] md:h-screen"
       style={{
         position: 'relative',
         width: '100%',
-        height: '100vh',
         overflow: 'hidden',
         backgroundColor: DARK,
       }}

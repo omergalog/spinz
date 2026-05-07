@@ -1,6 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useIsMobile } from '../hooks/useIsMobile';
 
 const DARK = '#1C1C1C';
 const GOLD = '#C9A870';
@@ -10,7 +9,6 @@ export default function VideoSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
-  const isMobile = useIsMobile();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -34,7 +32,7 @@ export default function VideoSection() {
       style={{
         position: 'relative',
         width: '100%',
-        height: isMobile ? '60vh' : '100vh',
+        height: '100vh',
         overflow: 'hidden',
         backgroundColor: DARK,
       }}
@@ -52,7 +50,7 @@ export default function VideoSection() {
           width: '100%',
           height: '100%',
           objectFit: 'cover',
-          objectPosition: isMobile ? 'center center' : 'center center',
+          objectPosition: 'center center',
           opacity: 0.75,
         }}
       />
@@ -92,7 +90,7 @@ export default function VideoSection() {
           style={{
             color: GOLD,
             fontFamily: "'Heebo', sans-serif",
-            fontSize: isMobile ? '9px' : '11px',
+            fontSize: 'clamp(9px, 1.5vw, 11px)',
             letterSpacing: '0.4em',
             textTransform: 'uppercase',
             marginBottom: '16px',
@@ -109,7 +107,7 @@ export default function VideoSection() {
             style={{
               fontFamily: "'Bebas Neue', sans-serif",
               color: TEXT_LIGHT,
-              fontSize: isMobile ? 'clamp(40px, 12vw, 64px)' : 'clamp(56px, 10vw, 120px)',
+              fontSize: 'clamp(36px, 10vw, 120px)',
               lineHeight: 1,
               margin: 0,
               letterSpacing: '0.04em',

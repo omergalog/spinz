@@ -40,7 +40,7 @@ const models: BikeModel[] = [
 
 export const colorVariants = [
   { id: 'mat',   label: 'שחור מט',  image: '/assets/bike-mat.webp',   hex: '#2C2C2C', skuCode: 'MAT', slug: 'mat'   },
-  { id: 'beige', label: "בז'",      image: '/assets/bike-beige.webp', hex: '#C4A882', skuCode: 'BEI', slug: 'beige' },
+  { id: 'beige', label: "בז'",      image: '/assets/תמונות אורי/בז אורי.png', hex: '#C4A882', skuCode: 'BEI', slug: 'beige' },
   { id: 'olive', label: 'ירוק זית', image: '/assets/bike-olive.webp', hex: '#6B7C5C', skuCode: 'OLG', slug: 'olive' },
 ];
 

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spinz – Business Cards</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #F0EDE8;
+      font-family: 'Heebo', sans-serif;
+      padding: 60px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 60px;
+    }
+
+    h2 {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: #bbb;
+      text-align: center;
+      margin-bottom: -40px;
+    }
+
+    .card-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .label {
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #bbb;
+    }
+
+    /* 85mm × 54mm → 340px × 216px */
+    .card {
+      width: 340px;
+      height: 216px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+      background: #181818;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+    }
+
+    /* Subtle gradient overlay */
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201,168,112,0.06) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Gold left bar */
+    .gold-bar {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, #C9A870 0%, #A8885A 100%);
+      z-index: 2;
+    }
+
+    /* Logo background decoration */
+    .logo-bg {
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 200px;
+      height: auto;
+      filter: brightness(0) invert(1);
+      opacity: 0.05;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Content */
+    .content {
+      position: absolute;
+      inset: 0;
+      padding: 24px 26px 24px 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 2;
+    }
+
+    /* Top: brand name + tagline */
+    .brand-block .brand-name {
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.4em;
+      color: #EDEBE6;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .brand-block .tagline {
+      font-size: 6.5px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #C9A870;
+      margin-top: 5px;
+    }
+
+    /* Divider */
+    .divider {
+      width: 28px;
+      height: 1px;
+      background: linear-gradient(90deg, #C9A870, transparent);
+    }
+
+    /* Person name */
+    .person-name {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #FFFFFF;
+      text-transform: uppercase;
+      line-height: 1.15;
+      max-width: 170px;
+    }
+
+    /* Contacts */
+    .contacts {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .contact-line {
+      font-size: 9px;
+      color: #777;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .contact-line .ico {
+      width: 12px;
+      height: 12px;
+      border: 1px solid #2E2E2E;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6px;
+      color: #C9A870;
+      flex-shrink: 0;
+    }
+
+    /* ── Back side ── */
+    .card-back {
+      background: #141414;
+    }
+
+    .card-back::before {
+      background: radial-gradient(ellipse at center, rgba(201,168,112,0.1) 0%, transparent 70%);
+    }
+
+    /* Corner accents */
+    .corner {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      z-index: 2;
+    }
+    .corner.tl { top: 14px; left: 14px; border-top: 1.5px solid #C9A870; border-left: 1.5px solid #C9A870; }
+    .corner.tr { top: 14px; right: 14px; border-top: 1.5px solid #C9A870; border-right: 1.5px solid #C9A870; }
+    .corner.bl { bottom: 14px; left: 14px; border-bottom: 1.5px solid #C9A870; border-left: 1.5px solid #C9A870; }
+    .corner.br { bottom: 14px; right: 14px; border-bottom: 1.5px solid #C9A870; border-right: 1.5px solid #C9A870; }
+
+    .back-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      z-index: 2;
+    }
+
+    .back-logo {
+      height: 80px;
+      width: auto;
+      filter: brightness(0) invert(1);
+      opacity: 0.9;
+    }
+
+    .back-brand {
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.55em;
+      text-transform: uppercase;
+      color: #C9A870;
+    }
+
+    .back-tagline {
+      font-size: 7px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #555;
+    }
+
+    /* Print */
+    .print-note {
+      font-size: 10px;
+      color: #ccc;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    @media print {
+      body { background: white; padding: 10mm; gap: 15mm; }
+      .label, h2, .print-note { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Spinz — Business Cards · Canton Fair 2026</h2>
+
+  <!-- ── CARD 1 : Omer Gal ─────────────────────── -->
+  <div class="card-wrap">
+    <div class="label">01 · Omer Gal</div>
+    <div class="card">
+      <img src="public/assets/logo.png" alt="" class="logo-bg" />
+      <div class="gold-bar"></div>
+      <div class="content">
+        <div class="brand-block">
+          <div class="brand-name">Spinz</div>
+          <div class="tagline">Urban Single Speed · Tel Aviv, Israel</div>
+        </div>
+        <div class="divider"></div>
+        <div class="person-name">Omer<br/>Gal</div>
+        <div class="contacts">
+          <div class="contact-line"><div class="ico">☎</div>+972-527-565-262</div>
+          <div class="contact-line"><div class="ico">@</div>omergalog@gmail.com</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 2 : Omer Donovich ─────────────────── -->
+  <div class="card-wrap">
+    <div class="label">02 · Omer Donovich</div>
+    <div class="card">
+      <img src="public/assets/logo.png" alt="" class="logo-bg" />
+      <div class="gold-bar"></div>
+      <div class="content">
+        <div class="brand-block">
+          <div class="brand-name">Spinz</div>
+          <div class="tagline">Urban Single Speed · Tel Aviv, Israel</div>
+        </div>
+        <div class="divider"></div>
+        <div class="person-name">Omer Donovich</div>
+        <div class="contacts">
+          <div class="contact-line"><div class="ico">☎</div>+972-522-300-139</div>
+          <div class="contact-line"><div class="ico">@</div>omer.donovich@gmail.com</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 3 : Uri Shahar ────────────────────── -->
+  <div class="card-wrap">
+    <div class="label">03 · Uri Shahar</div>
+    <div class="card">
+      <img src="public/assets/logo.png" alt="" class="logo-bg" />
+      <div class="gold-bar"></div>
+      <div class="content">
+        <div class="brand-block">
+          <div class="brand-name">Spinz</div>
+          <div class="tagline">Urban Single Speed · Tel Aviv, Israel</div>
+        </div>
+        <div class="divider"></div>
+        <div class="person-name">Uri<br/>Shahar</div>
+        <div class="contacts">
+          <div class="contact-line"><div class="ico">☎</div>+972-503-022-033</div>
+          <div class="contact-line"><div class="ico">@</div>urishahar8@gmail.com</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BACK SIDE ────────────────────────────────── -->
+  <div class="card-wrap">
+    <div class="label">גב הכרטיס · כל השלושה</div>
+    <div class="card card-back">
+      <!-- Gold corner accents -->
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
+      <!-- Center content -->
+      <div class="back-content">
+        <img src="public/assets/logo.png" alt="Spinz" class="back-logo" />
+        <div class="back-brand">SPINZ</div>
+        <div class="back-tagline">Urban Single Speed · Tel Aviv</div>
+      </div>
+    </div>
+  </div>
+
+  <p class="print-note">Print at 300 dpi · 85mm × 54mm · Matte finish recommended</p>
+
+</body>
+</html>

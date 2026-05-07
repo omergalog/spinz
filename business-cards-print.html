@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Spinz – Business Cards – Print Ready</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+
+    body {
+      font-family: 'Heebo', sans-serif;
+      background: white;
+    }
+
+    /* ── One A4 page per card side ── */
+    .sheet {
+      width: 210mm;
+      height: 297mm;
+      position: relative;
+      background: white;
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Page label — printed outside card area for print shop reference */
+    .page-label {
+      position: absolute;
+      top: 12mm;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: 7pt;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #999;
+      font-family: 'Heebo', sans-serif;
+    }
+
+    .page-label strong { color: #333; }
+
+    /* ── Card with bleed ──
+       Trim:  85mm × 54mm
+       Bleed: 3mm all sides
+       Total: 91mm × 60mm
+    */
+    .card-print-wrap {
+      position: relative;
+      width: 91mm;
+      height: 60mm;
+      margin: 12mm auto 0;
+    }
+
+    .card {
+      position: absolute;
+      top: 0; left: 0;
+      width: 91mm;
+      height: 60mm;
+      overflow: hidden;
+    }
+
+    /* Crop marks */
+    .crop { position: absolute; background: #000; }
+    .tl-h { top: 3mm;    left: -6mm;  width: 4mm;   height: 0.25pt; }
+    .tl-v { top: -6mm;   left: 3mm;   width: 0.25pt; height: 4mm;  }
+    .tr-h { top: 3mm;    right: -6mm; width: 4mm;   height: 0.25pt; }
+    .tr-v { top: -6mm;   right: 3mm;  width: 0.25pt; height: 4mm;  }
+    .bl-h { bottom: 3mm; left: -6mm;  width: 4mm;   height: 0.25pt; }
+    .bl-v { bottom: -6mm;left: 3mm;   width: 0.25pt; height: 4mm;  }
+    .br-h { bottom: 3mm; right: -6mm; width: 4mm;   height: 0.25pt; }
+    .br-v { bottom: -6mm;right: 3mm;  width: 0.25pt; height: 4mm;  }
+
+    /* ── FRONT card design ── */
+    .card-inner {
+      position: absolute;
+      inset: 0;
+      background: #181818;
+      overflow: hidden;
+    }
+
+    .card-inner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201,168,112,0.07) 0%, transparent 60%);
+      z-index: 1;
+    }
+
+    .gold-bar {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 1.2mm;
+      background: linear-gradient(180deg, #C9A870 0%, #A8885A 100%);
+      z-index: 2;
+    }
+
+    .logo-bg {
+      position: absolute;
+      right: 5mm;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 53mm;
+      height: auto;
+      filter: brightness(0) invert(1);
+      opacity: 0.05;
+      z-index: 0;
+    }
+
+    .content {
+      position: absolute;
+      top: 4mm; bottom: 4mm;
+      left: 5mm; right: 4mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 2;
+    }
+
+    .brand-name {
+      font-size: 11pt;
+      font-weight: 900;
+      letter-spacing: 0.4em;
+      color: #EDEBE6;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .tagline {
+      font-size: 5pt;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: #C9A870;
+      margin-top: 1.5mm;
+    }
+
+    .divider {
+      width: 8mm;
+      height: 0.3pt;
+      background: linear-gradient(90deg, #C9A870, transparent);
+    }
+
+    .person-name {
+      font-size: 14pt;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: #FFFFFF;
+      text-transform: uppercase;
+      line-height: 1.15;
+      max-width: 45mm;
+    }
+
+    .contacts {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5mm;
+    }
+
+    .contact-line {
+      font-size: 6.5pt;
+      color: #777;
+      letter-spacing: 0.04em;
+      display: flex;
+      align-items: center;
+      gap: 2mm;
+    }
+
+    .ico {
+      width: 4mm; height: 4mm;
+      border: 0.3pt solid #2E2E2E;
+      border-radius: 0.7mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5pt;
+      color: #C9A870;
+      flex-shrink: 0;
+    }
+
+    /* ── BACK card design ── */
+    .card-back-inner {
+      position: absolute;
+      inset: 0;
+      background: #141414;
+      overflow: hidden;
+    }
+
+    .card-back-inner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(201,168,112,0.1) 0%, transparent 70%);
+      z-index: 1;
+    }
+
+    .corner { position: absolute; z-index: 2; }
+    .corner.tl { top: 4mm;    left: 4mm;  border-top: 0.5pt solid #C9A870; border-left: 0.5pt solid #C9A870;   width: 5mm; height: 5mm; }
+    .corner.tr { top: 4mm;    right: 4mm; border-top: 0.5pt solid #C9A870; border-right: 0.5pt solid #C9A870;  width: 5mm; height: 5mm; }
+    .corner.bl { bottom: 4mm; left: 4mm;  border-bottom: 0.5pt solid #C9A870; border-left: 0.5pt solid #C9A870;  width: 5mm; height: 5mm; }
+    .corner.br { bottom: 4mm; right: 4mm; border-bottom: 0.5pt solid #C9A870; border-right: 0.5pt solid #C9A870; width: 5mm; height: 5mm; }
+
+    .back-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3mm;
+      z-index: 2;
+    }
+
+    .back-logo {
+      height: 22mm;
+      width: auto;
+      filter: brightness(0) invert(1);
+      opacity: 0.9;
+    }
+
+    .back-brand {
+      font-size: 8pt;
+      font-weight: 900;
+      letter-spacing: 0.55em;
+      text-transform: uppercase;
+      color: #C9A870;
+    }
+
+    .back-tagline {
+      font-size: 5pt;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #555;
+    }
+
+    /* Specs block at bottom of each page */
+    .specs {
+      position: absolute;
+      bottom: 10mm;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: 6pt;
+      color: #bbb;
+      letter-spacing: 0.1em;
+      font-family: 'Heebo', sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════
+     PAGE 1 — OMER GAL · FRONT
+═══════════════════════════════════ -->
+<div class="sheet">
+  <div class="page-label">Card 1 of 3 &nbsp;·&nbsp; <strong>OMER GAL</strong> &nbsp;·&nbsp; FRONT SIDE</div>
+  <div class="card-print-wrap">
+    <div class="crop tl-h"></div><div class="crop tl-v"></div>
+    <div class="crop tr-h"></div><div class="crop tr-v"></div>
+    <div class="crop bl-h"></div><div class="crop bl-v"></div>
+    <div class="crop br-h"></div><div class="crop br-v"></div>
+    <div class="card">
+      <div class="card-inner">
+        <img src="public/assets/logo.png" alt="" class="logo-bg" />
+        <div class="gold-bar"></div>
+        <div class="content">
+          <div>
+            <div class="brand-name">Spinz</div>
+            <div class="tagline">Urban Single Speed · Tel Aviv, Israel</div>
+          </div>
+          <div class="divider"></div>
+          <div class="person-name">Omer<br/>Gal</div>
+          <div class="contacts">
+            <div class="contact-line"><div class="ico">☎</div>+972-527-565-262</div>
+            <div class="contact-line"><div class="ico">@</div>omergalog@gmail.com</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="specs">Trim: 85 × 54 mm &nbsp;|&nbsp; Bleed: 3 mm &nbsp;|&nbsp; Color: CMYK &nbsp;|&nbsp; Resolution: 300 DPI &nbsp;|&nbsp; Finish: Matte</div>
+</div>
+
+<!-- ═══════════════════════════════════
+     PAGE 2 — OMER GAL · BACK
+═══════════════════════════════════ -->
+<div class="sheet">
+  <div class="page-label">Card 1 of 3 &nbsp;·&nbsp; <strong>OMER GAL</strong> &nbsp;·&nbsp; BACK SIDE</div>
+  <div class="card-print-wrap">
+    <div class="crop tl-h"></div><div class="crop tl-v"></div>
+    <div class="crop tr-h"></div><div class="crop tr-v"></div>
+    <div class="crop bl-h"></div><div class="crop bl-v"></div>
+    <div class="crop br-h"></div><div class="crop br-v"></div>
+    <div class="card">
+      <div class="card-back-inner">
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+        <div class="back-content">
+          <img src="public/assets/logo.png" alt="Spinz" class="back-logo" />
+          <div class="back-brand">SPINZ</div>
+          <div class="back-tagline">Urban Single Speed · Tel Aviv</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="specs">Trim: 85 × 54 mm &nbsp;|&nbsp; Bleed: 3 mm &nbsp;|&nbsp; Color: CMYK &nbsp;|&nbsp; Resolution: 300 DPI &nbsp;|&nbsp; Finish: Matte</div>
+</div>
+
+<!-- ═══════════════════════════════════
+     PAGE 3 — OMER DONOVICH · FRONT
+═══════════════════════════════════ -->
+<div class="sheet">
+  <div class="page-label">Card 2 of 3 &nbsp;·&nbsp; <strong>OMER DONOVICH</strong> &nbsp;·&nbsp; FRONT SIDE</div>
+  <div class="card-print-wrap">
+    <div class="crop tl-h"></div><div class="crop tl-v"></div>
+    <div class="crop tr-h"></div><div class="crop tr-v"></div>
+    <div class="crop bl-h"></div><div class="crop bl-v"></div>
+    <div class="crop br-h"></div><div class="crop br-v"></div>
+    <div class="card">
+      <div class="card-inner">
+        <img src="public/assets/logo.png" alt="" class="logo-bg" />
+        <div class="gold-bar"></div>
+        <div class="content">
+          <div>
+            <div class="brand-name">Spinz</div>
+            <div class="tagline">Urban Single Speed · Tel Aviv, Israel</div>
+          </div>
+          <div class="divider"></div>
+          <div class="person-name">Omer<br/>Donovich</div>
+          <div class="contacts">
+            <div class="contact-line"><div class="ico">☎</div>+972-522-300-139</div>
+            <div class="contact-line"><div class="ico">@</div>omer.donovich@gmail.com</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="specs">Trim: 85 × 54 mm &nbsp;|&nbsp; Bleed: 3 mm &nbsp;|&nbsp; Color: CMYK &nbsp;|&nbsp; Resolution: 300 DPI &nbsp;|&nbsp; Finish: Matte</div>
+</div>
+
+<!-- ═══════════════════════════════════
+     PAGE 4 — OMER DONOVICH · BACK
+═══════════════════════════════════ -->
+<div class="sheet">
+  <div class="page-label">Card 2 of 3 &nbsp;·&nbsp; <strong>OMER DONOVICH</strong> &nbsp;·&nbsp; BACK SIDE</div>
+  <div class="card-print-wrap">
+    <div class="crop tl-h"></div><div class="crop tl-v"></div>
+    <div class="crop tr-h"></div><div class="crop tr-v"></div>
+    <div class="crop bl-h"></div><div class="crop bl-v"></div>
+    <div class="crop br-h"></div><div class="crop br-v"></div>
+    <div class="card">
+      <div class="card-back-inner">
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+        <div class="back-content">
+          <img src="public/assets/logo.png" alt="Spinz" class="back-logo" />
+          <div class="back-brand">SPINZ</div>
+          <div class="back-tagline">Urban Single Speed · Tel Aviv</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="specs">Trim: 85 × 54 mm &nbsp;|&nbsp; Bleed: 3 mm &nbsp;|&nbsp; Color: CMYK &nbsp;|&nbsp; Resolution: 300 DPI &nbsp;|&nbsp; Finish: Matte</div>
+</div>
+
+<!-- ═══════════════════════════════════
+     PAGE 5 — URI SHAHAR · FRONT
+═══════════════════════════════════ -->
+<div class="sheet">
+  <div class="page-label">Card 3 of 3 &nbsp;·&nbsp; <strong>URI SHAHAR</strong> &nbsp;·&nbsp; FRONT SIDE</div>
+  <div class="card-print-wrap">
+    <div class="crop tl-h"></div><div class="crop tl-v"></div>
+    <div class="crop tr-h"></div><div class="crop tr-v"></div>
+    <div class="crop bl-h"></div><div class="crop bl-v"></div>
+    <div class="crop br-h"></div><div class="crop br-v"></div>
+    <div class="card">
+      <div class="card-inner">
+        <img src="public/assets/logo.png" alt="" class="logo-bg" />
+        <div class="gold-bar"></div>
+        <div class="content">
+          <div>
+            <div class="brand-name">Spinz</div>
+            <div class="tagline">Urban Single Speed · Tel Aviv, Israel</div>
+          </div>
+          <div class="divider"></div>
+          <div class="person-name">Uri<br/>Shahar</div>
+          <div class="contacts">
+            <div class="contact-line"><div class="ico">☎</div>+972-503-022-033</div>
+            <div class="contact-line"><div class="ico">@</div>urishahar8@gmail.com</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="specs">Trim: 85 × 54 mm &nbsp;|&nbsp; Bleed: 3 mm &nbsp;|&nbsp; Color: CMYK &nbsp;|&nbsp; Resolution: 300 DPI &nbsp;|&nbsp; Finish: Matte</div>
+</div>
+
+<!-- ═══════════════════════════════════
+     PAGE 6 — URI SHAHAR · BACK
+═══════════════════════════════════ -->
+<div class="sheet">
+  <div class="page-label">Card 3 of 3 &nbsp;·&nbsp; <strong>URI SHAHAR</strong> &nbsp;·&nbsp; BACK SIDE</div>
+  <div class="card-print-wrap">
+    <div class="crop tl-h"></div><div class="crop tl-v"></div>
+    <div class="crop tr-h"></div><div class="crop tr-v"></div>
+    <div class="crop bl-h"></div><div class="crop bl-v"></div>
+    <div class="crop br-h"></div><div class="crop br-v"></div>
+    <div class="card">
+      <div class="card-back-inner">
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
+        <div class="back-content">
+          <img src="public/assets/logo.png" alt="Spinz" class="back-logo" />
+          <div class="back-brand">SPINZ</div>
+          <div class="back-tagline">Urban Single Speed · Tel Aviv</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="specs">Trim: 85 × 54 mm &nbsp;|&nbsp; Bleed: 3 mm &nbsp;|&nbsp; Color: CMYK &nbsp;|&nbsp; Resolution: 300 DPI &nbsp;|&nbsp; Finish: Matte</div>
+</div>
+
+</body>
+</html>

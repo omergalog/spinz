@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Spinz — מחשבון עלות ייבוא</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Heebo', sans-serif;
+      background: #F5F2EC;
+      color: #1a1a1a;
+      padding: 40px 32px;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 36px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #1a1a1a;
+    }
+    .header h1 { font-size: 28px; font-weight: 900; letter-spacing: -0.02em; }
+    .header h1 span { color: #C9A870; }
+    .header .subtitle { font-size: 12px; color: #888; letter-spacing: 0.15em; text-transform: uppercase; margin-top: 4px; }
+    .header .date { font-size: 11px; color: #aaa; text-align: left; }
+
+    /* ── Grid layout ── */
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+    .full { grid-column: 1 / -1; }
+
+    /* ── Cards ── */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      border: 1px solid #E0DCD4;
+    }
+    .card h2 {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #aaa;
+      margin-bottom: 18px;
+    }
+    .card.gold { border-color: #C9A870; background: #fffdf8; }
+    .card.dark { background: #1a1a1a; color: #EDEBE6; border-color: #1a1a1a; }
+    .card.dark h2 { color: #555; }
+
+    /* ── Inputs ── */
+    .field { margin-bottom: 14px; }
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: #888;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .field input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid #E0DCD4;
+      border-radius: 7px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a1a;
+      background: #fafaf8;
+      transition: border-color 0.15s;
+      text-align: right;
+    }
+    .field input:focus { outline: none; border-color: #C9A870; }
+    .field .note { font-size: 10px; color: #bbb; margin-top: 4px; }
+    .field .note.warn { color: #E07B39; }
+    .field .note.ok { color: #6BCB77; }
+
+    /* ── Table ── */
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { border-bottom: 2px solid #E0DCD4; }
+    thead th {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #aaa;
+      padding: 0 8px 12px;
+      text-align: right;
+    }
+    thead th.num { text-align: left; }
+    tbody tr { border-bottom: 1px solid #F0EDE8; transition: background 0.1s; }
+    tbody tr:hover { background: #fafaf8; }
+    tbody td { padding: 11px 8px; font-size: 13px; }
+    tbody td.num { text-align: left; font-weight: 600; font-variant-numeric: tabular-nums; }
+    tbody td.muted { color: #aaa; font-size: 11px; }
+    tbody td.tbd { color: #E07B39; font-style: italic; font-size: 11px; }
+    tbody td.green { color: #6BCB77; }
+    tbody tr.subtotal { background: #F5F2EC; }
+    tbody tr.subtotal td { font-weight: 700; font-size: 13px; }
+    tbody tr.total { background: #1a1a1a; }
+    tbody tr.total td { color: #EDEBE6; font-weight: 800; font-size: 14px; padding: 14px 8px; }
+    tbody tr.total td.gold { color: #C9A870; font-size: 16px; }
+    tbody tr.cashflow { background: #FFF8EE; }
+    tbody tr.cashflow td { color: #A8885A; font-size: 12px; }
+
+    /* ── Summary big numbers ── */
+    .big-num {
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .big-label { font-size: 11px; color: #aaa; letter-spacing: 0.1em; text-transform: uppercase; }
+    .big-gold { color: #C9A870; }
+    .big-row { display: flex; gap: 32px; align-items: flex-end; flex-wrap: wrap; margin-top: 8px; }
+    .big-item { flex: 1; min-width: 120px; }
+
+    /* ── Section divider ── */
+    .section-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #C9A870;
+      margin: 32px 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-title::after { content: ''; flex: 1; height: 1px; background: #E0DCD4; }
+
+    /* ── Notes ── */
+    .notes { margin-top: 32px; padding: 20px 24px; background: #fff; border-radius: 12px; border: 1px solid #E0DCD4; }
+    .notes h3 { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: #aaa; margin-bottom: 14px; }
+    .note-item { display: flex; gap: 10px; margin-bottom: 10px; font-size: 12px; line-height: 1.5; }
+    .note-dot { color: #C9A870; font-size: 16px; flex-shrink: 0; line-height: 1.3; }
+    .note-item.pending .note-dot { color: #E07B39; }
+
+    @media print {
+      body { background: white; padding: 20px; }
+      .no-print { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>SPINZ <span>—</span> מחשבון עלות ייבוא</h1>
+    <div class="subtitle">הזמנה ראשונה · מכולת 20 פיט · 170 זוגות</div>
+  </div>
+  <div class="date" id="dateDisplay"></div>
+</div>
+
+<!-- ── INPUTS ── -->
+<div class="section-title">פרמטרים</div>
+<div class="grid">
+  <div class="card">
+    <h2>נתוני הזמנה</h2>
+    <div class="field">
+      <label>מחיר מפעל ליחידה (FOB סין)</label>
+      <input type="number" id="fob" value="93.80" step="0.01" oninput="calc()" />
+      <div class="note">כולל עד הנמל בסין ($)</div>
+    </div>
+    <div class="field">
+      <label>מספר יחידות</label>
+      <input type="number" id="units" value="170" oninput="calc()" />
+      <div class="note">מכולת 20 פיט = 170 זוגות</div>
+    </div>
+    <div class="field">
+      <label>שער דולר (₪)</label>
+      <input type="number" id="usdRate" value="3.65" step="0.01" oninput="calc()" />
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>עלויות לוגיסטיקה ליחידה ($)</h2>
+    <div class="field">
+      <label>שילוח ים (מכולה 20 פיט)</label>
+      <input type="number" id="freight" value="16.06" step="0.01" oninput="calc()" />
+    </div>
+    <div class="field">
+      <label>לוגיסטיקה כוללת (worst case)</label>
+      <input type="number" id="logistics" value="12.00" step="0.01" oninput="calc()" />
+      <div class="note">עמיל מכס + ביטוח + שילוח פנים</div>
+    </div>
+    <div class="field">
+      <label>מכס (customs duty) — % מ-CIF</label>
+      <input type="number" id="dutyPct" value="0" step="0.5" oninput="calc()" />
+      <div class="note warn" id="dutyNote">⚠ ממתין לאישור מעמיל המכס (HS 8712.00)</div>
+    </div>
+    <div class="field">
+      <label>דמי טיפול נמל / מסמכים ($)</label>
+      <input type="number" id="portFees" value="0" step="1" oninput="calc()" />
+      <div class="note warn">ממתין לאישור</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── BREAKDOWN TABLE ── -->
+<div class="section-title">פירוט עלות ליחידה</div>
+<div class="card full">
+  <table>
+    <thead>
+      <tr>
+        <th>סעיף</th>
+        <th>הערות</th>
+        <th class="num">$ ליחידה</th>
+        <th class="num">₪ ליחידה</th>
+        <th class="num">$ כולל (170 יח')</th>
+        <th class="num">₪ כולל</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>מחיר מפעל (FOB)</td>
+        <td class="muted">כולל עד נמל סין</td>
+        <td class="num" id="r_fob">—</td>
+        <td class="num" id="r_fob_ils">—</td>
+        <td class="num" id="t_fob">—</td>
+        <td class="num" id="tt_fob">—</td>
+      </tr>
+      <tr>
+        <td>שילוח ים</td>
+        <td class="muted">מכולת 20 פיט</td>
+        <td class="num" id="r_freight">—</td>
+        <td class="num" id="r_freight_ils">—</td>
+        <td class="num" id="t_freight">—</td>
+        <td class="num" id="tt_freight">—</td>
+      </tr>
+      <tr>
+        <td>לוגיסטיקה (עמיל + ביטוח + שילוח פנים)</td>
+        <td class="muted">worst case</td>
+        <td class="num" id="r_log">—</td>
+        <td class="num" id="r_log_ils">—</td>
+        <td class="num" id="t_log">—</td>
+        <td class="num" id="tt_log">—</td>
+      </tr>
+      <tr class="subtotal">
+        <td><strong>סה"כ לפני מכס (CIF)</strong></td>
+        <td class="muted">Cost + Insurance + Freight</td>
+        <td class="num" id="r_cif"><strong>—</strong></td>
+        <td class="num" id="r_cif_ils"><strong>—</strong></td>
+        <td class="num" id="t_cif"><strong>—</strong></td>
+        <td class="num" id="tt_cif"><strong>—</strong></td>
+      </tr>
+      <tr>
+        <td>מכס (customs duty)</td>
+        <td class="tbd" id="duty_label">ממתין לאחוז</td>
+        <td class="num" id="r_duty">—</td>
+        <td class="num" id="r_duty_ils">—</td>
+        <td class="num" id="t_duty">—</td>
+        <td class="num" id="tt_duty">—</td>
+      </tr>
+      <tr>
+        <td>דמי טיפול נמל / מסמכים</td>
+        <td class="tbd">ממתין לאישור</td>
+        <td class="num" id="r_port">—</td>
+        <td class="num" id="r_port_ils">—</td>
+        <td class="num" id="t_port">—</td>
+        <td class="num" id="tt_port">—</td>
+      </tr>
+      <tr class="subtotal">
+        <td><strong>סה"כ עלות ייבוא</strong></td>
+        <td class="muted">לא כולל מע"מ</td>
+        <td class="num" id="r_total"><strong>—</strong></td>
+        <td class="num" id="r_total_ils"><strong>—</strong></td>
+        <td class="num" id="t_total"><strong>—</strong></td>
+        <td class="num" id="tt_total"><strong>—</strong></td>
+      </tr>
+      <tr class="cashflow">
+        <td>מע"מ יבוא 17%</td>
+        <td class="muted">מוחזר ~חודשיים — cash flow בלבד</td>
+        <td class="num" id="r_vat">—</td>
+        <td class="num" id="r_vat_ils">—</td>
+        <td class="num" id="t_vat">—</td>
+        <td class="num" id="tt_vat">—</td>
+      </tr>
+      <tr class="total">
+        <td><strong>עלות כוללת ליחידה</strong></td>
+        <td style="color:#555;font-size:11px;">לפני מכירה</td>
+        <td class="num gold" id="r_grand">—</td>
+        <td class="num gold" id="r_grand_ils">—</td>
+        <td class="num gold" id="t_grand">—</td>
+        <td class="num gold" id="tt_grand">—</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ── SUMMARY ── -->
+<div class="section-title">סיכום הזמנה</div>
+<div class="grid-3">
+  <div class="card gold">
+    <h2>עלות ליחידה (לא כולל מע"מ)</h2>
+    <div class="big-num big-gold" id="sum_unit_usd">—</div>
+    <div class="big-label">דולר</div>
+    <div style="margin-top:8px;font-size:20px;font-weight:700;color:#1a1a1a;" id="sum_unit_ils">—</div>
+    <div class="big-label">שקל</div>
+  </div>
+  <div class="card dark">
+    <h2>סה"כ השקעה ראשונית</h2>
+    <div class="big-num" style="color:#EDEBE6;" id="sum_total_ils">—</div>
+    <div class="big-label" style="color:#555;">שקל (170 יחידות, ללא מע"מ)</div>
+    <div style="margin-top:8px;font-size:15px;color:#C9A870;font-weight:700;" id="sum_total_usd">—</div>
+    <div class="big-label" style="color:#555;">דולר</div>
+  </div>
+  <div class="card">
+    <h2>cash flow נדרש (כולל מע"מ)</h2>
+    <div class="big-num" id="sum_cashflow">—</div>
+    <div class="big-label">שקל (מע"מ מוחזר תוך ~60 יום)</div>
+    <div style="margin-top:8px;font-size:13px;color:#6BCB77;font-weight:600;" id="sum_vat_back">—</div>
+    <div class="big-label">החזר מע"מ צפוי</div>
+  </div>
+</div>
+
+<!-- ── 40FT COMPARISON (bonus) ── -->
+<div class="section-title">השוואה — מכולת 40 פיט (330 זוגות)</div>
+<div class="card full">
+  <table>
+    <thead>
+      <tr>
+        <th>פרמטר</th>
+        <th class="num">20 פיט (170 יח')</th>
+        <th class="num">40 פיט (330 יח')</th>
+        <th class="num">הפרש</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>שילוח ים ליחידה</td>
+        <td class="num">$16.06</td>
+        <td class="num">$11.50</td>
+        <td class="num green">-$4.56 ✓</td>
+      </tr>
+      <tr>
+        <td>עלות ייבוא ליחידה ($)</td>
+        <td class="num" id="cmp_20">—</td>
+        <td class="num" id="cmp_40">—</td>
+        <td class="num" id="cmp_diff">—</td>
+      </tr>
+      <tr>
+        <td>סה"כ השקעה ($)</td>
+        <td class="num" id="cmp_20_total">—</td>
+        <td class="num" id="cmp_40_total">—</td>
+        <td class="num" id="cmp_total_diff">—</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ── NOTES ── -->
+<div class="notes">
+  <h3>הערות ופריטים בבירור</h3>
+  <div class="note-item pending">
+    <div class="note-dot">○</div>
+    <div><strong>מכס (customs duty) — HS 8712.00:</strong> אחוז המכס על אופניים מסין לישראל עדיין לא אושר. יש להעביר לעמיל המכס לאישור לפני קבלת החלטה סופית.</div>
+  </div>
+  <div class="note-item pending">
+    <div class="note-dot">○</div>
+    <div><strong>דמי טיפול נמל ומסמכים:</strong> ממתין לאישור — יש לברר האם כלול ב-$12 או בנפרד.</div>
+  </div>
+  <div class="note-item pending">
+    <div class="note-dot">○</div>
+    <div><strong>Demurrage (עיכובים בנמל):</strong> יש לברר עלות ליום עיכוב ומה כלול בביטוח.</div>
+  </div>
+  <div class="note-item">
+    <div class="note-dot">●</div>
+    <div><strong>מע"מ יבוא 17%:</strong> מוחזר כחודשיים לאחר שחרור הסחורה — אינו עלות אלא cash flow זמני. יש להכין מימון בהתאם.</div>
+  </div>
+  <div class="note-item">
+    <div class="note-dot">●</div>
+    <div><strong>תקן אירופאי (CE):</strong> מגיע מהמפעל — אינו דורש הוצאה נפרדת.</div>
+  </div>
+  <div class="note-item">
+    <div class="note-dot">●</div>
+    <div><strong>שילוח ללקוח:</strong> על חשבון הלקוח — אינו כלול בעלות הייבוא.</div>
+  </div>
+  <div class="note-item">
+    <div class="note-dot">●</div>
+    <div><strong>אחסנה בארץ:</strong> עדיין לא סוכמה — יש לעדכן בעמודה נפרדת לאחר בירור.</div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('dateDisplay').textContent =
+    new Date().toLocaleDateString('he-IL', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  const fmt  = (n, d=2) => '$' + n.toFixed(d).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const fmtI = (n)      => '₪' + Math.round(n).toLocaleString('he-IL');
+
+  function calc() {
+    const fob      = +document.getElementById('fob').value      || 0;
+    const units    = +document.getElementById('units').value    || 170;
+    const rate     = +document.getElementById('usdRate').value  || 3.65;
+    const freight  = +document.getElementById('freight').value  || 0;
+    const logistics= +document.getElementById('logistics').value|| 0;
+    const dutyPct  = +document.getElementById('dutyPct').value  || 0;
+    const portFees = +document.getElementById('portFees').value || 0;
+
+    const cif    = fob + freight + logistics;
+    const duty   = cif * (dutyPct / 100);
+    const subtot = cif + duty + portFees;
+    const vat    = subtot * 0.17;
+    const grand  = subtot + vat;
+
+    // Duty note
+    document.getElementById('duty_label').textContent =
+      dutyPct > 0 ? dutyPct + '% מ-CIF' : 'ממתין לאחוז מעמיל המכס';
+    document.getElementById('dutyNote').textContent =
+      dutyPct > 0 ? '✓ אחוז הוגדר' : '⚠ ממתין לאישור מעמיל המכס (HS 8712.00)';
+    document.getElementById('dutyNote').className =
+      'note ' + (dutyPct > 0 ? 'ok' : 'warn');
+
+    const set = (id, val, isIls=false) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = isIls ? fmtI(val) : fmt(val);
+    };
+
+    // Per unit
+    set('r_fob',    fob);       set('r_fob_ils',    fob*rate,    true);
+    set('r_freight',freight);   set('r_freight_ils',freight*rate,true);
+    set('r_log',    logistics); set('r_log_ils',    logistics*rate,true);
+    set('r_cif',    cif);       set('r_cif_ils',    cif*rate,    true);
+    set('r_duty',   duty);      set('r_duty_ils',   duty*rate,   true);
+    set('r_port',   portFees);  set('r_port_ils',   portFees*rate,true);
+    set('r_total',  subtot);    set('r_total_ils',  subtot*rate, true);
+    set('r_vat',    vat);       set('r_vat_ils',    vat*rate,    true);
+    set('r_grand',  grand);     set('r_grand_ils',  grand*rate,  true);
+
+    // Total (units)
+    set('t_fob',    fob*units);       set('tt_fob',    fob*units*rate,    true);
+    set('t_freight',freight*units);   set('tt_freight',freight*units*rate,true);
+    set('t_log',    logistics*units); set('tt_log',    logistics*units*rate,true);
+    set('t_cif',    cif*units);       set('tt_cif',    cif*units*rate,    true);
+    set('t_duty',   duty*units);      set('tt_duty',   duty*units*rate,   true);
+    set('t_port',   portFees*units);  set('tt_port',   portFees*units*rate,true);
+    set('t_total',  subtot*units);    set('tt_total',  subtot*units*rate, true);
+    set('t_vat',    vat*units);       set('tt_vat',    vat*units*rate,    true);
+    set('t_grand',  grand*units);     set('tt_grand',  grand*units*rate,  true);
+
+    // Summary cards
+    document.getElementById('sum_unit_usd').textContent = fmt(subtot);
+    document.getElementById('sum_unit_ils').textContent = fmtI(subtot * rate);
+    document.getElementById('sum_total_ils').textContent = fmtI(subtot * units * rate);
+    document.getElementById('sum_total_usd').textContent = fmt(subtot * units);
+    document.getElementById('sum_cashflow').textContent = fmtI(grand * units * rate);
+    document.getElementById('sum_vat_back').textContent = '+' + fmtI(vat * units * rate) + ' החזר מע"מ';
+
+    // 40ft comparison
+    const subtot40 = fob + 11.50 + logistics + duty + portFees; // freight 40ft
+    // Note: duty on 40ft based on same CIF% — recalc duty for 40ft
+    const cif40  = fob + 11.50 + logistics;
+    const duty40 = cif40 * (dutyPct/100);
+    const sub40  = cif40 + duty40 + portFees;
+    const diff   = sub40 - subtot;
+
+    document.getElementById('cmp_20').textContent = fmt(subtot);
+    document.getElementById('cmp_40').textContent = fmt(sub40);
+    document.getElementById('cmp_diff').textContent = (diff > 0 ? '+' : '') + fmt(diff);
+    document.getElementById('cmp_diff').style.color = diff < 0 ? '#6BCB77' : '#E07B39';
+
+    document.getElementById('cmp_20_total').textContent = fmt(subtot * 170);
+    document.getElementById('cmp_40_total').textContent = fmt(sub40 * 330);
+    const totalDiff = sub40*330 - subtot*170;
+    document.getElementById('cmp_total_diff').textContent = (totalDiff > 0 ? '+' : '') + fmt(totalDiff);
+    document.getElementById('cmp_total_diff').style.color = totalDiff < 0 ? '#6BCB77' : '#E07B39';
+  }
+
+  calc();
+</script>
+</body>
+</html>

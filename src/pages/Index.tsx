@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
+import VideoSection from '../components/VideoSection';
 import SpinzVibe from '../components/SpinzVibe';
 import Models from '../components/Models';
 import Lifestyle from '../components/Lifestyle';
@@ -40,6 +41,7 @@ const Index = () => {
       <main style={{ backgroundColor: '#F5F2EC', minHeight: '100vh' }}>
         <Navbar />
         <Hero />
+        <VideoSection />
         <SpinzVibe />
         <Models />
         <Lifestyle />

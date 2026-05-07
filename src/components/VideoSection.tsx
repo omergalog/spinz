@@ -40,7 +40,7 @@ export default function VideoSection() {
       {/* Video */}
       <video
         ref={videoRef}
-        src="/assets/תמונות אורי/סרטון לאתר.mp4"
+        src="/assets/spinz-video.mp4"
         muted
         loop
         playsInline

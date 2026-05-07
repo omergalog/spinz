@@ -29,7 +29,7 @@ export default function VideoSection() {
   return (
     <section
       ref={sectionRef}
-      className="h-[50vw] md:h-screen"
+      className="h-screen"
       style={{
         position: 'relative',
         width: '100%',

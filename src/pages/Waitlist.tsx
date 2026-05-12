@@ -246,7 +246,7 @@ export default function Waitlist() {
         <div style={{ maxWidth: '860px', margin: '0 auto' }}>
           <FadeSection>
             <span style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: MUTED, marginBottom: '10px' }}>צבעים ומידות · COLORS & SIZES</span>
-            <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 44px)', color: CREAM, margin: '0 0 36px', letterSpacing: '-0.02em' }}>הצבע שלך, העיר שלך.</h2>
+            <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 4vw, 44px)', color: CREAM, margin: '0 0 36px', letterSpacing: '-0.02em' }}>אורי מה עם התמונות?</h2>
           </FadeSection>
 
           {/* Bike image */}

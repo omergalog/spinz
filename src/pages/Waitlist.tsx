@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabase';
 import CustomCursor from '../components/CustomCursor';
-import CookieBanner from '../components/CookieBanner';
+import WaitlistCookieBar from '../components/WaitlistCookieBar';
 
 const GOLD   = '#C9A870';
 const DARK   = '#1C1C1C';
@@ -123,7 +123,7 @@ export default function Waitlist() {
   return (
     <div style={{ backgroundColor: DARK, minHeight: '100vh', fontFamily: "'Heebo', sans-serif", cursor: 'none' }} dir="rtl">
       <CustomCursor />
-      <CookieBanner loaderDone={true} />
+      <WaitlistCookieBar />
 
       <style>{`
         @keyframes kenburns {

@@ -1,9 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/",
+      "has": [{ "type": "host", "value": "waitlist.spinzbikes.com" }],
+      "destination": "/waitlist-index.html"
+    },
+    {
       "source": "/(.*)",
       "has": [{ "type": "host", "value": "waitlist.spinzbikes.com" }],
-      "destination": "/waitlist"
+      "destination": "/waitlist-index.html"
     },
     { "source": "/(.*)", "destination": "/index.html" }
   ]

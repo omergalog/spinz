@@ -38,7 +38,7 @@ export default function WaitlistCookieBar() {
             padding: '12px 24px',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
+            justifyContent: 'center',
             gap: '16px',
             flexWrap: 'wrap',
           }}
@@ -50,8 +50,7 @@ export default function WaitlistCookieBar() {
             color: MUTED,
             margin: 0,
             lineHeight: 1.6,
-            flex: 1,
-            minWidth: '220px',
+            textAlign: 'center',
           }}>
             אנחנו משתמשים בעוגיות לשיפור חוויית הגלישה ולניתוח תנועה באתר.{' '}
             <a

@@ -251,7 +251,7 @@ export default function Waitlist() {
 
           {/* Bike image */}
           <FadeSection delay={0.1}>
-            <div className="wl-bike-container" style={{ position: 'relative', height: '320px', marginBottom: '32px', overflow: 'hidden' }}>
+            <div className="wl-bike-container" style={{ position: 'relative', height: '320px', marginBottom: '8px', overflow: 'hidden' }}>
               <AnimatePresence mode="wait" initial={false}>
                 <motion.img
                   key={color || 'שחור מט'}
@@ -266,6 +266,8 @@ export default function Waitlist() {
               </AnimatePresence>
             </div>
           </FadeSection>
+
+          <p style={{ color: MUTED, fontSize: '10px', textAlign: 'center', margin: '0 0 24px', letterSpacing: '0.04em' }}>התמונות להמחשה בלבד</p>
 
           {/* Colors */}
           <div className="wl-colors-row" style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '40px' }}>

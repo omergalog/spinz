@@ -252,7 +252,7 @@ export default function Waitlist() {
           {/* Bike image */}
           <FadeSection delay={0.1}>
             <div className="wl-bike-container" style={{ position: 'relative', height: '320px', marginBottom: '32px', overflow: 'hidden' }}>
-              <AnimatePresence mode="wait">
+              <AnimatePresence mode="wait" initial={false}>
                 <motion.img
                   key={color || 'שחור מט'}
                   src={(COLORS.find(c => c.name === color) ?? COLORS[0]).bike}

@@ -36,14 +36,56 @@ export default function WaitlistTerms() {
           תנאי שימוש ופרטיות · TERMS & PRIVACY
         </span>
         <h1 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(28px, 5vw, 48px)', color: CREAM, margin: '0 0 8px', letterSpacing: '-0.02em' }}>
-          מדיניות פרטיות
+          תנאי שימוש ומדיניות פרטיות
         </h1>
-        <p style={{ color: MUTED, fontSize: '13px', margin: '0 0 48px' }}>עדכון אחרון: אפריל 2026</p>
+        <p style={{ color: MUTED, fontSize: '13px', margin: '0 0 48px' }}>עדכון אחרון: מאי 2026</p>
+
+        {/* תנאי שימוש */}
+        <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(20px, 3vw, 28px)', color: CREAM, margin: '0 0 28px', letterSpacing: '-0.01em', borderBottom: '1px solid #2A2A2A', paddingBottom: '16px' }}>
+          תנאי שימוש
+        </h2>
+
+        {[
+          {
+            title: 'א. פרטי החברה',
+            body: 'האתר waitlist.spinzbikes.com מופעל על ידי SPINZ BIKES LTD, ח.פ. 517343661 (להלן: "החברה"), בניהולם של עומר גל, עומר דונוביץ\' ואורי שחר. לפניות: info@spinzbikes.com.',
+          },
+          {
+            title: 'ב. מהות השירות',
+            body: 'אתר זה הוא רשימת המתנה בלבד — לא חנות מקוונת ולא ביצוע עסקה. ההרשמה אינה מהווה הזמנה, רכישה, או התחייבות כלשהי מצד החברה לאספקת מוצר.',
+          },
+          {
+            title: 'ג. אחריות לתמונות ומפרט',
+            body: 'התמונות והמפרט הטכני המוצגים באתר מיועדים להמחשה בלבד ומציגים אב-טיפוס. ייתכנו שינויים במוצר הסופי. החברה אינה אחראית לסתירה בין הנצג באתר לבין המוצר הסופי.',
+          },
+          {
+            title: 'ד. ביטול ה-launch',
+            body: 'במקרה של ביטול השקת המוצר, תשלח הודעה לכל הנרשמים לכתובת הטלפון ו/או הדוא"ל שמסרו, ופרטיהם האישיים יימחקו תוך 30 יום מיום ההודעה.',
+          },
+          {
+            title: 'ה. שינויים בתנאים',
+            body: 'החברה רשאית לעדכן תנאים אלה בכל עת. שימוש מתמשך באתר לאחר פרסום עדכון מהווה הסכמה לתנאים המעודכנים.',
+          },
+        ].map(section => (
+          <div key={section.title} style={{ marginBottom: '36px' }}>
+            <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '17px', color: CREAM, margin: '0 0 10px' }}>
+              {section.title}
+            </h2>
+            <p style={{ color: MUTED, fontSize: '14px', lineHeight: 1.8, margin: 0 }}>
+              {section.body}
+            </p>
+          </div>
+        ))}
+
+        {/* מדיניות פרטיות */}
+        <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(20px, 3vw, 28px)', color: CREAM, margin: '48px 0 28px', letterSpacing: '-0.01em', borderBottom: '1px solid #2A2A2A', paddingBottom: '16px' }}>
+          מדיניות פרטיות
+        </h2>
 
         {[
           {
             title: '1. מי אוסף את המידע',
-            body: 'מותג SPINZ (להלן: "המותג"), המנוהל על ידי עומר גל, עומר דונוביץ\' ואורי שחר, אוסף את המידע שאתם מזינים בטופס רשימת ההמתנה באתר waitlist.spinzbikes.com. כתובת הדוא"ל לפניות: info@spinzbikes.com.',
+            body: 'SPINZ BIKES LTD (ח.פ. 517343661), המנוהלת על ידי עומר גל, עומר דונוביץ\' ואורי שחר, אוסף את המידע שאתם מזינים בטופס רשימת ההמתנה באתר waitlist.spinzbikes.com. כתובת הדוא"ל לפניות: info@spinzbikes.com.',
           },
           {
             title: '2. איזה מידע נאסף',

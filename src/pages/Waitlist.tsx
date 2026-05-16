@@ -141,6 +141,7 @@ export default function Waitlist() {
           .wl-section    { padding: 48px 20px !important; }
           .wl-form-section { padding: 56px 20px 72px !important; }
         }
+        button, input, label, a { touch-action: manipulation; }
         input:-webkit-autofill,
         input:-webkit-autofill:hover,
         input:-webkit-autofill:focus {

@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const GOLD = '#C9A870';
 const DARK = '#1C1C1C';
-const CREAM = '#EDEBE6';
 const MUTED = '#888888';
 
 export default function WaitlistCookieBar() {

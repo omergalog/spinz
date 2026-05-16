@@ -12,9 +12,9 @@ const BEIGE  = '#F2EDE4';
 const BEIGE_DARK = '#1C1812';
 
 const COLORS = [
-  { name: 'שחור מט', nameEn: 'Matte Black', hex: '#2A2A2A', border: '#555',    bike: '/assets/bike-mat-new.png',   blend: false },
-  { name: 'ירוק זית',  nameEn: 'Olive Green',  hex: '#5C6A3E', border: '#7A8A52', bike: '/assets/bike-olive-new.png', blend: false },
-  { name: "בז'",       nameEn: 'Beige',         hex: '#C8B99A', border: '#A89070', bike: '/assets/bike-beige-new.png', blend: false },
+  { name: 'שחור מט', nameEn: 'Matte Black', hex: '#2A2A2A', border: '#555',    bike: '/assets/bike-black-v2.png',  blend: false },
+  { name: 'ירוק זית',  nameEn: 'Olive Green',  hex: '#5C6A3E', border: '#7A8A52', bike: '/assets/bike-olive-v2.png',  blend: false },
+  { name: "בז'",       nameEn: 'Beige',         hex: '#C8B99A', border: '#A89070', bike: '/assets/bike-beige-v2.png',  blend: false },
 ];
 
 const SPECS = [

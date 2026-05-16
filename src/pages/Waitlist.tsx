@@ -306,6 +306,7 @@ export default function Waitlist() {
                   </div>
                 ))}
               </div>
+              <p style={{ color: MUTED, fontSize: '11px', fontWeight: 400, margin: '14px 0 0', textAlign: 'center', lineHeight: 1.6 }}>הגבהים המצוינים מתייחסים לממוצע האוכלוסייה ומוצגים כהמלצה בלבד.</p>
             </div>
           </FadeSection>
         </div>

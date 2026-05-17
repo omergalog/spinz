@@ -21,7 +21,7 @@ const COLORS = [
 const SPECS = [
   {
     num: '01', title: 'קלילות עירונית', sub: 'שלדת אלומיניום',
-    body: 'שלדת אלומיניום המעניקה תחושת קלילות יוצאת דופן. זינוק זריז בכל רמזור ונוחה לנשיאה אל תוך הדירה.',
+    body: 'שלדת אלומיניום המעניקה תחושת קלילות יוצאת דופן. זינוק זריז בכל רמזור ונוחה לנשיאה אל תוך הדירה. מגיעה עם אחריות יצרן של 5 שנים.',
     icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L8 8H4l4 4-2 6 6-3 6 3-2-6 4-4h-4L12 2z"/></svg>,
   },
   {

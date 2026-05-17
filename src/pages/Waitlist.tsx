@@ -87,7 +87,7 @@ export default function Waitlist() {
   const [email, setEmail]     = useState('');
   const [color, setColor]     = useState('');
   const [size, setSize]       = useState('');
-  const [agreed, setAgreed]   = useState(false);
+  const [marketing, setMarketing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [done, setDone]       = useState(false);
   const [error, setError]     = useState('');
@@ -104,10 +104,9 @@ export default function Waitlist() {
     else if (phoneClean.startsWith('00972')) phoneClean = '0' + phoneClean.slice(5);
     else if (phoneClean.startsWith('972') && phoneClean.length === 12) phoneClean = '0' + phoneClean.slice(3);
     if (!/^0(5[0-9]|[2-9])\d{7}$/.test(phoneClean)) { setError('מספר טלפון לא תקין — יש להזין מספר ישראלי תקני'); return; }
-    if (!agreed) { setError('יש לאשר את תנאי השימוש ומדיניות הפרטיות'); return; }
     setLoading(true);
     setError('');
-    const message = `[Waitlist]${color ? ` · צבע: ${color}` : ''}${size ? ` · מידה: ${size}` : ''}`;
+    const message = `[Waitlist]${color ? ` · צבע: ${color}` : ''}${size ? ` · מידה: ${size}` : ''}${marketing ? ' · הסכים לשיווק' : ''}`;
     const { error: err } = await supabase.from('leads').insert([{
       name: name.trim(),
       phone: phone.trim(),
@@ -457,18 +456,23 @@ export default function Waitlist() {
                   </div>
                 </div>
 
-                {/* Consent checkbox */}
-                <label style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer', paddingTop: '4px' }}>
+                {/* Terms notice */}
+                <p style={{ color: '#6B5E4A', fontSize: '12px', lineHeight: 1.6, margin: 0 }}>
+                  השארת הפרטים מהווה הסכמה ל
+                  <a href="/terms" style={{ color: '#8A6830', textDecoration: 'underline', textUnderlineOffset: '2px' }}>תנאי השימוש ומדיניות הפרטיות</a>
+                  {' '}של Spinz.
+                </p>
+
+                {/* Marketing opt-in */}
+                <label style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', cursor: 'pointer' }}>
                   <input
                     type="checkbox"
-                    checked={agreed}
-                    onChange={e => { setAgreed(e.target.checked); setError(''); }}
+                    checked={marketing}
+                    onChange={e => setMarketing(e.target.checked)}
                     style={{ marginTop: '3px', accentColor: GOLD, flexShrink: 0, width: '16px', height: '16px', cursor: 'pointer' }}
                   />
                   <span style={{ color: '#6B5E4A', fontSize: '12px', lineHeight: 1.6 }}>
-                    קראתי ואני מסכים/ה ל
-                    <a href="/terms" style={{ color: '#8A6830', textDecoration: 'underline', textUnderlineOffset: '2px' }}>תנאי השימוש ומדיניות הפרטיות</a>
-                    , ולקבל עדכון מ-SPINZ כשהאופניים מגיעים.
+                    אני מאשר/ת קבלת עדכונים על המלאי, מבצעים ותוכן שיווקי מ-Spinz.
                   </span>
                 </label>
 
@@ -480,19 +484,19 @@ export default function Waitlist() {
                   style={{
                     padding: '15px',
                     borderRadius: '10px',
-                    backgroundColor: agreed ? GOLD : '#C8BFB0',
+                    backgroundColor: GOLD,
                     border: 'none',
-                    color: agreed ? DARK : '#8A8078',
+                    color: DARK,
                     fontSize: '15px',
                     fontWeight: 800,
-                    cursor: loading ? 'wait' : agreed ? 'pointer' : 'not-allowed',
+                    cursor: loading ? 'wait' : 'pointer',
                     fontFamily: "'Heebo', sans-serif",
                     opacity: loading ? 0.7 : 1,
                     marginTop: '8px',
                     letterSpacing: '0.02em',
                     transition: 'background-color 0.25s, color 0.25s, transform 0.15s',
                   }}
-                  onMouseEnter={e => { if (!loading && agreed) (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)'; }}
+                  onMouseEnter={e => { if (!loading) (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'; }}
                 >
                   {loading ? '...' : 'Join the waitlist'}

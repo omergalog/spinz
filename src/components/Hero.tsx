@@ -14,7 +14,7 @@ export default function Hero() {
       {/* Background photo with dark overlay */}
       <div className="absolute inset-0">
         <img
-          src="/assets/hero-bike.jpg"
+          src="/assets/hero-bg-new.jpg"
           alt=""
           className="h-full w-full object-cover"
           style={{ opacity: 0.45 }}

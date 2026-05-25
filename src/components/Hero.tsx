@@ -11,18 +11,34 @@ export default function Hero() {
       className="relative flex h-[68vh] md:min-h-screen flex-col overflow-hidden"
       style={{ backgroundColor: DARK }}
     >
-      {/* Background photo with dark overlay */}
+      {/* Background photo */}
       <div className="absolute inset-0">
         <img
           src="/assets/hero-bg-new.jpg"
           alt=""
           className="h-full w-full object-cover"
-          style={{ opacity: 0.45 }}
+          style={{ opacity: 0.75 }}
         />
+
+        {/* Smart gradient: dark center for text readability, transparent edges to reveal bikes */}
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 hidden md:block"
           style={{
-            background: `linear-gradient(180deg, ${DARK}BB 0%, ${DARK}DD 60%, ${DARK} 100%)`,
+            background: `
+              radial-gradient(ellipse 55% 80% at 50% 50%, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.45) 45%, transparent 75%),
+              linear-gradient(180deg, rgba(0,0,0,0.35) 0%, transparent 30%, transparent 65%, rgba(0,0,0,0.6) 100%)
+            `,
+          }}
+        />
+
+        {/* Mobile: wider center gradient */}
+        <div
+          className="absolute inset-0 md:hidden"
+          style={{
+            background: `
+              radial-gradient(ellipse 90% 70% at 50% 50%, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.55) 55%, transparent 80%),
+              linear-gradient(180deg, rgba(0,0,0,0.4) 0%, transparent 25%, transparent 65%, rgba(0,0,0,0.7) 100%)
+            `,
           }}
         />
       </div>

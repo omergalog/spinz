@@ -12,6 +12,7 @@ import WaitlistTerms from './pages/WaitlistTerms';
 import AccessibilityWidget from './components/AccessibilityWidget';
 import { getPauseMotion, onPauseMotionChange } from './utils/motionStore';
 import PasswordGate from './components/PasswordGate';
+import CustomCursor from './components/CustomCursor';
 
 function Root() {
   const [pauseMotion, setPauseMotionState] = useState(getPauseMotion);
@@ -19,50 +20,52 @@ function Root() {
   useEffect(() => onPauseMotionChange(setPauseMotionState), []);
 
   return (
-    <PasswordGate>
-    <MotionConfig
-      reducedMotion={pauseMotion ? 'always' : 'never'}
-      transition={pauseMotion ? { duration: 0, delay: 0 } : undefined}
-    >
-      <BrowserRouter>
-        {/* Skip to main content — מקלדת */}
-        <a
-          href="#main-content"
-          style={{
-            position: 'absolute', top: '-100px', right: 0, zIndex: 99999,
-            padding: '12px 20px', backgroundColor: '#C9A870', color: '#1C1C1C',
-            fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '14px',
-            textDecoration: 'none', borderRadius: '0 0 8px 8px',
-            transition: 'top 0.2s',
-          }}
-          onFocus={e => { e.currentTarget.style.top = '0'; }}
-          onBlur={e => { e.currentTarget.style.top = '-100px'; }}
+    <>
+      <CustomCursor />
+      <PasswordGate>
+        <MotionConfig
+          reducedMotion={pauseMotion ? 'always' : 'never'}
+          transition={pauseMotion ? { duration: 0, delay: 0 } : undefined}
         >
-          דלג לתוכן הראשי
-        </a>
+          <BrowserRouter>
+            <a
+              href="#main-content"
+              style={{
+                position: 'absolute', top: '-100px', right: 0, zIndex: 99999,
+                padding: '12px 20px', backgroundColor: '#C9A870', color: '#1C1C1C',
+                fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '14px',
+                textDecoration: 'none', borderRadius: '0 0 8px 8px',
+                transition: 'top 0.2s',
+              }}
+              onFocus={e => { e.currentTarget.style.top = '0'; }}
+              onBlur={e => { e.currentTarget.style.top = '-100px'; }}
+            >
+              דלג לתוכן הראשי
+            </a>
 
-        <main id="main-content">
-          {window.location.hostname === 'waitlist.spinzbikes.com' ? (
-            <Routes>
-              <Route path="/" element={<Waitlist />} />
-              <Route path="/terms" element={<WaitlistTerms />} />
-            </Routes>
-          ) : (
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/story" element={<Story />} />
-              <Route path="/terms" element={<Terms />} />
-              <Route path="/accessibility" element={<Accessibility />} />
-              <Route path="/waitlist" element={<Waitlist />} />
-              <Route path="/waitlist-terms" element={<WaitlistTerms />} />
-            </Routes>
-          )}
-        </main>
+            <main id="main-content">
+              {window.location.hostname === 'waitlist.spinzbikes.com' ? (
+                <Routes>
+                  <Route path="/" element={<Waitlist />} />
+                  <Route path="/terms" element={<WaitlistTerms />} />
+                </Routes>
+              ) : (
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/story" element={<Story />} />
+                  <Route path="/terms" element={<Terms />} />
+                  <Route path="/accessibility" element={<Accessibility />} />
+                  <Route path="/waitlist" element={<Waitlist />} />
+                  <Route path="/waitlist-terms" element={<WaitlistTerms />} />
+                </Routes>
+              )}
+            </main>
 
-        <AccessibilityWidget />
-      </BrowserRouter>
-    </MotionConfig>
-    </PasswordGate>
+            <AccessibilityWidget />
+          </BrowserRouter>
+        </MotionConfig>
+      </PasswordGate>
+    </>
   );
 }
 

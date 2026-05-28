@@ -23,7 +23,7 @@ export default function Lifestyle() {
           y,
           position: 'absolute',
           inset: '-15% 0',
-          backgroundImage: 'url(/assets/lifestyle-hero.jpg)',
+          backgroundImage: 'url(/assets/photo-olive-lifestyle.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}

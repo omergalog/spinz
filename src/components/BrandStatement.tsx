@@ -126,7 +126,7 @@ export default function BrandStatement() {
               style={{ backgroundColor: '#F5F2EC' }}
             >
               <img
-                src="/assets/brand-bike.jpg"
+                src="/assets/photo-beige-bike.jpg"
                 alt="Spinz bike"
                 style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
                 onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
@@ -186,7 +186,7 @@ export default function BrandStatement() {
           style={{ overflow: 'hidden', backgroundColor: '#F5F2EC', maxHeight: '520px' }}
         >
           <img
-            src="/assets/brand-bike.jpg"
+            src="/assets/photo-beige-bike.jpg"
             alt="Spinz bike"
             style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
             onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}

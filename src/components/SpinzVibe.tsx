@@ -54,7 +54,7 @@ export default function SpinzVibe() {
           y,
           position: 'absolute',
           inset: '-12% 0',
-          backgroundImage: 'url(/assets/brand-bike.jpg)',
+          backgroundImage: 'url(/assets/photo-beige-bike.jpg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center top',
         }}

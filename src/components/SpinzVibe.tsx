@@ -153,7 +153,7 @@ export default function SpinzVibe() {
               >
                 <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', color: GOLD, letterSpacing: '0.25em', display: 'block', marginBottom: '8px' }}>{num}</span>
                 <h4 className="text-[13px] md:text-[16px]" style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, color: CREAM, margin: '0 0 6px' }}>{title}</h4>
-                <p className="text-[11px] md:text-[13px] hidden sm:block" style={{ fontFamily: "'Heebo', sans-serif", color: MUTED, lineHeight: 1.6, margin: 0 }}>{body}</p>
+                <p className="text-[11px] md:text-[13px]" style={{ fontFamily: "'Heebo', sans-serif", color: MUTED, lineHeight: 1.6, margin: 0 }}>{body}</p>
               </motion.div>
             ))}
           </div>

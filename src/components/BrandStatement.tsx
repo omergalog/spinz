@@ -77,7 +77,7 @@ export default function BrandStatement() {
                   fontSize: '11px',
                   letterSpacing: '0.35em',
                   textTransform: 'uppercase',
-                  color: '#888',
+                  color: '#EDEBE6',
                   margin: '0 0 8px',
                 }}
               >
@@ -164,7 +164,7 @@ export default function BrandStatement() {
                   className="text-[11px] md:text-[14px]"
                   style={{
                     fontFamily: "'Heebo', sans-serif",
-                    color: '#666',
+                    color: '#EDEBE6',
                     lineHeight: 1.55,
                     margin: 0,
                     paddingRight: '12px',

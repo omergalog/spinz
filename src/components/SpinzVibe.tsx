@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const GOLD  = '#C9A870';
 const CREAM = '#EDEBE6';
-const MUTED = 'rgba(237,235,230,0.55)';
+const MUTED = '#EDEBE6';
 
 const values = [
   { num: '01', title: 'תופס עיניים',   body: 'כל מוצר שאנחנו מוציאים חייב לגרום לאנשים להסתכל עליך.' },

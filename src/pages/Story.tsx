@@ -46,7 +46,7 @@ function Section({ section, index }: { section: typeof sections[0]; index: numbe
       initial={{ opacity: 0, y: 28 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: index * 0.06 }}
-      style={{ borderTop: `1px solid ${BORDER}`, paddingTop: '32px', paddingBottom: '32px' }}
+      style={{ borderTop: `1px solid ${BORDER}`, paddingTop: '28px', paddingBottom: '28px' }}
     >
       {section.title && (
         <h3 style={{
@@ -61,9 +61,9 @@ function Section({ section, index }: { section: typeof sections[0]; index: numbe
       )}
       <p style={{
         fontFamily: "'Heebo', sans-serif",
-        fontSize: 'clamp(14px, 1.5vw, 17px)',
+        fontSize: 'clamp(15px, 1.5vw, 17px)',
         color: '#CCCCCC',
-        lineHeight: 1.9,
+        lineHeight: 1.85,
         margin: 0,
         whiteSpace: 'pre-line',
       }}>
@@ -196,7 +196,7 @@ export default function Story() {
           {/* Mobile hero (shown only on mobile) */}
           <div
             className="md:hidden"
-            style={{ position: 'relative', height: '55vw', minHeight: '240px', overflow: 'hidden' }}
+            style={{ position: 'relative', height: '70vw', minHeight: '320px', overflow: 'hidden' }}
           >
             <motion.img
               src="/assets/story-hero.jpg"
@@ -204,20 +204,20 @@ export default function Story() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1.2 }}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%' }}
             />
             <div style={{
               position: 'absolute', inset: 0,
-              background: 'linear-gradient(to top, rgba(28,28,28,1) 0%, rgba(0,0,0,0.3) 60%, transparent 100%)',
+              background: 'linear-gradient(to top, rgba(28,28,28,1) 0%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0.1) 100%)',
             }} />
-            <div style={{ position: 'absolute', bottom: '24px', right: '24px' }}>
-              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', letterSpacing: '0.4em', textTransform: 'uppercase', color: GOLD, display: 'block', marginBottom: '8px' }}>הסיפור שלנו</span>
-              <h1 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(26px, 8vw, 42px)', color: CREAM, margin: 0, lineHeight: 1.05 }}>נעים להכיר,<br />אנחנו Spinz.</h1>
+            <div style={{ position: 'absolute', bottom: '28px', right: '20px', left: '20px' }}>
+              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', letterSpacing: '0.4em', textTransform: 'uppercase', color: GOLD, display: 'block', marginBottom: '10px' }}>הסיפור שלנו</span>
+              <h1 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(28px, 9vw, 44px)', color: CREAM, margin: 0, lineHeight: 1.05, letterSpacing: '-0.02em' }}>נעים להכיר,<br />אנחנו Spinz.</h1>
             </div>
           </div>
 
           {/* Text content */}
-          <div style={{ padding: 'clamp(40px, 5vw, 72px) clamp(24px, 5vw, 64px) 100px' }}>
+          <div style={{ padding: 'clamp(32px, 5vw, 72px) clamp(20px, 5vw, 64px) 80px' }}>
             {sections.map((section, i) => (
               <Section key={i} section={section} index={i} />
             ))}

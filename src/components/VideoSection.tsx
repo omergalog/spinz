@@ -117,18 +117,6 @@ export default function VideoSection() {
           </motion.h2>
         </div>
 
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={visible ? { scaleX: 1 } : {}}
-          transition={{ duration: 0.9, delay: 0.8, ease: [0.76, 0, 0.24, 1] }}
-          style={{
-            width: '60px',
-            height: '2px',
-            backgroundColor: GOLD,
-            marginTop: '28px',
-            transformOrigin: 'left',
-          }}
-        />
       </div>
     </section>
   );

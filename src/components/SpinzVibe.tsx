@@ -141,18 +141,19 @@ export default function SpinzVibe() {
           </div>
 
           {/* Left column — values */}
-          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-6 content-start" style={{ paddingTop: 'clamp(0px, 2vw, 40px)' }}>
+          <div className="flex-1 grid grid-cols-2 sm:grid-cols-2 gap-3 md:gap-6 content-start" style={{ paddingTop: 'clamp(0px, 2vw, 40px)' }}>
             {values.map(({ num, title, body }, i) => (
               <motion.div
                 key={num}
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: 0.3 + i * 0.1 }}
-                style={{ padding: '24px', border: `1px solid rgba(201,168,112,0.18)`, borderRadius: '12px', backgroundColor: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(4px)' }}
+                className="p-4 md:p-6"
+                style={{ border: `1px solid rgba(201,168,112,0.18)`, borderRadius: '10px', backgroundColor: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(4px)' }}
               >
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', color: GOLD, letterSpacing: '0.25em', display: 'block', marginBottom: '10px' }}>{num}</span>
-                <h4 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 1.3vw, 16px)', color: CREAM, margin: '0 0 8px' }}>{title}</h4>
-                <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: 'clamp(12px, 1vw, 13px)', color: MUTED, lineHeight: 1.7, margin: 0 }}>{body}</p>
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', color: GOLD, letterSpacing: '0.25em', display: 'block', marginBottom: '8px' }}>{num}</span>
+                <h4 className="text-[13px] md:text-[16px]" style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, color: CREAM, margin: '0 0 6px' }}>{title}</h4>
+                <p className="text-[11px] md:text-[13px] hidden sm:block" style={{ fontFamily: "'Heebo', sans-serif", color: MUTED, lineHeight: 1.6, margin: 0 }}>{body}</p>
               </motion.div>
             ))}
           </div>

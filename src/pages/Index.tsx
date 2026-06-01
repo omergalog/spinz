@@ -45,7 +45,6 @@ const Index = () => {
         <SpinzVibe />
         <Models />
         <Lifestyle />
-        <AtmosphereOne />
         <Reviews />
         <AtmosphereTwo />
         <Specs />

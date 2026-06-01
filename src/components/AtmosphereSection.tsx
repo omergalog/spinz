@@ -69,7 +69,7 @@ export function AtmosphereTwo() {
 
   return (
     <section style={{ position: 'relative', height: 'clamp(380px, 55vw, 680px)', overflow: 'hidden', backgroundColor: DARK }}>
-      <ParallaxBg src="/assets/photo-olive-lifestyle.jpg" yRange={['10%', '-10%']} />
+      <ParallaxBg src="/assets/photo-black-detail.jpg" yRange={['10%', '-10%']} />
 
       <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to left, rgba(28,28,28,0.88) 0%, rgba(28,28,28,0.45) 55%, rgba(28,28,28,0.1) 100%)' }} />
 

@@ -46,7 +46,8 @@ function Section({ section, index }: { section: typeof sections[0]; index: numbe
       initial={{ opacity: 0, y: 28 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: index * 0.06 }}
-      style={{ borderTop: `1px solid ${BORDER}`, paddingTop: '28px', paddingBottom: '28px' }}
+      className="py-5 md:py-7"
+      style={{ borderTop: `1px solid ${BORDER}` }}
     >
       {section.title && (
         <h3 style={{
@@ -61,9 +62,9 @@ function Section({ section, index }: { section: typeof sections[0]; index: numbe
       )}
       <p style={{
         fontFamily: "'Heebo', sans-serif",
-        fontSize: 'clamp(15px, 1.5vw, 17px)',
+        fontSize: 'clamp(14px, 1.5vw, 17px)',
         color: '#CCCCCC',
-        lineHeight: 1.85,
+        lineHeight: 1.8,
         margin: 0,
         whiteSpace: 'pre-line',
       }}>
@@ -196,7 +197,7 @@ export default function Story() {
           {/* Mobile hero (shown only on mobile) */}
           <div
             className="md:hidden"
-            style={{ position: 'relative', height: '70vw', minHeight: '320px', overflow: 'hidden' }}
+            style={{ position: 'relative', height: '100vw', overflow: 'hidden' }}
           >
             <motion.img
               src="/assets/story-hero.jpg"
@@ -204,15 +205,15 @@ export default function Story() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1.2 }}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%' }}
+              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center' }}
             />
             <div style={{
               position: 'absolute', inset: 0,
-              background: 'linear-gradient(to top, rgba(28,28,28,1) 0%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0.1) 100%)',
+              background: 'linear-gradient(to top, rgba(28,28,28,1) 0%, rgba(28,28,28,0.5) 50%, transparent 100%)',
             }} />
-            <div style={{ position: 'absolute', bottom: '28px', right: '20px', left: '20px' }}>
-              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', letterSpacing: '0.4em', textTransform: 'uppercase', color: GOLD, display: 'block', marginBottom: '10px' }}>הסיפור שלנו</span>
-              <h1 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(28px, 9vw, 44px)', color: CREAM, margin: 0, lineHeight: 1.05, letterSpacing: '-0.02em' }}>נעים להכיר,<br />אנחנו Spinz.</h1>
+            <div style={{ position: 'absolute', bottom: '32px', right: '24px', left: '24px' }}>
+              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', letterSpacing: '0.4em', textTransform: 'uppercase', color: GOLD, display: 'block', marginBottom: '12px' }}>הסיפור שלנו</span>
+              <h1 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '36px', color: CREAM, margin: 0, lineHeight: 1.05, letterSpacing: '-0.02em' }}>נעים להכיר,<br />אנחנו Spinz.</h1>
             </div>
           </div>
 

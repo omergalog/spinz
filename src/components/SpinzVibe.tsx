@@ -13,22 +13,25 @@ const values = [
   { num: '04', title: 'ישראלי בנשמה', body: 'Spinz מדבר עברית ומכיר את הרחוב הישראלי.' },
 ];
 
-function CountUp({ target, suffix = '', duration = 2800 }: { target: number; suffix?: string; duration?: number }) {
+function CountUp({ target, suffix = '', duration = 2800, delay = 0 }: { target: number; suffix?: string; duration?: number; delay?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: '-60px' });
   const [value, setValue] = useState(0);
 
   useEffect(() => {
     if (!inView) return;
-    let start = 0;
-    const step = (timestamp: number) => {
-      if (!start) start = timestamp;
-      const progress = Math.min((timestamp - start) / duration, 1);
-      setValue(Math.floor(progress * target));
-      if (progress < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }, [inView, target, duration]);
+    const timeout = setTimeout(() => {
+      let start = 0;
+      const step = (timestamp: number) => {
+        if (!start) start = timestamp;
+        const progress = Math.min((timestamp - start) / duration, 1);
+        setValue(Math.floor(progress * target));
+        if (progress < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }, delay);
+    return () => clearTimeout(timeout);
+  }, [inView, target, duration, delay]);
 
   return <span ref={ref}>{value}{suffix}</span>;
 }
@@ -171,13 +174,13 @@ export default function SpinzVibe() {
         }}
       >
         {[
-          { label: 'צבעים לבחירה',     target: 3,   suffix: '',  duration: 1400 },
-          { label: 'ימי עסקים למשלוח', target: 5,   suffix: '',  duration: 2300 },
-          { label: 'ישירות מהיצרן',    target: 100, suffix: '%', duration: 3200 },
-        ].map(({ label, target, suffix, duration }, i) => (
+          { label: 'צבעים לבחירה',     target: 3,   suffix: '',  duration: 1400, delay: 0    },
+          { label: 'ימי עסקים למשלוח', target: 5,   suffix: '',  duration: 2300, delay: 400  },
+          { label: 'ישירות מהיצרן',    target: 100, suffix: '%', duration: 3200, delay: 900  },
+        ].map(({ label, target, suffix, duration, delay }, i) => (
           <div key={label} className="py-5 px-2 md:py-7" style={{ textAlign: 'center', borderLeft: i > 0 ? `1px solid rgba(201,168,112,0.25)` : 'none' }}>
             <p className="text-[28px] md:text-[42px]" style={{ fontFamily: "'Heebo', sans-serif", color: GOLD, margin: 0, lineHeight: 1 }}>
-              <CountUp target={target} suffix={suffix} duration={duration} />
+              <CountUp target={target} suffix={suffix} duration={duration} delay={delay} />
             </p>
             <p className="text-[9px] md:text-[11px]" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: '0.18em', textTransform: 'uppercase', color: MUTED, margin: '8px 0 0' }}>
               {label}

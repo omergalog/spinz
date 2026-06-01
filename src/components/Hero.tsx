@@ -9,7 +9,7 @@ export default function Hero() {
   return (
     <section
       className="relative flex h-[68vh] md:min-h-screen flex-col overflow-hidden"
-      style={{ backgroundColor: DARK }}
+      style={{ backgroundColor: '#2C2820' }}
     >
       {/* Background photo */}
       <div className="absolute inset-0">
@@ -18,6 +18,8 @@ export default function Hero() {
           alt=""
           className="h-full w-full object-cover"
           style={{ opacity: 0.75 }}
+          fetchPriority="high"
+          loading="eager"
         />
 
         {/* Smart gradient: dark center for text readability, transparent edges to reveal bikes */}

@@ -5,7 +5,7 @@ import VideoSection from '../components/VideoSection';
 import SpinzVibe from '../components/SpinzVibe';
 import Models from '../components/Models';
 import Lifestyle from '../components/Lifestyle';
-import { AtmosphereOne, AtmosphereTwo } from '../components/AtmosphereSection';
+import { AtmosphereTwo } from '../components/AtmosphereSection';
 import Reviews from '../components/Reviews';
 import Specs from '../components/Specs';
 import FAQ from '../components/FAQ';

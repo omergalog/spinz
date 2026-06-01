@@ -130,7 +130,7 @@ export default function Story() {
             overflow: 'hidden',
           }}>
             <motion.img
-              src="/assets/story-hero.webp"
+              src="/assets/story-hero.jpg"
               alt="Spinz rider"
               initial={{ opacity: 0, scale: 1.06 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -199,7 +199,7 @@ export default function Story() {
             style={{ position: 'relative', height: '55vw', minHeight: '240px', overflow: 'hidden' }}
           >
             <motion.img
-              src="/assets/story-hero.webp"
+              src="/assets/story-hero.jpg"
               alt="Spinz rider"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}

@@ -218,7 +218,7 @@ export default function Waitlist() {
             transition={{ duration: 0.7, delay: 1.3 }}
           >
             <button
-              onClick={() => document.getElementById('wl-form')?.scrollIntoView({ behavior: 'smooth' })}
+              onClick={() => document.getElementById('wl-colors')?.scrollIntoView({ behavior: 'smooth' })}
               style={{
                 padding: '14px 32px',
                 borderRadius: '6px',
@@ -244,7 +244,7 @@ export default function Waitlist() {
       </div>
 
       {/* ── COLORS + SIZES ── */}
-      <section className="wl-section" style={{ padding: 'clamp(56px, 8vw, 96px) 32px', borderBottom: `1px solid ${BORDER}` }}>
+      <section id="wl-colors" className="wl-section" style={{ padding: 'clamp(56px, 8vw, 96px) 32px', borderBottom: `1px solid ${BORDER}` }}>
         <div style={{ maxWidth: '860px', margin: '0 auto' }}>
           <FadeSection>
             <span style={{ display: 'block', fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', color: MUTED, marginBottom: '10px' }}>צבעים ומידות · COLORS & SIZES</span>
@@ -295,22 +295,64 @@ export default function Waitlist() {
               <p style={{ color: MUTED, fontSize: '11px', fontWeight: 500, letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '14px' }}>מידות שלדה · SIZES</p>
               <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
                 {SIZES.map(s => (
-                  <div key={s.size} style={{
-                    display: 'flex', alignItems: 'center', gap: '12px',
-                    border: `1px solid ${BORDER}`,
-                    borderRadius: '10px',
-                    padding: '10px 18px',
-                    backgroundColor: '#1F1F1F',
-                  }}>
-                    <p style={{ color: GOLD, fontSize: '22px', fontWeight: 800, margin: 0, letterSpacing: '-0.02em' }}>{s.size}</p>
+                  <button
+                    key={s.size}
+                    onClick={() => setSize(size === s.size ? '' : s.size)}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '12px',
+                      border: `2px solid ${size === s.size ? GOLD : BORDER}`,
+                      borderRadius: '10px',
+                      padding: '12px 24px',
+                      backgroundColor: size === s.size ? 'rgba(201,168,112,0.12)' : '#1F1F1F',
+                      cursor: 'pointer',
+                      boxShadow: size === s.size ? `0 0 0 3px ${GOLD}33` : 'none',
+                      transition: 'border-color 0.2s, background-color 0.2s, box-shadow 0.2s',
+                      fontFamily: "'Heebo', sans-serif",
+                    }}
+                  >
+                    <p style={{ color: size === s.size ? GOLD : GOLD, fontSize: '22px', fontWeight: 800, margin: 0, letterSpacing: '-0.02em' }}>{s.size}</p>
                     <div>
-                      <p style={{ color: MUTED, fontSize: '10px', margin: '0 0 1px' }}>מיועד ל</p>
+                      <p style={{ color: MUTED, fontSize: '10px', margin: '0 0 1px', textAlign: 'right' }}>מיועד ל</p>
                       <p style={{ color: CREAM, fontSize: '12px', fontWeight: 500, margin: 0 }}>{s.desc}</p>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
               <p style={{ color: MUTED, fontSize: '11px', fontWeight: 400, margin: '14px 0 0', textAlign: 'center', lineHeight: 1.6 }}>הגבהים המצוינים מתייחסים לממוצע האוכלוסייה ומוצגים כהמלצה בלבד.</p>
+            </div>
+          </FadeSection>
+
+          {/* CTA — scroll to form */}
+          <FadeSection delay={0.2}>
+            <div style={{ marginTop: '40px', textAlign: 'center' }}>
+              {(color || size) && (
+                <p style={{ color: MUTED, fontSize: '13px', marginBottom: '16px' }}>
+                  {color && <span>צבע: <strong style={{ color: GOLD }}>{color}</strong></span>}
+                  {color && size && <span style={{ margin: '0 8px' }}>·</span>}
+                  {size && <span>מידה: <strong style={{ color: GOLD }}>{size}</strong></span>}
+                </p>
+              )}
+              <button
+                onClick={() => document.getElementById('wl-form')?.scrollIntoView({ behavior: 'smooth' })}
+                style={{
+                  padding: '14px 40px',
+                  borderRadius: '8px',
+                  backgroundColor: GOLD,
+                  border: 'none',
+                  color: DARK,
+                  fontSize: '14px',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  fontFamily: "'Heebo', sans-serif",
+                  letterSpacing: '0.08em',
+                  boxShadow: '0 4px 20px rgba(201,168,112,0.3)',
+                  transition: 'transform 0.2s, background-color 0.2s',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)'; }}
+              >
+                השארת פרטים ↓
+              </button>
             </div>
           </FadeSection>
         </div>

@@ -18,7 +18,6 @@ export default function Hero() {
           alt=""
           className="h-full w-full object-cover"
           style={{ opacity: 0.75 }}
-          fetchPriority="high"
           loading="eager"
         />
 

@@ -172,7 +172,7 @@ export default function SpinzVibe() {
       >
         {[
           { label: 'צבעים לבחירה',     target: 3,   suffix: '',  duration: 1400 },
-          { label: 'ימי עסקים למשלוח', target: 5,   suffix: '',  duration: 2800 },
+          { label: 'ימי עסקים למשלוח', target: 5,   suffix: '',  duration: 2300 },
           { label: 'ישירות מהיצרן',    target: 100, suffix: '%', duration: 3200 },
         ].map(({ label, target, suffix, duration }, i) => (
           <div key={label} className="py-5 px-2 md:py-7" style={{ textAlign: 'center', borderLeft: i > 0 ? `1px solid rgba(201,168,112,0.25)` : 'none' }}>

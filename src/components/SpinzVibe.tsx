@@ -51,12 +51,12 @@ export default function SpinzVibe() {
       {/* Parallax background */}
       <motion.div
         style={{
-          y,
+          y: typeof window !== 'undefined' && window.innerWidth < 768 ? 0 : y,
           position: 'absolute',
-          inset: '-12% 0',
+          inset: typeof window !== 'undefined' && window.innerWidth < 768 ? 0 : '-12% 0',
           backgroundImage: 'url(/assets/photo-beige-bike.jpg)',
           backgroundSize: 'cover',
-          backgroundPosition: 'center top',
+          backgroundPosition: 'center center',
         }}
       />
 
@@ -135,29 +135,6 @@ export default function SpinzVibe() {
               הסיפור המלא ←
             </motion.button>
 
-            {/* Stats */}
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.45 }}
-              className="grid grid-cols-3"
-              style={{ borderTop: `1px solid rgba(201,168,112,0.25)`, borderBottom: `1px solid rgba(201,168,112,0.25)` }}
-            >
-              {[
-                { label: 'צבעים לבחירה',     target: 3,   suffix: '',  duration: 1400 },
-                { label: 'ימי עסקים למשלוח', target: 5,   suffix: '',  duration: 1800 },
-                { label: 'ישירות מהיצרן',    target: 100, suffix: '%', duration: 3200 },
-              ].map(({ label, target, suffix, duration }, i) => (
-                <div key={label} className="py-5 px-2 md:py-6" style={{ textAlign: 'center', borderLeft: i > 0 ? `1px solid rgba(201,168,112,0.25)` : 'none' }}>
-                  <p className="text-[26px] md:text-[36px]" style={{ fontFamily: "'Heebo', sans-serif", color: GOLD, margin: 0, lineHeight: 1 }}>
-                    <CountUp target={target} suffix={suffix} duration={duration} />
-                  </p>
-                  <p className="text-[9px] md:text-[10px]" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: '0.18em', textTransform: 'uppercase', color: MUTED, margin: '6px 0 0' }}>
-                    {label}
-                  </p>
-                </div>
-              ))}
-            </motion.div>
           </div>
 
           {/* Left column — values */}
@@ -179,6 +156,35 @@ export default function SpinzVibe() {
 
         </div>
       </div>
+
+      {/* Stats bar — full width */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.7, delay: 0.45 }}
+        className="grid grid-cols-3"
+        style={{
+          position: 'relative', zIndex: 1,
+          borderTop: `1px solid rgba(201,168,112,0.25)`,
+          backgroundColor: 'rgba(0,0,0,0.35)',
+          backdropFilter: 'blur(6px)',
+        }}
+      >
+        {[
+          { label: 'צבעים לבחירה',     target: 3,   suffix: '',  duration: 1400 },
+          { label: 'ימי עסקים למשלוח', target: 5,   suffix: '',  duration: 1800 },
+          { label: 'ישירות מהיצרן',    target: 100, suffix: '%', duration: 3200 },
+        ].map(({ label, target, suffix, duration }, i) => (
+          <div key={label} className="py-5 px-2 md:py-7" style={{ textAlign: 'center', borderLeft: i > 0 ? `1px solid rgba(201,168,112,0.25)` : 'none' }}>
+            <p className="text-[28px] md:text-[42px]" style={{ fontFamily: "'Heebo', sans-serif", color: GOLD, margin: 0, lineHeight: 1 }}>
+              <CountUp target={target} suffix={suffix} duration={duration} />
+            </p>
+            <p className="text-[9px] md:text-[11px]" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: '0.18em', textTransform: 'uppercase', color: MUTED, margin: '8px 0 0' }}>
+              {label}
+            </p>
+          </div>
+        ))}
+      </motion.div>
 
       {/* Gold bottom line */}
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', background: `linear-gradient(to right, ${GOLD}66, transparent)` }} />

@@ -8,10 +8,11 @@ const CREAM = '#EDEBE6';
 function ParallaxBg({ src, yRange }: { src: string; yRange: [string, string] }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
-  const y = useTransform(scrollYProgress, [0, 1], yRange);
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const y = useTransform(scrollYProgress, [0, 1], isMobile ? ['0%', '0%'] : yRange);
   return (
-    <div ref={ref} style={{ position: 'absolute', inset: '-12% 0' }}>
-      <motion.div style={{ y, position: 'absolute', inset: 0, backgroundImage: `url(${src})`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+    <div ref={ref} style={{ position: 'absolute', inset: 0 }}>
+      <motion.div style={{ y, position: 'absolute', inset: isMobile ? 0 : '-12% 0', backgroundImage: `url(${src})`, backgroundSize: 'cover', backgroundPosition: 'center center' }} />
     </div>
   );
 }

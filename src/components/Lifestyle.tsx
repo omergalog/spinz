@@ -20,12 +20,12 @@ export default function Lifestyle() {
       {/* Parallax image */}
       <motion.div
         style={{
-          y,
+          y: typeof window !== 'undefined' && window.innerWidth < 768 ? 0 : y,
           position: 'absolute',
-          inset: '-15% 0',
+          inset: typeof window !== 'undefined' && window.innerWidth < 768 ? 0 : '-15% 0',
           backgroundImage: 'url(/assets/photo-olive-lifestyle.jpg)',
           backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundPosition: 'center center',
         }}
       />
 

@@ -2,10 +2,10 @@ import { useRef, useState } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 
 const GOLD   = '#C9A870';
-const CREAM  = '#EDEBE6';
-const MUTED  = '#6A6862';
-const BG     = '#1C1C1C';
-const BORDER = '#2A2A2A';
+const CREAM  = '#1C1C1C';
+const MUTED  = '#4A4845';
+const BG     = '#F5F2EC';
+const BORDER = '#DDD9D3';
 
 const faqs = [
   {

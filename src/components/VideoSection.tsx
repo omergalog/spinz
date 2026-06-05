@@ -84,7 +84,6 @@ export default function VideoSection() {
       {/* Video */}
       <video
         ref={videoRef}
-        src="/assets/spinz-video-compressed.mp4"
         muted
         loop
         playsInline
@@ -97,7 +96,10 @@ export default function VideoSection() {
           objectPosition: 'center center',
           opacity: 0.85,
         }}
-      />
+      >
+        <source media="(max-width: 767px)" src="/assets/spinz-mobile.mp4" type="video/mp4" />
+        <source src="/assets/spinz-video-compressed.mp4" type="video/mp4" />
+      </video>
 
       {/* Overlay gradient */}
       <div

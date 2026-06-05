@@ -51,7 +51,7 @@ export default function SpinzVibe() {
           y: typeof window !== 'undefined' && window.innerWidth < 768 ? 0 : y,
           position: 'absolute',
           inset: typeof window !== 'undefined' && window.innerWidth < 768 ? 0 : '-12% 0',
-          backgroundImage: 'url(/assets/photo-beige-bike.jpg)',
+          backgroundImage: 'url(/assets/recolored-bicycle.png)',
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
         }}

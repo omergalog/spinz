@@ -83,7 +83,7 @@ export default function ScrollyFeatures() {
       if (!el) return;
       const obs = new IntersectionObserver(
         ([entry]) => { if (entry.isIntersecting) setActiveIndex(i); },
-        { threshold: 0.55 }
+        { threshold: 0.08 }
       );
       obs.observe(el);
       observers.push(obs);

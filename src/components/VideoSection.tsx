@@ -9,6 +9,7 @@ export default function VideoSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const [muted, setMuted] = useState(true);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -26,6 +27,13 @@ export default function VideoSection() {
     return () => observer.disconnect();
   }, []);
 
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !muted;
+      setMuted(m => !m);
+    }
+  };
+
   return (
     <section
       ref={sectionRef}
@@ -40,7 +48,7 @@ export default function VideoSection() {
       {/* Video */}
       <video
         ref={videoRef}
-        src="/assets/spinz-video.mp4"
+        src="/assets/spinz-video-new.mp4"
         muted
         loop
         playsInline
@@ -51,7 +59,7 @@ export default function VideoSection() {
           height: '100%',
           objectFit: 'cover',
           objectPosition: 'center center',
-          opacity: 0.75,
+          opacity: 0.85,
         }}
       />
 
@@ -118,6 +126,43 @@ export default function VideoSection() {
         </div>
 
       </div>
+
+      {/* Mute/Unmute button */}
+      <button
+        onClick={toggleMute}
+        style={{
+          position: 'absolute',
+          bottom: '24px',
+          left: '24px',
+          background: 'rgba(0,0,0,0.45)',
+          backdropFilter: 'blur(8px)',
+          border: `1px solid rgba(255,255,255,0.2)`,
+          borderRadius: '50%',
+          width: '40px',
+          height: '40px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          color: TEXT_LIGHT,
+          transition: 'background 0.2s',
+        }}
+        title={muted ? 'הפעל סאונד' : 'השתק'}
+      >
+        {muted ? (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <line x1="23" y1="9" x2="17" y2="15"/>
+            <line x1="17" y1="9" x2="23" y2="15"/>
+          </svg>
+        ) : (
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+          </svg>
+        )}
+      </button>
     </section>
   );
 }

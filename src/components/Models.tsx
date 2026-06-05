@@ -6,7 +6,7 @@ import { useCart } from '../context/CartContext';
 import { supabase } from '../lib/supabase';
 
 const DARK   = '#1C1C1C';
-const BEIGE  = '#F5F2EC';
+const BEIGE  = '#FFFFFF';
 const GOLD   = '#C9A870';
 const BORDER = '#E2DED8';
 const MUTED  = '#6A6862';

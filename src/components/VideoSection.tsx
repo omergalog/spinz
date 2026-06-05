@@ -35,8 +35,8 @@ export default function VideoSection() {
     let raf: number;
 
     const isMobile = window.innerWidth < 768;
-    const fadeStart = isMobile ? 7  : 11;
-    const fadeEnd   = isMobile ? 9  : 15;
+    const fadeStart = isMobile ? 6.5 : 11;
+    const fadeEnd   = isMobile ? 8.5 : 15;
 
     const tick = () => {
       const t = video.currentTime;

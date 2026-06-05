@@ -77,7 +77,7 @@ export default function Models() {
         <div className="flex flex-col lg:flex-row min-h-[80vh]">
 
           {/* RIGHT — image */}
-          <div className="lg:flex-1 flex items-center justify-center bg-[#F0EDE7] p-8 lg:p-16 order-1 lg:order-2 min-h-[50vw] lg:min-h-0" style={{ position: 'relative' }}>
+          <div className="lg:flex-1 flex items-center justify-center bg-[#FFFFFF] p-8 lg:p-16 order-1 lg:order-2 min-h-[50vw] lg:min-h-0" style={{ position: 'relative' }}>
             <AnimatePresence mode="wait">
               <motion.img
                 key={color.id}
@@ -244,7 +244,7 @@ export default function Models() {
                 { icon: '◈', label: 'גלגלי 700c', sub: 'פרופיל גבוה 30 מ"מ' },
               ].map(({ icon, label, sub }) => (
                 <div key={label} style={{
-                  backgroundColor: '#EAE7E1',
+                  backgroundColor: '#FFFFFF',
                   borderRadius: '8px',
                   padding: '10px 12px',
                   display: 'flex', alignItems: 'flex-start', gap: '8px',
@@ -284,7 +284,7 @@ export default function Models() {
               {outOfStock ? (
                 <div style={{
                   padding: '14px 28px',
-                  backgroundColor: '#F0EDE7',
+                  backgroundColor: '#FFFFFF',
                   border: `1px solid ${BORDER}`,
                   borderRadius: '8px',
                   fontFamily: "'Heebo', sans-serif",

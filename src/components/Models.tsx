@@ -77,7 +77,7 @@ export default function Models() {
         <div className="flex flex-col lg:flex-row min-h-[80vh]">
 
           {/* RIGHT — image */}
-          <div className="lg:flex-1 flex items-center justify-center bg-white p-8 lg:p-16 order-1 lg:order-2 min-h-[50vw] lg:min-h-0" style={{ position: 'relative' }}>
+          <div className="lg:flex-1 flex items-center justify-center bg-white p-4 lg:p-8 order-1 lg:order-2 min-h-[50vw] lg:min-h-0" style={{ position: 'relative' }}>
             <AnimatePresence mode="wait">
               <motion.img
                 key={color.id}
@@ -87,7 +87,7 @@ export default function Models() {
                 animate={{ opacity: outOfStock ? 0.35 : 1, y: 0, filter: outOfStock ? 'grayscale(1)' : 'grayscale(0)' }}
                 exit={{ opacity: 0, y: -30 }}
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                style={{ width: '100%', maxWidth: '520px', height: 'auto', objectFit: 'contain', mixBlendMode: 'multiply' }}
+                style={{ width: '100%', maxWidth: '820px', height: 'auto', objectFit: 'contain', mixBlendMode: 'multiply' }}
               />
             </AnimatePresence>
             <AnimatePresence>

@@ -33,13 +33,15 @@ export default function VideoSection() {
     if (!video) return;
     const onTimeUpdate = () => {
       const t = video.currentTime;
-      // fade out from second 13 to 15
-      if (t < 13) {
+      // fade out from second 11 to 15 (4 seconds, smooth)
+      if (t < 11) {
         setTextOpacity(1);
       } else if (t >= 15) {
         setTextOpacity(0);
       } else {
-        setTextOpacity(1 - (t - 13) / 2);
+        // ease-in curve: slow start, faster finish
+        const p = (t - 11) / 4;
+        setTextOpacity(1 - (p * p));
       }
     };
     video.addEventListener('timeupdate', onTimeUpdate);
@@ -113,7 +115,9 @@ export default function VideoSection() {
           textAlign: 'center',
           padding: '0 24px',
           opacity: textOpacity,
-          transition: 'opacity 0.1s linear',
+          transform: `translateY(${(1 - textOpacity) * -28}px)`,
+          filter: `blur(${(1 - textOpacity) * 6}px)`,
+          transition: 'opacity 0.05s, transform 0.05s, filter 0.05s',
         }}
       >
         <motion.p

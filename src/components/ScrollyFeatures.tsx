@@ -22,7 +22,7 @@ const steps = [
     num: '03',
     title: 'פשוט וטהור',
     body: 'סינגל ספיד זו פילוסופיה. פחות מנגנונים, פחות תקלות, יותר חופש. רק אתה והאספלט.',
-    image: '/assets/black1.jpg',
+    image: '/assets/green1.jpg',
   },
   {
     num: '04',

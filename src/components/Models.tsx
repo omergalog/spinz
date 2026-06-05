@@ -188,7 +188,7 @@ export default function Models() {
                       height: '38px',
                       borderRadius: '50%',
                       backgroundColor: c.hex,
-                      border: selectedColor === i ? `3px solid ${c.hex}` : `3px solid ${c.id === 'mat' ? '#CCCCCC' : 'transparent'}`,
+                      border: selectedColor === i ? `3px solid ${c.hex}` : '3px solid transparent',
                       cursor: 'pointer',
                       padding: 0,
                       transition: 'all 0.2s',

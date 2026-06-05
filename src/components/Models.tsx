@@ -30,6 +30,14 @@ export default function Models() {
   const color = colorVariants[selectedColor];
   const size  = sizeVariants[selectedSize];
 
+  // Preload all bike images on mount
+  useEffect(() => {
+    colorVariants.forEach(c => {
+      const img = new Image();
+      img.src = c.image;
+    });
+  }, []);
+
   useEffect(() => {
     const slug = `spinz-${color.id}-${size.id}`;
     supabase.from('products').select('stock, price, sale_price').eq('slug', slug).single().then(({ data }) => {

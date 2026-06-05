@@ -174,7 +174,7 @@ export default function Models() {
                 <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: DARK, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                   צבע
                 </span>
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: GOLD, fontWeight: 600 }}>
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: color.hex, fontWeight: 700 }}>
                   {color.label}
                 </span>
               </div>

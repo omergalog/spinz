@@ -73,11 +73,13 @@ export default function Hero() {
               animate={{ y: '0%' }}
               transition={{ duration: 1.0, ease: [0.76, 0, 0.24, 1], delay: 0.25 }}
               style={{
-                fontFamily: "'Bebas Neue', sans-serif",
+                fontFamily: "'Heebo', sans-serif",
+                fontWeight: 800,
                 color: TEXT_LIGHT,
-                fontSize: 'clamp(80px, 18vw, 200px)',
+                fontSize: 'clamp(72px, 16vw, 180px)',
                 lineHeight: 0.9,
                 margin: 0,
+                letterSpacing: '-0.02em',
               }}
             >
               SPIN<span style={{ color: GOLD }}>Z</span>

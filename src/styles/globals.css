@@ -45,12 +45,6 @@ html[data-pause-motion="true"] [style*="translateY"] { transform: none !importan
 html[data-pause-motion="true"] [style*="translateX"] { transform: none !important; }
 html[data-pause-motion="true"] [style*="scaleX(0)"]  { transform: scaleX(1) !important; }
 
-/* Hide default cursor on desktop for custom cursor */
-@media (pointer: fine) {
-  *, *::before, *::after {
-    cursor: none !important;
-  }
-}
 
 img,
 video {

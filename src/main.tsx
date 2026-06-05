@@ -12,7 +12,6 @@ import WaitlistTerms from './pages/WaitlistTerms';
 import AccessibilityWidget from './components/AccessibilityWidget';
 import { getPauseMotion, onPauseMotionChange } from './utils/motionStore';
 import PasswordGate from './components/PasswordGate';
-import CustomCursor from './components/CustomCursor';
 
 function Root() {
   const [pauseMotion, setPauseMotionState] = useState(getPauseMotion);
@@ -21,7 +20,6 @@ function Root() {
 
   return (
     <>
-      <CustomCursor />
       <PasswordGate>
         <MotionConfig
           reducedMotion={pauseMotion ? 'always' : 'never'}

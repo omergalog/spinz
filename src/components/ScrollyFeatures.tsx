@@ -11,24 +11,28 @@ const steps = [
     title: 'תופס עיניים',
     body: 'כל מוצר שאנחנו מוציאים חייב לגרום לאנשים להסתכל עליך. עיצוב שמדבר לפני שאתה אומר מילה.',
     image: '/assets/photo-beige-bike.jpg',
+    objectPosition: 'center',
   },
   {
     num: '02',
     title: 'נגיש באמת',
     body: 'סטייל לא אמור לעלות ביוקר. מחיר שסטודנט יכול להרשות לעצמו — בלי פשרות על האיכות.',
     image: '/assets/photo-olive-lifestyle.jpg',
+    objectPosition: 'center',
   },
   {
     num: '03',
     title: 'פשוט וטהור',
     body: 'סינגל ספיד זו פילוסופיה. פחות מנגנונים, פחות תקלות, יותר חופש. רק אתה והאספלט.',
     image: '/assets/black1.jpg',
+    objectPosition: 'center',
   },
   {
     num: '04',
     title: 'ישראלי בנשמה',
     body: 'Spinz נולד פה, מדבר עברית ומכיר את הרחוב הישראלי. לא מוצר מיובא — חברה שגדלה איתך.',
     image: '/assets/for-hero.jpg',
+    objectPosition: '30% center',
   },
 ];
 // ─────────────────────────────────────────────────────────────────────────────
@@ -77,7 +81,7 @@ export default function ScrollyFeatures() {
                 width: '100%',
                 height: '100%',
                 objectFit: 'cover',
-                objectPosition: 'center',
+                objectPosition: steps[i].objectPosition,
                 opacity: activeIndex === i ? 1 : 0,
                 transition: 'opacity 0.7s ease',
               }}

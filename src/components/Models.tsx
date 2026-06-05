@@ -189,11 +189,11 @@ export default function Models() {
                       height: '38px',
                       borderRadius: '50%',
                       backgroundColor: c.hex,
-                      border: selectedColor === i ? `3px solid ${GOLD}` : `3px solid ${c.id === 'mat' ? '#CCCCCC' : 'transparent'}`,
+                      border: selectedColor === i ? `3px solid ${c.hex}` : `3px solid ${c.id === 'mat' ? '#CCCCCC' : 'transparent'}`,
                       cursor: 'pointer',
                       padding: 0,
                       transition: 'all 0.2s',
-                      boxShadow: selectedColor === i ? `0 0 0 2px #FFFFFF, 0 0 0 4px ${GOLD}` : 'none',
+                      boxShadow: selectedColor === i ? `0 0 0 2px #FFFFFF, 0 0 0 4px ${c.hex}` : 'none',
                     }}
                   />
                 ))}

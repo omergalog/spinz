@@ -185,16 +185,15 @@ export default function Models() {
                     onClick={() => setSelectedColor(i)}
                     title={c.label}
                     style={{
-                      width: '36px',
-                      height: '36px',
+                      width: '38px',
+                      height: '38px',
                       borderRadius: '50%',
                       backgroundColor: c.hex,
-                      border: selectedColor === i ? `3px solid ${GOLD}` : '3px solid transparent',
-                      outline: selectedColor === i ? `1px solid ${GOLD}` : '1px solid transparent',
+                      border: selectedColor === i ? `3px solid ${GOLD}` : `3px solid ${c.id === 'mat' ? '#CCCCCC' : 'transparent'}`,
                       cursor: 'pointer',
                       padding: 0,
                       transition: 'all 0.2s',
-                      boxShadow: selectedColor === i ? `0 0 0 2px ${BEIGE}, 0 0 0 4px ${GOLD}` : 'none',
+                      boxShadow: selectedColor === i ? `0 0 0 2px #FFFFFF, 0 0 0 4px ${GOLD}` : 'none',
                     }}
                   />
                 ))}

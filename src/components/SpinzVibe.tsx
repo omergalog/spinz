@@ -76,7 +76,7 @@ export default function SpinzVibe() {
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
 
           {/* Right column — header + story */}
-          <div className="flex-1 flex flex-col gap-8">
+          <div className="flex flex-col gap-8 lg:w-1/2">
 
             <div>
               <motion.span

@@ -9,7 +9,7 @@ const steps = [
   {
     num: '01',
     title: 'תופס עיניים',
-    body: 'כל מוצר שאנחנו מוציאים חייב לגרום לאנשים להסתכל עליך. עיצוב שמדבר לפני שאתה אומר מילה.',
+    body: 'עיצוב שגונב את ההצגה, עוד לפני שהתחלת לרכוב.',
     image: '/assets/photo-beige-bike.jpg',
     objectPosition: 'center',
   },

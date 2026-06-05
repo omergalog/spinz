@@ -83,7 +83,8 @@ export default function ScrollyFeatures() {
                 objectFit: 'cover',
                 objectPosition: steps[i].objectPosition,
                 opacity: activeIndex === i ? 1 : 0,
-                transition: 'opacity 0.7s ease',
+                transform: activeIndex === i ? 'scale(1)' : 'scale(1.04)',
+                transition: 'opacity 1.1s cubic-bezier(0.4, 0, 0.2, 1), transform 1.4s cubic-bezier(0.4, 0, 0.2, 1)',
               }}
             />
           ))}

@@ -34,19 +34,22 @@ export default function VideoSection() {
     if (!video || !text) return;
     let raf: number;
 
+    const isMobile = window.innerWidth < 768;
+    const fadeStart = isMobile ? 7  : 11;
+    const fadeEnd   = isMobile ? 9  : 15;
+
     const tick = () => {
       const t = video.currentTime;
       let opacity: number;
       let translateY: number;
       let blur: number;
 
-      if (t < 11) {
+      if (t < fadeStart) {
         opacity = 1; translateY = 0; blur = 0;
-      } else if (t >= 15) {
+      } else if (t >= fadeEnd) {
         opacity = 0; translateY = -32; blur = 8;
       } else {
-        // cubic ease-in: slow start → fast finish
-        const p = (t - 11) / 4;
+        const p = (t - fadeStart) / (fadeEnd - fadeStart);
         const ease = p * p * p;
         opacity    = 1 - ease;
         translateY = ease * -32;

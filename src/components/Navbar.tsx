@@ -124,7 +124,6 @@ export default function Navbar() {
                 textDecoration: 'none',
                 transition: 'background-color 0.25s, transform 0.25s',
                 whiteSpace: 'nowrap',
-                animation: 'btnSlide 1.2s ease-in-out infinite',
               }}
               onMouseEnter={e => {
                 const el = e.currentTarget as HTMLAnchorElement;

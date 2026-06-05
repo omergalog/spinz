@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import CustomCursor from '../components/CustomCursor';
 
 const GOLD  = '#C9A870';
 const DARK  = '#1C1C1C';
@@ -11,7 +10,6 @@ export default function WaitlistTerms() {
 
   return (
     <div style={{ backgroundColor: DARK, minHeight: '100vh', fontFamily: "'Heebo', sans-serif", cursor: 'none' }} dir="rtl">
-      <CustomCursor />
 
       {/* Top bar */}
       <div style={{ borderBottom: '1px solid #2A2A2A', padding: '20px 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

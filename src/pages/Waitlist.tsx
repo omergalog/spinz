@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { supabase } from '../lib/supabase';
-import CustomCursor from '../components/CustomCursor';
 import WaitlistCookieBar from '../components/WaitlistCookieBar';
 
 const GOLD   = '#C9A870';
@@ -120,8 +119,7 @@ export default function Waitlist() {
   };
 
   return (
-    <div style={{ backgroundColor: DARK, minHeight: '100vh', fontFamily: "'Heebo', sans-serif", cursor: 'none' }} dir="rtl">
-      <CustomCursor />
+    <div style={{ backgroundColor: DARK, minHeight: '100vh', fontFamily: "'Heebo', sans-serif",  }} dir="rtl">
       <WaitlistCookieBar />
 
       <style>{`

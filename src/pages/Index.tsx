@@ -11,7 +11,6 @@ import FAQ from '../components/FAQ';
 import LeadForm from '../components/LeadForm';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
-import CustomCursor from '../components/CustomCursor';
 import CartDrawer from '../components/CartDrawer';
 import CookieBanner from '../components/CookieBanner';
 import { CartProvider } from '../context/CartContext';
@@ -33,7 +32,6 @@ const Index = () => {
 
   return (
     <CartProvider>
-      <CustomCursor />
       {showLoader && <Loader onDone={handleLoaderDone} />}
       <CartDrawer />
       <CookieBanner loaderDone={loaderDone} />

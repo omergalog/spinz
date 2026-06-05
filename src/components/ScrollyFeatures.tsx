@@ -37,64 +37,29 @@ const steps = [
 ];
 // ─────────────────────────────────────────────────────────────────────────────
 
-/* ── Mobile: snap-scroll fullscreen cards ── */
-function MobileScrolly() {
+/* ── Mobile card (vertical layout) ── */
+function MobileCard({ step }: { step: typeof steps[0] }) {
   return (
-    <div style={{
-      height: '100vh',
-      overflowY: 'scroll',
-      scrollSnapType: 'y mandatory',
-      WebkitOverflowScrolling: 'touch',
-      direction: 'rtl',
-    }}>
-      {steps.map(step => (
-        <div
-          key={step.num}
-          style={{
-            height: '100vh',
-            scrollSnapAlign: 'start',
-            position: 'relative',
-            overflow: 'hidden',
-            backgroundColor: DARK,
-          }}
-        >
-          {/* Full-screen image */}
-          <img
-            src={step.image}
-            alt={step.title}
-            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: step.objectPosition }}
-          />
-
-          {/* Dark gradient from bottom */}
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.45) 45%, transparent 75%)' }} />
-
-          {/* Text anchored to bottom */}
-          <div style={{ position: 'absolute', bottom: 0, right: 0, left: 0, padding: '0 28px 48px' }}>
-            <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', letterSpacing: '0.3em', color: GOLD, display: 'block', marginBottom: '12px' }}>
-              {step.num}
-            </span>
-            <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 900, fontSize: '30px', color: CREAM, margin: '0 0 12px', lineHeight: 1.1, letterSpacing: '-0.01em' }}>
-              {step.title}
-            </h3>
-            <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', color: CREAM, lineHeight: 1.7, margin: 0, opacity: 0.82 }}>
-              {step.body}
-            </p>
-
-            {/* Dots */}
-            <div style={{ display: 'flex', gap: '6px', marginTop: '24px' }}>
-              {steps.map((s, j) => (
-                <div key={j} style={{
-                  width: s.num === step.num ? '24px' : '6px',
-                  height: '3px',
-                  borderRadius: '2px',
-                  backgroundColor: s.num === step.num ? GOLD : 'rgba(201,168,112,0.3)',
-                  transition: 'width 0.3s ease',
-                }} />
-              ))}
-            </div>
-          </div>
-        </div>
-      ))}
+    <div style={{ direction: 'rtl', backgroundColor: DARK }}>
+      <div style={{ position: 'relative', height: '55vw', minHeight: '200px', maxHeight: '300px', overflow: 'hidden' }}>
+        <img
+          src={step.image}
+          alt={step.title}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: step.objectPosition }}
+        />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(17,17,17,0.7) 0%, transparent 50%)' }} />
+      </div>
+      <div style={{ padding: '28px 24px 40px' }}>
+        <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', letterSpacing: '0.3em', color: GOLD, display: 'block', marginBottom: '12px' }}>
+          {step.num}
+        </span>
+        <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 900, fontSize: '26px', color: CREAM, margin: '0 0 14px', lineHeight: 1.15, letterSpacing: '-0.01em' }}>
+          {step.title}
+        </h3>
+        <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', color: CREAM, lineHeight: 1.7, margin: 0, opacity: 0.78 }}>
+          {step.body}
+        </p>
+      </div>
     </div>
   );
 }
@@ -126,9 +91,13 @@ export default function ScrollyFeatures() {
     return () => observers.forEach(o => o.disconnect());
   }, [isMobile]);
 
-  /* ── Mobile: snap-scroll ── */
+  /* ── Mobile: stacked cards ── */
   if (isMobile) {
-    return <MobileScrolly />;
+    return (
+      <section style={{ backgroundColor: DARK }}>
+        {steps.map(step => <MobileCard key={step.num} step={step} />)}
+      </section>
+    );
   }
 
   /* ── Desktop: sticky scrollytelling ── */

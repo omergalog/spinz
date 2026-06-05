@@ -10,7 +10,7 @@ export default function VideoSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [muted, setMuted] = useState(true);
-  const [textOpacity, setTextOpacity] = useState(1);
+  const textRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -30,26 +30,37 @@ export default function VideoSection() {
 
   useEffect(() => {
     const video = videoRef.current;
-    if (!video) return;
-    const onTimeUpdate = () => {
+    const text  = textRef.current;
+    if (!video || !text) return;
+    let raf: number;
+
+    const tick = () => {
       const t = video.currentTime;
-      // fade out from second 11 to 15 (4 seconds, smooth)
+      let opacity: number;
+      let translateY: number;
+      let blur: number;
+
       if (t < 11) {
-        setTextOpacity(1);
+        opacity = 1; translateY = 0; blur = 0;
       } else if (t >= 15) {
-        setTextOpacity(0);
+        opacity = 0; translateY = -32; blur = 8;
       } else {
-        // ease-in curve: slow start, faster finish
+        // cubic ease-in: slow start → fast finish
         const p = (t - 11) / 4;
-        setTextOpacity(1 - (p * p));
+        const ease = p * p * p;
+        opacity    = 1 - ease;
+        translateY = ease * -32;
+        blur       = ease * 8;
       }
+
+      text.style.opacity   = String(opacity);
+      text.style.transform = `translateY(${translateY}px)`;
+      text.style.filter    = `blur(${blur}px)`;
+      raf = requestAnimationFrame(tick);
     };
-    video.addEventListener('timeupdate', onTimeUpdate);
-    video.addEventListener('seeked', onTimeUpdate);
-    return () => {
-      video.removeEventListener('timeupdate', onTimeUpdate);
-      video.removeEventListener('seeked', onTimeUpdate);
-    };
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
   }, []);
 
   const toggleMute = () => {
@@ -105,6 +116,7 @@ export default function VideoSection() {
 
       {/* Text overlay */}
       <div
+        ref={textRef}
         style={{
           position: 'absolute',
           inset: 0,
@@ -114,10 +126,7 @@ export default function VideoSection() {
           justifyContent: 'center',
           textAlign: 'center',
           padding: '0 24px',
-          opacity: textOpacity,
-          transform: `translateY(${(1 - textOpacity) * -28}px)`,
-          filter: `blur(${(1 - textOpacity) * 6}px)`,
-          transition: 'opacity 0.05s, transform 0.05s, filter 0.05s',
+          willChange: 'opacity, transform, filter',
         }}
       >
         <motion.p

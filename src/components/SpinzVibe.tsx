@@ -6,12 +6,6 @@ const GOLD  = '#C9A870';
 const CREAM = '#EDEBE6';
 const MUTED = '#EDEBE6';
 
-const values = [
-  { num: '01', title: 'תופס עיניים',   body: 'כל מוצר שאנחנו מוציאים חייב לגרום לאנשים להסתכל עליך.' },
-  { num: '02', title: 'נגיש באמת',     body: 'סטייל לא אמור לעלות ביוקר. מחיר שסטודנט יכול להרשות לעצמו.' },
-  { num: '03', title: 'פשוט וטהור',    body: 'סינגל ספיד זו פילוסופיה. פחות מנגנונים, יותר חופש.' },
-  { num: '04', title: 'ישראלי בנשמה', body: 'Spinz מדבר עברית ומכיר את הרחוב הישראלי.' },
-];
 
 function CountUp({ target, suffix = '', duration = 2800, delay = 0 }: { target: number; suffix?: string; duration?: number; delay?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -99,10 +93,10 @@ export default function SpinzVibe() {
                   initial={{ y: '105%' }}
                   animate={isInView ? { y: '0%' } : {}}
                   transition={{ duration: 0.95, ease: [0.76, 0, 0.24, 1], delay: 0.08 }}
-                  style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 900, fontSize: 'clamp(32px, 5vw, 68px)', color: CREAM, letterSpacing: '-0.02em', lineHeight: 1.05, margin: 0 }}
+                  style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 900, fontSize: 'clamp(28px, 4.5vw, 58px)', color: CREAM, letterSpacing: '-0.02em', lineHeight: 1.1, margin: 0 }}
                 >
-                  אנחנו לא מוכרים<br />
-                  <span style={{ color: GOLD }}>אופניים.</span>
+                  לא בשביל הדרך,<br />
+                  <span style={{ color: GOLD }}>בשביל הרגעים.</span>
                 </motion.h2>
               </div>
 
@@ -110,9 +104,9 @@ export default function SpinzVibe() {
                 initial={{ opacity: 0, y: 12 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.7, delay: 0.2 }}
-                style={{ fontFamily: "'Heebo', sans-serif", fontSize: 'clamp(14px, 1.5vw, 18px)', fontWeight: 500, color: CREAM, lineHeight: 1.6, margin: 0 }}
+                style={{ fontFamily: "'Heebo', sans-serif", fontSize: 'clamp(14px, 1.5vw, 17px)', fontWeight: 400, color: CREAM, lineHeight: 1.7, margin: 0, opacity: 0.85 }}
               >
-                אנחנו מוכרים את הרגע שמישהו עוצר אותך ברחוב ושואל — וואו, מאיפה הם?
+                אופניים שפשוט עושים את העבודה, כדי שתוכל להתרכז במה שבאמת קורה סביבך.
               </motion.p>
             </div>
 
@@ -140,22 +134,62 @@ export default function SpinzVibe() {
 
           </div>
 
-          {/* Left column — values */}
-          <div className="flex-1 grid grid-cols-2 sm:grid-cols-2 gap-3 md:gap-6 content-start" style={{ paddingTop: 'clamp(0px, 2vw, 40px)' }}>
-            {values.map(({ num, title, body }, i) => (
-              <motion.div
-                key={num}
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: 0.3 + i * 0.1 }}
-                className="p-4 md:p-6"
-                style={{ border: `1px solid rgba(201,168,112,0.18)`, borderRadius: '10px', backgroundColor: 'rgba(255,255,255,0.04)', backdropFilter: 'blur(4px)' }}
-              >
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', color: GOLD, letterSpacing: '0.25em', display: 'block', marginBottom: '8px' }}>{num}</span>
-                <h4 className="text-[13px] md:text-[16px]" style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, color: CREAM, margin: '0 0 6px' }}>{title}</h4>
-                <p className="text-[11px] md:text-[13px]" style={{ fontFamily: "'Heebo', sans-serif", color: MUTED, lineHeight: 1.6, margin: 0 }}>{body}</p>
-              </motion.div>
-            ))}
+          {/* Left column — bento grid */}
+          <div
+            className="flex-1"
+            style={{ paddingTop: 'clamp(0px, 2vw, 40px)', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridTemplateRows: 'auto auto', gap: '10px' }}
+          >
+            {/* 01 — wide top-right */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="p-5 md:p-7"
+              style={{ gridColumn: 'span 2', border: `1px solid rgba(201,168,112,0.22)`, borderRadius: '14px', backgroundColor: 'rgba(201,168,112,0.07)', backdropFilter: 'blur(6px)' }}
+            >
+              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', color: GOLD, letterSpacing: '0.3em', display: 'block', marginBottom: '10px' }}>01</span>
+              <h4 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: 'clamp(15px, 1.6vw, 19px)', color: CREAM, margin: '0 0 8px' }}>תופס עיניים</h4>
+              <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: 'clamp(12px, 1.1vw, 14px)', color: MUTED, lineHeight: 1.65, margin: 0, opacity: 0.8 }}>כל מוצר שאנחנו מוציאים חייב לגרום לאנשים להסתכל עליך.</p>
+            </motion.div>
+
+            {/* 02 — tall top-left */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="p-5 md:p-6"
+              style={{ gridColumn: 'span 1', gridRow: 'span 2', border: `1px solid rgba(201,168,112,0.14)`, borderRadius: '14px', backgroundColor: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(4px)', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}
+            >
+              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', color: GOLD, letterSpacing: '0.3em', display: 'block', marginBottom: '10px' }}>02</span>
+              <h4 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 1.4vw, 17px)', color: CREAM, margin: '0 0 8px' }}>נגיש באמת</h4>
+              <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: 'clamp(11px, 1vw, 13px)', color: MUTED, lineHeight: 1.65, margin: 0, opacity: 0.8 }}>סטייל לא אמור לעלות ביוקר. מחיר שסטודנט יכול להרשות לעצמו.</p>
+            </motion.div>
+
+            {/* 03 — small bottom-right */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              className="p-5 md:p-6"
+              style={{ gridColumn: 'span 1', border: `1px solid rgba(201,168,112,0.14)`, borderRadius: '14px', backgroundColor: 'rgba(255,255,255,0.03)', backdropFilter: 'blur(4px)' }}
+            >
+              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', color: GOLD, letterSpacing: '0.3em', display: 'block', marginBottom: '10px' }}>03</span>
+              <h4 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 1.4vw, 17px)', color: CREAM, margin: '0 0 8px' }}>פשוט וטהור</h4>
+              <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: 'clamp(11px, 1vw, 13px)', color: MUTED, lineHeight: 1.65, margin: 0, opacity: 0.8 }}>סינגל ספיד זו פילוסופיה. פחות מנגנונים, יותר חופש.</p>
+            </motion.div>
+
+            {/* 04 — wide bottom */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="p-5 md:p-7"
+              style={{ gridColumn: 'span 1', border: `1px solid rgba(201,168,112,0.22)`, borderRadius: '14px', background: `linear-gradient(135deg, rgba(201,168,112,0.12) 0%, rgba(201,168,112,0.04) 100%)`, backdropFilter: 'blur(6px)' }}
+            >
+              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', color: GOLD, letterSpacing: '0.3em', display: 'block', marginBottom: '10px' }}>04</span>
+              <h4 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: 'clamp(14px, 1.4vw, 17px)', color: CREAM, margin: '0 0 8px' }}>ישראלי בנשמה</h4>
+              <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: 'clamp(11px, 1vw, 13px)', color: MUTED, lineHeight: 1.65, margin: 0, opacity: 0.8 }}>Spinz מדבר עברית ומכיר את הרחוב הישראלי.</p>
+            </motion.div>
           </div>
 
         </div>

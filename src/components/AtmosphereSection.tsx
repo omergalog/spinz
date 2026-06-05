@@ -36,7 +36,7 @@ export function AtmosphereOne() {
           initial={{ opacity: 0, y: 12 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7 }}
-          style={{ color: GOLD, fontFamily: "'Heebo', sans-serif", fontSize: 'clamp(9px, 1.2vw, 11px)', letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '20px', display: 'block' }}
+          style={{ color: GOLD, fontFamily: "'Heebo', sans-serif", fontSize: 'clamp(10px, 1.2vw, 11px)', letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '20px', display: 'block' }}
         >
           Urban Lifestyle
         </motion.span>
@@ -82,7 +82,7 @@ export function AtmosphereTwo() {
           initial={{ opacity: 0, y: 12 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7 }}
-          style={{ color: GOLD, fontFamily: "'Heebo', sans-serif", fontSize: 'clamp(9px, 1.2vw, 11px)', letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '20px', display: 'block', textAlign: 'right' }}
+          style={{ color: GOLD, fontFamily: "'Heebo', sans-serif", fontSize: 'clamp(10px, 1.2vw, 11px)', letterSpacing: '0.4em', textTransform: 'uppercase', marginBottom: '20px', display: 'block', textAlign: 'right' }}
         >
           Single Speed
         </motion.span>

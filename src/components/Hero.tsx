@@ -75,7 +75,7 @@ export default function Hero() {
               style={{
                 fontFamily: "'Bebas Neue', sans-serif",
                 color: TEXT_LIGHT,
-                fontSize: 'clamp(80px, 18vw, 200px)',
+                fontSize: 'clamp(72px, 18vw, 200px)',
                 lineHeight: 0.9,
                 margin: 0,
               }}

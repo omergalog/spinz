@@ -127,7 +127,7 @@ function FAQItem({ item, index }: { item: typeof faqs[0]; index: number }) {
               color: MUTED,
               lineHeight: 1.75,
               margin: '0 0 20px',
-              paddingLeft: '44px',
+              paddingLeft: 'clamp(0px, 3vw, 44px)',
             }}>
               {item.a}
             </p>

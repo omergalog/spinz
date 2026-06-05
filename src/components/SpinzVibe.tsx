@@ -142,7 +142,7 @@ export default function SpinzVibe() {
         initial={{ opacity: 0, y: 12 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.7, delay: 0.45 }}
-        className="grid grid-cols-3"
+        className="grid grid-cols-3 md:grid-cols-3"
         style={{
           position: 'relative', zIndex: 1,
           borderTop: `1px solid rgba(201,168,112,0.25)`,
@@ -155,11 +155,11 @@ export default function SpinzVibe() {
           { label: 'ימי עסקים למשלוח', target: 5,   suffix: '',  duration: 2300, delay: 400  },
           { label: 'ישירות מהיצרן',    target: 100, suffix: '%', duration: 3200, delay: 900  },
         ].map(({ label, target, suffix, duration, delay }, i) => (
-          <div key={label} className="py-5 px-2 md:py-7" style={{ textAlign: 'center', borderLeft: i > 0 ? `1px solid rgba(201,168,112,0.25)` : 'none' }}>
-            <p className="text-[28px] md:text-[42px]" style={{ fontFamily: "'Heebo', sans-serif", color: GOLD, margin: 0, lineHeight: 1 }}>
+          <div key={label} className="py-4 px-1 md:py-7" style={{ textAlign: 'center', borderLeft: i > 0 ? `1px solid rgba(201,168,112,0.25)` : 'none' }}>
+            <p className="text-[26px] md:text-[42px]" style={{ fontFamily: "'Heebo', sans-serif", color: GOLD, margin: 0, lineHeight: 1 }}>
               <CountUp target={target} suffix={suffix} duration={duration} delay={delay} />
             </p>
-            <p className="text-[9px] md:text-[11px]" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: '0.18em', textTransform: 'uppercase', color: MUTED, margin: '8px 0 0' }}>
+            <p className="text-[9px] md:text-[11px]" style={{ fontFamily: "'Heebo', sans-serif", letterSpacing: '0.08em', textTransform: 'uppercase', color: MUTED, margin: '6px 0 0', lineHeight: 1.4 }}>
               {label}
             </p>
           </div>

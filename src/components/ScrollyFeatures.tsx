@@ -37,13 +37,48 @@ const steps = [
 ];
 // ─────────────────────────────────────────────────────────────────────────────
 
+/* ── Mobile card (vertical layout) ── */
+function MobileCard({ step }: { step: typeof steps[0] }) {
+  return (
+    <div style={{ direction: 'rtl', backgroundColor: DARK }}>
+      <div style={{ position: 'relative', height: '55vw', minHeight: '200px', maxHeight: '300px', overflow: 'hidden' }}>
+        <img
+          src={step.image}
+          alt={step.title}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: step.objectPosition }}
+        />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(17,17,17,0.7) 0%, transparent 50%)' }} />
+      </div>
+      <div style={{ padding: '28px 24px 40px' }}>
+        <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', letterSpacing: '0.3em', color: GOLD, display: 'block', marginBottom: '12px' }}>
+          {step.num}
+        </span>
+        <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 900, fontSize: '26px', color: CREAM, margin: '0 0 14px', lineHeight: 1.15, letterSpacing: '-0.01em' }}>
+          {step.title}
+        </h3>
+        <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', color: CREAM, lineHeight: 1.7, margin: 0, opacity: 0.78 }}>
+          {step.body}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function ScrollyFeatures() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    const observers: IntersectionObserver[] = [];
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
+  useEffect(() => {
+    if (isMobile) return;
+    const observers: IntersectionObserver[] = [];
     itemRefs.current.forEach((el, i) => {
       if (!el) return;
       const obs = new IntersectionObserver(
@@ -53,23 +88,25 @@ export default function ScrollyFeatures() {
       obs.observe(el);
       observers.push(obs);
     });
-
     return () => observers.forEach(o => o.disconnect());
-  }, []);
+  }, [isMobile]);
 
+  /* ── Mobile: stacked cards ── */
+  if (isMobile) {
+    return (
+      <section style={{ backgroundColor: DARK }}>
+        {steps.map(step => <MobileCard key={step.num} step={step} />)}
+      </section>
+    );
+  }
+
+  /* ── Desktop: sticky scrollytelling ── */
   return (
     <section style={{ backgroundColor: DARK, direction: 'rtl' }}>
       <div style={{ display: 'flex', maxWidth: '1400px', margin: '0 auto' }}>
 
-        {/* ── Image column (sticky) ── */}
-        <div style={{
-          width: '58%',
-          position: 'sticky',
-          top: 0,
-          height: '100vh',
-          flexShrink: 0,
-          overflow: 'hidden',
-        }}>
+        {/* Image column (sticky) */}
+        <div style={{ width: '58%', position: 'sticky', top: 0, height: '100vh', flexShrink: 0, overflow: 'hidden' }}>
           {steps.map((step, i) => (
             <img
               key={i}
@@ -88,23 +125,17 @@ export default function ScrollyFeatures() {
               }}
             />
           ))}
-          {/* dark gradient over image */}
-          <div style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(to left, rgba(17,17,17,0.35) 0%, transparent 60%)',
-            pointerEvents: 'none',
-          }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to left, rgba(17,17,17,0.35) 0%, transparent 60%)', pointerEvents: 'none' }} />
         </div>
 
-        {/* ── Text column (scrolls) ── */}
+        {/* Text column */}
         <div style={{ width: '42%', paddingRight: '48px', paddingLeft: '24px' }}>
           {steps.map((step, i) => (
             <div
               key={i}
               ref={el => { itemRefs.current[i] = el; }}
               style={{
-                minHeight: '100vh',          // ← כאן שולטים על מהירות הגלילה: הגדל ל-130vh לאיטי יותר, הקטן ל-80vh למהיר
+                minHeight: '100vh',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
@@ -114,42 +145,15 @@ export default function ScrollyFeatures() {
                 transition: 'opacity 0.5s ease, transform 0.5s ease',
               }}
             >
-              <span style={{
-                fontFamily: "'Heebo', sans-serif",
-                fontSize: '11px',
-                letterSpacing: '0.35em',
-                color: GOLD,
-                display: 'block',
-                marginBottom: '20px',
-              }}>
+              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', letterSpacing: '0.35em', color: GOLD, display: 'block', marginBottom: '20px' }}>
                 {step.num}
               </span>
-
-              <h3 style={{
-                fontFamily: "'Heebo', sans-serif",
-                fontWeight: 900,
-                fontSize: 'clamp(28px, 3.5vw, 48px)',
-                color: CREAM,
-                margin: '0 0 20px',
-                lineHeight: 1.1,
-                letterSpacing: '-0.02em',
-              }}>
+              <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 900, fontSize: 'clamp(28px, 3.5vw, 48px)', color: CREAM, margin: '0 0 20px', lineHeight: 1.1, letterSpacing: '-0.02em' }}>
                 {step.title}
               </h3>
-
-              <p style={{
-                fontFamily: "'Heebo', sans-serif",
-                fontSize: 'clamp(15px, 1.4vw, 18px)',
-                color: CREAM,
-                lineHeight: 1.75,
-                margin: 0,
-                maxWidth: '380px',
-                opacity: 0.75,
-              }}>
+              <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: 'clamp(15px, 1.4vw, 18px)', color: CREAM, lineHeight: 1.75, margin: 0, maxWidth: '380px', opacity: 0.75 }}>
                 {step.body}
               </p>
-
-              {/* progress indicator */}
               <div style={{ display: 'flex', gap: '8px', marginTop: '40px' }}>
                 {steps.map((_, j) => (
                   <div key={j} style={{

@@ -136,7 +136,7 @@ export default function VideoSection() {
           style={{
             color: GOLD,
             fontFamily: "'Heebo', sans-serif",
-            fontSize: 'clamp(9px, 1.5vw, 11px)',
+            fontSize: 'clamp(10px, 1.5vw, 11px)',
             letterSpacing: '0.4em',
             textTransform: 'uppercase',
             marginBottom: '16px',

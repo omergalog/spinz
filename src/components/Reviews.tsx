@@ -191,7 +191,7 @@ export default function Reviews() {
               </div>
 
               {/* Name + City */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px' }}>
                 <div>
                   <label style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: MUTED, display: 'block', marginBottom: '6px' }}>
                     שם *

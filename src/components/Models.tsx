@@ -92,7 +92,7 @@ export default function Models() {
                 src={color.image}
                 alt={color.label}
                 initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: outOfStock ? 0.35 : 1, y: 0, filter: outOfStock ? 'grayscale(1)' : 'grayscale(0)' }}
+                animate={{ opacity: outOfStock ? 0.5 : 1, y: 0 }}
                 exit={{ opacity: 0, y: -30 }}
                 transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                 style={{ width: '100%', maxWidth: '820px', height: 'auto', objectFit: 'contain', mixBlendMode: 'multiply' }}

@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import VideoSection from '../components/VideoSection';
 import SpinzVibe from '../components/SpinzVibe';
+import ScrollyFeatures from '../components/ScrollyFeatures';
 import Models from '../components/Models';
 import Lifestyle from '../components/Lifestyle';
 import Reviews from '../components/Reviews';
@@ -40,6 +41,7 @@ const Index = () => {
         <Hero />
         <VideoSection />
         <SpinzVibe />
+        <ScrollyFeatures />
         <Models />
         <Lifestyle />
         <Reviews />

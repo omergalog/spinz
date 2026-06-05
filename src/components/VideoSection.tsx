@@ -10,6 +10,7 @@ export default function VideoSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [muted, setMuted] = useState(true);
+  const [textOpacity, setTextOpacity] = useState(1);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -25,6 +26,28 @@ export default function VideoSection() {
     );
     if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const onTimeUpdate = () => {
+      const t = video.currentTime;
+      // fade out from second 13 to 15
+      if (t < 13) {
+        setTextOpacity(1);
+      } else if (t >= 15) {
+        setTextOpacity(0);
+      } else {
+        setTextOpacity(1 - (t - 13) / 2);
+      }
+    };
+    video.addEventListener('timeupdate', onTimeUpdate);
+    video.addEventListener('seeked', onTimeUpdate);
+    return () => {
+      video.removeEventListener('timeupdate', onTimeUpdate);
+      video.removeEventListener('seeked', onTimeUpdate);
+    };
   }, []);
 
   const toggleMute = () => {
@@ -89,6 +112,8 @@ export default function VideoSection() {
           justifyContent: 'center',
           textAlign: 'center',
           padding: '0 24px',
+          opacity: textOpacity,
+          transition: 'opacity 0.1s linear',
         }}
       >
         <motion.p

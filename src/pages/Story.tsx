@@ -227,32 +227,25 @@ export default function Story() {
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.3 }}
               style={{
-                marginTop: '60px', paddingTop: '40px',
+                marginTop: '40px', paddingTop: '32px',
                 borderTop: `1px solid ${BORDER}`,
-                display: 'flex', alignItems: 'center', gap: '20px',
               }}
             >
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', flex: 1 }}>
-                <Link
-                  to="/#models"
-                  style={{
-                    display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                    backgroundColor: GOLD, color: DARK,
-                    fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 700,
-                    letterSpacing: '0.05em', textDecoration: 'none',
-                    padding: '14px 32px', borderRadius: '6px',
-                    alignSelf: 'flex-start',
-                    transition: 'opacity 0.2s',
-                  }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.85'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1'; }}
-                >
-                  בואו להכיר את הדגמים ←
-                </Link>
-                <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: MUTED, margin: 0 }}>
-                  Spinz · Designed in Tel Aviv · spinz.bikes@gmail.com
-                </p>
-              </div>
+              <Link
+                to="/#models"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                  backgroundColor: GOLD, color: DARK,
+                  fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 700,
+                  letterSpacing: '0.05em', textDecoration: 'none',
+                  padding: '14px 32px', borderRadius: '6px',
+                  transition: 'opacity 0.2s',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.85'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1'; }}
+              >
+                בואו להכיר את הדגמים ←
+              </Link>
             </motion.div>
           </div>
         </div>

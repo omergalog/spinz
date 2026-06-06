@@ -75,7 +75,7 @@ export default function Accessibility() {
             />
           </Link>
           <Link
-            to="/"
+            to="/#lead-form"
             style={{
               display: 'flex', alignItems: 'center', gap: '8px',
               fontFamily: "'Heebo', sans-serif",

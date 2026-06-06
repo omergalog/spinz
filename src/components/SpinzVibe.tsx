@@ -117,7 +117,7 @@ export default function SpinzVibe() {
               style={{ borderRight: `3px solid ${GOLD}`, paddingRight: '20px' }}
             >
               <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: 'clamp(13px, 1.2vw, 15px)', color: MUTED, lineHeight: 1.85, margin: 0 }}>
-                Spinz נולד מתוך שלושה חברים שגדלו בין הפרדסים של עמק חפר — ועברו לתל אביב עם אופניים שלא הרגישו "זה". ניסינו הכל. ושום דבר לא ענה על מה שרצינו: משהו פשוט, יפה, ומחיר שאפשר להרשות לעצמנו.
+                הסיפור של Spinz מתחיל בשלושה חברים שגדלו בין הפרדסים של עמק חפר — ועברו לתל אביב עם אופניים שלא הרגישו 'זה'. ניסינו הכל. שום דבר לא ענה על מה שרצינו: משהו פשוט, יפה, ובמחיר הגיוני.
               </p>
             </motion.div>
 

@@ -6,7 +6,7 @@ const DARK   = '#1C1C1C';
 const GOLD   = '#C9A870';
 const CREAM  = '#EDEBE6';
 const BORDER = '#2A2A2A';
-const MUTED  = '#6A6862';
+
 
 const sections = [
   {

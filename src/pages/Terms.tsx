@@ -129,16 +129,16 @@ export default function Terms() {
             style={{
               display: 'flex', alignItems: 'center', gap: '8px',
               fontFamily: "'Heebo', sans-serif",
-              fontSize: '13px', fontWeight: 600,
-              color: MUTED,
+              fontSize: '16px', fontWeight: 600,
+              color: CREAM,
               textDecoration: 'none',
               letterSpacing: '0.05em',
-              transition: 'color 0.2s',
+              transition: 'opacity 0.2s',
             }}
-            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = CREAM; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = MUTED; }}
+            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.6'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1'; }}
           >
-            ← חזרה לאתר
+            חזרה לאתר →
           </Link>
         </div>
       </header>

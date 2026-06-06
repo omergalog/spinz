@@ -99,7 +99,7 @@ export default function Story() {
             />
           </Link>
           <Link
-            to="/"
+            to="/#why-spinz"
             style={{
               fontFamily: "'Heebo', sans-serif",
               fontSize: '13px', fontWeight: 600,

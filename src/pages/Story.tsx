@@ -102,14 +102,14 @@ export default function Story() {
             to="/#why-spinz"
             style={{
               fontFamily: "'Heebo', sans-serif",
-              fontSize: '13px', fontWeight: 600,
-              color: MUTED, textDecoration: 'none',
-              letterSpacing: '0.05em', transition: 'color 0.2s',
+              fontSize: '16px', fontWeight: 600,
+              color: CREAM, textDecoration: 'none',
+              letterSpacing: '0.05em', transition: 'opacity 0.2s',
             }}
-            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = CREAM; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = MUTED; }}
+            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.6'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1'; }}
           >
-            ← חזרה לאתר
+            חזרה לאתר →
           </Link>
         </div>
       </header>

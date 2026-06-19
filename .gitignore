@@ -2,3 +2,12 @@ node_modules
 node_modules
 dist
 .claude
+
+# Large source assets (not for repo)
+דגם תלת מימד אופניים בז .glb
+תמונות אופניים בז/
+תמונות אופניים/
+
+# Large source videos (use compressed versions)
+public/assets/Spinz - For website.mp4
+public/assets/תמונות פיסטוק/

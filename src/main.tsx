@@ -9,6 +9,15 @@ import Terms from './pages/Terms';
 import Accessibility from './pages/Accessibility';
 import Waitlist from './pages/Waitlist';
 import WaitlistTerms from './pages/WaitlistTerms';
+import Bikes from './pages/Bikes';
+import SpecsPage from './pages/SpecsPage';
+import SizesColors from './pages/SizesColors';
+import FAQPage from './pages/FAQPage';
+import Guides from './pages/Guides';
+import GalleryPage from './pages/GalleryPage';
+import Community from './pages/Community';
+import ReviewsPage from './pages/ReviewsPage';
+import Contact from './pages/Contact';
 import AccessibilityWidget from './components/AccessibilityWidget';
 import { getPauseMotion, onPauseMotionChange } from './utils/motionStore';
 import PasswordGate from './components/PasswordGate';
@@ -50,6 +59,15 @@ function Root() {
               ) : (
                 <Routes>
                   <Route path="/" element={<Index />} />
+                  <Route path="/bikes" element={<Bikes />} />
+                  <Route path="/specs" element={<SpecsPage />} />
+                  <Route path="/sizes" element={<SizesColors />} />
+                  <Route path="/faq" element={<FAQPage />} />
+                  <Route path="/guides" element={<Guides />} />
+                  <Route path="/gallery" element={<GalleryPage />} />
+                  <Route path="/community" element={<Community />} />
+                  <Route path="/reviews" element={<ReviewsPage />} />
+                  <Route path="/contact" element={<Contact />} />
                   <Route path="/story" element={<Story />} />
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/accessibility" element={<Accessibility />} />

@@ -1,14 +1,7 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import Navbar from '../components/Navbar';
-import Hero from '../components/Hero';
 import VideoSection from '../components/VideoSection';
-import SpinzVibe from '../components/SpinzVibe';
-import ScrollyFeatures from '../components/ScrollyFeatures';
 import Models from '../components/Models';
-import Lifestyle from '../components/Lifestyle';
-import Reviews from '../components/Reviews';
-import Specs from '../components/Specs';
-import FAQ from '../components/FAQ';
 import LeadForm from '../components/LeadForm';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
@@ -31,6 +24,18 @@ const Index = () => {
     setLoaderDone(true);
   }, []);
 
+  // Scroll to hash target when arriving from another page (e.g. /#lead-form, /#models)
+  useEffect(() => {
+    if (showLoader) return;
+    const hash = window.location.hash.replace('#', '');
+    if (hash) {
+      const t = setTimeout(() => {
+        document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' });
+      }, 300);
+      return () => clearTimeout(t);
+    }
+  }, [showLoader]);
+
   return (
     <CartProvider>
       {showLoader && <Loader onDone={handleLoaderDone} />}
@@ -38,15 +43,8 @@ const Index = () => {
       <CookieBanner loaderDone={loaderDone} />
       <main style={{ backgroundColor: '#F5F2EC', minHeight: '100vh' }}>
         <Navbar />
-        <Hero />
         <VideoSection />
-        <SpinzVibe />
-        <ScrollyFeatures />
         <Models />
-        <Lifestyle />
-        <Reviews />
-        <Specs />
-        <FAQ />
         <LeadForm />
         <Footer />
       </main>

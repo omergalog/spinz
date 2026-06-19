@@ -1,29 +1,51 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ShoppingCart, ChevronDown } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
 const DARK  = '#1C1C1C';
 const LIGHT = '#F5F2EC';
 const GOLD  = '#C9A870';
 
-const navLinks = [
-  { label: 'עלינו',  href: '#why-spinz' },
-  { label: 'דגמים', href: '#models'    },
-  { label: 'גלריה',  href: '#gallery'   },
+type MenuItem = { label: string; to: string };
+type Menu = { label: string; items: MenuItem[] };
+
+const menus: Menu[] = [
+  {
+    label: 'אופניים',
+    items: [
+      { label: 'הדגמים', to: '/bikes' },
+      { label: 'מפרט טכני', to: '/specs' },
+      { label: 'מידות וצבעים', to: '/sizes' },
+    ],
+  },
+  {
+    label: 'מידע',
+    items: [
+      { label: 'שאלות ותשובות', to: '/faq' },
+      { label: 'מדריכים', to: '/guides' },
+    ],
+  },
+  {
+    label: 'המותג',
+    items: [
+      { label: 'הסיפור שלנו', to: '/story' },
+      { label: 'גלריה', to: '/gallery' },
+      { label: 'קהילה', to: '/community' },
+      { label: 'המלצות', to: '/reviews' },
+    ],
+  },
 ];
 
-function scrollTo(href: string) {
-  if (href === '#') { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
-  document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
-}
-
 export default function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('');
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const { totalCount, openCart } = useCart();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -32,25 +54,23 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    const ids = ['why-spinz', 'models', 'gallery', 'lead-form'];
-    const observers: IntersectionObserver[] = [];
-    ids.forEach(id => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const obs = new IntersectionObserver(
-        ([e]) => { if (e.isIntersecting) setActiveSection(`#${id}`); },
-        { threshold: 0.3 },
-      );
-      obs.observe(el);
-      observers.push(obs);
-    });
-    return () => observers.forEach(o => o.disconnect());
-  }, []);
-
-  useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+    setOpenDropdown(null);
+    setMobileExpanded(null);
+  }, [location.pathname]);
+
+  const goContact = () => {
+    if (location.pathname === '/') {
+      document.getElementById('lead-form')?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      navigate('/#lead-form');
+    }
+  };
 
   return (
     <>
@@ -61,101 +81,119 @@ export default function Navbar() {
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-9">
           {/* Logo */}
-          <a
-            href="#"
-            onClick={e => { e.preventDefault(); scrollTo('#'); }}
-            style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', flexShrink: 0 }}
-          >
+          <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', flexShrink: 0 }}>
             <img src="/assets/logo.png" alt="SPINZ" className="h-6 md:h-[48px]" style={{ width: 'auto' }} />
-          </a>
+          </Link>
 
-          {/* Nav — hidden on xs, visible on sm+ */}
-          <nav className="hidden sm:flex items-center gap-2 md:gap-9">
-            {navLinks.map(link => (
-              <a
-                key={link.label}
-                href={link.href}
-                onClick={e => { e.preventDefault(); scrollTo(link.href); }}
-                style={{
-                  fontFamily: "'Heebo', sans-serif",
-                  color: activeSection === link.href ? DARK : '#888',
-                  fontWeight: activeSection === link.href ? 600 : 400,
-                  textDecoration: 'none',
-                  transition: 'opacity 0.2s',
-                  whiteSpace: 'nowrap',
-                }}
-                className="text-[13px] md:text-[15px]"
-                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.5'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1'; }}
+          {/* Desktop nav with dropdowns */}
+          <nav className="hidden md:flex items-center gap-7">
+            {menus.map(menu => (
+              <div
+                key={menu.label}
+                style={{ position: 'relative' }}
+                onMouseEnter={() => setOpenDropdown(menu.label)}
+                onMouseLeave={() => setOpenDropdown(null)}
               >
-                {link.label}
-              </a>
+                <button
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '5px',
+                    fontFamily: "'Heebo', sans-serif",
+                    color: openDropdown === menu.label ? DARK : '#555',
+                    fontWeight: 500, fontSize: '15px',
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    padding: '4px 0', whiteSpace: 'nowrap',
+                    transition: 'color 0.2s',
+                  }}
+                >
+                  {menu.label}
+                  <ChevronDown size={15} style={{ transform: openDropdown === menu.label ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+                </button>
+
+                <AnimatePresence>
+                  {openDropdown === menu.label && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 8 }}
+                      transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                      style={{
+                        position: 'absolute', top: '100%', right: 0,
+                        marginTop: '8px', minWidth: '190px',
+                        backgroundColor: '#FFFFFF',
+                        border: '1px solid #E0DCD4',
+                        borderRadius: '12px',
+                        boxShadow: '0 12px 32px rgba(0,0,0,0.12)',
+                        padding: '8px', overflow: 'hidden',
+                      }}
+                    >
+                      {menu.items.map(item => (
+                        <Link
+                          key={item.to}
+                          to={item.to}
+                          style={{
+                            display: 'block', padding: '10px 14px',
+                            fontFamily: "'Heebo', sans-serif", fontSize: '14px',
+                            color: '#3A3A3A', textDecoration: 'none',
+                            borderRadius: '8px', transition: 'all 0.15s',
+                            fontWeight: 500,
+                          }}
+                          onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#F5F2EC'; e.currentTarget.style.color = GOLD; }}
+                          onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = '#3A3A3A'; }}
+                        >
+                          {item.label}
+                        </Link>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             ))}
-            <Link
-              to="/story"
+
+            {/* Direct contact link */}
+            <button
+              onClick={goContact}
               style={{
-                fontFamily: "'Heebo', sans-serif",
-                color: '#888',
-                fontWeight: 400,
-                textDecoration: 'none',
-                transition: 'opacity 0.2s',
-                whiteSpace: 'nowrap',
+                fontFamily: "'Heebo', sans-serif", color: '#555',
+                fontWeight: 500, fontSize: '15px',
+                background: 'none', border: 'none', cursor: 'pointer',
+                padding: '4px 0', whiteSpace: 'nowrap', transition: 'color 0.2s',
               }}
-              className="text-[13px] md:text-[15px]"
-              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.5'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1'; }}
+              onMouseEnter={e => { e.currentTarget.style.color = DARK; }}
+              onMouseLeave={e => { e.currentTarget.style.color = '#555'; }}
             >
-              הסיפור שלנו
-            </Link>
+              צור קשר
+            </button>
           </nav>
 
           {/* CTA + cart + hamburger */}
           <div className="flex items-center gap-2 md:gap-3">
-            {/* CTA — hidden on xs to save space */}
-            <a
-              href="#lead-form"
-              onClick={e => { e.preventDefault(); scrollTo('#lead-form'); }}
-              className="hidden sm:inline-block font-bold uppercase tracking-widest text-[11px] md:text-xs py-1 px-3 md:py-[6px] md:px-[10px]"
+            <button
+              onClick={goContact}
+              className="hidden md:inline-block font-bold uppercase tracking-widest text-xs py-[6px] px-[10px]"
               style={{
-                backgroundColor: GOLD,
-                color: DARK,
-                fontFamily: "'Heebo', sans-serif",
-                borderRadius: '4px',
-                textDecoration: 'none',
-                transition: 'background-color 0.25s, transform 0.25s',
-                whiteSpace: 'nowrap',
+                backgroundColor: GOLD, color: DARK,
+                fontFamily: "'Heebo', sans-serif", borderRadius: '4px',
+                border: 'none', cursor: 'pointer',
+                transition: 'background-color 0.25s, transform 0.25s', whiteSpace: 'nowrap',
               }}
-              onMouseEnter={e => {
-                const el = e.currentTarget as HTMLAnchorElement;
-                el.style.backgroundColor = '#B8933A';
-                el.style.transform = 'translateY(2px)';
-              }}
-              onMouseLeave={e => {
-                const el = e.currentTarget as HTMLAnchorElement;
-                el.style.backgroundColor = GOLD;
-                el.style.transform = 'translateY(0)';
-              }}
+              onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#B8933A'; e.currentTarget.style.transform = 'translateY(2px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.backgroundColor = GOLD; e.currentTarget.style.transform = 'translateY(0)'; }}
             >
               Let's Talk
-            </a>
+            </button>
 
-            {/* Cart button */}
+            {/* Cart */}
             <button
               onClick={openCart}
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                position: 'relative',
-                backgroundColor: 'transparent',
-                border: `1px solid ${DARK}`,
-                borderRadius: '4px',
-                color: DARK,
-                padding: '6px 8px',
-                cursor: 'pointer',
-                transition: 'background-color 0.25s',
-                flexShrink: 0,
+                position: 'relative', backgroundColor: 'transparent',
+                border: `1px solid ${DARK}`, borderRadius: '4px',
+                color: DARK, padding: '6px 8px', cursor: 'pointer',
+                transition: 'background-color 0.25s', flexShrink: 0,
               }}
-              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'rgba(0,0,0,0.08)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent'; }}
+              onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.08)'; }}
+              onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; }}
             >
               <ShoppingCart size={16} />
               {totalCount > 0 && (
@@ -171,9 +209,9 @@ export default function Navbar() {
               )}
             </button>
 
-            {/* Hamburger — xs only */}
+            {/* Hamburger */}
             <button
-              className="sm:hidden flex flex-col justify-center items-center gap-[5px]"
+              className="md:hidden flex flex-col justify-center items-center gap-[5px]"
               onClick={() => setMenuOpen(v => !v)}
               aria-label="תפריט"
               style={{ width: '36px', height: '36px', backgroundColor: 'transparent', border: `1px solid ${DARK}`, borderRadius: '4px', cursor: 'pointer', flexShrink: 0 }}
@@ -195,81 +233,84 @@ export default function Navbar() {
             animate={{ opacity: 1, clipPath: 'inset(0 0 0% 0)' }}
             exit={{ opacity: 0, clipPath: 'inset(0 0 100% 0)' }}
             transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
-            className="fixed inset-0 z-40 flex flex-col md:hidden"
+            className="fixed inset-0 z-40 flex flex-col md:hidden overflow-y-auto"
             style={{ backgroundColor: DARK, paddingTop: '64px' }}
             dir="rtl"
           >
             <nav className="flex flex-col">
-              {navLinks.map((link, i) => (
-                <motion.a
-                  key={link.label}
-                  href={link.href}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.15 + i * 0.07 }}
-                  onClick={e => {
-                    e.preventDefault();
-                    setMenuOpen(false);
-                    setTimeout(() => scrollTo(link.href), 350);
-                  }}
-                  style={{
-                    color: LIGHT,
-                    fontFamily: "'Heebo', sans-serif",
-                    fontSize: '26px',
-                    fontWeight: 600,
-                    padding: '18px 36px',
-                    borderBottom: '1px solid #2A2A2A',
-                    textDecoration: 'none',
-                    display: 'block',
-                  }}
-                >
-                  {link.label}
-                </motion.a>
+              {menus.map((menu, i) => (
+                <div key={menu.label} style={{ borderBottom: '1px solid #2A2A2A' }}>
+                  <motion.button
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.1 + i * 0.06 }}
+                    onClick={() => setMobileExpanded(e => e === menu.label ? null : menu.label)}
+                    style={{
+                      width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      color: LIGHT, fontFamily: "'Heebo', sans-serif", fontSize: '24px', fontWeight: 600,
+                      padding: '18px 36px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'right',
+                    }}
+                  >
+                    {menu.label}
+                    <ChevronDown size={22} color={GOLD} style={{ transform: mobileExpanded === menu.label ? 'rotate(180deg)' : 'none', transition: 'transform 0.25s' }} />
+                  </motion.button>
+                  <AnimatePresence>
+                    {mobileExpanded === menu.label && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                        style={{ overflow: 'hidden', backgroundColor: '#161514' }}
+                      >
+                        {menu.items.map(item => (
+                          <Link
+                            key={item.to}
+                            to={item.to}
+                            onClick={() => setMenuOpen(false)}
+                            style={{
+                              display: 'block', color: '#C9C5BD', fontFamily: "'Heebo', sans-serif",
+                              fontSize: '17px', fontWeight: 400, padding: '14px 48px', textDecoration: 'none',
+                            }}
+                          >
+                            {item.label}
+                          </Link>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               ))}
-              <motion.div
+
+              {/* Contact direct */}
+              <motion.button
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.15 + navLinks.length * 0.07 }}
-              >
-                <Link
-                  to="/story"
-                  onClick={() => setMenuOpen(false)}
-                  style={{
-                    color: GOLD,
-                    fontFamily: "'Heebo', sans-serif",
-                    fontSize: '26px',
-                    fontWeight: 600,
-                    padding: '18px 36px',
-                    borderBottom: '1px solid #2A2A2A',
-                    textDecoration: 'none',
-                    display: 'block',
-                  }}
-                >
-                  הסיפור שלנו
-                </Link>
-              </motion.div>
-            </nav>
-            <div style={{ padding: '36px' }}>
-              <a
-                href="#lead-form"
-                onClick={() => setMenuOpen(false)}
+                transition={{ delay: 0.1 + menus.length * 0.06 }}
+                onClick={() => { setMenuOpen(false); setTimeout(goContact, 350); }}
                 style={{
-                  display: 'block',
-                  backgroundColor: GOLD,
-                  color: DARK,
-                  textAlign: 'center',
-                  padding: '16px',
-                  fontFamily: "'Heebo', sans-serif",
-                  fontWeight: 700,
-                  fontSize: '13px',
-                  letterSpacing: '0.2em',
-                  textTransform: 'uppercase',
-                  borderRadius: '4px',
-                  textDecoration: 'none',
+                  width: '100%', color: GOLD, fontFamily: "'Heebo', sans-serif",
+                  fontSize: '24px', fontWeight: 600, padding: '18px 36px',
+                  borderBottom: '1px solid #2A2A2A', background: 'none', border: 'none',
+                  cursor: 'pointer', textAlign: 'right',
+                }}
+              >
+                צור קשר
+              </motion.button>
+            </nav>
+
+            <div style={{ padding: '36px' }}>
+              <button
+                onClick={() => { setMenuOpen(false); setTimeout(goContact, 350); }}
+                style={{
+                  display: 'block', width: '100%', backgroundColor: GOLD, color: DARK,
+                  textAlign: 'center', padding: '16px', fontFamily: "'Heebo', sans-serif",
+                  fontWeight: 700, fontSize: '13px', letterSpacing: '0.2em', textTransform: 'uppercase',
+                  borderRadius: '4px', border: 'none', cursor: 'pointer',
                 }}
               >
                 Let's Talk
-              </a>
+              </button>
             </div>
           </motion.div>
         )}

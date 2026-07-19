@@ -214,6 +214,47 @@ export default function Models() {
               </Link>
             </motion.div>
 
+            {/* Presale callout — prominent launch-price banner */}
+            {presale && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: 0.24 }}
+                style={{
+                  position: 'relative',
+                  overflow: 'hidden',
+                  background: 'linear-gradient(135deg, #1C1C1C 0%, #2A2620 100%)',
+                  borderRadius: '12px',
+                  padding: '16px 18px',
+                  marginBottom: '28px',
+                  border: '1px solid rgba(201,168,112,0.35)',
+                }}
+              >
+                <div aria-hidden style={{
+                  position: 'absolute', top: 0, insetInlineEnd: 0, width: '120px', height: '100%',
+                  background: 'radial-gradient(circle at 100% 0%, rgba(201,168,112,0.18) 0%, transparent 70%)',
+                  pointerEvents: 'none',
+                }} />
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <span style={{
+                    fontSize: '11px', fontWeight: 900, letterSpacing: '0.12em',
+                    color: '#1C1C1C', backgroundColor: '#C9A870',
+                    padding: '4px 10px', borderRadius: '5px', whiteSpace: 'nowrap', flexShrink: 0,
+                  }}>
+                    PRE-SALE
+                  </span>
+                  <div style={{ lineHeight: 1.35 }}>
+                    <div style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 800, color: '#EDEBE6' }}>
+                      מחיר השקה — חוסכים ₪{(PRESALE.regularPrice - PRESALE.presalePrice).toLocaleString('he-IL')}
+                    </div>
+                    <div style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', color: 'rgba(237,235,230,0.7)' }}>
+                      ל-{PRESALE.presaleUnits} הרוכבים הראשונים בלבד · מגיע {PRESALE.arrivalLabel}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
             <div style={{ height: '1px', backgroundColor: BORDER, marginBottom: '28px' }} />
 
             {/* Color selector */}

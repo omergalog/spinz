@@ -62,11 +62,11 @@ export default function Gallery({ hideHeader = false }: { hideHeader?: boolean }
     <section
       ref={ref}
       id="gallery"
-      className="relative py-24 lg:py-32"
+      className="relative py-10 lg:py-32"
       style={{ backgroundColor: BG }}
     >
 
-      <div className="mx-auto max-w-7xl px-6 lg:px-16 pt-16 lg:pt-20" dir="rtl">
+      <div className="mx-auto max-w-7xl px-6 lg:px-16 pt-2 lg:pt-20" dir="rtl">
 
         {/* Header */}
         {!hideHeader && (

@@ -185,7 +185,7 @@ export default function Specs({ hideHeader = false }: { hideHeader?: boolean }) 
       id="specs"
       dir="rtl"
       style={{ backgroundColor: DARK, position: 'relative' }}
-      className="py-20 lg:py-28"
+      className="py-10 lg:py-28"
     >
       {/* Top border */}
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', backgroundColor: BORDER }} />

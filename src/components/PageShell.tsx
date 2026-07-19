@@ -34,8 +34,8 @@ export default function PageShell({ children, eyebrow, title, subtitle, heroImag
             style={{
               backgroundColor: '#1C1C1C',
               padding: heroImage
-                ? 'clamp(96px, 14vw, 180px) clamp(20px, 6vw, 64px) clamp(56px, 8vw, 96px)'
-                : 'clamp(48px, 8vw, 96px) clamp(20px, 6vw, 64px)',
+                ? 'clamp(72px, 14vw, 180px) clamp(20px, 6vw, 64px) clamp(40px, 8vw, 96px)'
+                : 'clamp(36px, 8vw, 96px) clamp(20px, 6vw, 64px)',
               position: 'relative', overflow: 'hidden',
             }}
           >

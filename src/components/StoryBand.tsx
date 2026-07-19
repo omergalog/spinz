@@ -10,7 +10,7 @@ export default function StoryBand() {
     <section
       dir="rtl"
       style={{ position: 'relative', backgroundColor: DARK, overflow: 'hidden' }}
-      className="min-h-[70vh] lg:min-h-[82vh] flex items-center"
+      className="min-h-[58vh] lg:min-h-[82vh] flex items-center"
     >
       {/* Background photo */}
       <img
@@ -43,7 +43,7 @@ export default function StoryBand() {
       />
 
       {/* Content */}
-      <div className="relative mx-auto max-w-7xl w-full px-6 lg:px-16 py-24 lg:py-32">
+      <div className="relative mx-auto max-w-7xl w-full px-6 lg:px-16 py-14 lg:py-32">
         <div style={{ maxWidth: '480px' }}>
           <motion.span
             initial={{ opacity: 0 }}

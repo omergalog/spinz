@@ -21,9 +21,11 @@ export default function StoryBand() {
         style={{
           position: 'absolute', inset: 0,
           width: '100%', height: '100%',
-          objectFit: 'cover', objectPosition: 'center 60%',
+          objectFit: 'cover', objectPosition: '32% 58%',
         }}
       />
+      {/* Uniform dim so text stays readable at any crop (mobile especially) */}
+      <div aria-hidden style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(15,14,12,0.32)' }} />
       {/* Scrim — darker on the right where the text sits (RTL) */}
       <div
         aria-hidden

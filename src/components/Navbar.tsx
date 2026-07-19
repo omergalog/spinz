@@ -81,7 +81,7 @@ export default function Navbar() {
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-9">
           {/* Logo */}
-          <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', flexShrink: 0 }}>
+          <Link to="/" aria-label="Spinz — דף הבית" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', flexShrink: 0, padding: '10px 0' }}>
             <img src="/assets/logo.png" alt="SPINZ" className="h-6 md:h-[48px]" style={{ width: 'auto' }} />
           </Link>
 
@@ -189,7 +189,7 @@ export default function Navbar() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 position: 'relative', backgroundColor: 'transparent',
                 border: `1px solid ${DARK}`, borderRadius: '4px',
-                color: DARK, padding: '6px 8px', cursor: 'pointer',
+                color: DARK, padding: '13px 13px', cursor: 'pointer',
                 transition: 'background-color 0.25s', flexShrink: 0,
               }}
               onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.08)'; }}
@@ -214,7 +214,7 @@ export default function Navbar() {
               className="md:hidden flex flex-col justify-center items-center gap-[5px]"
               onClick={() => setMenuOpen(v => !v)}
               aria-label="תפריט"
-              style={{ width: '36px', height: '36px', backgroundColor: 'transparent', border: `1px solid ${DARK}`, borderRadius: '4px', cursor: 'pointer', flexShrink: 0 }}
+              style={{ width: '44px', height: '44px', backgroundColor: 'transparent', border: `1px solid ${DARK}`, borderRadius: '4px', cursor: 'pointer', flexShrink: 0 }}
             >
               <span style={{ display: 'block', width: '16px', height: '1.5px', backgroundColor: DARK, transition: 'transform 0.3s, opacity 0.3s', transform: menuOpen ? 'translateY(6.5px) rotate(45deg)' : 'none' }} />
               <span style={{ display: 'block', width: '16px', height: '1.5px', backgroundColor: DARK, transition: 'opacity 0.3s', opacity: menuOpen ? 0 : 1 }} />

@@ -105,6 +105,7 @@ export default function Story() {
               fontSize: '16px', fontWeight: 600,
               color: CREAM, textDecoration: 'none',
               letterSpacing: '0.05em', transition: 'opacity 0.2s',
+              display: 'inline-block', padding: '10px 0',
             }}
             onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.6'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1'; }}
@@ -210,7 +211,7 @@ export default function Story() {
               background: 'linear-gradient(to top, rgba(28,28,28,1) 0%, rgba(28,28,28,0.5) 50%, transparent 100%)',
             }} />
             <div style={{ position: 'absolute', bottom: '32px', right: '24px', left: '24px' }}>
-              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '10px', letterSpacing: '0.4em', textTransform: 'uppercase', color: GOLD, display: 'block', marginBottom: '12px' }}>הסיפור שלנו</span>
+              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', letterSpacing: '0.4em', textTransform: 'uppercase', color: GOLD, display: 'block', marginBottom: '12px' }}>הסיפור שלנו</span>
               <h1 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '36px', color: CREAM, margin: 0, lineHeight: 1.05, letterSpacing: '-0.02em' }}>נעים להכיר,<br />אנחנו Spinz.</h1>
             </div>
           </div>

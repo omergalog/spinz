@@ -119,7 +119,7 @@ export default function ExploreStrip() {
                 {/* Kicker — top */}
                 <span style={{
                   position: 'absolute', top: '20px', right: '22px',
-                  fontFamily: "'Heebo', sans-serif", fontSize: '10px', fontWeight: 600,
+                  fontFamily: "'Heebo', sans-serif", fontSize: '11px', fontWeight: 600,
                   letterSpacing: '0.35em', textTransform: 'uppercase',
                   color: 'rgba(237,235,230,0.85)',
                 }}>

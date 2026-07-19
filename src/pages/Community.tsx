@@ -240,7 +240,7 @@ export default function Community() {
             ))}
           </div>
           <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: MUTED, margin: '28px 0 0', textAlign: 'center' }}>
-            רוצים להיות שותפים? כתבו לנו ב-<a href="mailto:spinz.bikes@gmail.com" style={{ color: GOLD }}>spinz.bikes@gmail.com</a>
+            רוצים להיות שותפים? כתבו לנו ב-<a href="mailto:spinz.bikes@gmail.com" style={{ color: GOLD, display: 'inline-block', padding: '10px 0' }}>spinz.bikes@gmail.com</a>
           </p>
         </div>
       </section>

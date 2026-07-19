@@ -84,6 +84,7 @@ export default function Accessibility() {
               textDecoration: 'none',
               letterSpacing: '0.05em',
               transition: 'opacity 0.2s',
+              padding: '10px 0',
             }}
             onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.6'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1'; }}

@@ -168,21 +168,6 @@ export default function VideoSection() {
           </motion.h2>
         </div>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={visible ? { opacity: 1 } : {}}
-          transition={{ duration: 0.9, delay: 0.7 }}
-          style={{
-            color: 'rgba(237,235,230,0.82)',
-            fontFamily: "'Heebo', sans-serif",
-            fontSize: 'clamp(14px, 2vw, 19px)',
-            fontWeight: 500,
-            marginTop: '18px',
-            letterSpacing: '0.01em',
-          }}
-        >
-          אופני עיר מעוצבים. בלי למכור כליה.
-        </motion.p>
       </div>
 
       {/* Mute/Unmute button */}

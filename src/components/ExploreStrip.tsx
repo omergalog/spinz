@@ -68,11 +68,16 @@ export default function ExploreStrip() {
           <div aria-hidden style={{ flex: 1, height: '1px', backgroundColor: '#DDD8D0', marginBottom: '10px' }} className="hidden md:block" />
         </motion.div>
 
-        {/* Image cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-5">
+        {/* Image cards — swipeable carousel on mobile, 3-col grid on desktop */}
+        <div
+          className="explore-scroll flex md:grid md:grid-cols-3 gap-4 lg:gap-5 overflow-x-auto md:overflow-visible snap-x snap-mandatory -mx-6 px-6 md:mx-0 md:px-0"
+          style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
+        >
+          <style>{`.explore-scroll::-webkit-scrollbar { display: none; }`}</style>
           {cards.map(({ to, kicker, title, text, image, position }, i) => (
             <motion.div
               key={to}
+              className="snap-center shrink-0 w-[82%] sm:w-[70%] md:w-auto md:shrink"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}

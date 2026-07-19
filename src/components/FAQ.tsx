@@ -154,7 +154,7 @@ export default function FAQ({ hideHeader = false }: { hideHeader?: boolean }) {
       id="faq"
       dir="rtl"
       style={{ backgroundColor: BG, position: 'relative' }}
-      className="py-10 lg:py-28"
+      className="py-7 lg:py-28"
     >
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', backgroundColor: BORDER }} />
 

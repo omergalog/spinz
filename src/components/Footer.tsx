@@ -102,7 +102,7 @@ export default function Footer() {
 
           {/* Newsletter band */}
           <div
-            className="grid grid-cols-1 md:grid-cols-2 gap-5 items-center py-8 md:py-12"
+            className="grid grid-cols-1 md:grid-cols-2 gap-5 items-center py-6 md:py-12"
             style={{ borderBottom: `1px solid ${BORDER}` }}
           >
             <div>
@@ -121,7 +121,7 @@ export default function Footer() {
           </div>
 
           {/* Link columns */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-7 py-8 md:py-14">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-7 py-6 md:py-14">
             {/* Brand */}
             <div className="col-span-2 md:col-span-1">
               <img

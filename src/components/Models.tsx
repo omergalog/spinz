@@ -87,7 +87,7 @@ export default function Models() {
       id="models"
       dir="rtl"
       style={{ backgroundColor: BEIGE, position: 'relative' }}
-      className="py-8 lg:py-0"
+      className="py-5 lg:py-0"
     >
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', backgroundColor: BORDER }} />
 
@@ -139,7 +139,7 @@ export default function Models() {
           </div>
 
           {/* LEFT — selector */}
-          <div className="lg:w-[480px] flex flex-col justify-center p-6 pt-4 lg:p-16 order-2 lg:order-1" style={{ borderLeft: `1px solid ${BORDER}` }}>
+          <div className="lg:w-[480px] flex flex-col justify-center p-5 pt-3 lg:p-16 order-2 lg:order-1" style={{ borderLeft: `1px solid ${BORDER}` }}>
 
             {/* Label */}
             <motion.span

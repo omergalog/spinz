@@ -35,7 +35,7 @@ const cards = [
 
 export default function ExploreStrip() {
   return (
-    <section dir="rtl" style={{ backgroundColor: '#F5F2EC' }} className="py-10 lg:py-24">
+    <section dir="rtl" style={{ backgroundColor: '#F5F2EC' }} className="py-7 lg:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-16">
 
         {/* Header row */}
@@ -46,7 +46,7 @@ export default function ExploreStrip() {
           transition={{ duration: 0.6 }}
           style={{
             display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between',
-            gap: '16px', marginBottom: '32px',
+            gap: '16px', marginBottom: '22px',
           }}
         >
           <div>

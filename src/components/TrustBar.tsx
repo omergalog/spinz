@@ -16,7 +16,7 @@ const items = [
 export default function TrustBar() {
   return (
     <section dir="rtl" style={{ backgroundColor: '#EAE7E1', borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>
-      <div className="mx-auto max-w-7xl px-6 lg:px-16 py-6 lg:py-10">
+      <div className="mx-auto max-w-7xl px-6 lg:px-16 py-5 lg:py-10">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-7">
           {items.map(({ icon: Icon, title, sub }, i) => (
             <motion.div

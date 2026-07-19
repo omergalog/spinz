@@ -97,6 +97,7 @@ export default function AnnouncementBar() {
             paddingInlineStart: '10px', marginInlineStart: '4px',
             borderInlineStart: '1px solid rgba(201,168,112,0.3)',
             flexShrink: 0,
+            direction: 'ltr',
           }}
         >
           <Unit value={d} label="ימים" />
@@ -115,7 +116,7 @@ export default function AnnouncementBar() {
           padding: '4px 12px', borderRadius: '6px',
           whiteSpace: 'nowrap', flexShrink: 0,
         }}>
-          {PRESALE.barCta} ←
+          {PRESALE.barCta}
         </span>
       </div>
 

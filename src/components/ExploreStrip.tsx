@@ -69,19 +69,19 @@ export default function ExploreStrip() {
         </motion.div>
 
         {/* Image cards — swipeable carousel on mobile, 3-col grid on desktop */}
-        <div
-          className="explore-scroll flex md:grid md:grid-cols-3 gap-4 lg:gap-5 overflow-x-auto md:overflow-visible snap-x snap-mandatory -mx-6 px-6 md:mx-0 md:px-0"
+        <motion.div
+          className="explore-scroll flex md:grid md:grid-cols-3 gap-4 lg:gap-5 overflow-x-auto md:overflow-visible snap-x snap-proximity overscroll-x-contain -mx-6 px-6 md:mx-0 md:px-0"
           style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-60px' }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
         >
           <style>{`.explore-scroll::-webkit-scrollbar { display: none; }`}</style>
-          {cards.map(({ to, kicker, title, text, image, position }, i) => (
-            <motion.div
+          {cards.map(({ to, kicker, title, text, image, position }) => (
+            <div
               key={to}
-              className="snap-center shrink-0 w-[82%] sm:w-[70%] md:w-auto md:shrink"
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-60px' }}
-              transition={{ duration: 0.65, delay: i * 0.12, ease: [0.22, 1, 0.36, 1] }}
+              className="snap-start shrink-0 w-[82%] sm:w-[70%] md:w-auto md:shrink"
             >
               <Link
                 to={to}
@@ -163,9 +163,9 @@ export default function ExploreStrip() {
                   </span>
                 </div>
               </Link>
-            </motion.div>
+            </div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

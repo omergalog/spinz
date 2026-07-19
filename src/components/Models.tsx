@@ -85,26 +85,7 @@ export default function Models() {
 
           {/* RIGHT — image / 3D viewer */}
           <div className="lg:flex-1 flex items-center justify-center bg-white p-4 lg:p-8 order-1 lg:order-2 min-h-[50vw] lg:min-h-0" style={{ position: 'relative' }}>
-            {color.id === 'beige' ? (
-              <model-viewer
-                key="beige-3d"
-                src="/assets/bike-beige-3d.glb"
-                alt="Spinz בז׳"
-                auto-rotate
-                camera-controls
-                shadow-intensity="1"
-                exposure="1"
-                rotation-per-second="20deg"
-                camera-orbit="0deg 80deg 2.5m"
-                style={{
-                  width: '100%',
-                  maxWidth: '820px',
-                  height: '520px',
-                  opacity: outOfStock ? 0.5 : 1,
-                  background: 'transparent',
-                }}
-              />
-            ) : (
+            {/* 3D viewer for beige disabled for now — .glb loads too slowly; restore when optimized */}
             <AnimatePresence mode="wait">
               <motion.img
                 key={color.id}
@@ -117,7 +98,6 @@ export default function Models() {
                 style={{ width: '100%', maxWidth: '820px', height: 'auto', objectFit: 'contain', mixBlendMode: 'multiply' }}
               />
             </AnimatePresence>
-            )}
             <AnimatePresence>
               {outOfStock && (
                 <motion.div

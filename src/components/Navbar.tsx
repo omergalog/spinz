@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, ChevronDown } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import AnnouncementBar from './AnnouncementBar';
 
 const DARK  = '#1C1C1C';
 const LIGHT = '#F5F2EC';
@@ -89,6 +90,7 @@ export default function Navbar() {
         }}
         dir="rtl"
       >
+        <AnnouncementBar />
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-9">
           {/* Logo */}
           <Link to="/" aria-label="Spinz — דף הבית" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', flexShrink: 0, padding: '10px 0' }}>

@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { colorVariants, sizeVariants } from '../data/models';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../lib/supabase';
+import { PRESALE, stockFor } from '../config/presale';
 
 const DARK   = '#1C1C1C';
 const BEIGE  = '#FFFFFF';
@@ -81,6 +82,12 @@ export default function Models() {
 
   const displayPrice = salePrice ?? price;
 
+  // Presale overrides the shown price when the campaign is live
+  const presale = PRESALE.active;
+  const shownPrice = presale ? PRESALE.presalePrice : displayPrice;
+  const monthly = Math.round(shownPrice / 13);
+  const colorStock = stockFor(color.id);
+
   return (
     <section
       ref={ref}
@@ -89,6 +96,7 @@ export default function Models() {
       style={{ backgroundColor: BEIGE, position: 'relative' }}
       className="py-5 lg:py-0"
     >
+      <style>{`@keyframes stockPulse { 0%,100% { opacity:1; } 50% { opacity:0.35; } }`}</style>
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', backgroundColor: BORDER }} />
 
       <div className="mx-auto max-w-7xl">
@@ -223,6 +231,27 @@ export default function Models() {
                   {color.label}
                 </span>
               </div>
+
+              {/* Live stock indicator (presale) */}
+              {presale && colorStock !== null && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '12px' }}>
+                  <span style={{
+                    width: '7px', height: '7px', borderRadius: '50%',
+                    backgroundColor: colorStock <= 5 ? '#C17A56' : '#8A9A7B',
+                    boxShadow: colorStock <= 5 ? '0 0 6px rgba(193,122,86,0.6)' : 'none',
+                    animation: colorStock <= 5 ? 'stockPulse 1.4s ease-in-out infinite' : 'none',
+                  }} />
+                  <span style={{
+                    fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 700,
+                    color: colorStock <= 5 ? '#B3543C' : '#6A7A5B',
+                  }}>
+                    {colorStock <= 5
+                      ? `נשארו רק ${colorStock} יחידות ב${color.label}`
+                      : `${colorStock} יחידות זמינות ב${color.label}`}
+                  </span>
+                </div>
+              )}
+
               <div style={{ display: 'flex', gap: '10px' }}>
                 {colorVariants.map((c, i) => (
                   <button
@@ -315,14 +344,36 @@ export default function Models() {
               initial={{ opacity: 0, y: 10 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.38 }}
-              style={{ marginBottom: '24px', display: 'flex', alignItems: 'baseline', gap: '12px' }}
+              style={{ marginBottom: '24px' }}
             >
-              <span style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(28px, 4vw, 40px)', color: DARK }}>
-                ₪{displayPrice.toLocaleString('he-IL')}
-              </span>
-              {salePrice && (
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', color: '#999', textDecoration: 'line-through', textDecorationColor: '#FF4444' }}>
-                  ₪{price.toLocaleString('he-IL')}
+              {presale && (
+                <span style={{
+                  display: 'inline-block', marginBottom: '8px',
+                  fontFamily: "'Heebo', sans-serif", fontSize: '10.5px', fontWeight: 800,
+                  letterSpacing: '0.15em', textTransform: 'uppercase',
+                  color: '#1C1C1C', backgroundColor: '#C9A870',
+                  padding: '4px 12px', borderRadius: '6px',
+                }}>
+                  מחיר השקה · 100 ראשונים
+                </span>
+              )}
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' }}>
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(30px, 4.5vw, 44px)', color: DARK }}>
+                  ₪{shownPrice.toLocaleString('he-IL')}
+                </span>
+                {presale ? (
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', color: '#999', textDecoration: 'line-through', textDecorationColor: '#C17A56' }}>
+                    ₪{PRESALE.regularPrice.toLocaleString('he-IL')}
+                  </span>
+                ) : salePrice ? (
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', color: '#999', textDecoration: 'line-through', textDecorationColor: '#FF4444' }}>
+                    ₪{price.toLocaleString('he-IL')}
+                  </span>
+                ) : null}
+              </div>
+              {presale && (
+                <span style={{ display: 'block', marginTop: '6px', fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: MUTED }}>
+                  או ב-<b style={{ color: DARK }}>₪{monthly.toLocaleString('he-IL')} לחודש</b> ב-13 תשלומים
                 </span>
               )}
             </motion.div>
@@ -378,7 +429,7 @@ export default function Models() {
                       </motion.span>
                     ) : (
                       <motion.span key="cart" initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} transition={{ duration: 0.2 }} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <ShoppingCart size={16} /> הוסף לעגלה
+                        <ShoppingCart size={16} /> {presale ? 'הבטיחו את שלכם' : 'הוסף לעגלה'}
                       </motion.span>
                     )}
                   </AnimatePresence>
@@ -393,7 +444,9 @@ export default function Models() {
               transition={{ duration: 0.6, delay: 0.5 }}
               style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: MUTED, marginTop: '14px', textAlign: 'center' }}
             >
-              משלוח עד 5 ימי עסקים · עד 13 תשלומים
+              {presale
+                ? `מגיע ${PRESALE.arrivalLabel} · אחריות 5 שנים · עד 13 תשלומים`
+                : 'משלוח עד 5 ימי עסקים · עד 13 תשלומים'}
             </motion.p>
 
           </div>

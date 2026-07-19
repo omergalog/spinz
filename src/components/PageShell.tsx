@@ -3,6 +3,7 @@ import Navbar from './Navbar';
 import Footer from './Footer';
 import CartDrawer from './CartDrawer';
 import { CartProvider } from '../context/CartContext';
+import { PRESALE } from '../config/presale';
 
 type Props = {
   children: React.ReactNode;
@@ -25,8 +26,8 @@ export default function PageShell({ children, eyebrow, title, subtitle, heroImag
       <div style={{ backgroundColor: '#F5F2EC', minHeight: '100vh' }} dir="rtl">
         <Navbar />
 
-        {/* Spacer for fixed navbar */}
-        <div style={{ height: '64px' }} />
+        {/* Spacer for fixed navbar (+ announcement bar when presale active) */}
+        <div style={{ height: PRESALE.active ? '98px' : '64px' }} />
 
         {/* Page hero band */}
         {(title || eyebrow) && (

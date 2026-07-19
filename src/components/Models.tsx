@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, Check } from 'lucide-react';
+import { ShoppingCart, Check, Star } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { colorVariants, sizeVariants } from '../data/models';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../lib/supabase';
@@ -24,6 +25,16 @@ export default function Models() {
   const [outOfStock, setOutOfStock] = useState(false);
   const [price, setPrice] = useState(BASE_PRICE);
   const [salePrice, setSalePrice] = useState<number | null>(null);
+  const [reviewStats, setReviewStats] = useState<{ avg: number; count: number }>({ avg: 5, count: 0 });
+
+  useEffect(() => {
+    supabase.from('reviews').select('stars').then(({ data }) => {
+      if (data && data.length) {
+        const avg = data.reduce((s, r) => s + (r.stars || 0), 0) / data.length;
+        setReviewStats({ avg: Math.round(avg * 10) / 10, count: data.length });
+      }
+    });
+  }, []);
 
   const { addItem } = useCart();
   const color = colorVariants[selectedColor];
@@ -160,6 +171,40 @@ export default function Models() {
             >
               סינגל ספיד אורבני. שלדת אלומיניום, עיצוב שאי אפשר להתעלם ממנו.
             </motion.p>
+
+            {/* Rating row */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
+              transition={{ duration: 0.6, delay: 0.22 }}
+              style={{ marginTop: '-18px', marginBottom: '28px' }}
+            >
+              <Link
+                to="/reviews"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '8px',
+                  textDecoration: 'none', padding: '8px 0', cursor: 'pointer',
+                }}
+              >
+                <span style={{ display: 'flex', gap: '2px' }}>
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <Star
+                      key={i}
+                      size={15}
+                      fill={i <= Math.round(reviewStats.avg) ? '#C9A870' : 'none'}
+                      stroke="#C9A870"
+                      strokeWidth={1.5}
+                    />
+                  ))}
+                </span>
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 700, color: DARK }}>
+                  {reviewStats.avg.toFixed(1)}
+                </span>
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: MUTED, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+                  {reviewStats.count >= 5 ? `${reviewStats.count} ביקורות` : 'המלצות מרוכבים'}
+                </span>
+              </Link>
+            </motion.div>
 
             <div style={{ height: '1px', backgroundColor: BORDER, marginBottom: '28px' }} />
 

@@ -1,5 +1,6 @@
 import PageShell from '../components/PageShell';
 import Models from '../components/Models';
+import TrustBar from '../components/TrustBar';
 
 export default function Bikes() {
   return (
@@ -11,6 +12,7 @@ export default function Bikes() {
       heroPosition="center 62%"
     >
       <Models />
+      <TrustBar />
     </PageShell>
   );
 }

@@ -1,9 +1,94 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 
 const BG = '#1C1C1C';
 const BORDER = '#2A2A2A';
+const GOLD = '#C9A870';
 const WHATSAPP_NUMBER = '+972527565262';
+
+function NewsletterForm() {
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const clean = email.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean)) { setStatus('error'); return; }
+    setStatus('loading');
+    const { error } = await supabase.from('newsletter').insert({ email: clean });
+    if (error) {
+      // Table may not exist yet — keep the address in leads so nothing is lost
+      await supabase.from('leads').insert({ name: 'ניוזלטר', email: clean, phone: null });
+    }
+    setStatus('done');
+    setEmail('');
+  };
+
+  if (status === 'done') {
+    return (
+      <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: GOLD, margin: 0, padding: '12px 0' }}>
+        ✓ נרשמת! נעדכן אותך בכל מה שחדש.
+      </p>
+    );
+  }
+
+  return (
+    <form onSubmit={submit} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+      <label htmlFor="newsletter-email" style={{ position: 'absolute', width: '1px', height: '1px', overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>
+        אימייל
+      </label>
+      <input
+        id="newsletter-email"
+        type="email"
+        dir="ltr"
+        value={email}
+        onChange={e => { setEmail(e.target.value); if (status === 'error') setStatus('idle'); }}
+        placeholder="your@email.com"
+        style={{
+          flex: '1 1 200px',
+          minWidth: 0,
+          padding: '13px 16px',
+          borderRadius: '8px',
+          border: `1px solid ${status === 'error' ? '#C17A56' : '#3A3A3A'}`,
+          backgroundColor: '#242424',
+          color: '#EDEBE6',
+          fontFamily: "'Heebo', sans-serif",
+          fontSize: '16px',
+          outline: 'none',
+          textAlign: 'left',
+        }}
+      />
+      <button
+        type="submit"
+        disabled={status === 'loading'}
+        style={{
+          padding: '13px 26px',
+          borderRadius: '8px',
+          border: 'none',
+          backgroundColor: GOLD,
+          color: '#1C1C1C',
+          fontFamily: "'Heebo', sans-serif",
+          fontSize: '14px', fontWeight: 700,
+          cursor: status === 'loading' ? 'wait' : 'pointer',
+          opacity: status === 'loading' ? 0.7 : 1,
+          transition: 'filter 0.2s',
+          flexShrink: 0,
+        }}
+        onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.filter = 'brightness(1.08)'; }}
+        onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.filter = 'none'; }}
+      >
+        {status === 'loading' ? 'שולח…' : 'הרשמה'}
+      </button>
+      {status === 'error' && (
+        <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: '#C17A56', margin: 0, width: '100%' }}>
+          כתובת מייל לא תקינה
+        </p>
+      )}
+    </form>
+  );
+}
 
 export default function Footer() {
   const navigate = useNavigate();
@@ -14,6 +99,26 @@ export default function Footer() {
       <footer className="relative overflow-hidden" style={{ backgroundColor: BG }} dir="rtl">
 
         <div className="mx-auto max-w-7xl px-6 lg:px-16">
+
+          {/* Newsletter band */}
+          <div
+            className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center py-12"
+            style={{ borderBottom: `1px solid ${BORDER}` }}
+          >
+            <div>
+              <h4 style={{
+                fontFamily: "'Heebo', sans-serif", fontWeight: 800,
+                fontSize: 'clamp(20px, 2.5vw, 26px)', color: '#EDEBE6',
+                letterSpacing: '-0.01em', margin: '0 0 6px',
+              }}>
+                הישארו בעניינים
+              </h4>
+              <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: '#888', margin: 0, lineHeight: 1.6 }}>
+                עדכונים על דגמים, אירועי קהילה והטבות — בלי ספאם, מבטיחים.
+              </p>
+            </div>
+            <NewsletterForm />
+          </div>
 
           {/* Link columns */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-10 py-14">

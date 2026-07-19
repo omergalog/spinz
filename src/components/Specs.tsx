@@ -173,7 +173,7 @@ function SpecCard({ spec, index }: { spec: typeof specs[0]; index: number }) {
   );
 }
 
-export default function Specs() {
+export default function Specs({ hideHeader = false }: { hideHeader?: boolean }) {
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const headingRef = useRef<HTMLDivElement>(null);
@@ -193,6 +193,7 @@ export default function Specs() {
       <div className="mx-auto max-w-7xl px-6 lg:px-16">
 
         {/* Header */}
+        {!hideHeader && (
         <div className="mb-14 lg:mb-16">
           <motion.span
             initial={{ opacity: 0 }}
@@ -246,6 +247,7 @@ export default function Specs() {
             כל פרט באופני SPINZ תוכנן בקפידה כדי להעניק לך חוויית רכיבה חלקה, בטוחה ונטולת מאמץ ברחובות העיר.
           </motion.p>
         </div>
+        )}
 
         {/* Grid: 4 col desktop, 2 col mobile */}
         <div

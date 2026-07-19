@@ -138,7 +138,7 @@ function FAQItem({ item, index }: { item: typeof faqs[0]; index: number }) {
   );
 }
 
-export default function FAQ() {
+export default function FAQ({ hideHeader = false }: { hideHeader?: boolean }) {
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const headingRef = useRef<HTMLDivElement>(null);
@@ -161,6 +161,7 @@ export default function FAQ() {
       <div className="mx-auto max-w-7xl px-6 lg:px-16">
 
         {/* Header */}
+        {!hideHeader && (
         <div className="mb-12 lg:mb-16">
           <motion.span
             initial={{ opacity: 0 }}
@@ -198,6 +199,7 @@ export default function FAQ() {
             </motion.h2>
           </div>
         </div>
+        )}
 
         {/* Two-column accordion on desktop, single column on mobile */}
         <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-16">

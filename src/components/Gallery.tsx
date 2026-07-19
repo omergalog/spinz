@@ -52,7 +52,7 @@ function PhotoCell({ photo, delay }: { photo: (typeof photos)[number]; delay: nu
   );
 }
 
-export default function Gallery() {
+export default function Gallery({ hideHeader = false }: { hideHeader?: boolean }) {
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const headingRef = useRef<HTMLDivElement>(null);
@@ -69,6 +69,7 @@ export default function Gallery() {
       <div className="mx-auto max-w-7xl px-6 lg:px-16 pt-16 lg:pt-20" dir="rtl">
 
         {/* Header */}
+        {!hideHeader && (
         <div className="mb-14 flex flex-row items-end justify-between">
           <div>
             <motion.span
@@ -112,6 +113,7 @@ export default function Gallery() {
             לכל הדגמים ←
           </motion.a>
         </div>
+        )}
 
         {/* Desktop grid */}
         <div className="hidden gap-2 md:grid md:grid-cols-4 md:grid-rows-3" style={{ backgroundColor: 'transparent' }}>

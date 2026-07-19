@@ -26,7 +26,7 @@ function Unit({ value, label }: { value: number; label: string }) {
       <span style={{ fontSize: '13px', fontWeight: 800, fontVariantNumeric: 'tabular-nums', color: CREAM }}>
         {String(value).padStart(2, '0')}
       </span>
-      <span style={{ fontSize: '7.5px', letterSpacing: '0.1em', color: 'rgba(237,235,230,0.55)', marginTop: '2px' }}>
+      <span dir="rtl" style={{ fontSize: '7.5px', letterSpacing: '0.1em', color: 'rgba(237,235,230,0.55)', marginTop: '2px' }}>
         {label}
       </span>
     </span>

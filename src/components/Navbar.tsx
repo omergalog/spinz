@@ -76,7 +76,17 @@ export default function Navbar() {
     <>
       <header
         className="fixed top-0 left-0 right-0 z-50"
-        style={{ backgroundColor: LIGHT, borderBottom: `1px solid ${DARK}`, boxShadow: scrolled ? '0 2px 16px rgba(0,0,0,0.1)' : 'none', transition: 'box-shadow 0.3s' }}
+        style={{
+          backgroundColor: LIGHT,
+          borderBottom: `1px solid ${DARK}`,
+          boxShadow: scrolled ? '0 2px 16px rgba(0,0,0,0.1)' : 'none',
+          transition: 'box-shadow 0.3s',
+          // iOS Safari: force own compositing layer so the fixed bar
+          // repaints instantly when the URL bar collapses/expands
+          transform: 'translateZ(0)',
+          WebkitBackfaceVisibility: 'hidden',
+          paddingTop: 'env(safe-area-inset-top)',
+        }}
         dir="rtl"
       >
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-9">

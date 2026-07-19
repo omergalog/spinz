@@ -10,9 +10,13 @@ type Props = {
   eyebrow?: string;
   title?: string;
   subtitle?: string;
+  /** Optional full-bleed hero photo behind the title band */
+  heroImage?: string;
+  /** objectPosition for the hero photo, e.g. 'center 40%' */
+  heroPosition?: string;
 };
 
-export default function PageShell({ children, eyebrow, title, subtitle }: Props) {
+export default function PageShell({ children, eyebrow, title, subtitle, heroImage, heroPosition }: Props) {
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
   return (
@@ -29,12 +33,35 @@ export default function PageShell({ children, eyebrow, title, subtitle }: Props)
           <header
             style={{
               backgroundColor: '#1C1C1C',
-              padding: 'clamp(48px, 8vw, 96px) clamp(20px, 6vw, 64px)',
+              padding: heroImage
+                ? 'clamp(96px, 14vw, 180px) clamp(20px, 6vw, 64px) clamp(56px, 8vw, 96px)'
+                : 'clamp(48px, 8vw, 96px) clamp(20px, 6vw, 64px)',
               position: 'relative', overflow: 'hidden',
             }}
           >
+            {heroImage && (
+              <>
+                <img
+                  src={heroImage}
+                  alt=""
+                  aria-hidden
+                  style={{
+                    position: 'absolute', inset: 0,
+                    width: '100%', height: '100%',
+                    objectFit: 'cover', objectPosition: heroPosition ?? 'center',
+                  }}
+                />
+                <div
+                  aria-hidden
+                  style={{
+                    position: 'absolute', inset: 0,
+                    background: 'linear-gradient(to top, rgba(15,14,12,0.85) 0%, rgba(15,14,12,0.45) 45%, rgba(15,14,12,0.35) 100%)',
+                  }}
+                />
+              </>
+            )}
             <div style={{ position: 'absolute', top: 0, right: 0, width: '3px', height: '64px', backgroundColor: '#C9A870', opacity: 0.7 }} />
-            <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
+            <div style={{ maxWidth: '1280px', margin: '0 auto', position: 'relative' }}>
               {eyebrow && (
                 <span style={{
                   display: 'block', marginBottom: '14px',

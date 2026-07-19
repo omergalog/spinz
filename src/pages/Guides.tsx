@@ -134,6 +134,8 @@ export default function Guides() {
       eyebrow="Guides & Tips"
       title="מדריכים."
       subtitle="כל מה שצריך לדעת — מהרכבה בבית ועד תחזוקה והמסלולים הכי שווים בעיר."
+      heroImage="/assets/lifestyle-hero.jpg"
+      heroPosition="center 35%"
     >
       <section style={{ backgroundColor: '#F5F2EC', padding: 'clamp(56px, 8vw, 96px) clamp(20px, 6vw, 64px)' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>

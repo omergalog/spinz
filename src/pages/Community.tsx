@@ -38,6 +38,8 @@ export default function Community() {
       eyebrow="The Spinz Community"
       title="קהילה."
       subtitle="Spinz זה לא רק אופניים — זו קהילה של אנשים שאוהבים את העיר ואת הרכיבה בה."
+      heroImage="/assets/photo-olive-lifestyle.jpg"
+      heroPosition="center 45%"
     >
       {/* Big announcement — first community ride event */}
       <section style={{ position: 'relative', overflow: 'hidden', backgroundColor: '#1C1C1C', padding: 'clamp(64px, 10vw, 130px) clamp(20px, 6vw, 64px)' }}>

@@ -37,6 +37,8 @@ export default function SizesColors() {
       eyebrow="Fit & Finish"
       title="מידות וצבעים."
       subtitle="שני גדלים, שלושה צבעים — ההתאמה המושלמת לגובה שלך ולסטייל שלך."
+      heroImage="/assets/photo-black-detail.jpg"
+      heroPosition="center 40%"
     >
       {/* Sizes */}
       <section style={{ backgroundColor: '#F5F2EC', padding: 'clamp(56px, 8vw, 96px) clamp(20px, 6vw, 64px)' }}>

@@ -143,6 +143,8 @@ export default function ReviewsPage() {
       eyebrow="Reviews"
       title="מה אומרים עלינו."
       subtitle="לקוחות אמיתיים, חוויות אמיתיות. רוצים להוסיף את שלכם?"
+      heroImage="/assets/photo-olive-lifestyle.jpg"
+      heroPosition="center 30%"
     >
       <section style={{ backgroundColor: '#F5F2EC', padding: 'clamp(56px, 8vw, 96px) clamp(20px, 6vw, 64px)' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>

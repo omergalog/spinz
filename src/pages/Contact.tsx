@@ -24,6 +24,8 @@ export default function Contact() {
       eyebrow="Get in Touch"
       title="צור קשר."
       subtitle="יש שאלה? רוצים להתייעץ לפני שמזמינים? אנחנו כאן."
+      heroImage="/assets/for-hero.jpg"
+      heroPosition="center 70%"
     >
       <section style={{ backgroundColor: '#F5F2EC', padding: 'clamp(56px, 8vw, 96px) clamp(20px, 6vw, 64px)' }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>

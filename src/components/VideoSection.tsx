@@ -164,7 +164,7 @@ export default function VideoSection() {
               letterSpacing: '0.04em',
             }}
           >
-            MORE THAN A BIKE
+            SPINZ. MORE THAN A BIKE
           </motion.h2>
         </div>
 

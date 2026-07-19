@@ -2,6 +2,8 @@ import { useState, useCallback, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import VideoSection from '../components/VideoSection';
 import Models from '../components/Models';
+import StoryBand from '../components/StoryBand';
+import ExploreStrip from '../components/ExploreStrip';
 import LeadForm from '../components/LeadForm';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
@@ -45,6 +47,8 @@ const Index = () => {
         <Navbar />
         <VideoSection />
         <Models />
+        <StoryBand />
+        <ExploreStrip />
         <LeadForm />
         <Footer />
       </main>

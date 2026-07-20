@@ -1,37 +1,71 @@
 // ============================================================
 //  SPINZ · הגדרות קמפיין הפרי-סייל
-//  כל השליטה על הקמפיין ממקום אחד. שנה כאן — משתנה בכל האתר.
+//  נשלט מהאדמין (טבלת site_settings ב-Supabase). הערכים כאן
+//  הם ברירת מחדל / נפילה עד שההגדרות נטענות מהשרת.
 // ============================================================
 
-export const PRESALE = {
-  /** מתג ראשי — כבה כדי לחזור למצב אתר רגיל */
-  active: true,
+import { useEffect, useState } from 'react';
+import { supabase } from '../lib/supabase';
 
-  /** מחירים (בשקלים) */
+export type PresaleSettings = {
+  active: boolean;
+  regularPrice: number;
+  presalePrice: number;
+  presaleUnits: number;
+  arrivalLabel: string;
+  deadline: Date;
+};
+
+/** ברירת מחדל — מוצגת מיד עד שה-DB עונה (מונע הבהוב) */
+export const PRESALE_DEFAULTS: PresaleSettings = {
+  active: true,
   regularPrice: 1200,
   presalePrice: 1090,
-
-  /** תאריך יעד — סוף הפרי-סייל / הגעת הסחורה (חודש 0-11) */
+  presaleUnits: 100,
   arrivalLabel: 'ספטמבר 2026',
   deadline: new Date('2026-09-30T23:59:59'),
+};
 
-  /** מלאי מוצג לכל צבע (id → כמות שנשארה). ערוך ידנית ככל שנמכר. */
-  stockByColor: {
-    mat:   14,
-    beige: 11,
-    olive: 9,
-  } as Record<string, number>,
-
-  /** מכסת מחיר ההשקה */
-  presaleUnits: 100,
-
-  /** טקסטים */
-  barText: 'spinz. Pre-Sale — מחיר השקה ל-100 הראשונים',
+/** טקסטים קבועים (לא נשלטים מהאדמין) */
+export const PRESALE_COPY = {
   barCta: 'להבטחת מקום',
-} as const;
+};
 
-export function stockFor(colorId: string): number | null {
-  if (!PRESALE.active) return null;
-  const s = PRESALE.stockByColor[colorId];
+/** מלאי לכל צבע — נפילה בלבד; באתר מוצג המלאי האמיתי מ-products */
+const STOCK_FALLBACK: Record<string, number> = { mat: 14, beige: 11, olive: 9 };
+
+/**
+ * טוען את הגדרות הפרי-סייל מ-Supabase.
+ * מחזיר את ברירת המחדל מיידית, ומעדכן כשה-DB עונה.
+ */
+export function usePresale(): PresaleSettings {
+  const [settings, setSettings] = useState<PresaleSettings>(PRESALE_DEFAULTS);
+
+  useEffect(() => {
+    let alive = true;
+    supabase
+      .from('site_settings')
+      .select('presale_active, regular_price, presale_price, presale_units, arrival_label, deadline')
+      .eq('id', 1)
+      .single()
+      .then(({ data }) => {
+        if (!alive || !data) return;
+        setSettings({
+          active: data.presale_active ?? PRESALE_DEFAULTS.active,
+          regularPrice: data.regular_price ?? PRESALE_DEFAULTS.regularPrice,
+          presalePrice: data.presale_price ?? PRESALE_DEFAULTS.presalePrice,
+          presaleUnits: data.presale_units ?? PRESALE_DEFAULTS.presaleUnits,
+          arrivalLabel: data.arrival_label ?? PRESALE_DEFAULTS.arrivalLabel,
+          deadline: data.deadline ? new Date(data.deadline) : PRESALE_DEFAULTS.deadline,
+        });
+      });
+    return () => { alive = false; };
+  }, []);
+
+  return settings;
+}
+
+export function stockFallback(colorId: string): number | null {
+  const s = STOCK_FALLBACK[colorId];
   return typeof s === 'number' ? s : null;
 }

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { colorVariants, sizeVariants } from '../data/models';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../lib/supabase';
-import { PRESALE, stockFor } from '../config/presale';
+import { usePresale, stockFallback } from '../config/presale';
 
 const DARK   = '#1C1C1C';
 const BEIGE  = '#FFFFFF';
@@ -27,6 +27,9 @@ export default function Models() {
   const [price, setPrice] = useState(BASE_PRICE);
   const [salePrice, setSalePrice] = useState<number | null>(null);
   const [reviewStats, setReviewStats] = useState<{ avg: number; count: number }>({ avg: 5, count: 0 });
+  const [stockByColor, setStockByColor] = useState<Record<string, number>>({});
+
+  const presaleCfg = usePresale();
 
   useEffect(() => {
     supabase.from('reviews').select('stars').then(({ data }) => {
@@ -34,6 +37,22 @@ export default function Models() {
         const avg = data.reduce((s, r) => s + (r.stars || 0), 0) / data.length;
         setReviewStats({ avg: Math.round(avg * 10) / 10, count: data.length });
       }
+    });
+  }, []);
+
+  // Real per-color stock (sum of sizes) from the products table the admin manages
+  useEffect(() => {
+    supabase.from('products').select('slug, stock').then(({ data }) => {
+      if (!data) return;
+      const map: Record<string, number> = {};
+      data.forEach(row => {
+        // slug format: spinz-<color>-<size>
+        const parts = String(row.slug).split('-');
+        const colorId = parts[1];
+        if (!colorId) return;
+        map[colorId] = (map[colorId] || 0) + (row.stock || 0);
+      });
+      setStockByColor(map);
     });
   }, []);
 
@@ -83,10 +102,13 @@ export default function Models() {
   const displayPrice = salePrice ?? price;
 
   // Presale overrides the shown price when the campaign is live
-  const presale = PRESALE.active;
-  const shownPrice = presale ? PRESALE.presalePrice : displayPrice;
+  const presale = presaleCfg.active;
+  const shownPrice = presale ? presaleCfg.presalePrice : displayPrice;
   const monthly = Math.round(shownPrice / 13);
-  const colorStock = stockFor(color.id);
+  // Prefer real stock from products; fall back to config only if not loaded yet
+  const colorStock = presale
+    ? (color.id in stockByColor ? stockByColor[color.id] : stockFallback(color.id))
+    : null;
 
   return (
     <section
@@ -245,10 +267,10 @@ export default function Models() {
                   </span>
                   <div style={{ lineHeight: 1.35 }}>
                     <div style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 800, color: '#EDEBE6' }}>
-                      מחיר השקה — חוסכים ₪{(PRESALE.regularPrice - PRESALE.presalePrice).toLocaleString('he-IL')}
+                      מחיר השקה — חוסכים ₪{(presaleCfg.regularPrice - presaleCfg.presalePrice).toLocaleString('he-IL')}
                     </div>
                     <div style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', color: 'rgba(237,235,230,0.7)' }}>
-                      ל-{PRESALE.presaleUnits} הרוכבים הראשונים בלבד · מגיע {PRESALE.arrivalLabel}
+                      ל-{presaleCfg.presaleUnits} הרוכבים הראשונים בלבד · מגיע {presaleCfg.arrivalLabel}
                     </div>
                   </div>
                 </div>
@@ -404,7 +426,7 @@ export default function Models() {
                 </span>
                 {presale ? (
                   <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', color: '#999', textDecoration: 'line-through', textDecorationColor: '#C17A56' }}>
-                    ₪{PRESALE.regularPrice.toLocaleString('he-IL')}
+                    ₪{presaleCfg.regularPrice.toLocaleString('he-IL')}
                   </span>
                 ) : salePrice ? (
                   <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', color: '#999', textDecoration: 'line-through', textDecorationColor: '#FF4444' }}>
@@ -486,7 +508,7 @@ export default function Models() {
               style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: MUTED, marginTop: '14px', textAlign: 'center' }}
             >
               {presale
-                ? `מגיע ${PRESALE.arrivalLabel} · אחריות 5 שנים · עד 13 תשלומים`
+                ? `מגיע ${presaleCfg.arrivalLabel} · אחריות 5 שנים · עד 13 תשלומים`
                 : 'משלוח עד 5 ימי עסקים · עד 13 תשלומים'}
             </motion.p>
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { PRESALE } from '../config/presale';
+import { usePresale, PRESALE_COPY } from '../config/presale';
 
 const DARK = '#1C1C1C';
 const GOLD = '#C9A870';
@@ -36,9 +36,10 @@ function Unit({ value, label }: { value: number; label: string }) {
 export default function AnnouncementBar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { d, h, m, s, done } = useCountdown(PRESALE.deadline);
+  const presale = usePresale();
+  const { d, h, m, s, done } = useCountdown(presale.deadline);
 
-  if (!PRESALE.active || done) return null;
+  if (!presale.active || done) return null;
 
   const goModels = () => {
     if (location.pathname === '/') {
@@ -116,7 +117,7 @@ export default function AnnouncementBar() {
           padding: '4px 12px', borderRadius: '6px',
           whiteSpace: 'nowrap', flexShrink: 0,
         }}>
-          {PRESALE.barCta}
+          {PRESALE_COPY.barCta}
         </span>
       </div>
 

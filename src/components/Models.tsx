@@ -14,20 +14,6 @@ const MUTED  = '#6A6862';
 
 const BASE_PRICE = 2290;
 
-/**
- * Darkened variant of a swatch colour, for text on a light background.
- * The raw swatches (beige especially) are too light to read as text.
- */
-function darken(hex: string, amount = 0.45) {
-  const h = hex.replace('#', '');
-  const full = h.length === 3 ? h.split('').map(c => c + c).join('') : h;
-  const n = parseInt(full, 16);
-  const r = Math.round(((n >> 16) & 255) * (1 - amount));
-  const g = Math.round(((n >> 8) & 255) * (1 - amount));
-  const b = Math.round((n & 255) * (1 - amount));
-  return `rgb(${r}, ${g}, ${b})`;
-}
-
 export default function Models() {
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-60px' });
@@ -299,7 +285,7 @@ export default function Models() {
                 <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: DARK, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                   צבע
                 </span>
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: darken(color.hex), fontWeight: 700 }}>
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: color.hex, fontWeight: 700 }}>
                   {color.label}
                 </span>
               </div>
@@ -376,7 +362,7 @@ export default function Models() {
                   }} />
                   <span style={{
                     fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 700,
-                    color: presaleSoldOut ? '#6A6862' : quotaLeft <= 5 ? '#B3543C' : darken(color.hex),
+                    color: presaleSoldOut ? '#6A6862' : quotaLeft <= 5 ? '#B3543C' : color.hex,
                   }}>
                     {presaleSoldOut
                       ? `מכסת מחיר ההשקה ל${color.label} ${size.label} אזלה`

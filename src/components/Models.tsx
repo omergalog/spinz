@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { colorVariants, sizeVariants } from '../data/models';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../lib/supabase';
-import { usePresale, stockFallback } from '../config/presale';
+import { usePresale } from '../config/presale';
 
 const DARK   = '#1C1C1C';
 const BEIGE  = '#FFFFFF';
@@ -27,7 +27,7 @@ export default function Models() {
   const [price, setPrice] = useState(BASE_PRICE);
   const [salePrice, setSalePrice] = useState<number | null>(null);
   const [reviewStats, setReviewStats] = useState<{ avg: number; count: number }>({ avg: 5, count: 0 });
-  const [stockByColor, setStockByColor] = useState<Record<string, number>>({});
+  const [presaleQty, setPresaleQty] = useState<Record<string, number>>({});
 
   const presaleCfg = usePresale();
 
@@ -40,21 +40,15 @@ export default function Models() {
     });
   }, []);
 
-  // Real per-color stock (sum of sizes) from the products table the admin manages
+  // Per-variant presale quota, set by the admin and shown to the customer
   useEffect(() => {
-    supabase.from('products').select('slug, stock').then(({ data }) => {
+    supabase.from('products').select('slug, presale_qty').then(({ data }) => {
       if (!data) return;
       const map: Record<string, number> = {};
-      data.forEach(row => {
-        // slug format: spinz-<color>-<size>
-        const parts = String(row.slug).split('-');
-        const colorId = parts[1];
-        if (!colorId) return;
-        map[colorId] = (map[colorId] || 0) + (row.stock || 0);
-      });
-      setStockByColor(map);
+      data.forEach(row => { map[String(row.slug)] = row.presale_qty ?? 0; });
+      setPresaleQty(map);
     });
-  }, []);
+  }, [added]);
 
   const { addItem } = useCart();
   const color = colorVariants[selectedColor];
@@ -80,8 +74,11 @@ export default function Models() {
 
   const displayPrice = salePrice ?? price;
 
-  // Presale overrides the shown price when the campaign is live
-  const presale = presaleCfg.active;
+  // Presale applies per variant, and only while that variant has quota left
+  const variantSlug = `spinz-${color.id}-${size.id}`;
+  const quotaLeft = presaleQty[variantSlug] ?? 0;
+  const presale = presaleCfg.active && quotaLeft > 0;
+  const presaleSoldOut = presaleCfg.active && quotaLeft <= 0;
   const shownPrice = presale ? presaleCfg.presalePrice : displayPrice;
   const monthly = Math.round(shownPrice / 13);
 
@@ -107,10 +104,6 @@ export default function Models() {
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
-  // Prefer real stock from products; fall back to config only if not loaded yet
-  const colorStock = presale
-    ? (color.id in stockByColor ? stockByColor[color.id] : stockFallback(color.id))
-    : null;
 
   return (
     <section
@@ -297,26 +290,6 @@ export default function Models() {
                 </span>
               </div>
 
-              {/* Live stock indicator (presale) */}
-              {presale && colorStock !== null && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginBottom: '12px' }}>
-                  <span style={{
-                    width: '7px', height: '7px', borderRadius: '50%',
-                    backgroundColor: colorStock <= 5 ? '#C17A56' : '#8A9A7B',
-                    boxShadow: colorStock <= 5 ? '0 0 6px rgba(193,122,86,0.6)' : 'none',
-                    animation: colorStock <= 5 ? 'stockPulse 1.4s ease-in-out infinite' : 'none',
-                  }} />
-                  <span style={{
-                    fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 700,
-                    color: colorStock <= 5 ? '#B3543C' : '#6A7A5B',
-                  }}>
-                    {colorStock <= 5
-                      ? `נשארו רק ${colorStock} יחידות ב${color.label}`
-                      : `${colorStock} יחידות זמינות ב${color.label}`}
-                  </span>
-                </div>
-              )}
-
               <div style={{ display: 'flex', gap: '10px' }}>
                 {colorVariants.map((c, i) => (
                   <button
@@ -374,6 +347,28 @@ export default function Models() {
                   </button>
                 ))}
               </div>
+
+              {/* Presale quota for this exact variant */}
+              {presaleCfg.active && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginTop: '14px' }}>
+                  <span style={{
+                    width: '7px', height: '7px', borderRadius: '50%', flexShrink: 0,
+                    backgroundColor: presaleSoldOut ? '#9A9690' : quotaLeft <= 5 ? '#C17A56' : '#8A9A7B',
+                    boxShadow: !presaleSoldOut && quotaLeft <= 5 ? '0 0 6px rgba(193,122,86,0.6)' : 'none',
+                    animation: !presaleSoldOut && quotaLeft <= 5 ? 'stockPulse 1.4s ease-in-out infinite' : 'none',
+                  }} />
+                  <span style={{
+                    fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 700,
+                    color: presaleSoldOut ? '#6A6862' : quotaLeft <= 5 ? '#B3543C' : '#6A7A5B',
+                  }}>
+                    {presaleSoldOut
+                      ? `מכסת מחיר ההשקה ל${color.label} ${size.label} אזלה`
+                      : quotaLeft <= 5
+                        ? `נשארו רק ${quotaLeft} במחיר השקה · ${color.label} ${size.label}`
+                        : `${quotaLeft} יחידות במחיר השקה · ${color.label} ${size.label}`}
+                  </span>
+                </div>
+              )}
             </motion.div>
 
             {/* Quick specs */}

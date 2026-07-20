@@ -306,6 +306,7 @@ export default function LeadForm() {
                     </label>
                     <input
                       type="email"
+                      dir="ltr"
                       placeholder="israel@example.com"
                       style={{
                         width: '100%',

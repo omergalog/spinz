@@ -430,11 +430,12 @@ export default function Waitlist() {
                   value={phone}
                   onChange={e => { setPhone(e.target.value); setError(''); }}
                   autoComplete="tel"
-                  dir="rtl"
+                  dir="ltr"
                   style={inputStyle}
                 />
                 <input
                   type="email"
+                  dir="ltr"
                   placeholder="אימייל (אופציונלי)"
                   value={email}
                   onChange={e => setEmail(e.target.value)}

@@ -19,6 +19,7 @@ import Community from './pages/Community';
 import ReviewsPage from './pages/ReviewsPage';
 import Contact from './pages/Contact';
 import PresaleTerms from './pages/PresaleTerms';
+import CancelOrder from './pages/CancelOrder';
 import AccessibilityWidget from './components/AccessibilityWidget';
 import { getPauseMotion, onPauseMotionChange } from './utils/motionStore';
 import PasswordGate from './components/PasswordGate';
@@ -72,6 +73,7 @@ function Root() {
                   <Route path="/story" element={<Story />} />
                   <Route path="/terms" element={<Terms />} />
                   <Route path="/presale-terms" element={<PresaleTerms />} />
+                  <Route path="/cancel-order" element={<CancelOrder />} />
                   <Route path="/accessibility" element={<Accessibility />} />
                   <Route path="/waitlist" element={<Waitlist />} />
                   <Route path="/waitlist-terms" element={<WaitlistTerms />} />

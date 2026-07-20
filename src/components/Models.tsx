@@ -262,7 +262,7 @@ export default function Models() {
                   </span>
                   <div style={{ lineHeight: 1.35 }}>
                     <div style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 800, color: '#EDEBE6' }}>
-                      מחיר השקה — חוסכים ₪{(presaleCfg.regularPrice - presaleCfg.presalePrice).toLocaleString('he-IL')}
+                      מהדורת השקה מוגבלת
                     </div>
                     <div style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', color: 'rgba(237,235,230,0.7)' }}>
                       ל-{presaleCfg.presaleUnits} הרוכבים הראשונים בלבד · מגיע {presaleCfg.arrivalLabel}
@@ -432,9 +432,25 @@ export default function Models() {
                 ) : null}
               </div>
               {presale && (
-                <span style={{ display: 'block', marginTop: '6px', fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: MUTED }}>
-                  או ב-<b style={{ color: DARK }}>₪{monthly.toLocaleString('he-IL')} לחודש</b> ב-13 תשלומים
-                </span>
+                <div style={{
+                  display: 'inline-flex', alignItems: 'baseline', gap: '7px',
+                  marginTop: '12px', padding: '8px 14px',
+                  backgroundColor: '#F3EDE1', border: '1px solid #E3D8C2',
+                  borderRadius: '8px',
+                }}>
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: MUTED }}>
+                    או
+                  </span>
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '22px', fontWeight: 800, color: DARK, letterSpacing: '-0.01em' }}>
+                    ₪{monthly.toLocaleString('he-IL')}
+                  </span>
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 600, color: DARK }}>
+                    לחודש
+                  </span>
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: MUTED }}>
+                    ב-13 תשלומים
+                  </span>
+                </div>
               )}
             </motion.div>
 

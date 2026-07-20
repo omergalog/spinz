@@ -1,5 +1,6 @@
 import PageShell from '../components/PageShell';
 import { usePresale } from '../config/presale';
+import { COMPANY as CO } from '../config/company';
 
 const DARK = '#1C1C1C';
 const MUTED = '#4A4845';
@@ -7,11 +8,11 @@ const GOLD = '#C9A870';
 const BORDER = '#E0DCD4';
 
 const COMPANY = {
-  name: 'אופני סיבוב בע"מ (SPINZ BIKES LTD)',
-  companyId: 'ח.פ. 517343661',
-  address: 'התמר 137, בית חרות',
-  email: 'spinz.bikes@gmail.com',
-  phone: '052-7565262',
+  name: `${CO.legalNameHe} (${CO.legalNameEn})`,
+  companyId: `ח.פ. ${CO.companyNumber}`,
+  address: CO.address,
+  email: CO.email,
+  phone: CO.phone,
 };
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {

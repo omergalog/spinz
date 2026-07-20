@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { COMPANY, COMPANY_LINE } from '../config/company';
 
 const DARK   = '#1C1C1C';
 const GOLD   = '#C9A870';
@@ -11,7 +12,7 @@ const MUTED  = '#6A6862';
 const sections = [
   {
     title: null,
-    text: 'Spinz מחויבת לנגישות דיגיטלית ולהבטחת חוויית שימוש שוויונית לכלל המשתמשים, לרבות אנשים עם מוגבלויות. אנו פועלים בהתאם לתקן ישראלי 5568 ולהנחיות WCAG 2.1 ברמה AA.',
+    text: `${COMPANY_LINE} מחויבת לנגישות דיגיטלית ולהבטחת חוויית שימוש שוויונית לכלל המשתמשים, לרבות אנשים עם מוגבלויות. אנו פועלים בהתאם לתקן ישראלי 5568 ולהנחיות WCAG 2.1 ברמה AA.`,
   },
   {
     title: 'מה אנחנו עושים',
@@ -31,11 +32,11 @@ const sections = [
   },
   {
     title: 'יצירת קשר בנושא נגישות',
-    text: 'דוא"ל: info@spinzbikes.com\nטלפון: 052-756-5262\nניתן לפנות אלינו גם דרך WhatsApp.',
+    text: `דוא"ל: ${COMPANY.email}\nטלפון: ${COMPANY.phone}\nניתן לפנות אלינו גם דרך WhatsApp.`,
   },
   {
     title: 'רכז נגישות',
-    text: 'רכז הנגישות של Spinz אחראי לנושא ונותן מענה לפניות הציבור בכל הקשור לנגישות האתר.',
+    text: `רכז הנגישות של ${COMPANY.legalNameHe} אחראי לנושא ונותן מענה לפניות הציבור בכל הקשור לנגישות האתר. לפניות: ${COMPANY.email}`,
   },
   {
     title: 'תאריך הצהרה זו',

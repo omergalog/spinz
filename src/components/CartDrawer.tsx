@@ -18,6 +18,7 @@ export default function CartDrawer() {
   const total = items.reduce((sum, i) => sum + i.model.price * i.quantity, 0);
   const [ordering, setOrdering] = useState(false);
   const [ordered, setOrdered] = useState(false);
+  const [orderError, setOrderError] = useState<string | null>(null);
   const [step, setStep] = useState<'cart' | 'details'>('cart');
   const [form, setForm] = useState({ name: '', email: '', phone: '', address: '' });
   const [formErrors, setFormErrors] = useState<Record<string, boolean>>({});
@@ -34,65 +35,53 @@ export default function CartDrawer() {
 
   const handleCheckout = async () => {
     setOrdering(true);
+    setOrderError(null);
     try {
-      // Get all currently allocated SKU IDs (from non-cancelled orders)
-      const { data: usedOrderData } = await supabase
-        .from('orders')
-        .select('sku_id')
-        .not('sku_id', 'is', null)
-        .neq('status', 'cancelled');
-      const usedSkuIds = new Set((usedOrderData ?? []).map(o => o.sku_id).filter(Boolean));
+      // One atomic server call: validates stock, locks rows, sets the price
+      // server-side and decrements stock + presale quota together.
+      const { data, error } = await supabase.rpc('place_order', {
+        p_items: items.map(i => ({
+          color: i.colorId,
+          size: i.size,
+          quantity: i.quantity,
+          colorSkuCode: i.colorSkuCode,
+        })),
+        p_name: form.name,
+        p_phone: form.phone,
+        p_email: form.email || null,
+        p_notes: form.address,
+      });
 
-      for (const item of items) {
-        // Find first available SKU matching size + color
-        const { data: matchingSkus } = await supabase
-          .from('skus')
-          .select('id, sku')
-          .eq('size', item.size)
-          .eq('color', item.colorSkuCode)
-          .is('deleted_at', null)
-          .order('created_at', { ascending: true });
-
-        const availableSku = (matchingSkus ?? []).find(s => !usedSkuIds.has(s.id)) ?? null;
-        if (availableSku) usedSkuIds.add(availableSku.id);
-
-        await supabase.from('orders').insert({
-          product_name: item.model.name,
-          customer_name: form.name,
-          customer_email: form.email || null,
-          customer_phone: form.phone,
-          notes: form.address,
-          quantity: item.quantity,
-          unit_price: item.model.price,
-          total_price: item.model.price * item.quantity,
-          status: 'pending',
-          size: item.size,
-          color: item.colorId,
-          sku_id: availableSku?.id ?? null,
-          sku_code: availableSku?.sku ?? null,
-        });
-
-        // Decrement stock
-        const slug = `spinz-${item.colorId}-${item.size}`;
-        const { data: product } = await supabase
-          .from('products')
-          .select('id, stock')
-          .eq('slug', slug)
-          .single();
-        if (product) {
-          await supabase
-            .from('products')
-            .update({ stock: Math.max(0, product.stock - item.quantity) })
-            .eq('id', product.id);
+      if (error) {
+        const msg = String(error.message || '');
+        if (msg.includes('OUT_OF_STOCK')) {
+          const parts = msg.split('OUT_OF_STOCK:')[1]?.split(':') ?? [];
+          const left = parts[1]?.replace(/\D/g, '');
+          setOrderError(
+            left && Number(left) > 0
+              ? `נשארו רק ${left} יחידות מהפריט שבחרת. עדכנו את הכמות ונסו שוב.`
+              : 'אחד הפריטים אזל מהמלאי בזמן ההזמנה. עדכנו את העגלה ונסו שוב.'
+          );
+        } else {
+          setOrderError('משהו השתבש בשליחת ההזמנה. נסו שוב או פנו אלינו בוואטסאפ.');
         }
+        setOrdering(false);
+        return;
       }
+
+      if (!data?.ok) {
+        setOrderError('משהו השתבש בשליחת ההזמנה. נסו שוב או פנו אלינו בוואטסאפ.');
+        setOrdering(false);
+        return;
+      }
+
       clearCart();
       setOrdered(true);
       setStep('cart');
       setForm({ name: '', email: '', phone: '', address: '' });
       setTimeout(() => { setOrdered(false); closeCart(); }, 2500);
     } catch {
-      // silent
+      setOrderError('משהו השתבש בשליחת ההזמנה. נסו שוב או פנו אלינו בוואטסאפ.');
     }
     setOrdering(false);
   };
@@ -299,6 +288,16 @@ export default function CartDrawer() {
 
                   {/* Submit */}
                   <div style={{ padding: '20px 24px', borderTop: `1px solid ${BORDER}` }}>
+                    {orderError && (
+                      <div style={{
+                        backgroundColor: '#FBEEE9', border: '1px solid #E0B9A6',
+                        borderRadius: '8px', padding: '11px 14px', marginBottom: '12px',
+                        fontFamily: "'Heebo', sans-serif", fontSize: '13px',
+                        color: '#A3462B', lineHeight: 1.5,
+                      }}>
+                        {orderError}
+                      </div>
+                    )}
                     <button onClick={validateAndCheckout} disabled={ordering}
                       style={{ width: '100%', backgroundColor: GOLD, color: DARK, border: 'none', borderRadius: '4px', padding: '15px', fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: ordering ? 'not-allowed' : 'pointer', opacity: ordering ? 0.7 : 1 }}>
                       {ordering ? '...' : 'אשר הזמנה'}

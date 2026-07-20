@@ -157,6 +157,7 @@ export default function Footer() {
               { title: 'מידע', links: [
                 { label: 'שאלות ותשובות', to: '/faq' },
                 { label: 'מדריכים', to: '/guides' },
+                { label: 'תנאי מכירה מוקדמת', to: '/presale-terms' },
                 { label: 'צור קשר', to: '/contact' },
               ]},
               { title: 'המותג', links: [

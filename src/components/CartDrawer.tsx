@@ -302,6 +302,19 @@ export default function CartDrawer() {
                       style={{ width: '100%', backgroundColor: GOLD, color: DARK, border: 'none', borderRadius: '4px', padding: '15px', fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: ordering ? 'not-allowed' : 'pointer', opacity: ordering ? 0.7 : 1 }}>
                       {ordering ? '...' : 'אשר הזמנה'}
                     </button>
+                    <p style={{
+                      fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#6A6862',
+                      lineHeight: 1.6, margin: '10px 0 0', textAlign: 'center',
+                    }}>
+                      בשליחת ההזמנה אתם מאשרים את{' '}
+                      <a href="/presale-terms" target="_blank" rel="noopener noreferrer" style={{ color: '#8A6D3B', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+                        תנאי המכירה המוקדמת
+                      </a>{' '}
+                      ואת{' '}
+                      <a href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#8A6D3B', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+                        תנאי השימוש
+                      </a>.
+                    </p>
                   </div>
                 </motion.div>
               )}

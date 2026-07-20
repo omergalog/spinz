@@ -521,9 +521,32 @@ export default function Models() {
               style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: MUTED, marginTop: '14px', textAlign: 'center' }}
             >
               {presale
-                ? `מגיע ${presaleCfg.arrivalLabel} · אחריות 5 שנים · עד 13 תשלומים`
+                ? 'אחריות 5 שנים על השלדה · עד 13 תשלומים'
                 : 'משלוח עד 5 ימי עסקים · עד 13 תשלומים'}
             </motion.p>
+
+            {/* Pre-sale disclosure — required before ordering in a distance sale */}
+            {presale && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : {}}
+                transition={{ duration: 0.6, delay: 0.55 }}
+                style={{
+                  marginTop: '12px', padding: '11px 14px',
+                  backgroundColor: '#F3EDE1', border: `1px solid #E3D8C2`,
+                  borderRadius: '8px',
+                  fontFamily: "'Heebo', sans-serif", fontSize: '12px',
+                  color: '#5A5750', lineHeight: 1.6, textAlign: 'center',
+                }}
+              >
+                הזמנה מוקדמת — המוצר טרם במלאי. מועד אספקה משוער:{' '}
+                <b style={{ color: DARK }}>{presaleCfg.arrivalLabel}</b>.
+                ניתן לבטל ולקבל החזר מלא בכל שלב לפני המסירה.{' '}
+                <Link to="/presale-terms" style={{ color: '#8A6D3B', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+                  תנאי מכירה מוקדמת
+                </Link>
+              </motion.div>
+            )}
 
           </div>
         </div>

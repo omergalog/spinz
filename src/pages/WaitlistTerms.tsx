@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { COMPANY, COMPANY_LINE } from '../config/company';
 
 const GOLD  = '#C9A870';
 const DARK  = '#1C1C1C';
@@ -46,7 +47,7 @@ export default function WaitlistTerms() {
         {[
           {
             title: 'א. פרטי החברה',
-            body: 'האתר waitlist.spinzbikes.com מופעל על ידי SPINZ BIKES LTD, ח.פ. 517343661 (להלן: "החברה"). לפניות: info@spinzbikes.com.',
+            body: `האתר waitlist.spinzbikes.com מופעל על ידי ${COMPANY_LINE} (להלן: "החברה"). לפניות: ${COMPANY.email} · ${COMPANY.phone}.`,
           },
           {
             title: 'ב. מהות השירות',
@@ -83,7 +84,7 @@ export default function WaitlistTerms() {
         {[
           {
             title: '1. מי אוסף את המידע',
-            body: 'SPINZ BIKES LTD (ח.פ. 517343661) אוספת את המידע שאתם מזינים בטופס רשימת ההמתנה באתר waitlist.spinzbikes.com. כתובת הדוא"ל לפניות: info@spinzbikes.com.',
+            body: `${COMPANY_LINE} אוספת את המידע שאתם מזינים בטופס רשימת ההמתנה באתר waitlist.spinzbikes.com. כתובת הדוא"ל לפניות: ${COMPANY.email}.`,
           },
           {
             title: '2. איזה מידע נאסף',
@@ -115,7 +116,7 @@ export default function WaitlistTerms() {
           },
           {
             title: '9. זכויותיכם',
-            body: 'בהתאם לחוק הגנת הפרטיות הישראלי, יש לכם הזכות לעיין במידע שנשמר אודותיכם, לתקן אותו, או לדרוש את מחיקתו. לבקשות כאמור, פנו אלינו בכתובת: info@spinzbikes.com.',
+            body: `בהתאם לחוק הגנת הפרטיות הישראלי, יש לכם הזכות לעיין במידע שנשמר אודותיכם, לתקן אותו, או לדרוש את מחיקתו. לבקשות כאמור, פנו אלינו בכתובת: ${COMPANY.email}.`,
           },
           {
             title: '10. שמירת מידע',
@@ -123,7 +124,7 @@ export default function WaitlistTerms() {
           },
           {
             title: '11. יצירת קשר',
-            body: 'לכל שאלה בנושא הפרטיות, ניתן לפנות אלינו בדוא"ל: info@spinzbikes.com.',
+            body: `לכל שאלה בנושא הפרטיות, ניתן לפנות אלינו בדוא"ל: ${COMPANY.email}.`,
           },
           {
             title: '12. סמכות שיפוט',

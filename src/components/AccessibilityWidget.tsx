@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { setPauseMotion } from '../utils/motionStore';
+import { COMPANY } from '../config/company';
 
 const GOLD = '#C9A870';
 const DARK = '#1C1C1C';
@@ -282,8 +283,8 @@ export default function AccessibilityWidget() {
             margin: '14px 0 0', textAlign: 'center', lineHeight: 1.6,
           }}>
             פנייה בנושא נגישות:{' '}
-            <a href="mailto:info@spinzbikes.com" style={{ color: '#8A6830' }}>
-              info@spinzbikes.com
+            <a href={`mailto:${COMPANY.email}`} style={{ color: '#8A6830' }}>
+              {COMPANY.email}
             </a>
           </p>
         </div>

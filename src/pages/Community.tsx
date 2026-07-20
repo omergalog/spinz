@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Instagram, Calendar, Handshake, Camera, Coffee, Bike, MapPin } from 'lucide-react';
 import PageShell from '../components/PageShell';
+import { COMPANY } from '../config/company';
 
 const GOLD = '#C9A870';
 const DARK = '#1C1C1C';
@@ -240,7 +241,7 @@ export default function Community() {
             ))}
           </div>
           <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: MUTED, margin: '28px 0 0', textAlign: 'center' }}>
-            רוצים להיות שותפים? כתבו לנו ב-<a href="mailto:info@spinzbikes.com" style={{ color: GOLD, display: 'inline-block', padding: '10px 0' }}>info@spinzbikes.com</a>
+            רוצים להיות שותפים? כתבו לנו ב-<a href={`mailto:${COMPANY.email}`} style={{ color: GOLD, display: 'inline-block', padding: '10px 0' }}>{COMPANY.email}</a>
           </p>
         </div>
       </section>

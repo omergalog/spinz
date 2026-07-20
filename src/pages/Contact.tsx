@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { MessageCircle, Mail, Instagram, MapPin } from 'lucide-react';
 import PageShell from '../components/PageShell';
+import { COMPANY } from '../config/company';
 import LeadForm from '../components/LeadForm';
 
 const GOLD = '#C9A870';
@@ -14,7 +15,7 @@ const whatsappHref = `https://wa.me/${WHATSAPP.replace(/\D/g, '')}?text=${encode
 
 const channels = [
   { icon: MessageCircle, label: 'WhatsApp', value: 'שלחו לנו הודעה', href: whatsappHref },
-  { icon: Mail, label: 'אימייל', value: 'info@spinzbikes.com', href: 'mailto:info@spinzbikes.com' },
+  { icon: Mail, label: 'אימייל', value: COMPANY.email, href: `mailto:${COMPANY.email}` },
   { icon: Instagram, label: 'אינסטגרם', value: '@spinz.bikes', href: 'https://instagram.com/spinz.bikes' },
 ];
 

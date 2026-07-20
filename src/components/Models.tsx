@@ -265,7 +265,7 @@ export default function Models() {
                       מהדורת השקה מוגבלת
                     </div>
                     <div style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', color: 'rgba(237,235,230,0.7)' }}>
-                      ל-{presaleCfg.presaleUnits} הרוכבים הראשונים בלבד · מגיע {presaleCfg.arrivalLabel}
+                      ל-{presaleCfg.presaleUnits} הרוכבים הראשונים בלבד
                     </div>
                   </div>
                 </div>

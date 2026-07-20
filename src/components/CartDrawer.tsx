@@ -241,7 +241,13 @@ export default function CartDrawer() {
                 >
                   {/* Header */}
                   <div style={{ padding: '20px 24px', borderBottom: `1px solid ${BORDER}`, display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <button onClick={() => setStep('cart')} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', padding: '4px', fontSize: '20px', lineHeight: 1 }}>←</button>
+                    <button
+                      onClick={() => setStep('cart')}
+                      aria-label="חזרה לעגלה"
+                      style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', padding: '10px', margin: '-10px', fontSize: '20px', lineHeight: 1 }}
+                    >
+                      →
+                    </button>
                     <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '17px', color: BEIGE, margin: 0 }}>פרטי משלוח</h3>
                   </div>
 

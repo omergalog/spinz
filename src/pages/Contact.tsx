@@ -14,7 +14,7 @@ const whatsappHref = `https://wa.me/${WHATSAPP.replace(/\D/g, '')}?text=${encode
 
 const channels = [
   { icon: MessageCircle, label: 'WhatsApp', value: 'שלחו לנו הודעה', href: whatsappHref },
-  { icon: Mail, label: 'אימייל', value: 'spinz.bikes@gmail.com', href: 'mailto:spinz.bikes@gmail.com' },
+  { icon: Mail, label: 'אימייל', value: 'info@spinzbikes.com', href: 'mailto:info@spinzbikes.com' },
   { icon: Instagram, label: 'אינסטגרם', value: '@spinz.bikes', href: 'https://instagram.com/spinz.bikes' },
 ];
 

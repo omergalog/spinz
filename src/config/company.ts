@@ -6,7 +6,7 @@
 
 export const COMPANY = {
   /** שם רשום — תעודת התאגדות 13/05/2026 */
-  legalNameHe: 'אופני סיבוב בע"מ',
+  legalNameHe: 'אופני סיבוב בערבון מוגבל בע״מ',
   legalNameEn: 'SPINZ BIKES LTD',
   companyNumber: '517343661',
   address: 'התמר 137, בית חרות',

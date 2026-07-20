@@ -14,6 +14,20 @@ const MUTED  = '#6A6862';
 
 const BASE_PRICE = 2290;
 
+/**
+ * Darkened variant of a swatch colour, for text on a light background.
+ * The raw swatches (beige especially) are too light to read as text.
+ */
+function darken(hex: string, amount = 0.45) {
+  const h = hex.replace('#', '');
+  const full = h.length === 3 ? h.split('').map(c => c + c).join('') : h;
+  const n = parseInt(full, 16);
+  const r = Math.round(((n >> 16) & 255) * (1 - amount));
+  const g = Math.round(((n >> 8) & 255) * (1 - amount));
+  const b = Math.round((n & 255) * (1 - amount));
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
 export default function Models() {
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-60px' });
@@ -353,13 +367,16 @@ export default function Models() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginTop: '14px' }}>
                   <span style={{
                     width: '7px', height: '7px', borderRadius: '50%', flexShrink: 0,
-                    backgroundColor: presaleSoldOut ? '#9A9690' : quotaLeft <= 5 ? '#C17A56' : '#8A9A7B',
+                    // Normal state follows the selected colour; low stock and
+                    // sold out keep their warning colours so the signal survives
+                    backgroundColor: presaleSoldOut ? '#9A9690' : quotaLeft <= 5 ? '#C17A56' : color.hex,
+                    border: !presaleSoldOut && quotaLeft > 5 ? '1px solid rgba(0,0,0,0.15)' : 'none',
                     boxShadow: !presaleSoldOut && quotaLeft <= 5 ? '0 0 6px rgba(193,122,86,0.6)' : 'none',
                     animation: !presaleSoldOut && quotaLeft <= 5 ? 'stockPulse 1.4s ease-in-out infinite' : 'none',
                   }} />
                   <span style={{
                     fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 700,
-                    color: presaleSoldOut ? '#6A6862' : quotaLeft <= 5 ? '#B3543C' : '#6A7A5B',
+                    color: presaleSoldOut ? '#6A6862' : quotaLeft <= 5 ? '#B3543C' : darken(color.hex),
                   }}>
                     {presaleSoldOut
                       ? `מכסת מחיר ההשקה ל${color.label} ${size.label} אזלה`

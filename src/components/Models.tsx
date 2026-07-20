@@ -78,6 +78,13 @@ export default function Models() {
     });
   }, [selectedColor, selectedSize]);
 
+  const displayPrice = salePrice ?? price;
+
+  // Presale overrides the shown price when the campaign is live
+  const presale = presaleCfg.active;
+  const shownPrice = presale ? presaleCfg.presalePrice : displayPrice;
+  const monthly = Math.round(shownPrice / 13);
+
   const handleAddToCart = () => {
     if (outOfStock) return;
     addItem(
@@ -86,7 +93,9 @@ export default function Models() {
         name: `SPINZ ${size.id} — ${color.label}`,
         tagline: size.range,
         image: color.image,
-        price: salePrice ?? price,
+        // Must match the price shown on screen — during presale that is
+        // the launch price, not the products-table price
+        price: shownPrice,
         accentColor: color.hex,
         features: [],
       },
@@ -98,13 +107,6 @@ export default function Models() {
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
-
-  const displayPrice = salePrice ?? price;
-
-  // Presale overrides the shown price when the campaign is live
-  const presale = presaleCfg.active;
-  const shownPrice = presale ? presaleCfg.presalePrice : displayPrice;
-  const monthly = Math.round(shownPrice / 13);
   // Prefer real stock from products; fall back to config only if not loaded yet
   const colorStock = presale
     ? (color.id in stockByColor ? stockByColor[color.id] : stockFallback(color.id))

@@ -7,9 +7,9 @@ const GOLD = '#C9A870';
 const BORDER = '#E0DCD4';
 
 const COMPANY = {
-  name: 'ספינז בע"מ',      // ← עדכנו לשם הרשום המדויק
-  companyId: 'ח.פ. —',      // ← עדכנו למספר החברה
-  address: 'תל אביב, ישראל', // ← עדכנו לכתובת הרשומה
+  name: 'אופני סיבוב בע"מ (SPINZ BIKES LTD)',
+  companyId: 'ח.פ. 517343661',
+  address: 'תל אביב, ישראל', // ← להשלים לכתובת הרשומה המלאה (רחוב, מספר, עיר, מיקוד)
   email: 'spinz.bikes@gmail.com',
   phone: '052-7565262',
 };

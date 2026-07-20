@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { BikeModel } from '../data/models';
+import { supabase } from '../lib/supabase';
 
 export interface CartItem {
   model: BikeModel;
@@ -38,6 +39,39 @@ export function CartProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     localStorage.setItem('spinz-cart', JSON.stringify(items));
   }, [items]);
+
+  // Re-price the cart on load: a saved cart holds the price from the moment
+  // it was added, which goes stale when presale/product prices change in the
+  // admin. Always charge the current price.
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      const [{ data: settings }, { data: products }] = await Promise.all([
+        supabase.from('site_settings').select('presale_active, presale_price').eq('id', 1).single(),
+        supabase.from('products').select('slug, price, sale_price'),
+      ]);
+      if (!alive) return;
+
+      const priceFor = (colorId: string, size: string): number | null => {
+        if (settings?.presale_active) return settings.presale_price ?? null;
+        const row = (products ?? []).find(p => p.slug === `spinz-${colorId}-${size}`);
+        if (!row) return null;
+        return row.sale_price ?? row.price ?? null;
+      };
+
+      setItems(prev => {
+        let changed = false;
+        const next = prev.map(i => {
+          const current = priceFor(i.colorId, i.size);
+          if (current == null || current === i.model.price) return i;
+          changed = true;
+          return { ...i, model: { ...i.model, price: current } };
+        });
+        return changed ? next : prev;
+      });
+    })();
+    return () => { alive = false; };
+  }, []);
 
   const addItem = (model: BikeModel, colorId: string, colorLabel: string, colorSkuCode: string, size: string) => {
     setItems(prev => {

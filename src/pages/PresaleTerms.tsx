@@ -9,7 +9,7 @@ const BORDER = '#E0DCD4';
 const COMPANY = {
   name: 'אופני סיבוב בע"מ (SPINZ BIKES LTD)',
   companyId: 'ח.פ. 517343661',
-  address: 'תל אביב, ישראל', // ← להשלים לכתובת הרשומה המלאה (רחוב, מספר, עיר, מיקוד)
+  address: 'התמר 137, בית חרות',
   email: 'spinz.bikes@gmail.com',
   phone: '052-7565262',
 };

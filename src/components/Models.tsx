@@ -414,7 +414,7 @@ export default function Models() {
                   color: '#1C1C1C', backgroundColor: '#C9A870',
                   padding: '4px 12px', borderRadius: '6px',
                 }}>
-                  מחיר השקה · 100 ראשונים
+                  מחיר השקה
                 </span>
               )}
               <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' }}>

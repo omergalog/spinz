@@ -14,6 +14,7 @@ import SpecsPage from './pages/SpecsPage';
 import SizesColors from './pages/SizesColors';
 import FAQPage from './pages/FAQPage';
 import Guides from './pages/Guides';
+import GuideDetail from './pages/GuideDetail';
 import GalleryPage from './pages/GalleryPage';
 import Community from './pages/Community';
 import ReviewsPage from './pages/ReviewsPage';
@@ -67,6 +68,7 @@ function Root() {
                   <Route path="/sizes" element={<SizesColors />} />
                   <Route path="/faq" element={<FAQPage />} />
                   <Route path="/guides" element={<Guides />} />
+                  <Route path="/guides/:slug" element={<GuideDetail />} />
                   <Route path="/gallery" element={<GalleryPage />} />
                   <Route path="/community" element={<Community />} />
                   <Route path="/reviews" element={<ReviewsPage />} />

@@ -4,6 +4,7 @@ import { ShoppingCart, ChevronDown } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import AnnouncementBar from './AnnouncementBar';
+import { usePresale } from '../config/presale';
 
 const DARK  = '#1C1C1C';
 const LIGHT = '#F5F2EC';
@@ -47,6 +48,7 @@ export default function Navbar() {
   const { totalCount, openCart } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
+  const presale = usePresale();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -99,6 +101,20 @@ export default function Navbar() {
 
           {/* Desktop nav with dropdowns */}
           <nav className="hidden md:flex items-center gap-7">
+            {/* Home link */}
+            <Link
+              to="/"
+              style={{
+                fontFamily: "'Heebo', sans-serif", color: '#555',
+                fontWeight: 500, fontSize: '15px', textDecoration: 'none',
+                padding: '4px 0', whiteSpace: 'nowrap', transition: 'color 0.2s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.color = DARK; }}
+              onMouseLeave={e => { e.currentTarget.style.color = '#555'; }}
+            >
+              בית
+            </Link>
+
             {menus.map(menu => (
               <div
                 key={menu.label}
@@ -246,10 +262,30 @@ export default function Navbar() {
             exit={{ opacity: 0, clipPath: 'inset(0 0 100% 0)' }}
             transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
             className="fixed inset-0 z-40 flex flex-col md:hidden overflow-y-auto"
-            style={{ backgroundColor: DARK, paddingTop: '64px' }}
+            style={{ backgroundColor: DARK, paddingTop: presale.active ? '112px' : '72px' }}
             dir="rtl"
           >
             <nav className="flex flex-col">
+              {/* Home link */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.08 }}
+                style={{ borderBottom: '1px solid #2A2A2A' }}
+              >
+                <Link
+                  to="/"
+                  onClick={() => setMenuOpen(false)}
+                  style={{
+                    display: 'block', width: '100%', color: LIGHT, fontFamily: "'Heebo', sans-serif",
+                    fontSize: '24px', fontWeight: 600, padding: '18px 36px',
+                    textDecoration: 'none', textAlign: 'right',
+                  }}
+                >
+                  בית
+                </Link>
+              </motion.div>
+
               {menus.map((menu, i) => (
                 <div key={menu.label} style={{ borderBottom: '1px solid #2A2A2A' }}>
                   <motion.button

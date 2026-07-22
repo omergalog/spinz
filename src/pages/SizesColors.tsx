@@ -26,9 +26,9 @@ const sizes = [
 ];
 
 const colors = [
-  { id: 'mat',   label: 'שחור מט',   hex: '#1A1A1A', img: '/assets/bike-mat-cut.png',   desc: 'הקלאסיקה. שחור עמוק ומאט שמשתלב עם הכל, ולא מפסיק להיראות נקי גם אחרי שנים על האספלט.' },
-  { id: 'beige', label: "בז'",       hex: '#C4A882', img: '/assets/bike-beige-cut.png', desc: 'גוון חול חמים ורגוע. בולט בעדינות, משדר יוקרה שקטה ומושך מבטים בלי לצעוק.' },
-  { id: 'olive', label: 'ירוק זית',  hex: '#7D9168', img: '/assets/bike-olive-cut.png', desc: 'אופי ושקט. ירוק אדמתי שמרגיש טבעי בעיר, לאלו שרוצים משהו קצת אחר מהרגיל.' },
+  { id: 'mat',   label: 'שחור מט',   hex: '#1A1A1A', img: '/assets/bike-mat-new.png',   desc: 'הקלאסיקה. שחור עמוק ומאט שמשתלב עם הכל, ולא מפסיק להיראות נקי גם אחרי שנים על האספלט.' },
+  { id: 'beige', label: "בז'",       hex: '#C4A882', img: '/assets/bike-beige-new.png', desc: 'גוון חול חמים ורגוע. בולט בעדינות, משדר יוקרה שקטה ומושך מבטים בלי לצעוק.' },
+  { id: 'olive', label: 'ירוק זית',  hex: '#7D9168', img: '/assets/bike-olive-new.png', desc: 'אופי ושקט. ירוק אדמתי שמרגיש טבעי בעיר, לאלו שרוצים משהו קצת אחר מהרגיל.' },
 ];
 
 export default function SizesColors() {
@@ -75,12 +75,12 @@ export default function SizesColors() {
       </section>
 
       {/* Colors */}
-      <section style={{ backgroundColor: '#1C1C1C', padding: 'clamp(56px, 8vw, 96px) clamp(20px, 6vw, 64px)' }}>
+      <section style={{ backgroundColor: '#F5F2EC', padding: 'clamp(56px, 8vw, 96px) clamp(20px, 6vw, 64px)' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(24px, 4vw, 40px)', color: '#EDEBE6', margin: '0 0 8px' }}>
+          <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(24px, 4vw, 40px)', color: DARK, margin: '0 0 8px' }}>
             שלושה צבעים. אופי משלך.
           </h2>
-          <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', color: 'rgba(237,235,230,0.6)', margin: '0 0 48px' }}>
+          <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', color: MUTED, margin: '0 0 48px' }}>
             כל צבע זמין בשתי המידות. בחרו את זה שמדבר אליכם.
           </p>
 
@@ -94,7 +94,7 @@ export default function SizesColors() {
                 transition={{ duration: 0.6, delay: i * 0.08 }}
                 style={{
                   display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 'clamp(20px, 4vw, 48px)',
-                  backgroundColor: '#242424', border: '1px solid #2F2F2F', borderRadius: '18px',
+                  backgroundColor: CARD, border: `1px solid ${BORDER}`, borderRadius: '18px',
                   padding: 'clamp(20px, 3vw, 32px)', overflow: 'hidden',
                 }}
               >
@@ -103,10 +103,10 @@ export default function SizesColors() {
                 </div>
                 <div style={{ flex: '2 1 320px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                    <span style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: c.hex, border: '2px solid #3A3A3A', flexShrink: 0 }} />
-                    <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '24px', color: '#EDEBE6', margin: 0 }}>{c.label}</h3>
+                    <span style={{ width: '28px', height: '28px', borderRadius: '50%', backgroundColor: c.hex, border: `2px solid ${BORDER}`, flexShrink: 0 }} />
+                    <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '24px', color: DARK, margin: 0 }}>{c.label}</h3>
                   </div>
-                  <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', color: 'rgba(237,235,230,0.7)', lineHeight: 1.75, margin: 0 }}>{c.desc}</p>
+                  <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', color: MUTED, lineHeight: 1.75, margin: 0 }}>{c.desc}</p>
                 </div>
               </motion.div>
             ))}

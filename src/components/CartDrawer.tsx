@@ -182,7 +182,7 @@ export default function CartDrawer() {
                           src={item.model.image.replace('.png', '.jpg')}
                           alt={item.model.name}
                           onError={e => { (e.currentTarget as HTMLImageElement).src = item.model.image; }}
-                          style={{ width: '80px', height: '60px', objectFit: 'contain', flexShrink: 0 }}
+                          style={{ width: '80px', height: '60px', objectFit: 'contain', flexShrink: 0, backgroundColor: '#FFFFFF', borderRadius: '6px', padding: '4px' }}
                         />
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '16px', color: BEIGE, margin: '0 0 4px' }}>

@@ -72,6 +72,10 @@ export default function GuideDetail() {
   const { slug } = useParams();
   const guide = slug ? getGuide(slug) : undefined;
 
+  // Same route (/guides/:slug) stays mounted across related-guide clicks, so
+  // reset the scroll to the top of the new guide whenever the slug changes.
+  useEffect(() => { window.scrollTo(0, 0); }, [slug]);
+
   useEffect(() => {
     if (!guide) return;
     const prevTitle = document.title;

@@ -4,10 +4,12 @@ import { X, ShoppingCart, Plus, Minus, CheckCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../lib/supabase';
 
-const DARK  = '#1C1C1C';
-const GOLD  = '#C9A870';
-const BEIGE = '#F5F2EC';
-const BORDER = '#2A2A2A';
+const DARK    = '#1C1C1C';   // text on gold buttons
+const GOLD    = '#C9A870';
+const TEXT    = '#1C1C1C';   // main text (light cart)
+const SURFACE = '#FFFFFF';   // drawer background
+const SUBTLE  = '#F5F2EC';   // inputs / item tiles
+const BORDER  = '#E0DCD4';
 
 function formatPrice(n: number) {
   return `₪${n.toLocaleString('he-IL')}`;
@@ -113,7 +115,7 @@ export default function CartDrawer() {
               position: 'fixed', top: 0, right: 0, bottom: 0,
               width: '100%', maxWidth: '420px',
               zIndex: 999,
-              backgroundColor: DARK,
+              backgroundColor: SURFACE,
               display: 'flex', flexDirection: 'column',
               borderLeft: `1px solid ${BORDER}`,
             }}
@@ -122,14 +124,14 @@ export default function CartDrawer() {
             {/* Header */}
             <div style={{ padding: '20px 24px', borderBottom: `1px solid ${BORDER}` }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                <img src="/assets/logo.png" alt="SPINZ" style={{ height: '36px', width: 'auto', objectFit: 'contain', filter: 'invert(1) brightness(2)', opacity: 0.9 }} />
-                <button onClick={closeCart} style={{ color: BEIGE, background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
+                <img src="/assets/logo.png" alt="SPINZ" style={{ height: '36px', width: 'auto', objectFit: 'contain', opacity: 0.9 }} />
+                <button onClick={closeCart} style={{ color: TEXT, background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
                   <X size={22} />
                 </button>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <ShoppingCart size={18} style={{ color: GOLD }} />
-                <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '18px', color: BEIGE, margin: 0 }}>
+                <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '18px', color: TEXT, margin: 0 }}>
                   עגלת קניות
                 </h2>
                 {totalCount > 0 && (
@@ -153,8 +155,8 @@ export default function CartDrawer() {
             >
               {items.length === 0 ? (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '16px', opacity: 0.5 }}>
-                  <ShoppingCart size={48} style={{ color: BEIGE }} />
-                  <p style={{ fontFamily: "'Heebo', sans-serif", color: BEIGE, fontSize: '15px', margin: 0 }}>
+                  <ShoppingCart size={48} style={{ color: TEXT }} />
+                  <p style={{ fontFamily: "'Heebo', sans-serif", color: TEXT, fontSize: '15px', margin: 0 }}>
                     העגלה ריקה
                   </p>
                 </div>
@@ -169,7 +171,7 @@ export default function CartDrawer() {
                         exit={{ opacity: 0, x: -20 }}
                         transition={{ duration: 0.3 }}
                         style={{
-                          backgroundColor: 'rgba(255,255,255,0.05)',
+                          backgroundColor: '#F5F2EC',
                           border: `1px solid ${BORDER}`,
                           borderRadius: '8px',
                           padding: '16px',
@@ -185,7 +187,7 @@ export default function CartDrawer() {
                           style={{ width: '80px', height: '60px', objectFit: 'contain', flexShrink: 0, backgroundColor: '#FFFFFF', borderRadius: '6px', padding: '4px' }}
                         />
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '16px', color: BEIGE, margin: '0 0 4px' }}>
+                          <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '16px', color: TEXT, margin: '0 0 4px' }}>
                             {item.model.name}
                           </h3>
                           <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 700, color: GOLD }}>
@@ -195,16 +197,16 @@ export default function CartDrawer() {
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
                           <button
                             onClick={() => updateQuantity(item.model.id, item.quantity + 1)}
-                            style={{ width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '4px', color: BEIGE, cursor: 'pointer' }}
+                            style={{ width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.06)', border: 'none', borderRadius: '4px', color: TEXT, cursor: 'pointer' }}
                           >
                             <Plus size={14} />
                           </button>
-                          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, color: BEIGE, minWidth: '20px', textAlign: 'center' }}>
+                          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, color: TEXT, minWidth: '20px', textAlign: 'center' }}>
                             {item.quantity}
                           </span>
                           <button
                             onClick={() => updateQuantity(item.model.id, item.quantity - 1)}
-                            style={{ width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.08)', border: 'none', borderRadius: '4px', color: item.quantity === 1 ? '#CC4400' : BEIGE, cursor: 'pointer' }}
+                            style={{ width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.06)', border: 'none', borderRadius: '4px', color: item.quantity === 1 ? '#CC4400' : TEXT, cursor: 'pointer' }}
                           >
                             <Minus size={14} />
                           </button>
@@ -221,11 +223,11 @@ export default function CartDrawer() {
               {ordered && (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                  style={{ position: 'absolute', inset: 0, backgroundColor: DARK, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', zIndex: 10 }}
+                  style={{ position: 'absolute', inset: 0, backgroundColor: SURFACE, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', zIndex: 10 }}
                 >
                   <CheckCircle size={48} style={{ color: GOLD }} />
                   <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '22px', color: '#EDEBE6', margin: 0 }}>ההזמנה התקבלה!</h3>
-                  <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: '#888', margin: 0 }}>נחזור אליך בקרוב</p>
+                  <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: "#6A6862", margin: 0 }}>נחזור אליך בקרוב</p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -236,7 +238,7 @@ export default function CartDrawer() {
                 <motion.div
                   initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
                   transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                  style={{ position: 'absolute', inset: 0, backgroundColor: DARK, display: 'flex', flexDirection: 'column', zIndex: 5 }}
+                  style={{ position: 'absolute', inset: 0, backgroundColor: SURFACE, display: 'flex', flexDirection: 'column', zIndex: 5 }}
                   dir="rtl"
                 >
                   {/* Header */}
@@ -244,11 +246,11 @@ export default function CartDrawer() {
                     <button
                       onClick={() => setStep('cart')}
                       aria-label="חזרה לעגלה"
-                      style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', padding: '10px', margin: '-10px', fontSize: '20px', lineHeight: 1 }}
+                      style={{ background: 'none', border: 'none', color: "#6A6862", cursor: 'pointer', padding: '10px', margin: '-10px', fontSize: '20px', lineHeight: 1 }}
                     >
                       →
                     </button>
-                    <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '17px', color: BEIGE, margin: 0 }}>פרטי משלוח</h3>
+                    <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '17px', color: TEXT, margin: 0 }}>פרטי משלוח</h3>
                   </div>
 
                   {/* Form */}
@@ -260,7 +262,7 @@ export default function CartDrawer() {
                       { key: 'address', label: 'כתובת למשלוח *', placeholder: 'רחוב, עיר, מיקוד', type: 'text' },
                     ].map(({ key, label, placeholder, type }) => (
                       <div key={key}>
-                        <label style={{ display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: formErrors[key] ? '#FF6B6B' : '#888', letterSpacing: '0.1em', marginBottom: '6px', textTransform: 'uppercase' }}>
+                        <label style={{ display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: formErrors[key] ? '#FF6B6B' : "#6A6862", letterSpacing: '0.1em', marginBottom: '6px', textTransform: 'uppercase' }}>
                           {label}
                         </label>
                         <input
@@ -273,9 +275,9 @@ export default function CartDrawer() {
                           onChange={e => { setForm(f => ({ ...f, [key]: e.target.value })); setFormErrors(f => ({ ...f, [key]: false })); }}
                           style={{
                             width: '100%', padding: '11px 14px',
-                            backgroundColor: '#252525',
+                            backgroundColor: SUBTLE,
                             border: `1px solid ${formErrors[key] ? '#FF6B6B' : BORDER}`,
-                            borderRadius: '8px', color: BEIGE,
+                            borderRadius: '8px', color: TEXT,
                             fontFamily: "'Heebo', sans-serif", fontSize: '14px',
                             outline: 'none', direction: key === 'email' || key === 'phone' ? 'ltr' : 'rtl',
                             boxSizing: 'border-box',
@@ -286,12 +288,12 @@ export default function CartDrawer() {
                     ))}
 
                     {/* Summary */}
-                    <div style={{ backgroundColor: '#252525', border: `1px solid ${BORDER}`, borderRadius: '8px', padding: '14px 16px', marginTop: '8px' }}>
+                    <div style={{ backgroundColor: SUBTLE, border: `1px solid ${BORDER}`, borderRadius: '8px', padding: '14px 16px', marginTop: '8px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                        <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#888' }}>סה"כ להזמנה</span>
+                        <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: "#6A6862" }}>סה"כ להזמנה</span>
                         <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 700, color: GOLD }}>{formatPrice(total)}</span>
                       </div>
-                      <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#555', margin: 0 }}>כולל מע"מ ומשלוח</p>
+                      <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: "#9A9690", margin: 0 }}>כולל מע"מ ומשלוח</p>
                     </div>
                   </div>
 
@@ -333,7 +335,7 @@ export default function CartDrawer() {
             {items.length > 0 && (
               <div style={{ padding: '24px', borderTop: `1px solid ${BORDER}` }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: '#888' }}>סה"כ</span>
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: "#6A6862" }}>סה"כ</span>
                   <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '22px', fontWeight: 800, color: GOLD }}>
                     {formatPrice(total)}
                   </span>
@@ -362,14 +364,14 @@ export default function CartDrawer() {
                   onClick={clearCart}
                   style={{
                     width: '100%', marginTop: '10px',
-                    backgroundColor: 'transparent', color: '#666',
+                    backgroundColor: 'transparent', color: "#6A6862",
                     border: 'none',
                     fontFamily: "'Heebo', sans-serif",
                     fontSize: '12px', cursor: 'pointer',
                     letterSpacing: '0.1em',
                   }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = BEIGE; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = '#666'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = TEXT; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = "#6A6862"; }}
                 >
                   רוקן עגלה
                 </button>

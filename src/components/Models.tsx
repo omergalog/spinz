@@ -528,12 +528,12 @@ export default function Models() {
                 >
                   <AnimatePresence mode="wait">
                     {added ? (
-                      <motion.span key="check" initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} transition={{ duration: 0.2 }} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Check size={16} /> נוסף לעגלה!
+                      <motion.span key="check" dir="rtl" initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} transition={{ duration: 0.2 }} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        נוסף לעגלה! <Check size={16} />
                       </motion.span>
                     ) : (
-                      <motion.span key="cart" initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} transition={{ duration: 0.2 }} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <ShoppingCart size={16} /> {presale ? 'הבטיחו את שלכם' : 'הוסף לעגלה'}
+                      <motion.span key="cart" dir="rtl" initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} transition={{ duration: 0.2 }} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        הוסיפו לעגלה <ShoppingCart size={16} />
                       </motion.span>
                     )}
                   </AnimatePresence>

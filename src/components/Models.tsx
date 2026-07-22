@@ -19,6 +19,9 @@ export default function Models() {
   const isInView = useInView(ref, { once: true, margin: '-60px' });
   const headingRef = useRef<HTMLDivElement>(null);
   const headingInView = useInView(headingRef, { once: true, margin: '-40px' });
+  // Second heading ref for the desktop copy that sits above the bike image
+  const headingRefLeft = useRef<HTMLDivElement>(null);
+  const headingInViewLeft = useInView(headingRefLeft, { once: true, margin: '-40px' });
 
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState(0);
@@ -105,6 +108,126 @@ export default function Models() {
     setTimeout(() => setAdded(false), 2000);
   };
 
+  // The upper block (label → heading → subtitle → rating → presale banner).
+  // Rendered in two spots: on mobile it stays above the selectors; on desktop
+  // it moves to the left column, above the bike image. Each copy gets its own
+  // heading ref so the masked slide-in animation triggers independently.
+  const renderHeader = (
+    hRef: React.RefObject<HTMLDivElement>,
+    hInView: boolean,
+    withDivider = false,
+  ) => (
+    <>
+      {/* Label */}
+      <motion.span
+        initial={{ opacity: 0 }}
+        animate={isInView ? { opacity: 1 } : {}}
+        transition={{ duration: 0.7 }}
+        style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', letterSpacing: '0.4em', textTransform: 'uppercase', color: MUTED, display: 'block', marginBottom: '12px' }}
+      >
+        הדגם שלנו
+      </motion.span>
+
+      {/* Heading */}
+      <div ref={hRef} style={{ overflow: 'hidden', marginBottom: '8px' }}>
+        <motion.h2
+          initial={{ y: '105%' }}
+          animate={hInView ? { y: '0%' } : {}}
+          transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1], delay: 0.08 }}
+          style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(32px, 5vw, 56px)', color: DARK, letterSpacing: '-0.02em', lineHeight: 1, margin: 0 }}
+        >
+          SPINZ Urban
+        </motion.h2>
+      </div>
+
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: MUTED, lineHeight: 1.6, margin: '0 0 32px' }}
+      >
+        סינגל ספיד אורבני. שלדת אלומיניום, עיצוב שאי אפשר להתעלם ממנו.
+      </motion.p>
+
+      {/* Rating row */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={isInView ? { opacity: 1 } : {}}
+        transition={{ duration: 0.6, delay: 0.22 }}
+        style={{ marginTop: '-18px', marginBottom: '28px' }}
+      >
+        <Link
+          to="/reviews"
+          style={{
+            display: 'inline-flex', alignItems: 'center', gap: '8px',
+            textDecoration: 'none', padding: '8px 0', cursor: 'pointer',
+          }}
+        >
+          <span style={{ display: 'flex', gap: '2px' }}>
+            {[1, 2, 3, 4, 5].map(i => (
+              <Star
+                key={i}
+                size={15}
+                fill={i <= Math.round(reviewStats.avg) ? '#C9A870' : 'none'}
+                stroke="#C9A870"
+                strokeWidth={1.5}
+              />
+            ))}
+          </span>
+          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 700, color: DARK }}>
+            {reviewStats.avg.toFixed(1)}
+          </span>
+          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: MUTED, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+            {reviewStats.count >= 5 ? `${reviewStats.count} ביקורות` : 'המלצות מרוכבים'}
+          </span>
+        </Link>
+      </motion.div>
+
+      {/* Presale callout – prominent launch-price banner */}
+      {presale && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.24 }}
+          style={{
+            position: 'relative',
+            overflow: 'hidden',
+            background: 'linear-gradient(135deg, #1C1C1C 0%, #2A2620 100%)',
+            borderRadius: '12px',
+            padding: '16px 18px',
+            marginBottom: withDivider ? '28px' : 0,
+            border: '1px solid rgba(201,168,112,0.35)',
+          }}
+        >
+          <div aria-hidden style={{
+            position: 'absolute', top: 0, insetInlineEnd: 0, width: '120px', height: '100%',
+            background: 'radial-gradient(circle at 100% 0%, rgba(201,168,112,0.18) 0%, transparent 70%)',
+            pointerEvents: 'none',
+          }} />
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span style={{
+              fontSize: '11px', fontWeight: 900, letterSpacing: '0.12em',
+              color: '#1C1C1C', backgroundColor: '#C9A870',
+              padding: '4px 10px', borderRadius: '5px', whiteSpace: 'nowrap', flexShrink: 0,
+            }}>
+              PRE-SALE
+            </span>
+            <div style={{ lineHeight: 1.35 }}>
+              <div style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 800, color: '#EDEBE6' }}>
+                מהדורת השקה מוגבלת
+              </div>
+              <div style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', color: 'rgba(237,235,230,0.7)' }}>
+                ל-{presaleCfg.presaleUnits} הרוכבים הראשונים בלבד
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {withDivider && <div style={{ height: '1px', backgroundColor: BORDER, margin: '28px 0' }} />}
+    </>
+  );
+
   return (
     <section
       ref={ref}
@@ -119,8 +242,14 @@ export default function Models() {
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col lg:flex-row min-h-[80vh]">
 
-          {/* RIGHT – image / 3D viewer */}
-          <div className="lg:flex-1 flex items-center justify-center bg-white p-4 lg:p-8 order-1 lg:order-2 min-h-[50vw] lg:min-h-0" style={{ position: 'relative' }}>
+          {/* LEFT on desktop – header (desktop only) + image */}
+          <div className="lg:flex-1 flex flex-col bg-white p-4 lg:p-8 order-1 lg:order-2 min-h-[50vw] lg:min-h-0">
+            {/* Header moved here on desktop to balance the layout (mobile keeps it in the selector column) */}
+            <div className="hidden lg:block" style={{ marginBottom: '20px' }}>
+              {renderHeader(headingRefLeft, headingInViewLeft)}
+            </div>
+            {/* Image area */}
+            <div className="flex-1 flex items-center justify-center" style={{ position: 'relative', minHeight: 0 }}>
             {/* 3D viewer for beige disabled for now – .glb loads too slowly; restore when optimized */}
             <AnimatePresence mode="wait">
               <motion.img
@@ -161,118 +290,16 @@ export default function Models() {
                 </motion.div>
               )}
             </AnimatePresence>
+            </div>
           </div>
 
-          {/* LEFT – selector */}
+          {/* RIGHT on desktop – selector */}
           <div className="lg:w-[480px] flex flex-col justify-center p-5 pt-3 lg:p-16 order-2 lg:order-1" style={{ borderLeft: `1px solid ${BORDER}` }}>
 
-            {/* Label */}
-            <motion.span
-              initial={{ opacity: 0 }}
-              animate={isInView ? { opacity: 1 } : {}}
-              transition={{ duration: 0.7 }}
-              style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', letterSpacing: '0.4em', textTransform: 'uppercase', color: MUTED, display: 'block', marginBottom: '12px' }}
-            >
-              הדגם שלנו
-            </motion.span>
-
-            {/* Heading */}
-            <div ref={headingRef} style={{ overflow: 'hidden', marginBottom: '8px' }}>
-              <motion.h2
-                initial={{ y: '105%' }}
-                animate={headingInView ? { y: '0%' } : {}}
-                transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1], delay: 0.08 }}
-                style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(32px, 5vw, 56px)', color: DARK, letterSpacing: '-0.02em', lineHeight: 1, margin: 0 }}
-              >
-                SPINZ Urban
-              </motion.h2>
+            {/* Header — mobile only; on desktop it lives above the image (left column) */}
+            <div className="lg:hidden">
+              {renderHeader(headingRef, headingInView, true)}
             </div>
-
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: MUTED, lineHeight: 1.6, margin: '0 0 32px' }}
-            >
-              סינגל ספיד אורבני. שלדת אלומיניום, עיצוב שאי אפשר להתעלם ממנו.
-            </motion.p>
-
-            {/* Rating row */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={isInView ? { opacity: 1 } : {}}
-              transition={{ duration: 0.6, delay: 0.22 }}
-              style={{ marginTop: '-18px', marginBottom: '28px' }}
-            >
-              <Link
-                to="/reviews"
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: '8px',
-                  textDecoration: 'none', padding: '8px 0', cursor: 'pointer',
-                }}
-              >
-                <span style={{ display: 'flex', gap: '2px' }}>
-                  {[1, 2, 3, 4, 5].map(i => (
-                    <Star
-                      key={i}
-                      size={15}
-                      fill={i <= Math.round(reviewStats.avg) ? '#C9A870' : 'none'}
-                      stroke="#C9A870"
-                      strokeWidth={1.5}
-                    />
-                  ))}
-                </span>
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 700, color: DARK }}>
-                  {reviewStats.avg.toFixed(1)}
-                </span>
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: MUTED, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
-                  {reviewStats.count >= 5 ? `${reviewStats.count} ביקורות` : 'המלצות מרוכבים'}
-                </span>
-              </Link>
-            </motion.div>
-
-            {/* Presale callout – prominent launch-price banner */}
-            {presale && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: 0.24 }}
-                style={{
-                  position: 'relative',
-                  overflow: 'hidden',
-                  background: 'linear-gradient(135deg, #1C1C1C 0%, #2A2620 100%)',
-                  borderRadius: '12px',
-                  padding: '16px 18px',
-                  marginBottom: '28px',
-                  border: '1px solid rgba(201,168,112,0.35)',
-                }}
-              >
-                <div aria-hidden style={{
-                  position: 'absolute', top: 0, insetInlineEnd: 0, width: '120px', height: '100%',
-                  background: 'radial-gradient(circle at 100% 0%, rgba(201,168,112,0.18) 0%, transparent 70%)',
-                  pointerEvents: 'none',
-                }} />
-                <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <span style={{
-                    fontSize: '11px', fontWeight: 900, letterSpacing: '0.12em',
-                    color: '#1C1C1C', backgroundColor: '#C9A870',
-                    padding: '4px 10px', borderRadius: '5px', whiteSpace: 'nowrap', flexShrink: 0,
-                  }}>
-                    PRE-SALE
-                  </span>
-                  <div style={{ lineHeight: 1.35 }}>
-                    <div style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 800, color: '#EDEBE6' }}>
-                      מהדורת השקה מוגבלת
-                    </div>
-                    <div style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', color: 'rgba(237,235,230,0.7)' }}>
-                      ל-{presaleCfg.presaleUnits} הרוכבים הראשונים בלבד
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            <div style={{ height: '1px', backgroundColor: BORDER, marginBottom: '28px' }} />
 
             {/* Color selector */}
             <motion.div

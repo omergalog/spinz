@@ -228,6 +228,111 @@ export default function Models() {
     </>
   );
 
+  // Colour + size pickers (+ presale quota line). Like the header, rendered in
+  // one spot per breakpoint: on desktop it joins the header in the left column
+  // above the image; on mobile it stays in the selector column.
+  const renderPicker = () => (
+    <>
+      {/* Color selector */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6, delay: 0.25 }}
+        style={{ marginBottom: '28px' }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: DARK, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+            צבע
+          </span>
+          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: color.hex, fontWeight: 700 }}>
+            {color.label}
+          </span>
+        </div>
+
+        <div style={{ display: 'flex', gap: '10px' }}>
+          {colorVariants.map((c, i) => (
+            <button
+              key={c.id}
+              onClick={() => setSelectedColor(i)}
+              title={c.label}
+              style={{
+                width: '38px',
+                height: '38px',
+                borderRadius: '50%',
+                backgroundColor: c.hex,
+                border: selectedColor === i ? `3px solid ${c.hex}` : '3px solid transparent',
+                cursor: 'pointer',
+                padding: 0,
+                transition: 'all 0.2s',
+                boxShadow: selectedColor === i ? `0 0 0 2px #FFFFFF, 0 0 0 4px ${c.hex}` : 'none',
+              }}
+            />
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Size selector */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={isInView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6, delay: 0.32 }}
+        style={{ marginBottom: '32px' }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: DARK, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+            מידה
+          </span>
+        </div>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          {sizeVariants.map((s, i) => (
+            <button
+              key={s.id}
+              onClick={() => setSelectedSize(i)}
+              style={{
+                width: '60px',
+                height: '44px',
+                borderRadius: '8px',
+                backgroundColor: selectedSize === i ? DARK : 'transparent',
+                color: selectedSize === i ? '#EDEBE6' : DARK,
+                border: `1px solid ${selectedSize === i ? DARK : BORDER}`,
+                fontFamily: "'Heebo', sans-serif",
+                fontSize: '15px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+              }}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Presale quota for this exact variant */}
+        {presaleCfg.active && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginTop: '14px' }}>
+            <span style={{
+              width: '7px', height: '7px', borderRadius: '50%', flexShrink: 0,
+              backgroundColor: presaleSoldOut ? '#9A9690' : quotaLeft <= 5 ? '#C17A56' : color.hex,
+              border: !presaleSoldOut && quotaLeft > 5 ? '1px solid rgba(0,0,0,0.15)' : 'none',
+              boxShadow: !presaleSoldOut && quotaLeft <= 5 ? '0 0 6px rgba(193,122,86,0.6)' : 'none',
+              animation: !presaleSoldOut && quotaLeft <= 5 ? 'stockPulse 1.4s ease-in-out infinite' : 'none',
+            }} />
+            <span style={{
+              fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 700,
+              color: presaleSoldOut ? '#6A6862' : quotaLeft <= 5 ? '#B3543C' : color.hex,
+            }}>
+              {presaleSoldOut
+                ? `מכסת מחיר ההשקה ל${color.label} ${size.label} אזלה`
+                : quotaLeft <= 5
+                  ? `נשארו רק ${quotaLeft} במחיר השקה · ${color.label} ${size.label}`
+                  : `${quotaLeft} יחידות במחיר השקה · ${color.label} ${size.label}`}
+            </span>
+          </div>
+        )}
+      </motion.div>
+    </>
+  );
+
   return (
     <section
       ref={ref}
@@ -244,9 +349,11 @@ export default function Models() {
 
           {/* LEFT on desktop – header (desktop only) + image */}
           <div className="lg:flex-1 flex flex-col bg-white p-4 lg:p-8 order-1 lg:order-2 min-h-[50vw] lg:min-h-0">
-            {/* Header moved here on desktop to balance the layout (mobile keeps it in the selector column) */}
+            {/* Header + pickers moved here on desktop to balance the layout and keep
+                the choosing experience together (mobile keeps them in the selector column) */}
             <div className="hidden lg:block" style={{ marginBottom: '20px' }}>
-              {renderHeader(headingRefLeft, headingInViewLeft)}
+              {renderHeader(headingRefLeft, headingInViewLeft, true)}
+              {renderPicker()}
             </div>
             {/* Image area */}
             <div className="flex-1 flex items-center justify-center" style={{ position: 'relative', minHeight: 0 }}>
@@ -301,105 +408,10 @@ export default function Models() {
               {renderHeader(headingRef, headingInView, true)}
             </div>
 
-            {/* Color selector */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.25 }}
-              style={{ marginBottom: '28px' }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: DARK, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                  צבע
-                </span>
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: color.hex, fontWeight: 700 }}>
-                  {color.label}
-                </span>
-              </div>
-
-              <div style={{ display: 'flex', gap: '10px' }}>
-                {colorVariants.map((c, i) => (
-                  <button
-                    key={c.id}
-                    onClick={() => setSelectedColor(i)}
-                    title={c.label}
-                    style={{
-                      width: '38px',
-                      height: '38px',
-                      borderRadius: '50%',
-                      backgroundColor: c.hex,
-                      border: selectedColor === i ? `3px solid ${c.hex}` : '3px solid transparent',
-                      cursor: 'pointer',
-                      padding: 0,
-                      transition: 'all 0.2s',
-                      boxShadow: selectedColor === i ? `0 0 0 2px #FFFFFF, 0 0 0 4px ${c.hex}` : 'none',
-                    }}
-                  />
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Size selector */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.32 }}
-              style={{ marginBottom: '32px' }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: DARK, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                  מידה
-                </span>
-              </div>
-              <div style={{ display: 'flex', gap: '10px' }}>
-                {sizeVariants.map((s, i) => (
-                  <button
-                    key={s.id}
-                    onClick={() => setSelectedSize(i)}
-                    style={{
-                      width: '60px',
-                      height: '44px',
-                      borderRadius: '8px',
-                      backgroundColor: selectedSize === i ? DARK : 'transparent',
-                      color: selectedSize === i ? '#EDEBE6' : DARK,
-                      border: `1px solid ${selectedSize === i ? DARK : BORDER}`,
-                      fontFamily: "'Heebo', sans-serif",
-                      fontSize: '15px',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                    }}
-                  >
-                    {s.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* Presale quota for this exact variant */}
-              {presaleCfg.active && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginTop: '14px' }}>
-                  <span style={{
-                    width: '7px', height: '7px', borderRadius: '50%', flexShrink: 0,
-                    // Normal state follows the selected colour; low stock and
-                    // sold out keep their warning colours so the signal survives
-                    backgroundColor: presaleSoldOut ? '#9A9690' : quotaLeft <= 5 ? '#C17A56' : color.hex,
-                    border: !presaleSoldOut && quotaLeft > 5 ? '1px solid rgba(0,0,0,0.15)' : 'none',
-                    boxShadow: !presaleSoldOut && quotaLeft <= 5 ? '0 0 6px rgba(193,122,86,0.6)' : 'none',
-                    animation: !presaleSoldOut && quotaLeft <= 5 ? 'stockPulse 1.4s ease-in-out infinite' : 'none',
-                  }} />
-                  <span style={{
-                    fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 700,
-                    color: presaleSoldOut ? '#6A6862' : quotaLeft <= 5 ? '#B3543C' : color.hex,
-                  }}>
-                    {presaleSoldOut
-                      ? `מכסת מחיר ההשקה ל${color.label} ${size.label} אזלה`
-                      : quotaLeft <= 5
-                        ? `נשארו רק ${quotaLeft} במחיר השקה · ${color.label} ${size.label}`
-                        : `${quotaLeft} יחידות במחיר השקה · ${color.label} ${size.label}`}
-                  </span>
-                </div>
-              )}
-            </motion.div>
+            {/* Pickers — mobile only; on desktop they live above the image (left column) */}
+            <div className="lg:hidden">
+              {renderPicker()}
+            </div>
 
             {/* Quick specs */}
             <motion.div

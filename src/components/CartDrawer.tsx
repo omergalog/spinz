@@ -7,8 +7,9 @@ import { supabase } from '../lib/supabase';
 const DARK    = '#1C1C1C';   // text on gold buttons
 const GOLD    = '#C9A870';
 const TEXT    = '#1C1C1C';   // main text (light cart)
-const SURFACE = '#FFFFFF';   // drawer background
-const SUBTLE  = '#F5F2EC';   // inputs / item tiles
+const SURFACE = '#F5F2EC';   // drawer background (cream)
+const SUBTLE  = '#FFFFFF';   // inputs / item tiles (white, so the white-bg
+                             // bike photo blends into them seamlessly)
 const BORDER  = '#E0DCD4';
 
 function formatPrice(n: number) {
@@ -171,7 +172,7 @@ export default function CartDrawer() {
                         exit={{ opacity: 0, x: -20 }}
                         transition={{ duration: 0.3 }}
                         style={{
-                          backgroundColor: '#F5F2EC',
+                          backgroundColor: SUBTLE,
                           border: `1px solid ${BORDER}`,
                           borderRadius: '8px',
                           padding: '16px',
@@ -184,7 +185,7 @@ export default function CartDrawer() {
                           src={item.model.image.replace('.png', '.jpg')}
                           alt={item.model.name}
                           onError={e => { (e.currentTarget as HTMLImageElement).src = item.model.image; }}
-                          style={{ width: '80px', height: '60px', objectFit: 'contain', flexShrink: 0, backgroundColor: '#FFFFFF', borderRadius: '6px', padding: '4px' }}
+                          style={{ width: '80px', height: '60px', objectFit: 'contain', flexShrink: 0 }}
                         />
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '16px', color: TEXT, margin: '0 0 4px' }}>

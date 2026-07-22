@@ -157,6 +157,7 @@ export default function Footer() {
               { title: 'מידע', links: [
                 { label: 'שאלות ותשובות', to: '/faq' },
                 { label: 'מדריכים', to: '/guides' },
+                { label: 'תקנון ותנאי שימוש', to: '/regulations' },
                 { label: 'תנאי מכירה מוקדמת', to: '/presale-terms' },
                 { label: 'ביטול עסקה', to: '/cancel-order' },
                 { label: 'צור קשר', to: '/contact' },
@@ -204,6 +205,20 @@ export default function Footer() {
               © 2026 Spinz. כל הזכויות שמורות.
             </p>
             <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+              <button
+                onClick={() => navigate('/regulations')}
+                style={{
+                  fontFamily: "'Heebo', sans-serif", fontSize: '12px',
+                  color: '#888', background: 'none', border: 'none',
+                  cursor: 'pointer', textDecoration: 'underline',
+                  textUnderlineOffset: '3px', transition: 'color 0.2s',
+                  padding: '10px 0',
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = '#C9A870'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = '#888'; }}
+              >
+                תקנון ותנאי שימוש
+              </button>
               <button
                 onClick={() => navigate('/terms')}
                 style={{

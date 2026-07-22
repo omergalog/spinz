@@ -4,7 +4,7 @@ import Lenis from 'lenis';
 export function useLenis() {
   useEffect(() => {
     // Lenis applies transforms to html/body which breaks position:fixed on mobile.
-    // Native mobile scroll is smooth enough — only enable on pointer:fine (desktop).
+    // Native mobile scroll is smooth enough – only enable on pointer:fine (desktop).
     if (window.matchMedia('(pointer: coarse)').matches) return;
     // Debug escape hatch: ?noLenis disables smooth scroll (used for automated visual checks)
     if (new URLSearchParams(window.location.search).has('noLenis')) return;

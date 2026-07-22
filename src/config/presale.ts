@@ -16,7 +16,7 @@ export type PresaleSettings = {
   deadline: Date;
 };
 
-/** ברירת מחדל — מוצגת מיד עד שה-DB עונה (מונע הבהוב) */
+/** ברירת מחדל – מוצגת מיד עד שה-DB עונה (מונע הבהוב) */
 export const PRESALE_DEFAULTS: PresaleSettings = {
   active: true,
   regularPrice: 1200,
@@ -31,7 +31,7 @@ export const PRESALE_COPY = {
   barCta: 'להבטחת מקום',
 };
 
-/** מלאי לכל צבע — נפילה בלבד; באתר מוצג המלאי האמיתי מ-products */
+/** מלאי לכל צבע – נפילה בלבד; באתר מוצג המלאי האמיתי מ-products */
 const STOCK_FALLBACK: Record<string, number> = { mat: 14, beige: 11, olive: 9 };
 
 /**

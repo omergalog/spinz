@@ -196,12 +196,12 @@ export default function LeadForm() {
               השאר פרטים. נחזור אליך תוך יום עסקים אחד עם כל מה שצריך לדעת.
             </motion.p>
 
-            {/* Brand block — desktop only (on mobile it appears after the form) */}
+            {/* Brand block – desktop only (on mobile it appears after the form) */}
             <BrandBlock className="hidden md:flex" textLight={TEXT_LIGHT} />
 
           </div>
 
-          {/* Right: form — on mobile this comes before brand block */}
+          {/* Right: form – on mobile this comes before brand block */}
           <motion.div
             initial={{ opacity: 0, y: 32 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -439,7 +439,7 @@ export default function LeadForm() {
             </AnimatePresence>
           </motion.div>
 
-          {/* Brand block — mobile only (on desktop it's inside the left column) */}
+          {/* Brand block – mobile only (on desktop it's inside the left column) */}
           <BrandBlock className="flex md:hidden w-full" textLight={TEXT_LIGHT} />
 
         </div>

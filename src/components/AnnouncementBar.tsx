@@ -90,7 +90,7 @@ export default function AnnouncementBar() {
           מחיר השקה ל-100 הראשונים
         </span>
 
-        {/* Countdown — hidden on the narrowest screens to avoid crowding */}
+        {/* Countdown – hidden on the narrowest screens to avoid crowding */}
         <span
           className="presale-countdown"
           style={{

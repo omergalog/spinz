@@ -70,7 +70,7 @@ export default function Lifestyle() {
             display: 'block',
           }}
         >
-          Spinz — Urban Ride
+          Spinz – Urban Ride
         </motion.span>
 
         <div style={{ overflow: 'hidden', marginBottom: '20px' }}>

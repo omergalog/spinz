@@ -7,7 +7,7 @@ export default function Bikes() {
     <PageShell
       eyebrow="Collection 2026"
       title="הדגמים."
-      subtitle="בחרו צבע ומידה — והאופניים שלכם בדרך. סינגל ספיד נקי, מעוצב לרחובות העיר."
+      subtitle="בחרו צבע ומידה – והאופניים שלכם בדרך. סינגל ספיד נקי, מעוצב לרחובות העיר."
       heroImage="/assets/photo-beige-bike.jpg"
       heroPosition="center 62%"
     >

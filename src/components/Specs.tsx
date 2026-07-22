@@ -62,7 +62,7 @@ const specs = [
     num: '05',
     title: 'חישוקים מחוזקים',
     sub: 'פרופיל גבוה 30 מ"מ',
-    body: 'גלגלים בעלי פרופיל גבוה — לא רק למראה אורבני מוקפד, אלא גם להבטחת עמידות גבוהה מול בורות, שפות מדרכה ובלאי עירוני.',
+    body: 'גלגלים בעלי פרופיל גבוה – לא רק למראה אורבני מוקפד, אלא גם להבטחת עמידות גבוהה מול בורות, שפות מדרכה ובלאי עירוני.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/>
@@ -75,7 +75,7 @@ const specs = [
     num: '06',
     title: 'התאמה בשנייה',
     sub: 'Quick Release',
-    body: 'מנגנון שחרור מהיר למושב המאפשר כוונון גובה מיידי ללא צורך בכלים — מושלם לאופניים משפחתיים או לכמה רוכבים.',
+    body: 'מנגנון שחרור מהיר למושב המאפשר כוונון גובה מיידי ללא צורך בכלים – מושלם לאופניים משפחתיים או לכמה רוכבים.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>

@@ -71,7 +71,7 @@ button {
 }
 
 /* ─────────────────────────────────────────
-   Scrollbar — Webkit (Chrome, Safari, Edge)
+   Scrollbar – Webkit (Chrome, Safari, Edge)
 ───────────────────────────────────────── */
 ::-webkit-scrollbar {
   width: 6px;
@@ -97,7 +97,7 @@ button {
 }
 
 /* ─────────────────────────────────────────
-   Scrollbar — Firefox / modern browsers
+   Scrollbar – Firefox / modern browsers
 ───────────────────────────────────────── */
 html {
   scrollbar-width: thin;
@@ -125,7 +125,7 @@ html {
 }
 
 /* ─────────────────────────────────────────
-   Focus visible — keyboard nav only
+   Focus visible – keyboard nav only
 ───────────────────────────────────────── */
 :focus-visible {
   outline: 2px solid #C9A870;
@@ -137,7 +137,7 @@ html {
 }
 
 /* ─────────────────────────────────────────
-   Hero — responsive typography
+   Hero – responsive typography
 ───────────────────────────────────────── */
 .hero-spinz {
   font-size: clamp(100px, 22vw, 280px);
@@ -198,7 +198,7 @@ html {
 }
 
 /* ─────────────────────────────────────────
-   LeadForm — mobile card-style fields
+   LeadForm – mobile card-style fields
 ───────────────────────────────────────── */
 /* Fix browser autofill background */
 input:-webkit-autofill,

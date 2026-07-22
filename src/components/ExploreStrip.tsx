@@ -68,7 +68,7 @@ export default function ExploreStrip() {
           <div aria-hidden style={{ flex: 1, height: '1px', backgroundColor: '#DDD8D0', marginBottom: '10px' }} className="hidden md:block" />
         </motion.div>
 
-        {/* Image cards — swipeable carousel on mobile, 3-col grid on desktop */}
+        {/* Image cards – swipeable carousel on mobile, 3-col grid on desktop */}
         <motion.div
           className="explore-scroll flex md:grid md:grid-cols-3 gap-4 lg:gap-5 overflow-x-auto md:overflow-visible snap-x snap-proximity overscroll-x-contain -mx-6 px-6 md:mx-0 md:px-0"
           style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
@@ -121,7 +121,7 @@ export default function ExploreStrip() {
                   }}
                 />
 
-                {/* Kicker — top */}
+                {/* Kicker – top */}
                 <span style={{
                   position: 'absolute', top: '20px', right: '22px',
                   fontFamily: "'Heebo', sans-serif", fontSize: '11px', fontWeight: 600,
@@ -131,7 +131,7 @@ export default function ExploreStrip() {
                   {kicker}
                 </span>
 
-                {/* Text — bottom */}
+                {/* Text – bottom */}
                 <div style={{
                   position: 'absolute', right: '22px', left: '22px', bottom: '22px',
                 }}>

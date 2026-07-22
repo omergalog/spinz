@@ -75,7 +75,7 @@ export default function SpinzVibe() {
       >
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
 
-          {/* Right column — header + story */}
+          {/* Right column – header + story */}
           <div className="flex flex-col gap-8 lg:w-1/2">
 
             <div>
@@ -137,7 +137,7 @@ export default function SpinzVibe() {
         </div>
       </div>
 
-      {/* Stats bar — full width */}
+      {/* Stats bar – full width */}
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}

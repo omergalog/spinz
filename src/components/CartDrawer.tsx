@@ -265,7 +265,7 @@ export default function CartDrawer() {
                         </label>
                         <input
                           type={type}
-                          // Email/phone hold Latin characters — force LTR so the
+                          // Email/phone hold Latin characters – force LTR so the
                           // caret and separators don't jump inside an RTL form
                           dir={type === 'email' || type === 'tel' ? 'ltr' : 'rtl'}
                           placeholder={placeholder}

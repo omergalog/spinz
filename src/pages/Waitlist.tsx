@@ -35,17 +35,17 @@ const SPECS = [
   },
   {
     num: '04', title: 'הנדסת חומרים חכמה', sub: 'אלומיניום + פלדה',
-    body: 'מזלג פלדה קדמי שסופג את הזעזועים של הכביש. השילוב המושלם לשלדת האלומיניום — חלק, שקט, ובלי להרגיש כל בור.',
+    body: 'מזלג פלדה קדמי שסופג את הזעזועים של הכביש. השילוב המושלם לשלדת האלומיניום – חלק, שקט, ובלי להרגיש כל בור.',
     icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="2" x2="12" y2="22"/><line x1="2" y1="8.5" x2="22" y2="8.5"/><line x1="2" y1="15.5" x2="22" y2="15.5"/></svg>,
   },
   {
     num: '05', title: 'חישוקים מחוזקים', sub: 'פרופיל גבוה 30 מ"מ',
-    body: 'גלגלים בעלי פרופיל גבוה — מראה אורבני מוקפד ועמידות גבוהה מול בורות ושפות מדרכה.',
+    body: 'גלגלים בעלי פרופיל גבוה – מראה אורבני מוקפד ועמידות גבוהה מול בורות ושפות מדרכה.',
     icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/><line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/></svg>,
   },
   {
     num: '06', title: 'התאמה בשנייה', sub: 'Quick Release',
-    body: 'כיוון מהיר ללא כלים. נוח להתאמה מיידית — או סתם אם חבר רוצה לעשות סיבוב.',
+    body: 'כיוון מהיר ללא כלים. נוח להתאמה מיידית – או סתם אם חבר רוצה לעשות סיבוב.',
     icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>,
   },
   {
@@ -55,7 +55,7 @@ const SPECS = [
   },
   {
     num: '08', title: 'פדלים רחבים משודרגים', sub: 'יציבות מלאה',
-    body: 'פדלים רחבים מפלסטיק קשיח — שטח פנים גדול לאחיזה בטוחה ודיווש נוח בכל נעל.',
+    body: 'פדלים רחבים מפלסטיק קשיח – שטח פנים גדול לאחיזה בטוחה ודיווש נוח בכל נעל.',
     icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="10" width="20" height="5" rx="2"/><line x1="7" y1="10" x2="7" y2="15"/><line x1="12" y1="10" x2="12" y2="15"/><line x1="17" y1="10" x2="17" y2="15"/></svg>,
   },
 ];
@@ -102,7 +102,7 @@ export default function Waitlist() {
     if (phoneClean.startsWith('+972')) phoneClean = '0' + phoneClean.slice(4);
     else if (phoneClean.startsWith('00972')) phoneClean = '0' + phoneClean.slice(5);
     else if (phoneClean.startsWith('972') && phoneClean.length === 12) phoneClean = '0' + phoneClean.slice(3);
-    if (!/^0(5[0-9]|[2-9])\d{7}$/.test(phoneClean)) { setError('מספר טלפון לא תקין — יש להזין מספר ישראלי תקני'); return; }
+    if (!/^0(5[0-9]|[2-9])\d{7}$/.test(phoneClean)) { setError('מספר טלפון לא תקין – יש להזין מספר ישראלי תקני'); return; }
     setLoading(true);
     setError('');
     const message = `[Waitlist]${color ? ` · צבע: ${color}` : ''}${size ? ` · מידה: ${size}` : ''}${marketing ? ' · הסכים לשיווק' : ''}`;
@@ -320,7 +320,7 @@ export default function Waitlist() {
             </div>
           </FadeSection>
 
-          {/* CTA — scroll to form */}
+          {/* CTA – scroll to form */}
           <FadeSection delay={0.2}>
             <div style={{ marginTop: '40px', textAlign: 'center' }}>
               {(color || size) && (
@@ -388,7 +388,7 @@ export default function Waitlist() {
         </div>
       </section>
 
-      {/* ── FORM — BEIGE ── */}
+      {/* ── FORM – BEIGE ── */}
       <section
         id="wl-form"
         className="wl-form-section"

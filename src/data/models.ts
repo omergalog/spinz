@@ -13,7 +13,7 @@ const models: BikeModel[] = [
   {
     id: 'spinz-54',
     name: 'SPINZ 54',
-    tagline: 'מידה S — גובה 160–175 ס"מ',
+    tagline: 'מידה S – גובה 160–175 ס"מ',
     image: '/assets/bike-black.png',
     price: 2290,
     accentColor: '#C9A870',
@@ -26,7 +26,7 @@ const models: BikeModel[] = [
   {
     id: 'spinz-57',
     name: 'SPINZ 57',
-    tagline: 'מידה L — גובה 175–190 ס"מ',
+    tagline: 'מידה L – גובה 175–190 ס"מ',
     image: '/assets/bike-black.png',
     price: 2290,
     accentColor: '#C9A870',

@@ -14,7 +14,7 @@ const services = [
   {
     num: '02',
     title: 'נגיש באמת',
-    body: 'סטייל לא אמור לעלות ביוקר. מחיר שסטודנט יכול להרשות לעצמו — בלי שתצטרך להתפשר.',
+    body: 'סטייל לא אמור לעלות ביוקר. מחיר שסטודנט יכול להרשות לעצמו – בלי שתצטרך להתפשר.',
   },
   {
     num: '03',
@@ -117,7 +117,7 @@ export default function BrandStatement() {
               </motion.p>
             </div>
 
-            {/* Bike image — mobile only, alongside heading */}
+            {/* Bike image – mobile only, alongside heading */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : {}}
@@ -135,7 +135,7 @@ export default function BrandStatement() {
 
           </div>
 
-          {/* Service items — 2-col on both mobile and desktop */}
+          {/* Service items – 2-col on both mobile and desktop */}
           <div className="grid grid-cols-2 gap-4 md:gap-x-16 md:gap-y-6 mt-5 md:mt-8">
             {services.map(({ num, title, body }, i) => (
               <motion.div
@@ -177,7 +177,7 @@ export default function BrandStatement() {
           </div>
         </div>
 
-        {/* LEFT (second DOM in RTL): bike image — desktop only */}
+        {/* LEFT (second DOM in RTL): bike image – desktop only */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}

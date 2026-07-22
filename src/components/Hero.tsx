@@ -47,7 +47,7 @@ export default function Hero() {
       {/* Navbar spacer */}
       <div className="h-16 md:h-20 flex-shrink-0" />
 
-      {/* Content — centered */}
+      {/* Content – centered */}
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center text-center px-6 pb-6">
         <div className="w-full max-w-4xl mx-auto flex flex-col items-center">
 

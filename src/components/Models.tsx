@@ -87,10 +87,10 @@ export default function Models() {
     addItem(
       {
         id: `spinz-${size.id}-${color.id}`,
-        name: `SPINZ ${size.id} — ${color.label}`,
+        name: `SPINZ ${size.id} – ${color.label}`,
         tagline: size.range,
         image: color.image,
-        // Must match the price shown on screen — during presale that is
+        // Must match the price shown on screen – during presale that is
         // the launch price, not the products-table price
         price: shownPrice,
         accentColor: color.hex,
@@ -119,9 +119,9 @@ export default function Models() {
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col lg:flex-row min-h-[80vh]">
 
-          {/* RIGHT — image / 3D viewer */}
+          {/* RIGHT – image / 3D viewer */}
           <div className="lg:flex-1 flex items-center justify-center bg-white p-4 lg:p-8 order-1 lg:order-2 min-h-[50vw] lg:min-h-0" style={{ position: 'relative' }}>
-            {/* 3D viewer for beige disabled for now — .glb loads too slowly; restore when optimized */}
+            {/* 3D viewer for beige disabled for now – .glb loads too slowly; restore when optimized */}
             <AnimatePresence mode="wait">
               <motion.img
                 key={color.id}
@@ -163,7 +163,7 @@ export default function Models() {
             </AnimatePresence>
           </div>
 
-          {/* LEFT — selector */}
+          {/* LEFT – selector */}
           <div className="lg:w-[480px] flex flex-col justify-center p-5 pt-3 lg:p-16 order-2 lg:order-1" style={{ borderLeft: `1px solid ${BORDER}` }}>
 
             {/* Label */}
@@ -231,7 +231,7 @@ export default function Models() {
               </Link>
             </motion.div>
 
-            {/* Presale callout — prominent launch-price banner */}
+            {/* Presale callout – prominent launch-price banner */}
             {presale && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -528,7 +528,7 @@ export default function Models() {
                 : 'משלוח עד 5 ימי עסקים · עד 13 תשלומים'}
             </motion.p>
 
-            {/* Pre-sale disclosure — required before ordering in a distance sale */}
+            {/* Pre-sale disclosure – required before ordering in a distance sale */}
             {presale && (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -542,7 +542,7 @@ export default function Models() {
                   color: '#5A5750', lineHeight: 1.6, textAlign: 'center',
                 }}
               >
-                הזמנה מוקדמת — המוצר טרם במלאי. מועד אספקה משוער:{' '}
+                הזמנה מוקדמת – המוצר טרם במלאי. מועד אספקה משוער:{' '}
                 <b style={{ color: DARK }}>{presaleCfg.arrivalLabel}</b>.
                 ניתן לבטל ולקבל החזר מלא בכל שלב לפני המסירה.{' '}
                 <Link to="/presale-terms" style={{ color: '#8A6D3B', textDecoration: 'underline', textUnderlineOffset: '2px' }}>

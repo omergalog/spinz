@@ -26,7 +26,7 @@ export default function StoryBand() {
       />
       {/* Uniform dim so text stays readable at any crop (mobile especially) */}
       <div aria-hidden style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(15,14,12,0.32)' }} />
-      {/* Scrim — darker on the right where the text sits (RTL) */}
+      {/* Scrim – darker on the right where the text sits (RTL) */}
       <div
         aria-hidden
         style={{

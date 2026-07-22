@@ -11,7 +11,7 @@ const CARD = '#FFFFFF';
 
 const INSTAGRAM_URL = 'https://instagram.com/spinz.bikes';
 
-// Placeholder UGC images — replace with real customer photos
+// Placeholder UGC images – replace with real customer photos
 const ugc = [
   '/assets/gallery-1.jpg',
   '/assets/gallery-2.jpg',
@@ -22,7 +22,7 @@ const ugc = [
 ];
 
 const partners = [
-  { name: 'קפה רוטשילד', desc: 'נקודת מפגש לרוכבים בלב העיר — הנחה לבעלי Spinz.' },
+  { name: 'קפה רוטשילד', desc: 'נקודת מפגש לרוכבים בלב העיר – הנחה לבעלי Spinz.' },
   { name: 'סדנת אופניים תל אביב', desc: 'שירות ותחזוקה מקצועי לכל דגמי Spinz.' },
   { name: 'Urban Ride Club', desc: 'קהילת רוכבים עירונית עם רכיבות שבועיות.' },
 ];
@@ -38,11 +38,11 @@ export default function Community() {
     <PageShell
       eyebrow="The Spinz Community"
       title="קהילה."
-      subtitle="Spinz זה לא רק אופניים — זו קהילה של אנשים שאוהבים את העיר ואת הרכיבה בה."
+      subtitle="Spinz זה לא רק אופניים – זו קהילה של אנשים שאוהבים את העיר ואת הרכיבה בה."
       heroImage="/assets/photo-olive-lifestyle.jpg"
       heroPosition="center 45%"
     >
-      {/* Big announcement — first community ride event */}
+      {/* Big announcement – first community ride event */}
       <section style={{ position: 'relative', overflow: 'hidden', backgroundColor: '#1C1C1C', padding: 'clamp(64px, 10vw, 130px) clamp(20px, 6vw, 64px)' }}>
         {/* Ambient glow */}
         <div style={{ position: 'absolute', top: '-20%', right: '-10%', width: '60%', height: '70%', background: 'radial-gradient(circle, rgba(201,168,112,0.16) 0%, transparent 70%)', pointerEvents: 'none' }} />
@@ -86,7 +86,7 @@ export default function Community() {
             transition={{ duration: 0.7, delay: 0.15 }}
             style={{ fontFamily: "'Heebo', sans-serif", fontSize: 'clamp(15px, 1.8vw, 19px)', color: 'rgba(237,235,230,0.82)', lineHeight: 1.75, margin: '0 0 14px', maxWidth: '660px' }}
           >
-            קהילת SPINZ היקרה — הגיע הזמן לקחת את האהבה המשותפת שלנו לעיר ולרכיבה צעד אחד קדימה.
+            קהילת SPINZ היקרה – הגיע הזמן לקחת את האהבה המשותפת שלנו לעיר ולרכיבה צעד אחד קדימה.
           </motion.p>
 
           <motion.p
@@ -96,13 +96,13 @@ export default function Community() {
             transition={{ duration: 0.7, delay: 0.22 }}
             style={{ fontFamily: "'Heebo', sans-serif", fontSize: 'clamp(14px, 1.5vw, 16px)', color: 'rgba(237,235,230,0.6)', lineHeight: 1.85, margin: '0 0 36px', maxWidth: '660px' }}
           >
-            זה לא הולך להיות עוד סתם מסלול. אנחנו מתכננים שילוב מושלם של תנועה, סטייל ואווירה עירונית כמו שרק אנחנו יודעים לייצר — ובסוף, כמו שאתם כבר יודעים, SPINZ זה לא רק אופניים. זו קהילה של אנשים שאוהבים את הדופק של העיר, את החופש שברכיבה ואת החיבורים שנוצרים על הדרך.
+            זה לא הולך להיות עוד סתם מסלול. אנחנו מתכננים שילוב מושלם של תנועה, סטייל ואווירה עירונית כמו שרק אנחנו יודעים לייצר – ובסוף, כמו שאתם כבר יודעים, SPINZ זה לא רק אופניים. זו קהילה של אנשים שאוהבים את הדופק של העיר, את החופש שברכיבה ואת החיבורים שנוצרים על הדרך.
           </motion.p>
 
           {/* Three concept pills */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px', marginBottom: '40px' }}>
             {[
-              { icon: Bike, title: 'רכיבה משותפת', body: 'יוצאים יחד לרחובות העיר — בקצב שלנו, בסטייל שלנו.' },
+              { icon: Bike, title: 'רכיבה משותפת', body: 'יוצאים יחד לרחובות העיר – בקצב שלנו, בסטייל שלנו.' },
               { icon: Coffee, title: 'עוצרים ליהנות', body: 'מתחילים ומסיימים במפגשים פתוחים בבתי הקפה והברים הכי שווים בעיר.' },
               { icon: MapPin, title: 'מתחברים על הדרך', body: 'המקומות שבהם אפשר להוריד קצב, לשתות משהו טוב ופשוט לדבר.' },
             ].map((c, i) => {
@@ -135,7 +135,7 @@ export default function Community() {
             style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '16px', justifyContent: 'space-between', borderTop: '1px solid rgba(201,168,112,0.2)', paddingTop: '28px' }}
           >
             <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', color: '#EDEBE6', margin: 0, fontWeight: 600 }}>
-              הפרטים המלאים, המיקומים והתאריכים — ייחשפו ממש בקרוב <span aria-hidden>🚲✨</span>
+              הפרטים המלאים, המיקומים והתאריכים – ייחשפו ממש בקרוב <span aria-hidden>🚲✨</span>
             </p>
             <a
               href="https://instagram.com/spinz.bikes"
@@ -155,7 +155,7 @@ export default function Community() {
             transition={{ duration: 0.7, delay: 0.38 }}
             style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: 'rgba(237,235,230,0.55)', lineHeight: 1.7, margin: '24px 0 0' }}
           >
-            בינתיים — אל תשכחו להמשיך לתייג אותנו ברכיבות שלכם <strong style={{ color: GOLD, direction: 'ltr', display: 'inline-block' }}>#SpinzBikes</strong> כדי להופיע אצלנו באתר. נתראה ברחובות!
+            בינתיים – אל תשכחו להמשיך לתייג אותנו ברכיבות שלכם <strong style={{ color: GOLD, direction: 'ltr', display: 'inline-block' }}>#SpinzBikes</strong> כדי להופיע אצלנו באתר. נתראה ברחובות!
           </motion.p>
         </div>
 

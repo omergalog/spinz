@@ -9,9 +9,9 @@ const BG = '#F5F2EC';
 const BORDER = '#E0DCD4';
 
 const photos = [
-  { id: 1, src: '/assets/gallery-1.jpg', span: 'col-span-2 row-span-2', alt: 'Spinz Pink — white rims' },
+  { id: 1, src: '/assets/gallery-1.jpg', span: 'col-span-2 row-span-2', alt: 'Spinz Pink – white rims' },
   { id: 2, src: '/assets/gallery-2.jpg', span: 'col-span-1 row-span-1', alt: 'Spinz Sage Green' },
-  { id: 3, src: '/assets/gallery-3.jpg', span: 'col-span-1 row-span-1', alt: 'Spinz — front view' },
+  { id: 3, src: '/assets/gallery-3.jpg', span: 'col-span-1 row-span-1', alt: 'Spinz – front view' },
   { id: 4, src: '/assets/gallery-4.jpg', span: 'col-span-1 row-span-1', alt: 'Spinz Army Green' },
   { id: 5, src: '/assets/gallery-5.jpg', span: 'col-span-1 row-span-1', alt: 'Spinz Burgundy' },
   { id: 6, src: '/assets/gallery-6.jpg', span: 'col-span-2 row-span-1', alt: 'Spinz 2026 Collection' },
@@ -160,7 +160,7 @@ export default function Gallery({ hideHeader = false }: { hideHeader?: boolean }
             className="text-[11px] uppercase tracking-[0.3em]"
             style={{ color: '#CCC', fontFamily: "'Heebo', sans-serif" }}
           >
-            Spinz — 2026
+            Spinz – 2026
           </span>
           <div className="h-px flex-1" style={{ backgroundColor: BORDER }} />
         </motion.div>

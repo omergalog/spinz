@@ -47,7 +47,7 @@ export default function CancelOrder() {
     });
 
     if (error) {
-      // Never lose a cancellation request — fall back to the leads table
+      // Never lose a cancellation request – fall back to the leads table
       await supabase.from('leads').insert({
         name: `[ביטול עסקה] ${form.name.trim()}`,
         email: form.email.trim() || null,

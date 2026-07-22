@@ -36,7 +36,7 @@ export default function SizesColors() {
     <PageShell
       eyebrow="Fit & Finish"
       title="מידות וצבעים."
-      subtitle="שני גדלים, שלושה צבעים — ההתאמה המושלמת לגובה שלך ולסטייל שלך."
+      subtitle="שני גדלים, שלושה צבעים – ההתאמה המושלמת לגובה שלך ולסטייל שלך."
       heroImage="/assets/photo-black-detail.jpg"
       heroPosition="center 40%"
     >
@@ -47,7 +47,7 @@ export default function SizesColors() {
             איזו מידה מתאימה לי?
           </h2>
           <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', color: MUTED, margin: '0 0 40px' }}>
-            הגובה שלך הוא הדרך הכי פשוטה לבחור. במקרה של ספק — עדיף לבחור מידה קטנה יותר.
+            הגובה שלך הוא הדרך הכי פשוטה לבחור. במקרה של ספק – עדיף לבחור מידה קטנה יותר.
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>

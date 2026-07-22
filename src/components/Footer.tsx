@@ -19,7 +19,7 @@ function NewsletterForm() {
     setStatus('loading');
     const { error } = await supabase.from('newsletter').insert({ email: clean });
     if (error) {
-      // Table may not exist yet — keep the address in leads so nothing is lost
+      // Table may not exist yet – keep the address in leads so nothing is lost
       await supabase.from('leads').insert({ name: 'ניוזלטר', email: clean, phone: null });
     }
     setStatus('done');
@@ -114,7 +114,7 @@ export default function Footer() {
                 הישארו בעניינים
               </h4>
               <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: '#888', margin: 0, lineHeight: 1.6 }}>
-                עדכונים על דגמים, אירועי קהילה והטבות — בלי ספאם, מבטיחים.
+                עדכונים על דגמים, אירועי קהילה והטבות – בלי ספאם, מבטיחים.
               </p>
             </div>
             <NewsletterForm />

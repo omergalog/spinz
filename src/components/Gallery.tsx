@@ -9,12 +9,14 @@ const BG = '#F5F2EC';
 const BORDER = '#E0DCD4';
 
 const photos = [
-  { id: 1, src: '/assets/gallery-1.jpg', span: 'col-span-2 row-span-2', alt: 'Spinz Pink – white rims' },
-  { id: 2, src: '/assets/gallery-2.jpg', span: 'col-span-1 row-span-1', alt: 'Spinz Sage Green' },
-  { id: 3, src: '/assets/gallery-3.jpg', span: 'col-span-1 row-span-1', alt: 'Spinz – front view' },
-  { id: 4, src: '/assets/gallery-4.jpg', span: 'col-span-1 row-span-1', alt: 'Spinz Army Green' },
-  { id: 5, src: '/assets/gallery-5.jpg', span: 'col-span-1 row-span-1', alt: 'Spinz Burgundy' },
-  { id: 6, src: '/assets/gallery-6.jpg', span: 'col-span-2 row-span-1', alt: 'Spinz 2026 Collection' },
+  { id: 1, src: '/assets/gallery-1.jpg', span: 'md:col-span-2 md:row-span-2', alt: 'רוכבים יחד על אופני SPINZ בורדו ברחובות תל אביב' },
+  { id: 2, src: '/assets/gallery-2.jpg', span: 'md:col-span-2', alt: 'אופני SPINZ Urban בורדו — מבט צד' },
+  { id: 3, src: '/assets/gallery-3.jpg', span: '', alt: 'רכיבה על אופני SPINZ בשביל אופניים עירוני' },
+  { id: 4, src: '/assets/gallery-4.jpg', span: '', alt: 'אופני SPINZ בורדו בפארק, ליד הירקון' },
+  { id: 5, src: '/assets/gallery-5.jpg', span: 'md:col-span-2', alt: 'אופני SPINZ Urban — פרופיל צד מתחת לגשר' },
+  { id: 6, src: '/assets/gallery-6.jpg', span: 'md:col-span-2', alt: 'זוג עם אופני SPINZ ברחוב תל אביבי פורח' },
+  { id: 7, src: '/assets/gallery-7.jpg', span: 'md:col-span-2', alt: 'רוכבת על אופני SPINZ בעיר' },
+  { id: 8, src: '/assets/gallery-8.jpg', span: 'md:col-span-2', alt: 'אופני SPINZ בורדו — צילום אורבני' },
 ];
 
 function PhotoCell({ photo, delay }: { photo: (typeof photos)[number]; delay: number }) {
@@ -27,7 +29,7 @@ function PhotoCell({ photo, delay }: { photo: (typeof photos)[number]; delay: nu
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay }}
       className={`${photo.span} relative overflow-hidden`}
-      style={{ backgroundColor: '#EDEAE4', minHeight: '180px' }}
+      style={{ backgroundColor: '#EDEAE4' }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -37,7 +39,6 @@ function PhotoCell({ photo, delay }: { photo: (typeof photos)[number]; delay: nu
         animate={{ scale: hovered ? 1.04 : 1 }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         className="absolute inset-0 h-full w-full object-cover"
-        style={{ mixBlendMode: 'multiply' }}
         loading="lazy"
         onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
       />
@@ -116,7 +117,7 @@ export default function Gallery({ hideHeader = false }: { hideHeader?: boolean }
         )}
 
         {/* Desktop grid */}
-        <div className="hidden gap-2 md:grid md:grid-cols-4 md:grid-rows-3" style={{ backgroundColor: 'transparent' }}>
+        <div className="hidden gap-2 md:grid md:grid-cols-4" style={{ backgroundColor: 'transparent', gridAutoRows: 'clamp(150px, 15vw, 232px)' }}>
           {photos.map((photo, i) => (
             <PhotoCell key={photo.id} photo={photo} delay={i * 0.07} />
           ))}
@@ -138,7 +139,6 @@ export default function Gallery({ hideHeader = false }: { hideHeader?: boolean }
                 src={photo.src}
                 alt={photo.alt}
                 className="absolute inset-0 h-full w-full object-cover"
-                style={{ mixBlendMode: 'multiply' }}
                 loading="lazy"
                 onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
               />

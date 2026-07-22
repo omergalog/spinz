@@ -322,8 +322,11 @@ export default function Models() {
               ))}
             </motion.div>
 
+            {/* Colour + size — desktop swaps the order (size first) via CSS order */}
+            <div className="flex flex-col">
             {/* Color selector */}
             <motion.div
+              className="lg:order-2"
               initial={{ opacity: 0, y: 10 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.25 }}
@@ -362,6 +365,7 @@ export default function Models() {
 
             {/* Size selector */}
             <motion.div
+              className="lg:order-1"
               initial={{ opacity: 0, y: 10 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.32 }}
@@ -421,6 +425,7 @@ export default function Models() {
                 </div>
               )}
             </motion.div>
+            </div>
 
             {/* Price */}
             <motion.div

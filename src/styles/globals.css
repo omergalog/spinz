@@ -52,6 +52,16 @@ video {
   max-width: 100%;
 }
 
+/* iOS Safari auto-zooms into any focused form control whose font-size is
+   below 16px, forcing the user to pinch-zoom back out. Enforce the 16px
+   threshold on all form fields so opening a form never triggers a zoom.
+   Uses !important because the fields set their font-size via inline styles. */
+input,
+textarea,
+select {
+  font-size: 16px !important;
+}
+
 /* Prevent text from overflowing its container */
 p, h1, h2, h3, h4, h5, h6, span, a {
   overflow-wrap: break-word;

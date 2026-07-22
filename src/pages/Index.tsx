@@ -13,12 +13,15 @@ import CookieBanner from '../components/CookieBanner';
 import { CartProvider } from '../context/CartContext';
 import { useLenis } from '../hooks/useLenis';
 
-const alreadyLoaded =
+// Read fresh on every mount (lazy initializer) — NOT once at module load.
+// Otherwise navigating back to the homepage replays the intro loader, because
+// the module-level value was captured before sessionStorage was ever set.
+const hasLoaded = () =>
   typeof window !== 'undefined' && sessionStorage.getItem('spinz-loaded') === '1';
 
 const Index = () => {
-  const [showLoader, setShowLoader] = useState(!alreadyLoaded);
-  const [loaderDone, setLoaderDone] = useState(alreadyLoaded);
+  const [showLoader, setShowLoader] = useState(() => !hasLoaded());
+  const [loaderDone, setLoaderDone] = useState(hasLoaded);
   useLenis();
 
   const handleLoaderDone = useCallback(() => {

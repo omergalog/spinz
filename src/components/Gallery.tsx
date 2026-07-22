@@ -1,54 +1,96 @@
-import { useRef, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
-
-
+import { useRef, useState, useEffect, useCallback } from 'react';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
 
 const TEXT = '#111111';
 const TEXT_MUTED = '#8A8880';
 const BG = '#F5F2EC';
 const BORDER = '#E0DCD4';
 
-const photos = [
-  { id: 1, src: '/assets/gallery-1.jpg', span: 'md:col-span-2 md:row-span-2', alt: 'רוכבים יחד על אופני SPINZ בורדו ברחובות תל אביב' },
-  { id: 2, src: '/assets/gallery-2.jpg', span: 'md:col-span-2', alt: 'אופני SPINZ Urban בורדו — מבט צד' },
-  { id: 3, src: '/assets/gallery-3.jpg', span: '', alt: 'רכיבה על אופני SPINZ בשביל אופניים עירוני' },
-  { id: 4, src: '/assets/gallery-4.jpg', span: '', alt: 'אופני SPINZ בורדו בפארק, ליד הירקון' },
-  { id: 5, src: '/assets/gallery-5.jpg', span: 'md:col-span-2', alt: 'אופני SPINZ Urban — פרופיל צד מתחת לגשר' },
-  { id: 6, src: '/assets/gallery-6.jpg', span: 'md:col-span-2', alt: 'זוג עם אופני SPINZ ברחוב תל אביבי פורח' },
-  { id: 7, src: '/assets/gallery-7.jpg', span: 'md:col-span-2', alt: 'רוכבת על אופני SPINZ בעיר' },
-  { id: 8, src: '/assets/gallery-8.jpg', span: 'md:col-span-2', alt: 'אופני SPINZ בורדו — צילום אורבני' },
-];
+const TOTAL = 64;
+const photos = Array.from({ length: TOTAL }, (_, i) => {
+  const n = String(i + 1).padStart(2, '0');
+  return { src: `/assets/gallery/g-${n}.jpg`, alt: `אופני SPINZ Urban בתל אביב — תמונה ${i + 1}` };
+});
 
-function PhotoCell({ photo, delay }: { photo: (typeof photos)[number]; delay: number }) {
-  const [hovered, setHovered] = useState(false);
+// ── Full-screen viewer with prev/next, keyboard and swipe ──────────────
+function Lightbox({ index, onClose, onNav }: { index: number; onClose: () => void; onNav: (dir: 1 | -1) => void }) {
+  const touchX = useRef<number | null>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+      else if (e.key === 'ArrowLeft') onNav(1);   // RTL: left advances forward
+      else if (e.key === 'ArrowRight') onNav(-1);
+    };
+    window.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
+  }, [onClose, onNav]);
+
+  const arrowBtn: React.CSSProperties = {
+    position: 'absolute', top: '50%', transform: 'translateY(-50%)',
+    width: '52px', height: '52px', borderRadius: '50%',
+    backgroundColor: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.25)',
+    color: '#FFFFFF', fontSize: '24px', cursor: 'pointer', zIndex: 2,
+    display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)',
+  };
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true, margin: '-40px' }}
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay }}
-      className={`${photo.span} relative overflow-hidden`}
-      style={{ backgroundColor: '#EDEAE4' }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.25 }}
+      onClick={onClose}
+      style={{
+        position: 'fixed', inset: 0, zIndex: 1000,
+        backgroundColor: 'rgba(12,11,10,0.94)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        padding: 'clamp(16px, 5vw, 56px)',
+      }}
+      onTouchStart={e => { touchX.current = e.touches[0].clientX; }}
+      onTouchEnd={e => {
+        if (touchX.current === null) return;
+        const dx = e.changedTouches[0].clientX - touchX.current;
+        if (Math.abs(dx) > 50) onNav(dx < 0 ? 1 : -1); // swipe left = forward
+        touchX.current = null;
+      }}
     >
-      <motion.img
-        src={photo.src}
-        alt={photo.alt}
-        animate={{ scale: hovered ? 1.04 : 1 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className="absolute inset-0 h-full w-full object-cover"
-        loading="lazy"
-        onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-      />
+      {/* Close */}
+      <button
+        onClick={onClose}
+        aria-label="סגירה"
+        style={{
+          position: 'absolute', top: '20px', insetInlineStart: '20px', zIndex: 3,
+          width: '46px', height: '46px', borderRadius: '50%',
+          backgroundColor: 'rgba(255,255,255,0.12)', border: '1px solid rgba(255,255,255,0.25)',
+          color: '#FFFFFF', fontSize: '22px', cursor: 'pointer', lineHeight: 1,
+        }}
+      >×</button>
 
-      <motion.div
-        animate={{ opacity: hovered ? 1 : 0 }}
-        transition={{ duration: 0.3 }}
-        className="absolute inset-0 z-10"
-        style={{ backgroundColor: 'rgba(28,28,28,0.18)' }}
+      {/* Counter */}
+      <div style={{
+        position: 'absolute', top: '28px', insetInlineEnd: '24px', zIndex: 3,
+        fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: 'rgba(255,255,255,0.7)',
+        direction: 'ltr',
+      }}>
+        {index + 1} / {TOTAL}
+      </div>
+
+      {/* Prev (right side in RTL) */}
+      <button aria-label="הקודם" onClick={e => { e.stopPropagation(); onNav(-1); }} style={{ ...arrowBtn, insetInlineEnd: 'clamp(8px, 2vw, 28px)' }}>›</button>
+      {/* Next (left side in RTL) */}
+      <button aria-label="הבא" onClick={e => { e.stopPropagation(); onNav(1); }} style={{ ...arrowBtn, insetInlineStart: 'clamp(8px, 2vw, 28px)' }}>‹</button>
+
+      {/* Image — plain <img> so it swaps instantly and never depends on an animation */}
+      <img
+        key={index}
+        src={photos[index].src}
+        alt={photos[index].alt}
+        onClick={e => e.stopPropagation()}
+        style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: '6px', boxShadow: '0 20px 60px rgba(0,0,0,0.5)', animation: 'lbFade 0.25s ease' }}
       />
+      <style>{`@keyframes lbFade { from { opacity: 0.4; } to { opacity: 1; } }`}</style>
     </motion.div>
   );
 }
@@ -59,114 +101,102 @@ export default function Gallery({ hideHeader = false }: { hideHeader?: boolean }
   const headingRef = useRef<HTMLDivElement>(null);
   const headingInView = useInView(headingRef, { once: true, margin: '-40px' });
 
-  return (
-    <section
-      ref={ref}
-      id="gallery"
-      className="relative py-7 lg:py-32"
-      style={{ backgroundColor: BG }}
-    >
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
+  const nav = useCallback((dir: 1 | -1) => {
+    setOpenIndex(i => (i === null ? i : (i + dir + TOTAL) % TOTAL));
+  }, []);
+
+  return (
+    <section ref={ref} id="gallery" className="relative py-7 lg:py-32" style={{ backgroundColor: BG }}>
       <div className="mx-auto max-w-7xl px-6 lg:px-16 pt-2 lg:pt-20" dir="rtl">
 
         {/* Header */}
         {!hideHeader && (
-        <div className="mb-14 flex flex-row items-end justify-between">
-          <div>
-            <motion.span
+          <div className="mb-14 flex flex-row items-end justify-between">
+            <div>
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : {}}
+                transition={{ duration: 0.7 }}
+                className="block mb-4 text-[11px] tracking-[0.4em] uppercase"
+                style={{ color: TEXT_MUTED, fontFamily: "'Heebo', sans-serif" }}
+              >
+                2026 Collection
+              </motion.span>
+              <div ref={headingRef} style={{ overflow: 'hidden' }}>
+                <motion.h2
+                  initial={{ y: '105%' }}
+                  animate={headingInView ? { y: '0%' } : {}}
+                  transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1], delay: 0.08 }}
+                  className="leading-none"
+                  style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(32px, 7vw, 80px)', color: TEXT, letterSpacing: '-0.02em' }}
+                >
+                  העיר שלך. הצבע שלך.
+                </motion.h2>
+              </div>
+            </div>
+
+            <motion.a
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : {}}
-              transition={{ duration: 0.7 }}
-              className="block mb-4 text-[11px] tracking-[0.4em] uppercase"
-              style={{ color: TEXT_MUTED, fontFamily: "'Heebo', sans-serif" }}
+              transition={{ duration: 0.7, delay: 0.2 }}
+              href="#models"
+              className="flex items-center gap-2 pb-1 text-sm font-bold uppercase tracking-widest transition-all duration-200 whitespace-nowrap"
+              style={{ color: '#C9A870', fontFamily: "'Heebo', sans-serif", textDecoration: 'none' }}
             >
-              2026 Collection
-            </motion.span>
-            <div ref={headingRef} style={{ overflow: 'hidden' }}>
-              <motion.h2
-                initial={{ y: '105%' }}
-                animate={headingInView ? { y: '0%' } : {}}
-                transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1], delay: 0.08 }}
-                className="leading-none"
-                style={{
-                  fontFamily: "'Heebo', sans-serif",
-                  fontWeight: 800,
-                  fontSize: 'clamp(32px, 7vw, 80px)',
-                  color: TEXT,
-                  letterSpacing: '-0.02em',
-                }}
-              >
-                העיר שלך. הצבע שלך.
-              </motion.h2>
-            </div>
+              לכל הדגמים ←
+            </motion.a>
           </div>
-
-          <motion.a
-            initial={{ opacity: 0 }}
-            animate={isInView ? { opacity: 1 } : {}}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            href="#models"
-            className="flex items-center gap-2 pb-1 text-sm font-bold uppercase tracking-widest transition-all duration-200 whitespace-nowrap"
-            style={{ color: '#C9A870', fontFamily: "'Heebo', sans-serif", textDecoration: 'none' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#A8885A'; (e.currentTarget as HTMLAnchorElement).style.gap = '10px'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#C9A870'; (e.currentTarget as HTMLAnchorElement).style.gap = '8px'; }}
-          >
-            לכל הדגמים ←
-          </motion.a>
-        </div>
         )}
 
-        {/* Desktop grid */}
-        <div className="hidden gap-2 md:grid md:grid-cols-4" style={{ backgroundColor: 'transparent', gridAutoRows: 'clamp(150px, 15vw, 232px)' }}>
-          {photos.map((photo, i) => (
-            <PhotoCell key={photo.id} photo={photo} delay={i * 0.07} />
-          ))}
-        </div>
+        {/* Hint */}
+        <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: TEXT_MUTED, margin: '0 0 18px' }}>
+          לחצו על תמונה כדי להגדיל ולדפדף בגלריה.
+        </p>
 
-        {/* Mobile 2-col */}
-        <div className="grid grid-cols-2 gap-2 md:hidden" style={{ backgroundColor: 'transparent' }}>
+        {/* Thumbnail grid */}
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1.5 md:gap-2">
           {photos.map((photo, i) => (
-            <motion.div
-              key={photo.id}
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true, margin: '-30px' }}
-              transition={{ duration: 0.7, delay: i * 0.06 }}
-              className="relative overflow-hidden"
-              style={{ backgroundColor: '#EDEAE4', aspectRatio: '1/1' }}
+            <button
+              key={photo.src}
+              onClick={() => setOpenIndex(i)}
+              className="gallery-thumb relative overflow-hidden"
+              style={{ aspectRatio: '1 / 1', backgroundColor: '#EDEAE4', border: 'none', padding: 0, cursor: 'pointer' }}
+              aria-label={`הגדלת ${photo.alt}`}
             >
               <img
                 src={photo.src}
                 alt={photo.alt}
-                className="absolute inset-0 h-full w-full object-cover"
                 loading="lazy"
-                onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                className="gallery-thumb-img absolute inset-0 h-full w-full object-cover"
               />
-            </motion.div>
+            </button>
           ))}
         </div>
 
         {/* Follow prompt */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7, delay: 0.3 }}
-          className="mt-10 flex items-center justify-center gap-5"
-          dir="rtl"
-        >
+        <div className="mt-10 flex items-center justify-center gap-5" dir="rtl">
           <div className="h-px flex-1" style={{ backgroundColor: BORDER }} />
-          <span
-            className="text-[11px] uppercase tracking-[0.3em]"
-            style={{ color: '#CCC', fontFamily: "'Heebo', sans-serif" }}
-          >
+          <span className="text-[11px] uppercase tracking-[0.3em]" style={{ color: '#CCC', fontFamily: "'Heebo', sans-serif" }}>
             Spinz – 2026
           </span>
           <div className="h-px flex-1" style={{ backgroundColor: BORDER }} />
-        </motion.div>
+        </div>
       </div>
 
       <div className="absolute bottom-0 left-0 right-0 h-px" style={{ backgroundColor: BORDER }} />
+
+      <AnimatePresence>
+        {openIndex !== null && (
+          <Lightbox index={openIndex} onClose={() => setOpenIndex(null)} onNav={nav} />
+        )}
+      </AnimatePresence>
+
+      <style>{`
+        .gallery-thumb-img { transition: transform 0.4s ease, opacity 0.3s ease; }
+        .gallery-thumb:hover .gallery-thumb-img { transform: scale(1.06); }
+      `}</style>
     </section>
   );
 }

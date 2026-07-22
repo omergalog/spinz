@@ -9,7 +9,12 @@ const BORDER = '#E0DCD4';
 const TOTAL = 64;
 const photos = Array.from({ length: TOTAL }, (_, i) => {
   const n = String(i + 1).padStart(2, '0');
-  return { src: `/assets/gallery/g-${n}.jpg`, alt: `אופני SPINZ Urban בתל אביב — תמונה ${i + 1}` };
+  return {
+    // Small ~400px thumbnail for the grid, full 1024px for the lightbox
+    thumb: `/assets/gallery/thumbs/g-${n}.jpg`,
+    src: `/assets/gallery/g-${n}.jpg`,
+    alt: `אופני SPINZ Urban בתל אביב — תמונה ${i + 1}`,
+  };
 });
 
 // ── Full-screen viewer with prev/next, keyboard and swipe ──────────────
@@ -26,6 +31,14 @@ function Lightbox({ index, onClose, onNav }: { index: number; onClose: () => voi
     document.body.style.overflow = 'hidden';
     return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
   }, [onClose, onNav]);
+
+  // Preload the next and previous full images so navigation is instant
+  useEffect(() => {
+    [(index + 1) % TOTAL, (index - 1 + TOTAL) % TOTAL].forEach(j => {
+      const img = new Image();
+      img.src = photos[j].src;
+    });
+  }, [index]);
 
   const arrowBtn: React.CSSProperties = {
     position: 'absolute', top: '50%', transform: 'translateY(-50%)',
@@ -166,9 +179,12 @@ export default function Gallery({ hideHeader = false }: { hideHeader?: boolean }
               aria-label={`הגדלת ${photo.alt}`}
             >
               <img
-                src={photo.src}
+                src={photo.thumb}
                 alt={photo.alt}
-                loading="lazy"
+                width={400}
+                height={400}
+                decoding="async"
+                loading={i < 12 ? 'eager' : 'lazy'}
                 className="gallery-thumb-img absolute inset-0 h-full w-full object-cover"
               />
             </button>

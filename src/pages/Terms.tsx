@@ -1,13 +1,11 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import PageShell from '../components/PageShell';
 import { COMPANY, COMPANY_LINE } from '../config/company';
 
-const DARK   = '#1C1C1C';
-const GOLD   = '#C9A870';
-const CREAM  = '#EDEBE6';
-const BORDER = '#2A2A2A';
-const MUTED  = '#6A6862';
+const DARK = '#1C1C1C';
+const MUTED = '#4A4845';
+const GOLD = '#C9A870';
+const BORDER = '#E0DCD4';
 
 const privacySections = [
   {
@@ -75,7 +73,7 @@ const termsSections = [
   },
   {
     title: 'ביטול עסקה והחזרות',
-    text: 'בהתאם לחוק הגנת הצרכן, ניתן לבטל עסקה תוך 14 יום ממועד קבלת המוצר, בתנאי שהאופניים לא הורכבו. במקרה של ביטול – ישא הצרכן בעלות המשלוח חזרה. לאחר הרכבה, ניתן לבטל רק בהסכמת החברה.',
+    text: 'בהתאם לחוק הגנת הצרכן, ניתן לבטל עסקה תוך 14 יום ממועד קבלת המוצר. פירוט מלא של מדיניות הביטול, ההחזרים ודמי הביטול (שאנחנו לא גובים) מופיע בתקנון ותנאי השימוש ובתנאי המכירה המוקדמת.',
   },
   {
     title: 'אחריות מוגבלת',
@@ -91,156 +89,78 @@ const termsSections = [
   },
 ];
 
+function Section({ title, children }: { title: string | null; children: React.ReactNode }) {
+  return (
+    <section style={{ marginBottom: '30px' }}>
+      {title && (
+        <h2 style={{
+          fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(17px, 2.2vw, 21px)',
+          color: DARK, margin: '0 0 10px', paddingInlineStart: '11px',
+          borderInlineStart: `3px solid ${GOLD}`,
+        }}>
+          {title}
+        </h2>
+      )}
+      <div style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14.5px', color: MUTED, lineHeight: 1.85 }}>
+        {children}
+      </div>
+    </section>
+  );
+}
+
 export default function Terms() {
   const [tab, setTab] = useState<'terms' | 'privacy'>('terms');
   const sections = tab === 'privacy' ? privacySections : termsSections;
 
-  useEffect(() => { window.scrollTo(0, 0); }, []);
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      style={{ backgroundColor: DARK, minHeight: '100vh' }}
-      dir="rtl"
+    <PageShell
+      eyebrow="Legal"
+      title="תנאי שימוש ומדיניות פרטיות"
+      subtitle="הכללים לשימוש באתר, פרטי המוצרים, ואיך אנחנו שומרים על המידע האישי שלך."
+      heroImage="/assets/lifestyle-hero.jpg"
+      heroPosition="center 45%"
     >
+      <div style={{ backgroundColor: '#F5F2EC', padding: 'clamp(32px, 6vw, 72px) clamp(20px, 6vw, 64px)' }} dir="rtl">
+        <div style={{ maxWidth: '760px', margin: '0 auto' }}>
 
-      {/* Top bar */}
-      <header style={{
-        position: 'sticky', top: 0, zIndex: 50,
-        backgroundColor: DARK,
-        borderBottom: `1px solid ${BORDER}`,
-      }}>
-        <div style={{
-          maxWidth: '1200px', margin: '0 auto',
-          padding: '0 32px',
-          height: '64px',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        }}>
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <img
-              src="/assets/logo.png"
-              alt="SPINZ"
-              style={{ height: '40px', width: 'auto', filter: 'invert(1) brightness(2)', opacity: 0.9 }}
-            />
-          </Link>
-          <Link
-            to="/#lead-form"
-            style={{
-              display: 'flex', alignItems: 'center', gap: '8px',
-              fontFamily: "'Heebo', sans-serif",
-              fontSize: '16px', fontWeight: 600,
-              color: CREAM,
-              textDecoration: 'none',
-              letterSpacing: '0.05em',
-              transition: 'opacity 0.2s',
-              padding: '10px 0',
-            }}
-            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.6'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1'; }}
-          >
-            חזרה לאתר →
-          </Link>
-        </div>
-      </header>
-
-      {/* Page heading */}
-      <div style={{
-        borderBottom: `1px solid ${BORDER}`,
-        padding: 'clamp(40px, 6vw, 72px) 32px 0',
-        maxWidth: '1200px', margin: '0 auto',
-      }}>
-        <span style={{
-          display: 'block', marginBottom: '12px',
-          fontFamily: "'Heebo', sans-serif",
-          fontSize: '11px', letterSpacing: '0.4em',
-          textTransform: 'uppercase', color: MUTED,
-        }}>
-          Spinz
-        </span>
-        <h1 style={{
-          fontFamily: "'Heebo', sans-serif",
-          fontWeight: 800,
-          fontSize: 'clamp(28px, 5vw, 60px)',
-          color: CREAM,
-          letterSpacing: '-0.02em',
-          lineHeight: 1,
-          margin: '0 0 40px',
-        }}>
-          {tab === 'terms' ? 'תנאי שימוש.' : 'מדיניות פרטיות.'}
-        </h1>
-
-        {/* Tabs */}
-        <div style={{ display: 'flex', gap: 0 }}>
-          {[
-            { id: 'terms',   label: 'תנאי שימוש' },
-            { id: 'privacy', label: 'מדיניות פרטיות' },
-          ].map(t => (
-            <button
-              key={t.id}
-              onClick={() => setTab(t.id as 'terms' | 'privacy')}
-              style={{
-                padding: '12px 24px',
-                background: 'none', border: 'none',
-                borderBottom: tab === t.id ? `2px solid ${GOLD}` : '2px solid transparent',
-                color: tab === t.id ? GOLD : MUTED,
-                fontFamily: "'Heebo', sans-serif",
-                fontSize: '14px', fontWeight: 700,
-                cursor: 'pointer',
-                transition: 'color 0.2s',
-                letterSpacing: '0.03em',
-              }}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Content */}
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: 'clamp(40px, 5vw, 64px) 32px 100px' }}>
-        <div style={{ maxWidth: '760px', display: 'flex', flexDirection: 'column', gap: 0 }}>
-          {sections.map(({ title, text }, i) => (
-            <div
-              key={i}
-              style={{
-                borderTop: `1px solid ${BORDER}`,
-                padding: '28px 0',
-              }}
-            >
-              {title && (
-                <h3 style={{
-                  fontFamily: "'Heebo', sans-serif",
-                  fontWeight: 700,
-                  fontSize: '13px',
-                  color: GOLD,
-                  margin: '0 0 10px',
-                  letterSpacing: '0.08em',
-                  textTransform: 'uppercase',
-                }}>
-                  {title}
-                </h3>
-              )}
-              <p style={{
-                fontFamily: "'Heebo', sans-serif",
-                fontSize: 'clamp(14px, 1.4vw, 16px)',
-                color: '#BBBBBB',
-                lineHeight: 1.85,
-                margin: 0,
-              }}>
-                {text}
-              </p>
-            </div>
-          ))}
-
-          <div style={{ borderTop: `1px solid ${BORDER}`, paddingTop: '24px', marginTop: '8px' }}>
-            <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: '#555', margin: 0 }}>
-              תאריך עדכון אחרון: אפריל 2026
-            </p>
+          {/* Tabs */}
+          <div style={{ display: 'flex', gap: 0, borderBottom: `1px solid ${BORDER}`, marginBottom: '34px' }}>
+            {[
+              { id: 'terms', label: 'תנאי שימוש' },
+              { id: 'privacy', label: 'מדיניות פרטיות' },
+            ].map(t => (
+              <button
+                key={t.id}
+                onClick={() => setTab(t.id as 'terms' | 'privacy')}
+                style={{
+                  padding: '12px 22px', background: 'none', border: 'none',
+                  borderBottom: tab === t.id ? `2px solid ${GOLD}` : '2px solid transparent',
+                  marginBottom: '-1px',
+                  color: tab === t.id ? DARK : '#9A9690',
+                  fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700,
+                  cursor: 'pointer', transition: 'color 0.2s', letterSpacing: '0.03em',
+                }}
+              >
+                {t.label}
+              </button>
+            ))}
           </div>
+
+          {sections.map((s, i) => (
+            <Section key={`${tab}-${i}`} title={s.title}>{s.text}</Section>
+          ))}
+
+          <p style={{
+            fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', color: '#9A9690',
+            lineHeight: 1.7, marginTop: '14px', paddingTop: '18px', borderTop: `1px solid ${BORDER}`,
+          }}>
+            תאריך עדכון אחרון: יולי 2026. מסמך זה משלים את
+            <a href="/regulations" style={{ color: GOLD }}> התקנון ותנאי השימוש</a> ואת
+            <a href="/presale-terms" style={{ color: GOLD }}> תנאי המכירה המוקדמת</a>.
+          </p>
+
         </div>
       </div>
-    </motion.div>
+    </PageShell>
   );
 }

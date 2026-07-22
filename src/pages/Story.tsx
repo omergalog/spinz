@@ -1,12 +1,10 @@
-import { useRef, useEffect } from 'react';
-import { motion, useInView } from 'framer-motion';
+import PageShell from '../components/PageShell';
 import { Link } from 'react-router-dom';
 
-const DARK   = '#1C1C1C';
-const GOLD   = '#C9A870';
-const CREAM  = '#EDEBE6';
-const BORDER = '#2A2A2A';
-
+const DARK = '#1C1C1C';
+const MUTED = '#4A4845';
+const GOLD = '#C9A870';
+const BORDER = '#E0DCD4';
 
 const sections = [
   {
@@ -22,7 +20,7 @@ const sections = [
     text: 'נזכרנו באופניים של פעם – אלו שפשוט עולים עליהם ונוסעים. בלי שטויות, בלי הילוכים מיותרים שמתקלקלים בדיוק כשממהרים לעבודה, ובלי משקל כבד שצריך לסחוב לקומה שלישית בלי מעלית. ככה נולד המותג Spinz.',
   },
   {
-    title: 'ככה נולד המותג Spinz.',
+    title: 'ככה נולד המותג Spinz',
     text: 'לקחנו את הפשטות של הסינגל-ספיד (Single Speed) ונתנו לה את הסטייל והדיוק של העיר הגדולה. רצינו לבנות אופניים שנראים מעולה, נוסעים חלק, ובעיקר – לא עושים כאב ראש. אופניים שאפשר לסמוך עליהם מהקפה של הבוקר ועד הבירה של הלילה.',
   },
   {
@@ -30,227 +28,67 @@ const sections = [
     text: 'חשבנו על זה הרבה. יכולנו לפתוח חנות נוצצת ברוטשילד או בדיזנגוף, אבל אז היינו צריכים לגלגל את השכירות המטורפת הזאת עליכם – וזה בדיוק מה שלא רצינו.\n\nהחלטנו לעשות את זה אחרת: בלי חנויות יוקרה במרכז תל אביב ובלי מתווכים שגוזרים קופון בדרך. בחרנו להשקיע את כל הכסף במוצר עצמו – בשלדות הכי חזקות, בצבעים הכי עמידים ובחלקים שיחזיקו לכם שנים על האספלט. התוצאה? אתם מקבלים אופני פרימיום במחיר הגיוני לגמרי, בלי לקרוע את הכיס.',
   },
   {
-    title: 'בשורה התחתונה:',
+    title: 'בשורה התחתונה',
     text: 'Spinz זה השקט שלנו בתוך כל הרעש של תל אביב. זה המותג שלנו, מהילדות בעמק ועד לאספלט של רוטשילד (שאנחנו רוכבים עליו, אבל לא משלמים עליו שכירות), ואנחנו הכי גאים בעולם לחלוק אותו אתכם.',
   },
 ];
 
-function Section({ section, index }: { section: typeof sections[0]; index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: '-40px' });
-
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 28 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: index * 0.06 }}
-      className="py-5 md:py-7"
-      style={{ borderTop: `1px solid ${BORDER}` }}
-    >
-      {section.title && (
-        <h3 style={{
-          fontFamily: "'Heebo', sans-serif",
-          fontWeight: 700,
-          fontSize: 'clamp(15px, 2vw, 19px)',
-          color: GOLD,
-          margin: '0 0 14px',
-        }}>
-          {section.title}
-        </h3>
-      )}
-      <p style={{
-        fontFamily: "'Heebo', sans-serif",
-        fontSize: 'clamp(14px, 1.5vw, 17px)',
-        color: '#CCCCCC',
-        lineHeight: 1.8,
-        margin: 0,
-        whiteSpace: 'pre-line',
+    <section style={{ marginBottom: '30px' }}>
+      <h2 style={{
+        fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(17px, 2.2vw, 21px)',
+        color: DARK, margin: '0 0 10px', paddingInlineStart: '11px',
+        borderInlineStart: `3px solid ${GOLD}`,
       }}>
-        {section.text}
-      </p>
-    </motion.div>
+        {title}
+      </h2>
+      <div style={{
+        fontFamily: "'Heebo', sans-serif", fontSize: '14.5px', color: MUTED,
+        lineHeight: 1.85, whiteSpace: 'pre-line',
+      }}>
+        {children}
+      </div>
+    </section>
   );
 }
 
 export default function Story() {
-  useEffect(() => { window.scrollTo(0, 0); }, []);
-
   return (
-    <div style={{ backgroundColor: DARK, minHeight: '100vh' }} dir="rtl">
+    <PageShell
+      eyebrow="Our Story"
+      title="נעים להכיר, אנחנו Spinz."
+      subtitle="שלושה חברים מעמק חפר, עיר אחת גדולה, והרצון לחזור לרכיבה פשוטה. ככה נולד המותג."
+      heroImage="/assets/story-hero.jpg"
+      heroPosition="center 40%"
+    >
+      <div style={{ backgroundColor: '#F5F2EC', padding: 'clamp(32px, 6vw, 72px) clamp(20px, 6vw, 64px)' }} dir="rtl">
+        <div style={{ maxWidth: '760px', margin: '0 auto' }}>
 
-      {/* Top bar */}
-      <header style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
-        backgroundColor: DARK,
-        borderBottom: `1px solid ${BORDER}`,
-        height: '64px',
-      }}>
-        <div style={{
-          maxWidth: '1400px', margin: '0 auto',
-          padding: '0 32px', height: '100%',
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        }}>
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <img
-              src="/assets/logo.png"
-              alt="SPINZ"
-              style={{ height: '40px', width: 'auto', filter: 'invert(1) brightness(2)', opacity: 0.9 }}
-            />
-          </Link>
-          <Link
-            to="/#why-spinz"
-            style={{
-              fontFamily: "'Heebo', sans-serif",
-              fontSize: '16px', fontWeight: 600,
-              color: CREAM, textDecoration: 'none',
-              letterSpacing: '0.05em', transition: 'opacity 0.2s',
-              display: 'inline-block', padding: '10px 0',
-            }}
-            onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.6'; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1'; }}
-          >
-            חזרה לאתר →
-          </Link>
-        </div>
-      </header>
+          {sections.map((s, i) => (
+            <Section key={i} title={s.title}>{s.text}</Section>
+          ))}
 
-      {/* Main layout: two columns on desktop, stacked on mobile */}
-      <div style={{ paddingTop: '64px', display: 'flex', minHeight: 'calc(100vh - 64px)' }}>
-
-        {/* LEFT: sticky image (desktop only) */}
-        <div
-          className="hidden md:block"
-          style={{ width: '50%', flexShrink: 0, position: 'relative' }}
-        >
-          <div style={{
-            position: 'sticky',
-            top: '64px',
-            height: 'calc(100vh - 64px)',
-            overflow: 'hidden',
-          }}>
-            <motion.img
-              src="/assets/story-hero.jpg"
-              alt="Spinz rider"
-              initial={{ opacity: 0, scale: 1.06 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.4, ease: 'easeOut' }}
+          <div style={{ marginTop: '10px', paddingTop: '30px', borderTop: `1px solid ${BORDER}` }}>
+            <Link
+              to="/#models"
               style={{
-                width: '100%', height: '100%',
-                objectFit: 'cover', objectPosition: 'center',
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                backgroundColor: DARK, color: '#EDEBE6',
+                fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 700,
+                letterSpacing: '0.05em', textDecoration: 'none',
+                padding: '14px 32px', borderRadius: '8px',
+                transition: 'opacity 0.2s',
               }}
-            />
-            {/* Overlay with text */}
-            <div style={{
-              position: 'absolute', inset: 0,
-              background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)',
-            }} />
-            {/* Bottom text */}
-            <div style={{
-              position: 'absolute', bottom: 0, left: 0, right: 0,
-              padding: '40px',
-            }}>
-              <motion.span
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.5 }}
-                style={{
-                  display: 'block', marginBottom: '10px',
-                  fontFamily: "'Heebo', sans-serif",
-                  fontSize: '11px', letterSpacing: '0.4em',
-                  textTransform: 'uppercase', color: GOLD,
-                }}
-              >
-                הסיפור שלנו
-              </motion.span>
-              <div style={{ overflow: 'hidden' }}>
-                <motion.h1
-                  initial={{ y: '105%' }}
-                  animate={{ y: '0%' }}
-                  transition={{ duration: 0.9, ease: [0.76, 0, 0.24, 1], delay: 0.65 }}
-                  style={{
-                    fontFamily: "'Heebo', sans-serif",
-                    fontWeight: 800,
-                    fontSize: 'clamp(28px, 3.5vw, 52px)',
-                    color: CREAM,
-                    letterSpacing: '-0.02em',
-                    lineHeight: 1.05,
-                    margin: 0,
-                  }}
-                >
-                  נעים להכיר,<br />אנחנו Spinz.
-                </motion.h1>
-              </div>
-            </div>
-            {/* Gold accent */}
-            <div style={{
-              position: 'absolute', top: '40px', right: '40px',
-              width: '3px', height: '64px', backgroundColor: GOLD, opacity: 0.7,
-            }} />
-          </div>
-        </div>
-
-        {/* RIGHT: scrollable content */}
-        <div style={{ flex: 1, minWidth: 0 }}>
-
-          {/* Mobile hero (shown only on mobile) */}
-          <div
-            className="md:hidden"
-            style={{ position: 'relative', height: '100vw', overflow: 'hidden' }}
-          >
-            <motion.img
-              src="/assets/story-hero.jpg"
-              alt="Spinz rider"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1.2 }}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center center' }}
-            />
-            <div style={{
-              position: 'absolute', inset: 0,
-              background: 'linear-gradient(to top, rgba(28,28,28,1) 0%, rgba(28,28,28,0.5) 50%, transparent 100%)',
-            }} />
-            <div style={{ position: 'absolute', bottom: '32px', right: '24px', left: '24px' }}>
-              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', letterSpacing: '0.4em', textTransform: 'uppercase', color: GOLD, display: 'block', marginBottom: '12px' }}>הסיפור שלנו</span>
-              <h1 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '36px', color: CREAM, margin: 0, lineHeight: 1.05, letterSpacing: '-0.02em' }}>נעים להכיר,<br />אנחנו Spinz.</h1>
-            </div>
-          </div>
-
-          {/* Text content */}
-          <div style={{ padding: 'clamp(32px, 5vw, 72px) clamp(20px, 5vw, 64px) 80px' }}>
-            {sections.map((section, i) => (
-              <Section key={i} section={section} index={i} />
-            ))}
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-              style={{
-                marginTop: '40px', paddingTop: '32px',
-                borderTop: `1px solid ${BORDER}`,
-              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.85'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1'; }}
             >
-              <Link
-                to="/#models"
-                style={{
-                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                  backgroundColor: GOLD, color: DARK,
-                  fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 700,
-                  letterSpacing: '0.05em', textDecoration: 'none',
-                  padding: '14px 32px', borderRadius: '6px',
-                  transition: 'opacity 0.2s',
-                }}
-                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '0.85'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.opacity = '1'; }}
-              >
-                בואו להכיר את הדגמים ←
-              </Link>
-            </motion.div>
+              בואו להכיר את הדגמים ←
+            </Link>
           </div>
+
         </div>
       </div>
-    </div>
+    </PageShell>
   );
 }

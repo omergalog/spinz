@@ -17,9 +17,7 @@ const BASE_PRICE = 2290;
 export default function Models() {
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-60px' });
-  const headingRef = useRef<HTMLDivElement>(null);
-  const headingInView = useInView(headingRef, { once: true, margin: '-40px' });
-  // Second heading ref for the desktop copy that sits above the bike image
+  // Heading ref drives the masked slide-in of the "SPINZ Urban" title
   const headingRefLeft = useRef<HTMLDivElement>(null);
   const headingInViewLeft = useInView(headingRefLeft, { once: true, margin: '-40px' });
 
@@ -244,8 +242,8 @@ export default function Models() {
 
           {/* LEFT on desktop – header (desktop only) + image */}
           <div className="lg:flex-1 flex flex-col bg-white p-4 lg:p-8 order-1 lg:order-2 min-h-[50vw] lg:min-h-0">
-            {/* Header moved here on desktop to balance the layout (mobile keeps it in the selector column) */}
-            <div className="hidden lg:block" style={{ marginBottom: '20px' }}>
+            {/* Header sits above the image on all breakpoints */}
+            <div style={{ marginBottom: '20px' }}>
               {renderHeader(headingRefLeft, headingInViewLeft)}
             </div>
             {/* Image area */}
@@ -295,11 +293,6 @@ export default function Models() {
 
           {/* RIGHT on desktop – selector */}
           <div className="lg:w-[480px] flex flex-col justify-center p-5 pt-3 lg:p-16 order-2 lg:order-1" style={{ borderLeft: `1px solid ${BORDER}` }}>
-
-            {/* Header — mobile only; on desktop it lives above the image (left column) */}
-            <div className="lg:hidden">
-              {renderHeader(headingRef, headingInView, true)}
-            </div>
 
             {/* Quick specs */}
             <motion.div

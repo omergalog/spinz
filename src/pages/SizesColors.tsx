@@ -26,9 +26,9 @@ const sizes = [
 ];
 
 const colors = [
-  { id: 'mat',   label: 'שחור מט',   hex: '#1A1A1A', img: '/assets/bike-mat-new.png',   desc: 'הקלאסיקה. שחור עמוק ומאט שמשתלב עם הכל, ולא מפסיק להיראות נקי גם אחרי שנים על האספלט.' },
-  { id: 'beige', label: "בז'",       hex: '#C4A882', img: '/assets/bike-beige-new.png', desc: 'גוון חול חמים ורגוע. בולט בעדינות, משדר יוקרה שקטה ומושך מבטים בלי לצעוק.' },
-  { id: 'olive', label: 'ירוק זית',  hex: '#7D9168', img: '/assets/bike-olive-new.png', desc: 'אופי ושקט. ירוק אדמתי שמרגיש טבעי בעיר, לאלו שרוצים משהו קצת אחר מהרגיל.' },
+  { id: 'mat',   label: 'שחור מט',   hex: '#1A1A1A', img: '/assets/bike-mat-cut.png',   desc: 'הקלאסיקה. שחור עמוק ומאט שמשתלב עם הכל, ולא מפסיק להיראות נקי גם אחרי שנים על האספלט.' },
+  { id: 'beige', label: "בז'",       hex: '#C4A882', img: '/assets/bike-beige-cut.png', desc: 'גוון חול חמים ורגוע. בולט בעדינות, משדר יוקרה שקטה ומושך מבטים בלי לצעוק.' },
+  { id: 'olive', label: 'ירוק זית',  hex: '#7D9168', img: '/assets/bike-olive-cut.png', desc: 'אופי ושקט. ירוק אדמתי שמרגיש טבעי בעיר, לאלו שרוצים משהו קצת אחר מהרגיל.' },
 ];
 
 export default function SizesColors() {

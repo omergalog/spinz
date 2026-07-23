@@ -292,16 +292,9 @@ export default function Models() {
           {/* BUY BOX – scrolls; on mobile it slides up BELOW the fixed image (lower z-index) so the bike stays visible */}
           <div className="order-3 lg:order-1 lg:w-[440px] flex flex-col justify-start p-5 pt-6 lg:p-14 relative z-[1] bg-white lg:border-l lg:border-[#E2DED8]">
 
-            {/* Header + price — desktop only (on mobile the header is above the image) */}
+            {/* Header — desktop only (on mobile the header is above the image) */}
             <div className="hidden lg:block">
               {renderHeader(headingRefLeft, headingInViewLeft)}
-              {renderPrice()}
-              <div style={{ height: '1px', backgroundColor: BORDER, marginBottom: '24px' }} />
-            </div>
-
-            {/* Price — mobile only (below the image, above the config) */}
-            <div className="lg:hidden">
-              {renderPrice()}
               <div style={{ height: '1px', backgroundColor: BORDER, marginBottom: '24px' }} />
             </div>
 
@@ -410,6 +403,11 @@ export default function Models() {
             </motion.div>
             </div>
 
+            {/* Pre-sale + price — placed below the size/colour selection */}
+            <div>
+              <div style={{ height: '1px', backgroundColor: BORDER, margin: '4px 0 22px' }} />
+              {renderPrice()}
+            </div>
 
             {/* Add to cart */}
             <motion.div

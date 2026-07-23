@@ -25,6 +25,33 @@ export default function Models() {
   const headingRefMobile = useRef<HTMLDivElement>(null);
   const headingInViewMobile = useInView(headingRefMobile, { once: true, margin: '-40px' });
 
+  // Mobile only: enable a gentle scroll-snap ONLY while this section is on
+  // screen, so a fast scroll stops at the colour/size options. Everywhere
+  // else on the page scrolling stays completely normal. Toggled by a scroll
+  // listener (only when the in-view state actually flips, not every frame).
+  useEffect(() => {
+    if (!window.matchMedia('(max-width: 1023px)').matches) return;
+    const el = ref.current;
+    if (!el) return;
+    const html = document.documentElement;
+    let active = false;
+    const onScroll = () => {
+      const r = el.getBoundingClientRect();
+      const inView = r.top < window.innerHeight && r.bottom > 0;
+      if (inView === active) return;
+      active = inView;
+      html.style.scrollSnapType = inView ? 'y proximity' : '';
+      html.style.scrollPaddingTop = inView ? 'calc(80px + 33vh)' : '';
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      html.style.scrollSnapType = '';
+      html.style.scrollPaddingTop = '';
+    };
+  }, []);
+
 
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState(0);

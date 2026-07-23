@@ -53,16 +53,6 @@ video {
   max-width: 100%;
 }
 
-/* Mobile only: gently stop a fast scroll right at the product configuration
-   so users never blow past the colour/size options. The buy box carries
-   scroll-snap-align + scroll-snap-stop:always; scroll-padding-top lands the
-   snap just below the sticky image band (80px sticky top + 33vh band). */
-@media (max-width: 1023px) {
-  html {
-    scroll-snap-type: y proximity;
-    scroll-padding-top: calc(80px + 33vh);
-  }
-}
 
 /* iOS Safari auto-zooms into any focused form control whose font-size is
    below 16px, forcing the user to pinch-zoom back out. Enforce the 16px

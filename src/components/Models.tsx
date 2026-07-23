@@ -289,8 +289,9 @@ export default function Models() {
             </AnimatePresence>
           </div>
 
-          {/* BUY BOX – scrolls; on mobile it slides up BELOW the fixed image (lower z-index) so the bike stays visible */}
-          <div className="order-3 lg:order-1 lg:w-[440px] flex flex-col justify-start p-5 pt-6 lg:p-14 relative z-[1] bg-white lg:border-l lg:border-[#E2DED8]">
+          {/* BUY BOX – scrolls; on mobile it slides up BELOW the fixed image (lower z-index) so the bike stays visible.
+              scroll-snap stops a fast scroll here so users notice the colour/size options (mobile only via the html media query). */}
+          <div className="order-3 lg:order-1 lg:w-[440px] flex flex-col justify-start p-5 pt-6 lg:p-14 relative z-[1] bg-white lg:border-l lg:border-[#E2DED8]" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'always' }}>
 
             {/* Header — desktop only (on mobile the header is above the image) */}
             <div className="hidden lg:block">

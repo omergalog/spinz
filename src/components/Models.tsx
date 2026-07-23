@@ -330,6 +330,31 @@ export default function Models() {
                   />
                 ))}
               </div>
+
+              {/* Presale quota for this exact variant */}
+              {presaleCfg.active && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginTop: '14px' }}>
+                  <span style={{
+                    width: '7px', height: '7px', borderRadius: '50%', flexShrink: 0,
+                    // Normal state follows the selected colour; low stock and
+                    // sold out keep their warning colours so the signal survives
+                    backgroundColor: presaleSoldOut ? '#9A9690' : quotaLeft <= 5 ? '#C17A56' : color.hex,
+                    border: !presaleSoldOut && quotaLeft > 5 ? '1px solid rgba(0,0,0,0.15)' : 'none',
+                    boxShadow: !presaleSoldOut && quotaLeft <= 5 ? '0 0 6px rgba(193,122,86,0.6)' : 'none',
+                    animation: !presaleSoldOut && quotaLeft <= 5 ? 'stockPulse 1.4s ease-in-out infinite' : 'none',
+                  }} />
+                  <span style={{
+                    fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 700,
+                    color: presaleSoldOut ? '#6A6862' : quotaLeft <= 5 ? '#B3543C' : color.hex,
+                  }}>
+                    {presaleSoldOut
+                      ? `מכסת מחיר ההשקה ל${color.label} ${size.label} אזלה`
+                      : quotaLeft <= 5
+                        ? `נשארו רק ${quotaLeft} במחיר השקה · ${color.label} ${size.label}`
+                        : `${quotaLeft} יחידות במחיר השקה · ${color.label} ${size.label}`}
+                  </span>
+                </div>
+              )}
             </motion.div>
 
             {/* Size selector */}
@@ -368,31 +393,6 @@ export default function Models() {
                   </button>
                 ))}
               </div>
-
-              {/* Presale quota for this exact variant */}
-              {presaleCfg.active && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginTop: '14px' }}>
-                  <span style={{
-                    width: '7px', height: '7px', borderRadius: '50%', flexShrink: 0,
-                    // Normal state follows the selected colour; low stock and
-                    // sold out keep their warning colours so the signal survives
-                    backgroundColor: presaleSoldOut ? '#9A9690' : quotaLeft <= 5 ? '#C17A56' : color.hex,
-                    border: !presaleSoldOut && quotaLeft > 5 ? '1px solid rgba(0,0,0,0.15)' : 'none',
-                    boxShadow: !presaleSoldOut && quotaLeft <= 5 ? '0 0 6px rgba(193,122,86,0.6)' : 'none',
-                    animation: !presaleSoldOut && quotaLeft <= 5 ? 'stockPulse 1.4s ease-in-out infinite' : 'none',
-                  }} />
-                  <span style={{
-                    fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 700,
-                    color: presaleSoldOut ? '#6A6862' : quotaLeft <= 5 ? '#B3543C' : color.hex,
-                  }}>
-                    {presaleSoldOut
-                      ? `מכסת מחיר ההשקה ל${color.label} ${size.label} אזלה`
-                      : quotaLeft <= 5
-                        ? `נשארו רק ${quotaLeft} במחיר השקה · ${color.label} ${size.label}`
-                        : `${quotaLeft} יחידות במחיר השקה · ${color.label} ${size.label}`}
-                  </span>
-                </div>
-              )}
             </motion.div>
             </div>
 

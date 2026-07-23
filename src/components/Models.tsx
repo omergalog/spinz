@@ -25,20 +25,6 @@ export default function Models() {
   const headingRefMobile = useRef<HTMLDivElement>(null);
   const headingInViewMobile = useInView(headingRefMobile, { once: true, margin: '-40px' });
 
-  // Mobile sticky buy-bar: appears once the main CTA has scrolled above the viewport
-  const ctaRef = useRef<HTMLDivElement>(null);
-  const [showStickyBar, setShowStickyBar] = useState(false);
-  useEffect(() => {
-    const onScroll = () => {
-      const el = ctaRef.current;
-      if (!el) return;
-      // show the bar once the whole CTA has scrolled above the top of the viewport
-      setShowStickyBar(el.getBoundingClientRect().bottom < 0);
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
 
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState(0);
@@ -424,7 +410,6 @@ export default function Models() {
 
             {/* Add to cart */}
             <motion.div
-              ref={ctaRef}
               initial={{ opacity: 0, y: 10 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.44 }}
@@ -522,54 +507,6 @@ export default function Models() {
       </div>
 
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', backgroundColor: BORDER }} />
-
-      {/* Mobile sticky buy-bar — follows the user down the page */}
-      <AnimatePresence>
-        {showStickyBar && !outOfStock && (
-          <motion.div
-            className="lg:hidden"
-            initial={{ y: '110%' }}
-            animate={{ y: 0 }}
-            exit={{ y: '110%' }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            dir="rtl"
-            style={{
-              position: 'fixed', bottom: 0, insetInlineStart: 0, insetInlineEnd: 0, zIndex: 60,
-              backgroundColor: '#FFFFFF', borderTop: `1px solid ${BORDER}`,
-              boxShadow: '0 -6px 24px rgba(0,0,0,0.10)',
-              padding: '10px 16px calc(10px + env(safe-area-inset-bottom))',
-              display: 'flex', alignItems: 'center', gap: '12px',
-            }}
-          >
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 700, color: DARK, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                SPINZ Urban · {color.label} {size.label}
-              </div>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 800, color: DARK }}>
-                  ₪{shownPrice.toLocaleString('he-IL')}
-                </span>
-                {presale && (
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#999', textDecoration: 'line-through' }}>
-                    ₪{presaleCfg.regularPrice.toLocaleString('he-IL')}
-                  </span>
-                )}
-              </div>
-            </div>
-            <button
-              onClick={handleAddToCart}
-              style={{
-                flexShrink: 0, backgroundColor: added ? '#2A5A2A' : DARK, color: added ? '#7FD97F' : '#EDEBE6',
-                border: 'none', borderRadius: '8px', padding: '13px 22px',
-                fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700,
-                display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer',
-              }}
-            >
-              {added ? <>נוסף! <Check size={16} /></> : <>הוסיפו לעגלה <ShoppingCart size={16} /></>}
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   );
 }

@@ -240,15 +240,13 @@ export default function Models() {
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col lg:flex-row lg:items-start">
 
-          {/* Image column – on mobile it also carries the header + price above the image (sandwich) */}
-          <div className="relative lg:flex-1 flex flex-col bg-white order-1 lg:order-2 lg:min-h-0 lg:self-start lg:sticky lg:top-[96px]">
-            {/* Mobile-only: name, rating, price above the image */}
-            <div className="lg:hidden" style={{ padding: '10px 20px 2px' }}>
-              {renderHeader(headingRefMobile, headingInViewMobile)}
-              {renderPrice()}
-            </div>
-            {/* Image */}
-            <div className="relative flex-1 flex items-center justify-center p-6 lg:p-12 min-h-[58vw] lg:min-h-0">
+          {/* MOBILE header (name / tagline / rating) — scrolls away above the sticky image */}
+          <div className="lg:hidden order-1" style={{ padding: '10px 20px 4px' }}>
+            {renderHeader(headingRefMobile, headingInViewMobile)}
+          </div>
+
+          {/* Image – sticky on both mobile and desktop */}
+          <div className="relative order-2 lg:order-2 lg:flex-1 flex items-center justify-center bg-white p-6 lg:p-12 min-h-[52vw] lg:min-h-0 sticky top-[80px] lg:top-[96px] lg:self-start" style={{ zIndex: 1 }}>
             {/* 3D viewer for beige disabled for now – .glb loads too slowly; restore when optimized */}
             <AnimatePresence mode="wait">
               <motion.img
@@ -289,15 +287,20 @@ export default function Models() {
                 </motion.div>
               )}
             </AnimatePresence>
-            </div>
           </div>
 
-          {/* BUY BOX – all product text + selection + purchase, one column */}
-          <div className="lg:w-[440px] flex flex-col justify-center lg:justify-start p-5 pt-3 lg:p-14 order-2 lg:order-1" style={{ borderLeft: `1px solid ${BORDER}` }}>
+          {/* BUY BOX – scrolls; on mobile it rises as a sheet over the sticky image */}
+          <div className="order-3 lg:order-1 lg:w-[440px] flex flex-col justify-start p-5 pt-6 lg:p-14 relative z-[2] bg-white rounded-t-[22px] lg:rounded-none -mt-5 lg:mt-0 shadow-[0_-10px_28px_rgba(0,0,0,0.06)] lg:shadow-none lg:border-l lg:border-[#E2DED8]">
 
-            {/* Header + price — desktop only (mobile shows them above the image) */}
+            {/* Header + price — desktop only (on mobile the header is above the image) */}
             <div className="hidden lg:block">
               {renderHeader(headingRefLeft, headingInViewLeft)}
+              {renderPrice()}
+              <div style={{ height: '1px', backgroundColor: BORDER, marginBottom: '24px' }} />
+            </div>
+
+            {/* Price — mobile only (below the image, above the config) */}
+            <div className="lg:hidden">
               {renderPrice()}
               <div style={{ height: '1px', backgroundColor: BORDER, marginBottom: '24px' }} />
             </div>

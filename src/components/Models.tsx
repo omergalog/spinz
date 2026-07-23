@@ -39,11 +39,17 @@ export default function Models() {
     const disable = () => { html.style.scrollSnapType = ''; html.style.scrollPaddingTop = ''; };
     const enable = () => { html.style.scrollSnapType = 'y proximity'; html.style.scrollPaddingTop = 'calc(80px + 33vh)'; };
     let settleTimer: ReturnType<typeof setTimeout>;
+    let active = false;
     const onScroll = () => {
       if (snapReleasedRef.current) return; // already released — never snap again
       const inView = (() => { const r = el.getBoundingClientRect(); return r.top < window.innerHeight && r.bottom > 0; })();
-      if (!inView) { disable(); return; }
-      enable();
+      // Set snap-type only ONCE on the in-view transition. Re-setting it every
+      // scroll frame resets the browser's snap calc and lets a fast fling slip by.
+      if (inView !== active) {
+        active = inView;
+        if (inView) enable(); else disable();
+      }
+      if (!inView) return;
       // Once the scroll settles at/above the snap line (the snap has engaged),
       // release it permanently so the next scroll flows freely.
       clearTimeout(settleTimer);

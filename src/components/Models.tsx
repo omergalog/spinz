@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, Check, Star } from 'lucide-react';
+import { ShoppingCart, Check, Star, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { colorVariants, sizeVariants } from '../data/models';
 import { useCart } from '../context/CartContext';
@@ -11,6 +11,7 @@ const DARK   = '#1C1C1C';
 const BEIGE  = '#FFFFFF';
 const BORDER = '#E2DED8';
 const MUTED  = '#6A6862';
+const GOLD   = '#C9A870';
 
 const BASE_PRICE = 2290;
 
@@ -113,7 +114,6 @@ export default function Models() {
   const renderHeader = (
     hRef: React.RefObject<HTMLDivElement>,
     hInView: boolean,
-    withDivider = false,
   ) => (
     <>
       {/* Label */}
@@ -180,49 +180,6 @@ export default function Models() {
           </span>
         </Link>
       </motion.div>
-
-      {/* Presale callout – prominent launch-price banner */}
-      {presale && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.24 }}
-          style={{
-            position: 'relative',
-            overflow: 'hidden',
-            background: 'linear-gradient(135deg, #1C1C1C 0%, #2A2620 100%)',
-            borderRadius: '12px',
-            padding: '16px 18px',
-            marginBottom: withDivider ? '28px' : 0,
-            border: '1px solid rgba(201,168,112,0.35)',
-          }}
-        >
-          <div aria-hidden style={{
-            position: 'absolute', top: 0, insetInlineEnd: 0, width: '120px', height: '100%',
-            background: 'radial-gradient(circle at 100% 0%, rgba(201,168,112,0.18) 0%, transparent 70%)',
-            pointerEvents: 'none',
-          }} />
-          <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{
-              fontSize: '11px', fontWeight: 900, letterSpacing: '0.12em',
-              color: '#1C1C1C', backgroundColor: '#C9A870',
-              padding: '4px 10px', borderRadius: '5px', whiteSpace: 'nowrap', flexShrink: 0,
-            }}>
-              PRE-SALE
-            </span>
-            <div style={{ lineHeight: 1.35 }}>
-              <div style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 800, color: '#EDEBE6' }}>
-                מהדורת השקה מוגבלת
-              </div>
-              <div style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', color: 'rgba(237,235,230,0.7)' }}>
-                ל-{presaleCfg.presaleUnits} הרוכבים הראשונים בלבד
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      )}
-
-      {withDivider && <div style={{ height: '1px', backgroundColor: BORDER, margin: '28px 0' }} />}
     </>
   );
 
@@ -240,14 +197,8 @@ export default function Models() {
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col lg:flex-row min-h-[80vh]">
 
-          {/* LEFT on desktop – header (desktop only) + image */}
-          <div className="lg:flex-1 flex flex-col bg-white p-4 lg:p-8 order-1 lg:order-2 min-h-[50vw] lg:min-h-0">
-            {/* Header sits above the image on all breakpoints */}
-            <div style={{ marginBottom: '20px' }}>
-              {renderHeader(headingRefLeft, headingInViewLeft)}
-            </div>
-            {/* Image area */}
-            <div className="flex-1 flex items-center justify-center" style={{ position: 'relative', minHeight: 0 }}>
+          {/* Image – clean, no text overlaying it */}
+          <div className="lg:flex-1 flex items-center justify-center bg-white p-6 lg:p-12 order-1 lg:order-2 min-h-[62vw] lg:min-h-[560px]" style={{ position: 'relative' }}>
             {/* 3D viewer for beige disabled for now – .glb loads too slowly; restore when optimized */}
             <AnimatePresence mode="wait">
               <motion.img
@@ -288,11 +239,56 @@ export default function Models() {
                 </motion.div>
               )}
             </AnimatePresence>
-            </div>
           </div>
 
-          {/* RIGHT on desktop – selector */}
-          <div className="lg:w-[480px] flex flex-col justify-center p-5 pt-3 lg:p-16 order-2 lg:order-1" style={{ borderLeft: `1px solid ${BORDER}` }}>
+          {/* BUY BOX – all product text + selection + purchase, one column */}
+          <div className="lg:w-[440px] flex flex-col justify-center p-5 pt-3 lg:p-14 order-2 lg:order-1" style={{ borderLeft: `1px solid ${BORDER}` }}>
+
+            {/* Header: name, tagline, rating */}
+            {renderHeader(headingRefLeft, headingInViewLeft)}
+
+            {/* Price block */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.26 }}
+              style={{ margin: '4px 0 22px' }}
+            >
+              {presale && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', flexWrap: 'wrap' }}>
+                  <span style={{
+                    fontFamily: "'Heebo', sans-serif", fontSize: '10px', fontWeight: 900, letterSpacing: '0.14em',
+                    color: '#1C1C1C', backgroundColor: GOLD, padding: '4px 10px', borderRadius: '5px',
+                  }}>
+                    PRE-SALE
+                  </span>
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 600, color: MUTED }}>
+                    מהדורת השקה · ל-{presaleCfg.presaleUnits} הראשונים בלבד
+                  </span>
+                </div>
+              )}
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' }}>
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(34px, 5vw, 46px)', color: DARK, letterSpacing: '-0.01em' }}>
+                  ₪{shownPrice.toLocaleString('he-IL')}
+                </span>
+                {presale ? (
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', color: '#999', textDecoration: 'line-through', textDecorationColor: '#C17A56' }}>
+                    ₪{presaleCfg.regularPrice.toLocaleString('he-IL')}
+                  </span>
+                ) : salePrice ? (
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', color: '#999', textDecoration: 'line-through', textDecorationColor: '#FF4444' }}>
+                    ₪{price.toLocaleString('he-IL')}
+                  </span>
+                ) : null}
+              </div>
+              {presale && (
+                <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13.5px', color: MUTED, margin: '10px 0 0' }}>
+                  או <b style={{ color: DARK }}>₪{monthly.toLocaleString('he-IL')}</b> לחודש, ב-13 תשלומים
+                </p>
+              )}
+            </motion.div>
+
+            <div style={{ height: '1px', backgroundColor: BORDER, marginBottom: '24px' }} />
 
             {/* Colour + size — desktop swaps the order (size first) via CSS order */}
             <div className="flex flex-col">
@@ -369,6 +365,9 @@ export default function Models() {
                 <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: DARK, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                   מידה
                 </span>
+                <Link to="/sizes" style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 600, color: GOLD, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+                  איזו מידה מתאימה לי?
+                </Link>
               </div>
               <div style={{ display: 'flex', gap: '10px' }}>
                 {sizeVariants.map((s, i) => (
@@ -396,60 +395,6 @@ export default function Models() {
             </motion.div>
             </div>
 
-            {/* Price */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.38 }}
-              style={{ marginBottom: '24px' }}
-            >
-              {presale && (
-                <span style={{
-                  display: 'inline-block', marginBottom: '8px',
-                  fontFamily: "'Heebo', sans-serif", fontSize: '10.5px', fontWeight: 800,
-                  letterSpacing: '0.15em', textTransform: 'uppercase',
-                  color: '#1C1C1C', backgroundColor: '#C9A870',
-                  padding: '4px 12px', borderRadius: '6px',
-                }}>
-                  מחיר השקה
-                </span>
-              )}
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' }}>
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(30px, 4.5vw, 44px)', color: DARK }}>
-                  ₪{shownPrice.toLocaleString('he-IL')}
-                </span>
-                {presale ? (
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', color: '#999', textDecoration: 'line-through', textDecorationColor: '#C17A56' }}>
-                    ₪{presaleCfg.regularPrice.toLocaleString('he-IL')}
-                  </span>
-                ) : salePrice ? (
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', color: '#999', textDecoration: 'line-through', textDecorationColor: '#FF4444' }}>
-                    ₪{price.toLocaleString('he-IL')}
-                  </span>
-                ) : null}
-              </div>
-              {presale && (
-                <div style={{
-                  display: 'inline-flex', alignItems: 'baseline', gap: '7px',
-                  marginTop: '12px', padding: '8px 14px',
-                  backgroundColor: '#F3EDE1', border: '1px solid #E3D8C2',
-                  borderRadius: '8px',
-                }}>
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: MUTED }}>
-                    או
-                  </span>
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '22px', fontWeight: 800, color: DARK, letterSpacing: '-0.01em' }}>
-                    ₪{monthly.toLocaleString('he-IL')}
-                  </span>
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 600, color: DARK }}>
-                    לחודש
-                  </span>
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: MUTED }}>
-                    ב-13 תשלומים
-                  </span>
-                </div>
-              )}
-            </motion.div>
 
             {/* Add to cart */}
             <motion.div
@@ -529,19 +474,19 @@ export default function Models() {
                 animate={isInView ? { opacity: 1 } : {}}
                 transition={{ duration: 0.6, delay: 0.55 }}
                 style={{
-                  marginTop: '12px', padding: '11px 14px',
-                  backgroundColor: '#F3EDE1', border: `1px solid #E3D8C2`,
-                  borderRadius: '8px',
-                  fontFamily: "'Heebo', sans-serif", fontSize: '12px',
-                  color: '#5A5750', lineHeight: 1.6, textAlign: 'center',
+                  display: 'flex', gap: '10px', alignItems: 'flex-start',
+                  marginTop: '16px', paddingTop: '16px', borderTop: `1px solid ${BORDER}`,
                 }}
               >
-                הזמנה מוקדמת – המוצר טרם במלאי. מועד אספקה משוער:{' '}
-                <b style={{ color: DARK }}>{presaleCfg.arrivalLabel}</b>.
-                ניתן לבטל ולקבל החזר מלא בכל שלב לפני המסירה.{' '}
-                <Link to="/presale-terms" style={{ color: '#8A6D3B', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
-                  תנאי מכירה מוקדמת
-                </Link>
+                <Calendar size={15} style={{ color: GOLD, flexShrink: 0, marginTop: '2px' }} />
+                <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: MUTED, lineHeight: 1.65, margin: 0 }}>
+                  הזמנה מוקדמת – המוצר טרם במלאי. מועד אספקה משוער:{' '}
+                  <b style={{ color: DARK }}>{presaleCfg.arrivalLabel}</b>.
+                  ניתן לבטל ולקבל החזר מלא בכל שלב לפני המסירה.{' '}
+                  <Link to="/presale-terms" style={{ color: '#8A6D3B', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+                    תנאי מכירה מוקדמת
+                  </Link>
+                </p>
               </motion.div>
             )}
 

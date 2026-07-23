@@ -25,31 +25,41 @@ export default function Models() {
   const headingRefMobile = useRef<HTMLDivElement>(null);
   const headingInViewMobile = useInView(headingRefMobile, { once: true, margin: '-40px' });
 
-  // Mobile only: enable a gentle scroll-snap ONLY while this section is on
-  // screen, so a fast scroll stops at the colour/size options. Everywhere
-  // else on the page scrolling stays completely normal. Toggled by a scroll
-  // listener (only when the in-view state actually flips, not every frame).
+  // Mobile only: a ONE-TIME gentle scroll-snap. While the product section is
+  // on screen the scroll snaps once, right at the colour/size options; the
+  // moment the scroll settles at (or past) that point the snap is released for
+  // good, so the rest of the page — and any further scrolling — flows normally.
+  const buyBoxRef = useRef<HTMLDivElement>(null);
+  const snapReleasedRef = useRef(false);
   useEffect(() => {
     if (!window.matchMedia('(max-width: 1023px)').matches) return;
     const el = ref.current;
     if (!el) return;
     const html = document.documentElement;
-    let active = false;
+    const disable = () => { html.style.scrollSnapType = ''; html.style.scrollPaddingTop = ''; };
+    const enable = () => { html.style.scrollSnapType = 'y proximity'; html.style.scrollPaddingTop = 'calc(80px + 33vh)'; };
+    let settleTimer: ReturnType<typeof setTimeout>;
     const onScroll = () => {
-      const r = el.getBoundingClientRect();
-      const inView = r.top < window.innerHeight && r.bottom > 0;
-      if (inView === active) return;
-      active = inView;
-      html.style.scrollSnapType = inView ? 'y proximity' : '';
-      html.style.scrollPaddingTop = inView ? 'calc(80px + 33vh)' : '';
+      if (snapReleasedRef.current) return; // already released — never snap again
+      const inView = (() => { const r = el.getBoundingClientRect(); return r.top < window.innerHeight && r.bottom > 0; })();
+      if (!inView) { disable(); return; }
+      enable();
+      // Once the scroll settles at/above the snap line (the snap has engaged),
+      // release it permanently so the next scroll flows freely.
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(() => {
+        const bb = buyBoxRef.current;
+        if (!bb) return;
+        const snapLine = 80 + 0.33 * window.innerHeight;
+        if (bb.getBoundingClientRect().top <= snapLine + 8) {
+          snapReleasedRef.current = true;
+          disable();
+        }
+      }, 140);
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      html.style.scrollSnapType = '';
-      html.style.scrollPaddingTop = '';
-    };
+    return () => { window.removeEventListener('scroll', onScroll); clearTimeout(settleTimer); disable(); };
   }, []);
 
 
@@ -318,7 +328,7 @@ export default function Models() {
 
           {/* BUY BOX – scrolls; on mobile it slides up BELOW the fixed image (lower z-index) so the bike stays visible.
               scroll-snap stops a fast scroll here so users notice the colour/size options (mobile only via the html media query). */}
-          <div className="order-3 lg:order-1 lg:w-[440px] flex flex-col justify-start p-5 pt-6 lg:p-14 relative z-[1] bg-white lg:border-l lg:border-[#E2DED8]" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'always' }}>
+          <div ref={buyBoxRef} className="order-3 lg:order-1 lg:w-[440px] flex flex-col justify-start p-5 pt-6 lg:p-14 relative z-[1] bg-white lg:border-l lg:border-[#E2DED8]" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'always' }}>
 
             {/* Header — desktop only (on mobile the header is above the image) */}
             <div className="hidden lg:block">

@@ -245,8 +245,8 @@ export default function Models() {
             {renderHeader(headingRefMobile, headingInViewMobile)}
           </div>
 
-          {/* Image – sticky on both mobile and desktop */}
-          <div className="relative order-2 lg:order-2 lg:flex-1 flex items-center justify-center bg-white p-6 lg:p-12 min-h-[52vw] lg:min-h-0 sticky top-[80px] lg:top-[96px] lg:self-start" style={{ zIndex: 1 }}>
+          {/* Image – sticky; on mobile a fixed top band that always stays visible above the scrolling details */}
+          <div className="relative order-2 lg:order-2 lg:flex-1 flex items-center justify-center bg-white p-6 lg:p-12 h-[46vh] lg:h-auto lg:min-h-0 sticky top-[80px] lg:top-[96px] lg:self-start" style={{ zIndex: 2 }}>
             {/* 3D viewer for beige disabled for now – .glb loads too slowly; restore when optimized */}
             <AnimatePresence mode="wait">
               <motion.img
@@ -289,8 +289,8 @@ export default function Models() {
             </AnimatePresence>
           </div>
 
-          {/* BUY BOX – scrolls; on mobile it rises as a sheet over the sticky image */}
-          <div className="order-3 lg:order-1 lg:w-[440px] flex flex-col justify-start p-5 pt-6 lg:p-14 relative z-[2] bg-white rounded-t-[22px] lg:rounded-none -mt-5 lg:mt-0 shadow-[0_-10px_28px_rgba(0,0,0,0.06)] lg:shadow-none lg:border-l lg:border-[#E2DED8]">
+          {/* BUY BOX – scrolls; on mobile it slides up BELOW the fixed image (lower z-index) so the bike stays visible */}
+          <div className="order-3 lg:order-1 lg:w-[440px] flex flex-col justify-start p-5 pt-6 lg:p-14 relative z-[1] bg-white lg:border-l lg:border-[#E2DED8]">
 
             {/* Header + price — desktop only (on mobile the header is above the image) */}
             <div className="hidden lg:block">

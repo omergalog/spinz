@@ -21,6 +21,24 @@ export default function Models() {
   // Heading ref drives the masked slide-in of the "SPINZ Urban" title
   const headingRefLeft = useRef<HTMLDivElement>(null);
   const headingInViewLeft = useInView(headingRefLeft, { once: true, margin: '-40px' });
+  // Separate ref for the mobile header copy (rendered above the image)
+  const headingRefMobile = useRef<HTMLDivElement>(null);
+  const headingInViewMobile = useInView(headingRefMobile, { once: true, margin: '-40px' });
+
+  // Mobile sticky buy-bar: appears once the main CTA has scrolled above the viewport
+  const ctaRef = useRef<HTMLDivElement>(null);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+  useEffect(() => {
+    const onScroll = () => {
+      const el = ctaRef.current;
+      if (!el) return;
+      // show the bar once the whole CTA has scrolled above the top of the viewport
+      setShowStickyBar(el.getBoundingClientRect().bottom < 0);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const [selectedColor, setSelectedColor] = useState(0);
   const [selectedSize, setSelectedSize] = useState(0);
@@ -183,6 +201,45 @@ export default function Models() {
     </>
   );
 
+  // Price block (badge + price + monthly). Shown in the buy box on desktop,
+  // and above the image on mobile (the "sandwich" layout).
+  const renderPrice = () => (
+    <div style={{ margin: '4px 0 22px' }}>
+      {presale && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', flexWrap: 'wrap' }}>
+          <span style={{
+            fontFamily: "'Heebo', sans-serif", fontSize: '10px', fontWeight: 900, letterSpacing: '0.14em',
+            color: '#1C1C1C', backgroundColor: GOLD, padding: '4px 10px', borderRadius: '5px',
+          }}>
+            PRE-SALE
+          </span>
+          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 600, color: MUTED }}>
+            מהדורת השקה · ל-{presaleCfg.presaleUnits} הראשונים בלבד
+          </span>
+        </div>
+      )}
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' }}>
+        <span style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(34px, 5vw, 46px)', color: DARK, letterSpacing: '-0.01em' }}>
+          ₪{shownPrice.toLocaleString('he-IL')}
+        </span>
+        {presale ? (
+          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', color: '#999', textDecoration: 'line-through', textDecorationColor: '#C17A56' }}>
+            ₪{presaleCfg.regularPrice.toLocaleString('he-IL')}
+          </span>
+        ) : salePrice ? (
+          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', color: '#999', textDecoration: 'line-through', textDecorationColor: '#FF4444' }}>
+            ₪{price.toLocaleString('he-IL')}
+          </span>
+        ) : null}
+      </div>
+      {presale && (
+        <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13.5px', color: MUTED, margin: '10px 0 0' }}>
+          או <b style={{ color: DARK }}>₪{monthly.toLocaleString('he-IL')}</b> לחודש, ב-13 תשלומים
+        </p>
+      )}
+    </div>
+  );
+
   return (
     <section
       ref={ref}
@@ -197,8 +254,15 @@ export default function Models() {
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col lg:flex-row lg:items-start">
 
-          {/* Image – clean, no text overlaying it */}
-          <div className="relative lg:flex-1 flex items-center justify-center bg-white p-6 lg:p-12 order-1 lg:order-2 min-h-[62vw] lg:min-h-0 lg:self-start lg:sticky lg:top-[96px]">
+          {/* Image column – on mobile it also carries the header + price above the image (sandwich) */}
+          <div className="relative lg:flex-1 flex flex-col bg-white order-1 lg:order-2 lg:min-h-0 lg:self-start lg:sticky lg:top-[96px]">
+            {/* Mobile-only: name, rating, price above the image */}
+            <div className="lg:hidden" style={{ padding: '10px 20px 2px' }}>
+              {renderHeader(headingRefMobile, headingInViewMobile)}
+              {renderPrice()}
+            </div>
+            {/* Image */}
+            <div className="relative flex-1 flex items-center justify-center p-6 lg:p-12 min-h-[58vw] lg:min-h-0">
             {/* 3D viewer for beige disabled for now – .glb loads too slowly; restore when optimized */}
             <AnimatePresence mode="wait">
               <motion.img
@@ -239,56 +303,18 @@ export default function Models() {
                 </motion.div>
               )}
             </AnimatePresence>
+            </div>
           </div>
 
           {/* BUY BOX – all product text + selection + purchase, one column */}
           <div className="lg:w-[440px] flex flex-col justify-center lg:justify-start p-5 pt-3 lg:p-14 order-2 lg:order-1" style={{ borderLeft: `1px solid ${BORDER}` }}>
 
-            {/* Header: name, tagline, rating */}
-            {renderHeader(headingRefLeft, headingInViewLeft)}
-
-            {/* Price block */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.26 }}
-              style={{ margin: '4px 0 22px' }}
-            >
-              {presale && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', flexWrap: 'wrap' }}>
-                  <span style={{
-                    fontFamily: "'Heebo', sans-serif", fontSize: '10px', fontWeight: 900, letterSpacing: '0.14em',
-                    color: '#1C1C1C', backgroundColor: GOLD, padding: '4px 10px', borderRadius: '5px',
-                  }}>
-                    PRE-SALE
-                  </span>
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 600, color: MUTED }}>
-                    מהדורת השקה · ל-{presaleCfg.presaleUnits} הראשונים בלבד
-                  </span>
-                </div>
-              )}
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' }}>
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(34px, 5vw, 46px)', color: DARK, letterSpacing: '-0.01em' }}>
-                  ₪{shownPrice.toLocaleString('he-IL')}
-                </span>
-                {presale ? (
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', color: '#999', textDecoration: 'line-through', textDecorationColor: '#C17A56' }}>
-                    ₪{presaleCfg.regularPrice.toLocaleString('he-IL')}
-                  </span>
-                ) : salePrice ? (
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', color: '#999', textDecoration: 'line-through', textDecorationColor: '#FF4444' }}>
-                    ₪{price.toLocaleString('he-IL')}
-                  </span>
-                ) : null}
-              </div>
-              {presale && (
-                <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13.5px', color: MUTED, margin: '10px 0 0' }}>
-                  או <b style={{ color: DARK }}>₪{monthly.toLocaleString('he-IL')}</b> לחודש, ב-13 תשלומים
-                </p>
-              )}
-            </motion.div>
-
-            <div style={{ height: '1px', backgroundColor: BORDER, marginBottom: '24px' }} />
+            {/* Header + price — desktop only (mobile shows them above the image) */}
+            <div className="hidden lg:block">
+              {renderHeader(headingRefLeft, headingInViewLeft)}
+              {renderPrice()}
+              <div style={{ height: '1px', backgroundColor: BORDER, marginBottom: '24px' }} />
+            </div>
 
             {/* Colour + size — desktop swaps the order (size first) via CSS order */}
             <div className="flex flex-col">
@@ -398,6 +424,7 @@ export default function Models() {
 
             {/* Add to cart */}
             <motion.div
+              ref={ctaRef}
               initial={{ opacity: 0, y: 10 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.44 }}
@@ -495,6 +522,54 @@ export default function Models() {
       </div>
 
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '1px', backgroundColor: BORDER }} />
+
+      {/* Mobile sticky buy-bar — follows the user down the page */}
+      <AnimatePresence>
+        {showStickyBar && !outOfStock && (
+          <motion.div
+            className="lg:hidden"
+            initial={{ y: '110%' }}
+            animate={{ y: 0 }}
+            exit={{ y: '110%' }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            dir="rtl"
+            style={{
+              position: 'fixed', bottom: 0, insetInlineStart: 0, insetInlineEnd: 0, zIndex: 60,
+              backgroundColor: '#FFFFFF', borderTop: `1px solid ${BORDER}`,
+              boxShadow: '0 -6px 24px rgba(0,0,0,0.10)',
+              padding: '10px 16px calc(10px + env(safe-area-inset-bottom))',
+              display: 'flex', alignItems: 'center', gap: '12px',
+            }}
+          >
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 700, color: DARK, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                SPINZ Urban · {color.label} {size.label}
+              </div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 800, color: DARK }}>
+                  ₪{shownPrice.toLocaleString('he-IL')}
+                </span>
+                {presale && (
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#999', textDecoration: 'line-through' }}>
+                    ₪{presaleCfg.regularPrice.toLocaleString('he-IL')}
+                  </span>
+                )}
+              </div>
+            </div>
+            <button
+              onClick={handleAddToCart}
+              style={{
+                flexShrink: 0, backgroundColor: added ? '#2A5A2A' : DARK, color: added ? '#7FD97F' : '#EDEBE6',
+                border: 'none', borderRadius: '8px', padding: '13px 22px',
+                fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700,
+                display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer',
+              }}
+            >
+              {added ? <>נוסף! <Check size={16} /></> : <>הוסיפו לעגלה <ShoppingCart size={16} /></>}
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

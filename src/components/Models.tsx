@@ -195,10 +195,10 @@ export default function Models() {
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', backgroundColor: BORDER }} />
 
       <div className="mx-auto max-w-7xl">
-        <div className="flex flex-col lg:flex-row min-h-[80vh]">
+        <div className="flex flex-col lg:flex-row lg:items-start">
 
           {/* Image – clean, no text overlaying it */}
-          <div className="lg:flex-1 flex items-center justify-center bg-white p-6 lg:p-12 order-1 lg:order-2 min-h-[62vw] lg:min-h-[560px]" style={{ position: 'relative' }}>
+          <div className="relative lg:flex-1 flex items-center justify-center bg-white p-6 lg:p-12 order-1 lg:order-2 min-h-[62vw] lg:min-h-0 lg:self-start lg:sticky lg:top-[96px]">
             {/* 3D viewer for beige disabled for now – .glb loads too slowly; restore when optimized */}
             <AnimatePresence mode="wait">
               <motion.img
@@ -242,7 +242,7 @@ export default function Models() {
           </div>
 
           {/* BUY BOX – all product text + selection + purchase, one column */}
-          <div className="lg:w-[440px] flex flex-col justify-center p-5 pt-3 lg:p-14 order-2 lg:order-1" style={{ borderLeft: `1px solid ${BORDER}` }}>
+          <div className="lg:w-[440px] flex flex-col justify-center lg:justify-start p-5 pt-3 lg:p-14 order-2 lg:order-1" style={{ borderLeft: `1px solid ${BORDER}` }}>
 
             {/* Header: name, tagline, rating */}
             {renderHeader(headingRefLeft, headingInViewLeft)}

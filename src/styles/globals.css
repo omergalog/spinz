@@ -27,7 +27,8 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: clip;
+  /* Horizontal overflow is clipped on <html> only. Clipping it on <body> too
+     creates a clip context that breaks position:sticky inside the page. */
 }
 
 /* ─── Pause animations (accessibility widget) ─── */

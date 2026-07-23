@@ -304,10 +304,7 @@ export default function Models() {
               transition={{ duration: 0.6, delay: 0.25 }}
               style={{ marginBottom: '28px' }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: DARK, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                  צבע
-                </span>
+              <div style={{ marginBottom: '12px' }}>
                 <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: color.hex, fontWeight: 700 }}>
                   {color.label}
                 </span>

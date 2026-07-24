@@ -215,21 +215,22 @@ export default function Navbar() {
 
           {/* CTA + search + cart + hamburger */}
           <div className="flex items-center gap-2 md:gap-3">
-            {/* Search – icon only, identical box to the cart button */}
+            {/* Search – bare icon. Keeps a 44px hit area for touch without a visible box. */}
             <button
               onClick={() => setSearchOpen(true)}
               aria-label="חיפוש באתר"
               title="חיפוש באתר (⌘K)"
               className="flex items-center justify-center"
               style={{
-                border: `1px solid ${DARK}`, borderRadius: '4px',
-                color: DARK, padding: '13px 13px', cursor: 'pointer', flexShrink: 0,
-                backgroundColor: 'transparent', transition: 'background-color 0.25s',
+                width: '44px', height: '44px',
+                border: 'none', background: 'none',
+                color: DARK, cursor: 'pointer', flexShrink: 0,
+                transition: 'color 0.2s, transform 0.2s',
               }}
-              onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.08)'; }}
-              onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+              onMouseEnter={e => { e.currentTarget.style.color = GOLD; e.currentTarget.style.transform = 'scale(1.08)'; }}
+              onMouseLeave={e => { e.currentTarget.style.color = DARK; e.currentTarget.style.transform = 'none'; }}
             >
-              <Search size={16} />
+              <Search size={25} strokeWidth={1.9} />
             </button>
 
             <button

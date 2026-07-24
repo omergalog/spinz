@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, ChevronDown } from 'lucide-react';
+import { ShoppingCart, ChevronDown, Search } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import AnnouncementBar from './AnnouncementBar';
+import SearchModal from './SearchModal';
 import { usePresale } from '../config/presale';
 
 const DARK  = '#1C1C1C';
@@ -45,6 +46,7 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
   const { totalCount, openCart } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
@@ -60,6 +62,24 @@ export default function Navbar() {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [menuOpen]);
+
+  // ⌘K / Ctrl+K opens search, and "/" does too unless the user is typing.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const el = document.activeElement;
+      const typing = el instanceof HTMLElement &&
+        (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable);
+      if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        setSearchOpen(v => !v);
+      } else if (e.key === '/' && !typing && !e.metaKey && !e.ctrlKey) {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -193,8 +213,44 @@ export default function Navbar() {
             </button>
           </nav>
 
-          {/* CTA + cart + hamburger */}
+          {/* CTA + search + cart + hamburger */}
           <div className="flex items-center gap-2 md:gap-3">
+            {/* Search – desktop: a field-shaped trigger with the shortcut hint */}
+            <button
+              onClick={() => setSearchOpen(true)}
+              aria-label="חיפוש באתר"
+              className="hidden lg:flex items-center gap-2"
+              style={{
+                backgroundColor: '#FFFFFF', border: `1px solid ${DARK}`,
+                borderRadius: '4px', padding: '8px 10px', cursor: 'pointer',
+                color: '#6A6862', fontFamily: "'Heebo', sans-serif", fontSize: '13px',
+                transition: 'border-color 0.2s, color 0.2s', whiteSpace: 'nowrap',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = GOLD; e.currentTarget.style.color = DARK; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = DARK; e.currentTarget.style.color = '#6A6862'; }}
+            >
+              <Search size={15} />
+              חיפוש
+              <kbd style={{
+                border: '1px solid #DDD9D1', borderRadius: '3px', padding: '0 4px',
+                fontSize: '10px', color: '#9A9690', backgroundColor: LIGHT,
+              }}>⌘K</kbd>
+            </button>
+
+            {/* Search – icon only, until there is room for the labelled pill */}
+            <button
+              onClick={() => setSearchOpen(true)}
+              aria-label="חיפוש באתר"
+              className="lg:hidden flex items-center justify-center"
+              style={{
+                border: `1px solid ${DARK}`, borderRadius: '4px',
+                color: DARK, padding: '13px 13px', cursor: 'pointer', flexShrink: 0,
+                backgroundColor: 'transparent',
+              }}
+            >
+              <Search size={16} />
+            </button>
+
             <button
               onClick={goContact}
               className="hidden md:inline-block font-bold uppercase tracking-widest text-xs py-[6px] px-[10px]"
@@ -266,6 +322,28 @@ export default function Navbar() {
             dir="rtl"
           >
             <nav className="flex flex-col">
+              {/* Search */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.05 }}
+                style={{ padding: '0 36px 4px' }}
+              >
+                <button
+                  onClick={() => { setMenuOpen(false); setTimeout(() => setSearchOpen(true), 260); }}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: '10px', width: '100%',
+                    backgroundColor: '#252525', border: '1px solid #333333',
+                    borderRadius: '8px', padding: '14px 16px', cursor: 'pointer',
+                    color: '#9A9690', fontFamily: "'Heebo', sans-serif", fontSize: '16px',
+                    textAlign: 'right',
+                  }}
+                >
+                  <Search size={18} color={GOLD} />
+                  חיפוש באתר
+                </button>
+              </motion.div>
+
               {/* Home link */}
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
@@ -363,6 +441,8 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <SearchModal open={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
 }

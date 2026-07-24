@@ -31,49 +31,56 @@ export default function Models() {
   // iOS); once the scroll settles at that point we remove it entirely, so every
   // other place on the page — and all further scrolling — is completely normal.
   const buyBoxRef = useRef<HTMLDivElement>(null);
+  const imageColRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!window.matchMedia('(max-width: 1023px)').matches) return;
+    const html = document.documentElement;
     let done = false;
-    let correcting = false;
     let lastY = window.scrollY;
-    let settleTimer: ReturnType<typeof setTimeout>;
+    let lastT = performance.now();
 
     const cleanup = () => {
       window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('touchstart', onTouch);
-      clearTimeout(settleTimer);
     };
-    // Any new touch while we're pulling the page back means the user took over.
-    const onTouch = () => { if (correcting) { done = true; cleanup(); } };
 
     const onScroll = () => {
       if (done) return;
+      const now = performance.now();
       const y = window.scrollY;
-      const goingDown = y > lastY;
-      lastY = y;
-      if (correcting) {
-        // Wait for the corrective scroll to settle, then hand control back.
-        clearTimeout(settleTimer);
-        settleTimer = setTimeout(() => { done = true; cleanup(); }, 260);
-        return;
-      }
-      if (!goingDown) return;
+      const dy = y - lastY;
+      const dt = Math.max(1, now - lastT);
+      lastY = y; lastT = now;
+      if (dy <= 0) return;                       // only on the way down
+      const speed = dy / dt;                     // px per ms
+
       const bb = buyBoxRef.current;
-      if (!bb) return;
-      const snapLine = 80 + 0.33 * window.innerHeight;
-      const delta = bb.getBoundingClientRect().top - snapLine;
-      // First time the config point crosses above its resting line, catch it.
-      if (delta < 0) {
-        const target = Math.max(0, Math.round(y + delta));
-        if (Math.abs(target - y) < 6) { done = true; cleanup(); return; }
-        correcting = true;
-        window.scrollTo({ top: target, behavior: 'smooth' });
-      }
+      const img = imageColRef.current;
+      if (!bb || !img) return;
+      // Rest line = bottom of the bike image once it is stuck under the header.
+      const stuckTop = parseFloat(getComputedStyle(img).top) || 80;
+      const line = stuckTop + img.offsetHeight;
+      const delta = bb.getBoundingClientRect().top - line;
+      if (delta >= 0) return;                    // config point not reached yet
+
+      // A slow, deliberate scroll never gets grabbed — only a fast fling that
+      // would blow straight past the colour/size options.
+      if (speed < 0.6 && delta > -160) { if (delta < -300) done = true; return; }
+
+      const target = Math.max(0, Math.round(y + delta));
+      done = true;
+      cleanup();
+      // Killing overflow for one frame cancels the iOS momentum fling, so the
+      // page actually comes to rest exactly on the line instead of fighting it.
+      html.style.overflowY = 'hidden';
+      window.scrollTo(0, target);
+      requestAnimationFrame(() => {
+        html.style.overflowY = '';
+        window.scrollTo(0, target);
+      });
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('touchstart', onTouch, { passive: true });
-    return cleanup;
+    return () => { cleanup(); html.style.overflowY = ''; };
   }, []);
 
 
@@ -297,7 +304,7 @@ export default function Models() {
           </div>
 
           {/* Image – sticky; on mobile a compact fixed top band that always stays visible above the scrolling details */}
-          <div className="relative order-2 lg:order-2 lg:flex-1 flex items-center justify-center bg-white px-5 py-1 lg:p-12 h-[33vh] lg:h-auto lg:min-h-0 sticky top-[80px] lg:top-[96px] lg:self-start shadow-[0_12px_20px_-10px_rgba(0,0,0,0.15)] lg:shadow-none" style={{ zIndex: 2 }}>
+          <div ref={imageColRef} className="relative order-2 lg:order-2 lg:flex-1 flex items-center justify-center bg-white px-5 py-1 lg:p-12 h-[33vh] lg:h-auto lg:min-h-0 sticky top-[80px] lg:top-[96px] lg:self-start shadow-[0_12px_20px_-10px_rgba(0,0,0,0.15)] lg:shadow-none" style={{ zIndex: 2 }}>
             {/* 3D viewer for beige disabled for now – .glb loads too slowly; restore when optimized */}
             <AnimatePresence mode="wait">
               <motion.img

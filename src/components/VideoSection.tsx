@@ -175,8 +175,12 @@ export default function VideoSection() {
         onClick={toggleMute}
         style={{
           position: 'absolute',
-          bottom: '24px',
+          // The floating WhatsApp button sits at bottom:24px/left:24px and is
+          // 48px tall, so this clears it (and rides along when the cookie
+          // banner lifts it) instead of hiding underneath.
+          bottom: 'calc(84px + var(--fab-lift, 0px))',
           left: '24px',
+          zIndex: 3,
           background: 'rgba(0,0,0,0.45)',
           backdropFilter: 'blur(8px)',
           border: `1px solid rgba(255,255,255,0.2)`,

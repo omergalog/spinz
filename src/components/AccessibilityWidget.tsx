@@ -21,11 +21,24 @@ const DEFAULT: Settings = {
   bigCursor: false,
 };
 
+// 32px cursors: white fill with a black outline so they stay visible on both
+// the cream and the dark sections.
+const BIG_ARROW =
+  `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M6 2l18 17-8 1 5 9-4 2-5-9-6 6z' fill='%23fff' stroke='%23000' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E") 4 2, auto`;
+const BIG_HAND =
+  `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M12 4a2.5 2.5 0 015 0v9V9a2.5 2.5 0 015 0v4V12a2.5 2.5 0 015 0v3a2.5 2.5 0 015 0v7c0 4-3 8-8 8h-4c-4 0-6-2-8-5l-4-7a2.5 2.5 0 014-3l3 4V4z' fill='%23fff' stroke='%23000' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E") 10 2, pointer`;
+
 function applySettings(s: Settings) {
   const root = document.documentElement;
 
-  // Font size
-  root.style.fontSize = s.fontSize !== 0 ? `${100 + s.fontSize * 10}%` : '';
+  // Text size. The site sizes text in px (inline styles), so scaling the root
+  // font-size has no effect — `zoom` on the root scales the whole page the way
+  // the browser's own zoom does, which is what the control promises.
+  if (s.fontSize !== 0) {
+    root.style.setProperty('zoom', String(1 + s.fontSize * 0.08));
+  } else {
+    root.style.removeProperty('zoom');
+  }
 
   // High contrast
   if (s.highContrast) {
@@ -69,7 +82,9 @@ function applySettings(s: Settings) {
     }
     anim.textContent = '*, *::before, *::after { animation-play-state: paused !important; transition: none !important; }';
   } else {
-    // Restore original animate and resume
+    // Restore original animate and resume. The attribute must come off too —
+    // globals.css keys `transition: none` and forced final states off it.
+    document.documentElement.removeAttribute('data-pause-motion');
     const patched = Element.prototype.animate as any;
     if (patched.__paused) {
       Element.prototype.animate = patched.__orig;
@@ -78,8 +93,22 @@ function applySettings(s: Settings) {
     anim.textContent = '';
   }
 
-  // Big cursor
-  root.style.cursor = s.bigCursor ? 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'32\' height=\'32\' viewBox=\'0 0 32 32\'%3E%3Cpath d=\'M8 2l18 18-8-1-5 9-5-26z\' fill=\'%23fff\' stroke=\'%23000\' stroke-width=\'2\'/%3E%3C/svg%3E") 0 0, auto' : '';
+  // Big cursor. Setting it on the root alone is overridden by every button and
+  // link (they declare cursor:pointer), i.e. exactly where the cursor matters,
+  // so it goes through a stylesheet with !important instead.
+  const cursorStyle = document.getElementById('a11y-cursor-style') ?? (() => {
+    const el = document.createElement('style');
+    el.id = 'a11y-cursor-style';
+    document.head.appendChild(el);
+    return el;
+  })();
+  cursorStyle.textContent = s.bigCursor
+    ? `*, *::before, *::after { cursor: ${BIG_ARROW} !important; }
+       a, button, [role="button"], label, select, summary,
+       input[type="checkbox"], input[type="radio"], input[type="submit"] { cursor: ${BIG_HAND} !important; }
+       input, textarea { cursor: text !important; }`
+    : '';
+  root.style.cursor = '';
 }
 
 const CONTROLS: {

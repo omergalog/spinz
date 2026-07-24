@@ -25,47 +25,55 @@ export default function Models() {
   const headingRefMobile = useRef<HTMLDivElement>(null);
   const headingInViewMobile = useInView(headingRefMobile, { once: true, margin: '-40px' });
 
-  // Mobile only: a ONE-TIME gentle scroll-snap. While the product section is
-  // on screen the scroll snaps once, right at the colour/size options; the
-  // moment the scroll settles at (or past) that point the snap is released for
-  // good, so the rest of the page — and any further scrolling — flows normally.
+  // Mobile only: a ONE-TIME gentle scroll-snap that stops a fast scroll right
+  // at the colour/size options, then releases for good. The snap must be armed
+  // from the start (setting it mid-fling won't catch an in-progress momentum on
+  // iOS); once the scroll settles at that point we remove it entirely, so every
+  // other place on the page — and all further scrolling — is completely normal.
   const buyBoxRef = useRef<HTMLDivElement>(null);
-  const snapReleasedRef = useRef(false);
   useEffect(() => {
     if (!window.matchMedia('(max-width: 1023px)').matches) return;
-    const el = ref.current;
-    if (!el) return;
-    const html = document.documentElement;
-    const disable = () => { html.style.scrollSnapType = ''; html.style.scrollPaddingTop = ''; };
-    const enable = () => { html.style.scrollSnapType = 'y proximity'; html.style.scrollPaddingTop = 'calc(80px + 33vh)'; };
+    let done = false;
+    let correcting = false;
+    let lastY = window.scrollY;
     let settleTimer: ReturnType<typeof setTimeout>;
-    let active = false;
-    const onScroll = () => {
-      if (snapReleasedRef.current) return; // already released — never snap again
-      const inView = (() => { const r = el.getBoundingClientRect(); return r.top < window.innerHeight && r.bottom > 0; })();
-      // Set snap-type only ONCE on the in-view transition. Re-setting it every
-      // scroll frame resets the browser's snap calc and lets a fast fling slip by.
-      if (inView !== active) {
-        active = inView;
-        if (inView) enable(); else disable();
-      }
-      if (!inView) return;
-      // Once the scroll settles at/above the snap line (the snap has engaged),
-      // release it permanently so the next scroll flows freely.
+
+    const cleanup = () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('touchstart', onTouch);
       clearTimeout(settleTimer);
-      settleTimer = setTimeout(() => {
-        const bb = buyBoxRef.current;
-        if (!bb) return;
-        const snapLine = 80 + 0.33 * window.innerHeight;
-        if (bb.getBoundingClientRect().top <= snapLine + 8) {
-          snapReleasedRef.current = true;
-          disable();
-        }
-      }, 140);
     };
+    // Any new touch while we're pulling the page back means the user took over.
+    const onTouch = () => { if (correcting) { done = true; cleanup(); } };
+
+    const onScroll = () => {
+      if (done) return;
+      const y = window.scrollY;
+      const goingDown = y > lastY;
+      lastY = y;
+      if (correcting) {
+        // Wait for the corrective scroll to settle, then hand control back.
+        clearTimeout(settleTimer);
+        settleTimer = setTimeout(() => { done = true; cleanup(); }, 260);
+        return;
+      }
+      if (!goingDown) return;
+      const bb = buyBoxRef.current;
+      if (!bb) return;
+      const snapLine = 80 + 0.33 * window.innerHeight;
+      const delta = bb.getBoundingClientRect().top - snapLine;
+      // First time the config point crosses above its resting line, catch it.
+      if (delta < 0) {
+        const target = Math.max(0, Math.round(y + delta));
+        if (Math.abs(target - y) < 6) { done = true; cleanup(); return; }
+        correcting = true;
+        window.scrollTo({ top: target, behavior: 'smooth' });
+      }
+    };
+
     window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-    return () => { window.removeEventListener('scroll', onScroll); clearTimeout(settleTimer); disable(); };
+    window.addEventListener('touchstart', onTouch, { passive: true });
+    return cleanup;
   }, []);
 
 
@@ -334,7 +342,7 @@ export default function Models() {
 
           {/* BUY BOX – scrolls; on mobile it slides up BELOW the fixed image (lower z-index) so the bike stays visible.
               scroll-snap stops a fast scroll here so users notice the colour/size options (mobile only via the html media query). */}
-          <div ref={buyBoxRef} className="order-3 lg:order-1 lg:w-[440px] flex flex-col justify-start p-5 pt-6 lg:p-14 relative z-[1] bg-white lg:border-l lg:border-[#E2DED8]" style={{ scrollSnapAlign: 'start', scrollSnapStop: 'always' }}>
+          <div ref={buyBoxRef} className="order-3 lg:order-1 lg:w-[440px] flex flex-col justify-start p-5 pt-6 lg:p-14 relative z-[1] bg-white lg:border-l lg:border-[#E2DED8]">
 
             {/* Header — desktop only (on mobile the header is above the image) */}
             <div className="hidden lg:block">

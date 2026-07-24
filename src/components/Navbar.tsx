@@ -5,6 +5,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import AnnouncementBar from './AnnouncementBar';
 import SearchModal from './SearchModal';
+import { scrollToTop } from '../lib/scrollTop';
 import { usePresale } from '../config/presale';
 
 const DARK  = '#1C1C1C';
@@ -87,6 +88,15 @@ export default function Navbar() {
     setMobileExpanded(null);
   }, [location.pathname]);
 
+  // The logo and the "בית" links must always land on the video at the very top —
+  // both when coming from another page (React Router keeps the old scroll
+  // offset) and when already on the home page (no navigation happens at all).
+  const goHome = () => {
+    setMenuOpen(false);
+    scrollToTop();
+    requestAnimationFrame(scrollToTop);
+  };
+
   const goContact = () => {
     if (location.pathname === '/') {
       document.getElementById('lead-form')?.scrollIntoView({ behavior: 'smooth' });
@@ -115,7 +125,7 @@ export default function Navbar() {
         <AnnouncementBar />
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-9">
           {/* Logo */}
-          <Link to="/" aria-label="Spinz – דף הבית" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', flexShrink: 0, padding: '10px 0' }}>
+          <Link to="/" onClick={goHome} aria-label="Spinz – דף הבית" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', flexShrink: 0, padding: '10px 0' }}>
             <img src="/assets/logo.png" alt="SPINZ" className="h-6 md:h-[48px]" style={{ width: 'auto' }} />
           </Link>
 
@@ -124,6 +134,7 @@ export default function Navbar() {
             {/* Home link */}
             <Link
               to="/"
+              onClick={goHome}
               style={{
                 fontFamily: "'Heebo', sans-serif", color: '#555',
                 fontWeight: 500, fontSize: '15px', textDecoration: 'none',
@@ -334,7 +345,7 @@ export default function Navbar() {
               >
                 <Link
                   to="/"
-                  onClick={() => setMenuOpen(false)}
+                  onClick={goHome}
                   style={{
                     display: 'block', width: '100%', color: LIGHT, fontFamily: "'Heebo', sans-serif",
                     fontSize: '24px', fontWeight: 600, padding: '18px 36px',

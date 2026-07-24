@@ -48,6 +48,12 @@ export default function Models() {
       lastY = y; lastT = now;
       const speed = Math.abs(dy) / dt;           // px per ms
 
+      // A single step bigger than the viewport is never a finger fling — it is a
+      // programmatic jump (the logo / "בית" links scrolling back to the top).
+      // Forget the previous position so that jump is not read as a crossing and
+      // does not drag the reader back down to the colour picker.
+      if (Math.abs(dy) > window.innerHeight) { prevDelta = null; return; }
+
       const bb = buyBoxRef.current;
       const img = imageColRef.current;
       if (!bb || !img) return;
@@ -74,12 +80,16 @@ export default function Models() {
       // page actually comes to rest exactly on the line instead of fighting it.
       html.style.overflowY = 'hidden';
       window.scrollTo(0, target);
-      requestAnimationFrame(() => {
+      const release = () => {
         html.style.overflowY = '';
         window.scrollTo(0, target);
         prevDelta = null;
         lastY = window.scrollY;
-      });
+      };
+      requestAnimationFrame(release);
+      // rAF never fires while the tab is backgrounded; without this the page
+      // would come back unscrollable.
+      setTimeout(release, 250);
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });

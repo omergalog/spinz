@@ -35,23 +35,18 @@ export default function Models() {
   useEffect(() => {
     if (!window.matchMedia('(max-width: 1023px)').matches) return;
     const html = document.documentElement;
-    let done = false;
+    let armed = true;
+    let prevDelta: number | null = null;
     let lastY = window.scrollY;
     let lastT = performance.now();
 
-    const cleanup = () => {
-      window.removeEventListener('scroll', onScroll);
-    };
-
     const onScroll = () => {
-      if (done) return;
       const now = performance.now();
       const y = window.scrollY;
       const dy = y - lastY;
       const dt = Math.max(1, now - lastT);
       lastY = y; lastT = now;
-      if (dy <= 0) return;                       // only on the way down
-      const speed = dy / dt;                     // px per ms
+      const speed = Math.abs(dy) / dt;           // px per ms
 
       const bb = buyBoxRef.current;
       const img = imageColRef.current;
@@ -60,15 +55,21 @@ export default function Models() {
       const stuckTop = parseFloat(getComputedStyle(img).top) || 80;
       const line = stuckTop + img.offsetHeight;
       const delta = bb.getBoundingClientRect().top - line;
-      if (delta >= 0) return;                    // config point not reached yet
+      const was = prevDelta;
+      prevDelta = delta;
 
-      // A slow, deliberate scroll never gets grabbed — only a fast fling that
-      // would blow straight past the colour/size options.
-      if (speed < 0.6 && delta > -160) { if (delta < -300) done = true; return; }
+      // Re-arm once the page is well away from the line, so the stop works
+      // again on the next pass — from above or from below.
+      if (Math.abs(delta) > 260) armed = true;
+      if (!armed || was === null) return;
+
+      // Only a fast fling gets grabbed; a slow, deliberate scroll passes freely.
+      if (speed < 0.6) return;
+      // Did this scroll step cross the line (in either direction)?
+      if ((was < 0) === (delta < 0)) return;
 
       const target = Math.max(0, Math.round(y + delta));
-      done = true;
-      cleanup();
+      armed = false;
       // Killing overflow for one frame cancels the iOS momentum fling, so the
       // page actually comes to rest exactly on the line instead of fighting it.
       html.style.overflowY = 'hidden';
@@ -76,11 +77,13 @@ export default function Models() {
       requestAnimationFrame(() => {
         html.style.overflowY = '';
         window.scrollTo(0, target);
+        prevDelta = null;
+        lastY = window.scrollY;
       });
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
-    return () => { cleanup(); html.style.overflowY = ''; };
+    return () => { window.removeEventListener('scroll', onScroll); html.style.overflowY = ''; };
   }, []);
 
 

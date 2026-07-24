@@ -215,38 +215,19 @@ export default function Navbar() {
 
           {/* CTA + search + cart + hamburger */}
           <div className="flex items-center gap-2 md:gap-3">
-            {/* Search – desktop: a field-shaped trigger with the shortcut hint */}
+            {/* Search – icon only, identical box to the cart button */}
             <button
               onClick={() => setSearchOpen(true)}
               aria-label="חיפוש באתר"
-              className="hidden lg:flex items-center gap-2"
-              style={{
-                backgroundColor: '#FFFFFF', border: `1px solid ${DARK}`,
-                borderRadius: '4px', padding: '8px 10px', cursor: 'pointer',
-                color: '#6A6862', fontFamily: "'Heebo', sans-serif", fontSize: '13px',
-                transition: 'border-color 0.2s, color 0.2s', whiteSpace: 'nowrap',
-              }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = GOLD; e.currentTarget.style.color = DARK; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = DARK; e.currentTarget.style.color = '#6A6862'; }}
-            >
-              <Search size={15} />
-              חיפוש
-              <kbd style={{
-                border: '1px solid #DDD9D1', borderRadius: '3px', padding: '0 4px',
-                fontSize: '10px', color: '#9A9690', backgroundColor: LIGHT,
-              }}>⌘K</kbd>
-            </button>
-
-            {/* Search – icon only, until there is room for the labelled pill */}
-            <button
-              onClick={() => setSearchOpen(true)}
-              aria-label="חיפוש באתר"
-              className="lg:hidden flex items-center justify-center"
+              title="חיפוש באתר (⌘K)"
+              className="flex items-center justify-center"
               style={{
                 border: `1px solid ${DARK}`, borderRadius: '4px',
                 color: DARK, padding: '13px 13px', cursor: 'pointer', flexShrink: 0,
-                backgroundColor: 'transparent',
+                backgroundColor: 'transparent', transition: 'background-color 0.25s',
               }}
+              onMouseEnter={e => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.08)'; }}
+              onMouseLeave={e => { e.currentTarget.style.backgroundColor = 'transparent'; }}
             >
               <Search size={16} />
             </button>

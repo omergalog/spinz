@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PrivacyModal from './PrivacyModal';
 
@@ -9,6 +9,22 @@ const LIGHT = '#F5F2EC';
 export default function CookieBanner({ loaderDone }: { loaderDone: boolean }) {
   const [visible, setVisible] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
+  const barRef = useRef<HTMLDivElement>(null);
+
+  // On narrow screens the banner spans the full width and would sit underneath
+  // the two floating buttons. Publish its height so they can lift above it.
+  useEffect(() => {
+    const root = document.documentElement;
+    if (!visible) { root.style.removeProperty('--fab-lift'); return; }
+    const measure = () => {
+      const h = barRef.current?.offsetHeight;
+      if (h) root.style.setProperty('--fab-lift', `${h + 12}px`);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    if (barRef.current) ro.observe(barRef.current);
+    return () => { ro.disconnect(); root.style.removeProperty('--fab-lift'); };
+  }, [visible]);
 
   useEffect(() => {
     if (!loaderDone) return;
@@ -28,6 +44,7 @@ export default function CookieBanner({ loaderDone }: { loaderDone: boolean }) {
     <AnimatePresence>
       {visible && (
         <motion.div
+          ref={barRef}
           initial={{ y: 120, opacity: 0 }}
           animate={{ y: 0, opacity: 1, transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } }}
           exit={{ y: 80, opacity: 0, transition: { duration: 0.2, ease: 'easeIn' } }}

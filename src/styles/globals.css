@@ -129,6 +129,15 @@ html {
 }
 
 /* ─────────────────────────────────────────
+   Floating buttons – cookie banner clearance
+   The banner only spans the full width on narrow screens; from lg up it is a
+   centred card that never reaches the buttons, so the lift is cancelled there.
+───────────────────────────────────────── */
+@media (min-width: 1024px) {
+  html { --fab-lift: 0px !important; }
+}
+
+/* ─────────────────────────────────────────
    Selection
 ───────────────────────────────────────── */
 ::selection {

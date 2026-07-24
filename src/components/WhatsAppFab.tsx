@@ -21,7 +21,8 @@ export default function WhatsAppFab() {
       style={{
         // Mirrors the accessibility toggle exactly: same 48px circle, same
         // 24px inset from the bottom, so both FABs sit on one line.
-        position: 'fixed', bottom: '24px', left: '24px', zIndex: 9999,
+        position: 'fixed', bottom: 'calc(24px + var(--fab-lift, 0px))', left: '24px', zIndex: 9999,
+        transition: 'bottom 0.35s ease',
         width: '48px', height: '48px',
         borderRadius: '50%',
         backgroundColor: '#25D366',

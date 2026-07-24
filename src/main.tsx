@@ -23,6 +23,7 @@ import PresaleTerms from './pages/PresaleTerms';
 import CancelOrder from './pages/CancelOrder';
 import Regulations from './pages/Regulations';
 import AccessibilityWidget from './components/AccessibilityWidget';
+import WhatsAppFab from './components/WhatsAppFab';
 import { getPauseMotion, onPauseMotionChange } from './utils/motionStore';
 import PasswordGate from './components/PasswordGate';
 
@@ -85,6 +86,7 @@ function Root() {
               )}
             </main>
 
+            <WhatsAppFab />
             <AccessibilityWidget />
           </BrowserRouter>
         </MotionConfig>

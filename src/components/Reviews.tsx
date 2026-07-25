@@ -162,7 +162,7 @@ export default function Reviews() {
             }}>
               <div style={{ fontSize: '36px', marginBottom: '12px' }}>🙏</div>
               <p style={{ fontWeight: 700, fontSize: '17px', color: DARK, margin: '0 0 6px' }}>תודה על הביקורת!</p>
-              <p style={{ fontSize: '13px', color: MUTED, margin: 0 }}>אנחנו מעריכים את זה.</p>
+              <p style={{ fontSize: '13px', color: MUTED, margin: 0 }}>נעבור עליה ותפורסם באתר בקרוב.</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Star, X, Plus } from 'lucide-react';
 import PageShell from '../components/PageShell';
 import { supabase } from '../lib/supabase';
+import { fetchApprovedReviews } from '../lib/reviews';
 
 const GOLD = '#C9A870';
 const DARK = '#1C1C1C';
@@ -43,7 +44,7 @@ function StarPicker({ value, onChange }: { value: number; onChange: (n: number) 
   );
 }
 
-function ReviewModal({ onClose, onDone }: { onClose: () => void; onDone: (r: Review) => void }) {
+function ReviewModal({ onClose }: { onClose: () => void }) {
   const [form, setForm] = useState({ name: '', city: '', quote: '', stars: 5 });
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
 
@@ -60,9 +61,9 @@ function ReviewModal({ onClose, onDone }: { onClose: () => void; onDone: (r: Rev
     const { error } = await supabase.from('reviews').insert([review]);
     if (error) { setStatus('error'); }
     else {
+      // Not added to the visible list: it only appears once it is approved.
       setStatus('done');
-      onDone(review);
-      setTimeout(onClose, 1400);
+      setTimeout(onClose, 2200);
     }
   };
 
@@ -86,7 +87,7 @@ function ReviewModal({ onClose, onDone }: { onClose: () => void; onDone: (r: Rev
           <div style={{ textAlign: 'center', padding: '32px 0', fontFamily: "'Heebo', sans-serif" }}>
             <div style={{ fontSize: '36px', marginBottom: '12px' }}>🙏</div>
             <p style={{ fontWeight: 700, fontSize: '17px', color: DARK, margin: '0 0 6px' }}>תודה על ההמלצה!</p>
-            <p style={{ fontSize: '13px', color: MUTED, margin: 0 }}>אנחנו מעריכים את זה.</p>
+            <p style={{ fontSize: '13px', color: MUTED, margin: 0 }}>נעבור עליה ותפורסם באתר בקרוב.</p>
           </div>
         ) : (
           <>
@@ -133,8 +134,8 @@ export default function ReviewsPage() {
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
-    supabase.from('reviews').select('id, name, city, quote, stars').order('created_at', { ascending: false }).then(({ data }) => {
-      if (data && data.length) setReviews(data as Review[]);
+    fetchApprovedReviews<Review>('id, name, city, quote, stars', { newestFirst: true }).then(data => {
+      if (data.length) setReviews(data);
     });
   }, []);
 
@@ -189,10 +190,7 @@ export default function ReviewsPage() {
 
       <AnimatePresence>
         {modalOpen && (
-          <ReviewModal
-            onClose={() => setModalOpen(false)}
-            onDone={r => setReviews(prev => [r, ...prev])}
-          />
+          <ReviewModal onClose={() => setModalOpen(false)} />
         )}
       </AnimatePresence>
     </PageShell>

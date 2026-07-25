@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { colorVariants, sizeVariants } from '../data/models';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../lib/supabase';
+import { fetchApprovedReviews } from '../lib/reviews';
 import { usePresale } from '../config/presale';
 
 const DARK   = '#1C1C1C';
@@ -109,8 +110,9 @@ export default function Models() {
   const presaleCfg = usePresale();
 
   useEffect(() => {
-    supabase.from('reviews').select('stars').then(({ data }) => {
-      if (data && data.length) {
+    // Only moderated reviews may move the public rating.
+    fetchApprovedReviews<{ stars: number }>('stars').then(data => {
+      if (data.length) {
         const avg = data.reduce((s, r) => s + (r.stars || 0), 0) / data.length;
         setReviewStats({ avg: Math.round(avg * 10) / 10, count: data.length });
       }

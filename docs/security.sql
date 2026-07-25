@@ -106,3 +106,42 @@ left join pg_policy pol on pol.polrelid = c.oid
 where n.nspname = 'public' and c.relkind = 'r'
 group by c.relname, c.relrowsecurity
 order by c.relrowsecurity, c.relname;
+
+
+-- ============================================================
+-- שלב 2 (הורץ 25.7.2026) — הסרת מדיניות ישנות שנתנו ל-PUBLIC
+-- גישה מלאה. מדיניות ב-Postgres מתחברות ב-OR, ולכן מדיניות
+-- פתוחה אחת ביטלה את כל ההגבלות שהוגדרו מעליה.
+-- ============================================================
+begin;
+
+drop policy if exists "all access" on public.china_expenses;
+drop policy if exists "all access" on public.china_settlements;
+drop policy if exists "all access" on public.personal_expenses;
+drop policy if exists "all access" on public.shared_expenses;
+drop policy if exists "allow all"  on public.shared_settlements;
+drop policy if exists "authenticated users can do everything" on public.skus;
+drop policy if exists "read only"  on public.inventory_log;
+
+-- הזמנות נוצרות רק דרך place_order (security definer)
+drop policy if exists "read own"             on public.orders;
+drop policy if exists "insert only"          on public.orders;
+drop policy if exists "public_insert_orders" on public.orders;
+
+-- ביטלה את המודרציה: אפשרה הכנסת ביקורת עם approved = true
+drop policy if exists "insert only" on public.reviews;
+
+drop policy if exists "allow select" on public.survey_responses;
+drop policy if exists "allow delete" on public.survey_responses;
+drop policy if exists "allow insert" on public.survey_responses;
+
+-- כפילויות שכוסו במדיניות anon החדשות
+drop policy if exists "insert only"                    on public.leads;
+drop policy if exists "public_insert_leads"            on public.leads;
+drop policy if exists "anyone can subscribe"           on public.newsletter;
+drop policy if exists "anyone can submit cancellation" on public.cancellations;
+drop policy if exists "read only"                      on public.products;
+drop policy if exists "public_read_products"           on public.products;
+drop policy if exists "read settings"                  on public.site_settings;
+
+commit;

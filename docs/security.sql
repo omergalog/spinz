@@ -66,13 +66,32 @@ drop policy if exists "anyone reads settings" on public.site_settings;
 create policy "anyone reads settings"
   on public.site_settings for select to anon using (true);
 
--- ► הזמנות: אין שום גישה ישירה. ההזמנה נוצרת רק דרך הפונקציה
---   place_order, שרצה בהרשאות מוגברות ומחשבת את המחיר בשרת.
---   לכן לא נוצרת כאן שום מדיניות — RLS פעיל = הכל חסום.
+-- ► הזמנות: לגולש אנונימי אין שום גישה ישירה. ההזמנה נוצרת רק דרך
+--   הפונקציה place_order, שרצה כ-security definer ולכן עוקפת RLS
+--   ומחשבת את המחיר בשרת. לכן אין כאן מדיניות ל-anon.
 
 
 -- ------------------------------------------------------------
--- 4. ודא ש-place_order עוקפת RLS כראוי
+-- 4. מדיניות לאדמין (משתמש מחובר)
+--    האדמין מתחבר עם Supabase Auth ולכן רץ בתור authenticated.
+--    בלי החלק הזה — הפעלת RLS הייתה מרוקנת את כל הדשבורד.
+-- ------------------------------------------------------------
+do $$
+declare t text;
+begin
+  foreach t in array array[
+    'leads','newsletter','reviews','cancellations','orders','products','site_settings'
+  ] loop
+    execute format('drop policy if exists "admin full access" on public.%I', t);
+    execute format(
+      'create policy "admin full access" on public.%I
+         for all to authenticated using (true) with check (true)', t);
+  end loop;
+end $$;
+
+
+-- ------------------------------------------------------------
+-- 5. ודא ש-place_order עוקפת RLS כראוי
 --    (SECURITY DEFINER = רצה בהרשאות היוצר, לא של הגולש)
 -- ------------------------------------------------------------
 -- הרץ כדי לבדוק; אם התוצאה בעמודה security_type היא INVOKER,
@@ -86,7 +105,7 @@ where n.nspname = 'public' and p.proname = 'place_order';
 
 
 -- ------------------------------------------------------------
--- 5. בדיקה סופית — כל הטבלאות חייבות להראות rls_enabled = true
+-- 6. בדיקה סופית — כל הטבלאות חייבות להראות rls_enabled = true
 -- ------------------------------------------------------------
 select
   c.relname                    as table_name,

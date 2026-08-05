@@ -1,3 +1,4 @@
+import { useT, useDir } from '../i18n/LanguageContext';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, X, Plus } from 'lucide-react';
@@ -14,11 +15,6 @@ const CARD = '#FFFFFF';
 type Review = { id?: string; name: string; city?: string; quote: string; stars: number };
 
 // Fallback reviews shown if none exist yet in the DB
-const SEED: Review[] = [
-  { name: 'דניאל כ.', city: 'תל אביב', quote: 'האופניים הכי יפים שראיתי בעיר. כולם שואלים מאיפה. הרכבה לקחה 15 דקות וזהו.', stars: 5 },
-  { name: 'נועה ל.', city: 'רמת גן', quote: 'חיכיתי הרבה זמן למשהו פשוט ואיכותי במחיר הגיוני. Spinz בדיוק זה.', stars: 5 },
-  { name: 'איתי מ.', city: 'גבעתיים', quote: 'סינגל ספיד = אפס כאב ראש. נוסע חלק, נראה מטורף, ולא מתקלקל.', stars: 5 },
-];
 
 function Stars({ n, size = 16 }: { n: number; size?: number }) {
   return (
@@ -45,6 +41,8 @@ function StarPicker({ value, onChange }: { value: number; onChange: (n: number) 
 }
 
 function ReviewModal({ onClose }: { onClose: () => void }) {
+  const t = useT();
+  const dir = useDir();
   const [form, setForm] = useState({ name: '', city: '', quote: '', stars: 5 });
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
 
@@ -76,7 +74,7 @@ function ReviewModal({ onClose }: { onClose: () => void }) {
       <motion.div
         initial={{ scale: 0.92, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.92, opacity: 0 }}
         transition={{ duration: 0.22 }}
-        dir="rtl"
+        dir={dir}
         style={{ backgroundColor: CARD, border: `1px solid ${BORDER}`, borderRadius: '20px', padding: 'clamp(24px, 4vw, 40px)', width: '100%', maxWidth: '520px', position: 'relative' }}
       >
         <button onClick={onClose} style={{ position: 'absolute', top: '18px', left: '18px', background: 'none', border: 'none', cursor: 'pointer', color: MUTED }}>
@@ -86,40 +84,40 @@ function ReviewModal({ onClose }: { onClose: () => void }) {
         {status === 'done' ? (
           <div style={{ textAlign: 'center', padding: '32px 0', fontFamily: "'Heebo', sans-serif" }}>
             <div style={{ fontSize: '36px', marginBottom: '12px' }}>🙏</div>
-            <p style={{ fontWeight: 700, fontSize: '17px', color: DARK, margin: '0 0 6px' }}>תודה על ההמלצה!</p>
-            <p style={{ fontSize: '13px', color: MUTED, margin: 0 }}>נעבור עליה ותפורסם באתר בקרוב.</p>
+            <p style={{ fontWeight: 700, fontSize: '17px', color: DARK, margin: '0 0 6px' }}>{t.reviews.thanksRec}</p>
+            <p style={{ fontSize: '13px', color: MUTED, margin: 0 }}>{t.reviews.pending}</p>
           </div>
         ) : (
           <>
             <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(18px, 2.4vw, 24px)', color: DARK, margin: '0 0 6px' }}>
-              שתפו אותנו בחוויה שלכם
+              {t.reviews.shareTitle}
             </h3>
             <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: MUTED, margin: '0 0 24px' }}>
-              קניתם Spinz? נשמח לשמוע מה דעתכם.
+              {t.reviews.shareSubPage}
             </p>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
               <div>
-                <label style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: MUTED, display: 'block', marginBottom: '8px' }}>דירוג</label>
+                <label style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: MUTED, display: 'block', marginBottom: '8px' }}>{t.reviews.rating}</label>
                 <StarPicker value={form.stars} onChange={stars => setForm(f => ({ ...f, stars }))} />
               </div>
               <div>
-                <label style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: MUTED, display: 'block', marginBottom: '6px' }}>ההמלצה שלך *</label>
-                <textarea required rows={3} value={form.quote} onChange={e => setForm(f => ({ ...f, quote: e.target.value }))} placeholder="ספרו על החוויה שלכם..." style={{ ...inputStyle, resize: 'none' }} />
+                <label style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: MUTED, display: 'block', marginBottom: '6px' }}>{t.reviews.yourRec}</label>
+                <textarea required rows={3} value={form.quote} onChange={e => setForm(f => ({ ...f, quote: e.target.value }))} placeholder={t.reviews.reviewPh} style={{ ...inputStyle, resize: 'none' }} />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px' }}>
                 <div>
-                  <label style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: MUTED, display: 'block', marginBottom: '6px' }}>שם *</label>
-                  <input required type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="שם מלא" style={inputStyle} />
+                  <label style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: MUTED, display: 'block', marginBottom: '6px' }}>{t.reviews.nameReq}</label>
+                  <input required type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder={t.reviews.namePh} style={inputStyle} />
                 </div>
                 <div>
-                  <label style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: MUTED, display: 'block', marginBottom: '6px' }}>עיר</label>
-                  <input type="text" value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder="תל אביב" style={inputStyle} />
+                  <label style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: MUTED, display: 'block', marginBottom: '6px' }}>{t.reviews.city}</label>
+                  <input type="text" value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder={t.reviews.cityPh} style={inputStyle} />
                 </div>
               </div>
-              {status === 'error' && <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#c0392b', margin: 0 }}>משהו השתבש. נסו שוב.</p>}
+              {status === 'error' && <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#c0392b', margin: 0 }}>{t.reviews.failed}</p>}
               <button type="submit" disabled={status === 'sending'}
                 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '14px', color: DARK, backgroundColor: GOLD, border: 'none', borderRadius: '10px', padding: '13px 28px', cursor: status === 'sending' ? 'wait' : 'pointer', opacity: status === 'sending' ? 0.7 : 1 }}>
-                {status === 'sending' ? 'שולח...' : 'שלח המלצה'}
+                {status === 'sending' ? t.reviews.sending : t.reviews.submitPage}
               </button>
             </form>
           </>
@@ -130,7 +128,9 @@ function ReviewModal({ onClose }: { onClose: () => void }) {
 }
 
 export default function ReviewsPage() {
-  const [reviews, setReviews] = useState<Review[]>(SEED);
+  const t = useT();
+  const seed: Review[] = t.reviews.seed.map(r => ({ ...r, stars: 5 }));
+  const [reviews, setReviews] = useState<Review[]>(seed);
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
@@ -142,8 +142,8 @@ export default function ReviewsPage() {
   return (
     <PageShell
       eyebrow="Reviews"
-      title="מה אומרים עלינו."
-      subtitle="לקוחות אמיתיים, חוויות אמיתיות. רוצים להוסיף את שלכם?"
+      title={t.reviews.title}
+      subtitle={t.reviews.pageSub}
       heroImage="/assets/photo-olive-lifestyle.jpg"
       heroPosition="center 30%"
     >

@@ -1,3 +1,4 @@
+import { useT, useDir } from '../i18n/LanguageContext';
 import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { supabase } from '../lib/supabase';
@@ -33,6 +34,8 @@ function StarPicker({ value, onChange }: { value: number; onChange: (n: number) 
 }
 
 export default function Reviews() {
+  const t = useT();
+  const dir = useDir();
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const headingRef = useRef<HTMLDivElement>(null);
@@ -76,7 +79,7 @@ export default function Reviews() {
     <section
       ref={ref}
       id="reviews"
-      dir="rtl"
+      dir={dir}
       style={{ backgroundColor: BG, position: 'relative' }}
       className="py-20 lg:py-28"
     >
@@ -100,7 +103,7 @@ export default function Reviews() {
               color: MUTED,
             }}
           >
-            לקוחות מרוצים
+            {t.reviews.eyebrow}
           </motion.span>
 
           <div ref={headingRef} style={{ overflow: 'hidden' }}>
@@ -118,7 +121,7 @@ export default function Reviews() {
                 margin: 0,
               }}
             >
-              מה אומרים עלינו.
+              {t.reviews.title}
             </motion.h2>
           </div>
         </div>
@@ -143,7 +146,7 @@ export default function Reviews() {
             color: DARK,
             margin: '0 0 6px',
           }}>
-            שתפו אותנו בחוויה שלכם
+            {t.reviews.shareTitle}
           </h3>
           <p style={{
             fontFamily: "'Heebo', sans-serif",
@@ -151,7 +154,7 @@ export default function Reviews() {
             color: MUTED,
             margin: '0 0 24px',
           }}>
-            קניתם? נשמח לשמוע.
+            {t.reviews.shareSubHome}
           </p>
 
           {status === 'done' ? (
@@ -161,8 +164,8 @@ export default function Reviews() {
               fontFamily: "'Heebo', sans-serif",
             }}>
               <div style={{ fontSize: '36px', marginBottom: '12px' }}>🙏</div>
-              <p style={{ fontWeight: 700, fontSize: '17px', color: DARK, margin: '0 0 6px' }}>תודה על הביקורת!</p>
-              <p style={{ fontSize: '13px', color: MUTED, margin: 0 }}>נעבור עליה ותפורסם באתר בקרוב.</p>
+              <p style={{ fontWeight: 700, fontSize: '17px', color: DARK, margin: '0 0 6px' }}>{t.reviews.thanksReview}</p>
+              <p style={{ fontSize: '13px', color: MUTED, margin: 0 }}>{t.reviews.pending}</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
@@ -170,7 +173,7 @@ export default function Reviews() {
               {/* Stars */}
               <div>
                 <label style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: MUTED, display: 'block', marginBottom: '8px' }}>
-                  דירוג
+                  {t.reviews.rating}
                 </label>
                 <StarPicker value={form.stars} onChange={stars => setForm(f => ({ ...f, stars }))} />
               </div>
@@ -178,14 +181,14 @@ export default function Reviews() {
               {/* Quote */}
               <div>
                 <label style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: MUTED, display: 'block', marginBottom: '6px' }}>
-                  הביקורת שלך *
+                  {t.reviews.yourReview}
                 </label>
                 <textarea
                   required
                   rows={3}
                   value={form.quote}
                   onChange={e => setForm(f => ({ ...f, quote: e.target.value }))}
-                  placeholder="ספרו על החוויה שלכם..."
+                  placeholder={t.reviews.reviewPh}
                   style={{ ...inputStyle, resize: 'none' }}
                 />
               </div>
@@ -194,26 +197,26 @@ export default function Reviews() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px' }}>
                 <div>
                   <label style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: MUTED, display: 'block', marginBottom: '6px' }}>
-                    שם *
+                    {t.reviews.nameReq}
                   </label>
                   <input
                     required
                     type="text"
                     value={form.name}
                     onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                    placeholder="שם מלא"
+                    placeholder={t.reviews.namePh}
                     style={inputStyle}
                   />
                 </div>
                 <div>
                   <label style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: MUTED, display: 'block', marginBottom: '6px' }}>
-                    עיר
+                    {t.reviews.city}
                   </label>
                   <input
                     type="text"
                     value={form.city}
                     onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
-                    placeholder="תל אביב"
+                    placeholder={t.reviews.cityPh}
                     style={inputStyle}
                   />
                 </div>
@@ -221,7 +224,7 @@ export default function Reviews() {
 
               {status === 'error' && (
                 <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#c0392b', margin: 0 }}>
-                  משהו השתבש. נסו שוב.
+                  {t.reviews.failed}
                 </p>
               )}
 
@@ -243,7 +246,7 @@ export default function Reviews() {
                   transition: 'opacity 0.2s',
                 }}
               >
-                {status === 'sending' ? 'שולח...' : 'שלח ביקורת'}
+                {status === 'sending' ? t.reviews.sending : t.reviews.submit}
               </button>
             </form>
           )}

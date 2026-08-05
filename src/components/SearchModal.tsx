@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Search, X, CornerDownLeft, Clock } from 'lucide-react';
 import { search, highlight } from '../lib/search';
-import { typeLabel, type DocType } from '../data/searchIndex';
+import { type DocType } from '../data/searchIndex';
+import { useT, useLang, useDir, localizePath } from '../i18n/LanguageContext';
 
 const DARK = '#1C1C1C';
 const GOLD = '#C9A870';
@@ -21,7 +22,6 @@ const TYPE_COLOR: Record<DocType, string> = {
   faq: '#9A8AA8',
 };
 
-const SUGGESTED = ['מידות', 'משלוח', 'אחריות', 'הרכבה', 'ביטול עסקה', 'מחיר'];
 
 function readRecent(): string[] {
   try { return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]').slice(0, MAX_RECENT); }
@@ -41,6 +41,10 @@ function Highlighted({ text, query }: { text: string; query: string }) {
 }
 
 export default function SearchModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const t = useT();
+  const lang = useLang();
+  const dir = useDir();
+  const SUGGESTED = t.search.suggested;
   const [query, setQuery] = useState('');
   const [active, setActive] = useState(0);
   const [recent, setRecent] = useState<string[]>([]);
@@ -75,7 +79,7 @@ export default function SearchModal({ open, onClose }: { open: boolean; onClose:
       .filter(Boolean).slice(0, MAX_RECENT);
     try { localStorage.setItem(RECENT_KEY, JSON.stringify(next)); } catch {}
     onClose();
-    navigate(to);
+    navigate(localizePath(to, lang));
     // A result must land at the top of its page, not wherever the reader
     // happened to be scrolled when they opened the search.
     requestAnimationFrame(() => window.scrollTo(0, 0));
@@ -100,7 +104,7 @@ export default function SearchModal({ open, onClose }: { open: boolean; onClose:
           onClick={onClose}
           role="dialog"
           aria-modal="true"
-          aria-label="חיפוש באתר"
+          aria-label={t.search.dialogAria}
           style={{
             position: 'fixed', inset: 0, zIndex: 10000,
             backgroundColor: 'rgba(18,17,16,0.55)',
@@ -108,7 +112,7 @@ export default function SearchModal({ open, onClose }: { open: boolean; onClose:
             display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
             padding: 'clamp(12px, 8vh, 96px) 16px 16px',
           }}
-          dir="rtl"
+          dir={dir}
         >
           <motion.div
             initial={{ opacity: 0, y: -16, scale: 0.98 }}
@@ -139,8 +143,8 @@ export default function SearchModal({ open, onClose }: { open: boolean; onClose:
                 ref={inputRef}
                 value={query}
                 onChange={e => setQuery(e.target.value)}
-                placeholder="חיפוש באתר – דגמים, מדריכים, אחריות…"
-                aria-label="שדה חיפוש"
+                placeholder={t.search.placeholder}
+                aria-label={t.search.fieldAria}
                 autoComplete="off"
                 spellCheck={false}
                 style={{
@@ -151,7 +155,7 @@ export default function SearchModal({ open, onClose }: { open: boolean; onClose:
               />
               <button
                 onClick={onClose}
-                aria-label="סגור חיפוש"
+                aria-label={t.search.closeAria}
                 style={{
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   width: '30px', height: '30px', borderRadius: '50%',
@@ -168,7 +172,7 @@ export default function SearchModal({ open, onClose }: { open: boolean; onClose:
                 <div style={{ padding: '10px 10px 14px' }}>
                   {recent.length > 0 && (
                     <>
-                      <p style={labelStyle}>חיפושים אחרונים</p>
+                      <p style={labelStyle}>{t.search.recent}</p>
                       <div style={chipRow}>
                         {recent.map(r => (
                           <button key={r} onClick={() => setQuery(r)} style={chipStyle}>
@@ -179,7 +183,7 @@ export default function SearchModal({ open, onClose }: { open: boolean; onClose:
                       </div>
                     </>
                   )}
-                  <p style={{ ...labelStyle, marginTop: recent.length ? '18px' : 0 }}>חיפושים נפוצים</p>
+                  <p style={{ ...labelStyle, marginTop: recent.length ? '18px' : 0 }}>{t.search.common}</p>
                   <div style={chipRow}>
                     {SUGGESTED.map(s => (
                       <button key={s} onClick={() => setQuery(s)} style={chipStyle}>{s}</button>
@@ -189,20 +193,20 @@ export default function SearchModal({ open, onClose }: { open: boolean; onClose:
               ) : results.length === 0 ? (
                 <div style={{ padding: '32px 20px', textAlign: 'center' }}>
                   <p style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '15px', color: DARK, margin: '0 0 6px' }}>
-                    לא מצאנו תוצאות עבור "{query}"
+                    {t.search.noResults(query)}
                   </p>
                   <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13.5px', color: MUTED, margin: '0 0 18px', lineHeight: 1.7 }}>
-                    אפשר לנסות מונח אחר, או לדבר איתנו ישירות – נשמח לעזור.
+                    {t.search.noResultsHelp}
                   </p>
                   <button
-                    onClick={() => go('/contact', query)}
+                    onClick={() => go(localizePath('/contact', lang), query)}
                     style={{
                       backgroundColor: GOLD, color: DARK, borderRadius: '8px',
                       padding: '10px 22px', fontFamily: "'Heebo', sans-serif",
                       fontWeight: 700, fontSize: '13.5px',
                     }}
                   >
-                    לעמוד צור קשר
+                    {t.search.toContact}
                   </button>
                 </div>
               ) : (
@@ -227,7 +231,7 @@ export default function SearchModal({ open, onClose }: { open: boolean; onClose:
                         border: `1px solid ${TYPE_COLOR[r.doc.type]}55`, borderRadius: '4px',
                         padding: '1px 6px', flexShrink: 0,
                       }}>
-                        {typeLabel(r.doc.type)}
+                        {t.search.types[r.doc.type]}
                       </span>
                       <span style={{
                         fontFamily: "'Heebo', sans-serif", fontSize: '14.5px', fontWeight: 700,
@@ -256,11 +260,11 @@ export default function SearchModal({ open, onClose }: { open: boolean; onClose:
               backgroundColor: '#FFFFFF',
               fontFamily: "'Heebo', sans-serif", fontSize: '11.5px', color: MUTED,
             }}>
-              <span><kbd style={kbd}>↑</kbd><kbd style={kbd}>↓</kbd> ניווט</span>
-              <span><kbd style={kbd}>Enter</kbd> פתיחה</span>
-              <span><kbd style={kbd}>Esc</kbd> סגירה</span>
+              <span><kbd style={kbd}>↑</kbd><kbd style={kbd}>↓</kbd> {t.search.navigate}</span>
+              <span><kbd style={kbd}>Enter</kbd> {t.search.open}</span>
+              <span><kbd style={kbd}>Esc</kbd> {t.search.close}</span>
               {results.length > 0 && (
-                <span style={{ marginRight: 'auto' }}>{results.length} תוצאות</span>
+                <span style={{ marginRight: 'auto' }}>{t.search.resultCount(results.length)}</span>
               )}
             </div>
           </motion.div>

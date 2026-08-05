@@ -1,3 +1,4 @@
+import { useT } from '../i18n/LanguageContext';
 import { motion } from 'framer-motion';
 import { ShieldCheck, Truck, CreditCard, MapPin } from 'lucide-react';
 
@@ -6,14 +7,16 @@ const MUTED = '#6A6862';
 const GOLD = '#C9A870';
 const BORDER = '#E2DED8';
 
-const items = [
-  { icon: ShieldCheck, title: 'אחריות 5 שנים', sub: 'על שלדת האלומיניום' },
-  { icon: Truck, title: 'משלוח מהיר', sub: 'עד 5 ימי עסקים לכל הארץ' },
-  { icon: CreditCard, title: 'עד 13 תשלומים', sub: 'אשראי, ביט, Apple Pay' },
-  { icon: MapPin, title: 'איסוף עצמי חינם', sub: 'מתל אביב, בתיאום מראש' },
+const icons = [
+  { icon: ShieldCheck },
+  { icon: Truck },
+  { icon: CreditCard },
+  { icon: MapPin },
 ];
 
 export default function TrustBar() {
+  const t = useT();
+  const items = icons.map((it, i) => ({ ...it, title: t.trust[i].t, sub: t.trust[i].s }));
   return (
     <section dir="rtl" style={{ backgroundColor: '#EAE7E1', borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>
       <div className="mx-auto max-w-7xl px-6 lg:px-16 py-5 lg:py-10">

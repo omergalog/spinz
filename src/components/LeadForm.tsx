@@ -1,3 +1,4 @@
+import { useT, useDir } from '../i18n/LanguageContext';
 import { useRef, useState } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { useForm } from 'react-hook-form';
@@ -15,6 +16,7 @@ type FormData = { name: string; email: string; whatsapp?: string };
 type Status   = 'idle' | 'loading' | 'success' | 'error';
 
 function Toast({ show }: { show: boolean }) {
+  const t = useT();
   return (
     <AnimatePresence>
       {show && (
@@ -42,7 +44,7 @@ function Toast({ show }: { show: boolean }) {
         >
           <CheckCircle size={18} style={{ color: GOLD, flexShrink: 0 }} />
           <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: TEXT_LIGHT, fontWeight: 500 }}>
-            תודה! פנייתך התקבלה ונחזור אליך בהקדם
+            {t.lead.thanks}
           </span>
         </motion.div>
       )}
@@ -51,11 +53,12 @@ function Toast({ show }: { show: boolean }) {
 }
 
 function BrandBlock({ className, textLight }: { className?: string; textLight: string }) {
+  const t = useT();
   return (
     <div className={`flex-col items-center text-center ${className ?? ''}`} style={{ marginTop: '48px', gap: '16px' }}>
       <img src="/assets/logo.png" alt="SPINZ" style={{ height: '70px', width: 'auto', objectFit: 'contain', filter: 'invert(1) brightness(2)' }} />
       <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: textLight, margin: 0, lineHeight: 1.8 }}>
-        העיר לא עוצרת.<br />גם אתה לא.
+        {t.lead.cityLine1}<br />{t.lead.cityLine2}
       </p>
       <div style={{ display: 'flex', gap: '26px', alignItems: 'center' }}>
         <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: textLight, padding: '11px', margin: '-11px', display: 'inline-flex' }}>
@@ -89,6 +92,8 @@ function RevealText({ children, delay = 0 }: { children: React.ReactNode; delay?
 }
 
 export default function LeadForm() {
+  const t = useT();
+  const dir = useDir();
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const [status, setStatus] = useState<Status>('idle');
@@ -121,7 +126,7 @@ export default function LeadForm() {
       id="lead-form"
       style={{ backgroundColor: DARK }}
       className="px-5 py-8 md:p-9"
-      dir="rtl"
+      dir={dir}
     >
       <div className="mx-auto max-w-5xl">
       <div style={{ borderTop: `1px solid ${BORDER_DARK}` }} className="pt-5 md:pt-16">
@@ -148,7 +153,7 @@ export default function LeadForm() {
                 margin: '0 0 16px',
               }}
             >
-              צור קשר
+              {t.lead.eyebrow}
             </motion.h5>
 
             <RevealText delay={0.08}>
@@ -163,7 +168,7 @@ export default function LeadForm() {
                   margin: '0 0 0',
                 }}
               >
-                תיראה טוב. תרגיש טוב. וסע.
+                {t.lead.title}
               </h2>
             </RevealText>
 
@@ -193,7 +198,7 @@ export default function LeadForm() {
               }}
               className="max-md:max-w-full mt-4 mb-1 md:mt-4 md:mb-6"
             >
-              השאר פרטים. נחזור אליך תוך יום עסקים אחד עם כל מה שצריך לדעת.
+              {t.lead.intro}
             </motion.p>
 
             {/* Brand block – desktop only (on mobile it appears after the form) */}
@@ -228,16 +233,16 @@ export default function LeadForm() {
                 >
                   <CheckCircle size={36} style={{ color: GOLD }} />
                   <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, color: TEXT_LIGHT, letterSpacing: '0', fontSize: '28px', margin: 0 }}>
-                    קיבלנו! נחזור אליך בקרוב.
+                    {t.lead.gotIt}
                   </h3>
                   <p style={{ fontFamily: "'Heebo', sans-serif", color: '#FFFFFF', fontSize: '14px', margin: 0 }}>
-                    תגובה תוך יום עסקים אחד.
+                    {t.lead.replyTime}
                   </p>
                   <button
                     onClick={() => setStatus('idle')}
                     style={{ marginTop: '8px', fontSize: '11px', letterSpacing: '0.25em', textTransform: 'uppercase', color: '#FFFFFF', fontFamily: "'Heebo', sans-serif", background: 'none', border: 'none', cursor: 'pointer' }}
                   >
-                    שלח שוב
+                    {t.lead.again}
                   </button>
                 </motion.div>
               ) : (
@@ -263,11 +268,11 @@ export default function LeadForm() {
                         marginBottom: '10px',
                       }}
                     >
-                      שם מלא *
+                      {t.lead.name}
                     </label>
                     <input
                       type="text"
-                      placeholder="שם מלא"
+                      placeholder={t.lead.namePh}
                       style={{
                         width: '100%',
                         background: 'none',
@@ -284,7 +289,7 @@ export default function LeadForm() {
                     />
                     {errors.name && (
                       <p style={{ color: '#CC4400', fontSize: '11px', fontFamily: "'Heebo'", marginTop: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <AlertCircle size={11} /> שדה חובה
+                        <AlertCircle size={11} /> {t.lead.required}
                       </p>
                     )}
                   </div>
@@ -302,7 +307,7 @@ export default function LeadForm() {
                         marginBottom: '10px',
                       }}
                     >
-                      אימייל *
+                      {t.lead.email}
                     </label>
                     <input
                       type="email"
@@ -327,7 +332,7 @@ export default function LeadForm() {
                     />
                     {errors.email && (
                       <p style={{ color: '#CC4400', fontSize: '11px', fontFamily: "'Heebo'", marginTop: '6px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <AlertCircle size={11} /> {errors.email.type === 'pattern' ? 'אימייל לא תקין' : 'שדה חובה'}
+                        <AlertCircle size={11} /> {errors.email.type === 'pattern' ? t.lead.badEmail : t.lead.required}
                       </p>
                     )}
                   </div>
@@ -345,7 +350,7 @@ export default function LeadForm() {
                         marginBottom: '10px',
                       }}
                     >
-                      טלפון (אופציונלי)
+                      {t.lead.phone}
                     </label>
                     <input
                       type="tel"
@@ -389,7 +394,7 @@ export default function LeadForm() {
                         }}
                       >
                         <AlertCircle size={13} />
-                        משהו השתבש. נסה שוב.
+                        {t.lead.failed}
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -427,10 +432,10 @@ export default function LeadForm() {
                         el.style.transform = 'translateY(0)';
                       }}
                     >
-                      {status === 'loading' ? 'שולח...' : 'שלח פנייה'}
+                      {status === 'loading' ? t.lead.sending : t.lead.send}
                     </button>
                     <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#FFFFFF', margin: '16px 0 0', textAlign: 'center' }}>
-                      לא שולחים ספאם. מגיבים תוך יום עסקים אחד.
+                      {t.lead.noSpam}
                     </p>
                   </div>
 

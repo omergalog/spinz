@@ -1,3 +1,4 @@
+import { useT, useLang, localizePath } from '../i18n/LanguageContext';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -10,30 +11,26 @@ const cards = [
   {
     to: '/guides',
     kicker: 'Know-How',
-    title: 'מדריכים',
-    text: 'תחזוקה, התאמת מידה ורכיבה בטוחה בעיר',
     image: '/assets/lifestyle-hero.jpg',
     position: 'center',
   },
   {
     to: '/gallery',
     kicker: 'The Streets',
-    title: 'גלריה',
-    text: 'האופניים בשטח, מהרחובות של תל אביב',
     image: '/assets/photo-black-detail.jpg',
     position: 'center',
   },
   {
     to: '/community',
     kicker: 'Ride Together',
-    title: 'קהילה',
-    text: 'רכיבות משותפות ואנשים שחיים את העיר',
     image: '/assets/photo-olive-lifestyle.jpg',
     position: 'center',
   },
 ];
 
 export default function ExploreStrip() {
+  const t = useT();
+  const lang = useLang();
   return (
     <section dir="rtl" style={{ backgroundColor: '#F5F2EC' }} className="py-7 lg:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-16">
@@ -55,14 +52,14 @@ export default function ExploreStrip() {
               letterSpacing: '0.4em', textTransform: 'uppercase',
               color: MUTED, display: 'block', marginBottom: '10px',
             }}>
-              עוד ב-Spinz
+              {t.explore.eyebrow}
             </span>
             <h2 style={{
               fontFamily: "'Heebo', sans-serif", fontWeight: 800,
               fontSize: 'clamp(24px, 3.5vw, 38px)', color: DARK,
               letterSpacing: '-0.02em', margin: 0,
             }}>
-              לא רק אופניים
+              {t.explore.title}
             </h2>
           </div>
           <div aria-hidden style={{ flex: 1, height: '1px', backgroundColor: '#DDD8D0', marginBottom: '10px' }} className="hidden md:block" />
@@ -78,13 +75,15 @@ export default function ExploreStrip() {
           transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
         >
           <style>{`.explore-scroll::-webkit-scrollbar { display: none; }`}</style>
-          {cards.map(({ to, kicker, title, text, image, position }) => (
+          {cards.map(({ to, kicker, image, position }, ci) => {
+            const { t: title, s: text } = t.explore.items[ci];
+            return (
             <div
               key={to}
               className="snap-start shrink-0 w-[82%] sm:w-[70%] md:w-auto md:shrink"
             >
               <Link
-                to={to}
+                to={localizePath(to, lang)}
                 className="explore-card group"
                 style={{
                   position: 'relative',
@@ -158,13 +157,13 @@ export default function ExploreStrip() {
                       color: GOLD,
                     }}
                   >
-                    גלו עוד
+                    {t.explore.more}
                     <ArrowLeft size={14} style={{ transition: 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)' }} className="group-hover:-translate-x-1" />
                   </span>
                 </div>
               </Link>
             </div>
-          ))}
+          ); })}
         </motion.div>
       </div>
     </section>

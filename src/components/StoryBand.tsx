@@ -1,3 +1,4 @@
+import { useT, useLang, localizePath } from '../i18n/LanguageContext';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
@@ -6,6 +7,8 @@ const CREAM = '#EDEBE6';
 const GOLD = '#C9A870';
 
 export default function StoryBand() {
+  const t = useT();
+  const lang = useLang();
   return (
     <section
       dir="rtl"
@@ -70,11 +73,11 @@ export default function StoryBand() {
               letterSpacing: '-0.02em', lineHeight: 1.12, margin: '0 0 20px',
             }}
           >
-            שלושה חברים.
+            {t.story.l1}
             <br />
-            עיר אחת.
+            {t.story.l2}
             <br />
-            רק לרכוב.
+            {t.story.l3}
           </motion.h2>
 
           <motion.p
@@ -98,7 +101,7 @@ export default function StoryBand() {
             transition={{ duration: 0.7, delay: 0.32 }}
           >
             <Link
-              to="/story"
+              to={localizePath("/story", lang)}
               style={{
                 display: 'inline-block',
                 fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 700,
@@ -113,7 +116,7 @@ export default function StoryBand() {
               onMouseEnter={e => { const el = e.currentTarget as HTMLAnchorElement; el.style.backgroundColor = GOLD; }}
               onMouseLeave={e => { const el = e.currentTarget as HTMLAnchorElement; el.style.backgroundColor = CREAM; }}
             >
-              לסיפור המלא
+              {t.story.cta}
             </Link>
           </motion.div>
         </div>

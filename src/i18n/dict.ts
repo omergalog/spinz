@@ -69,6 +69,15 @@ export const dict = {
       privacy: 'מדיניות ופרטיות',
     },
     a11y: { skipToContent: 'דלג לתוכן הראשי' },
+    bar: {
+      launchPrice: 'מחיר השקה ל-100 הראשונים',
+      cta: 'להבטחת מקום',
+      days: 'ימים', hours: 'שעות', minutes: "דק'", seconds: "שנ'",
+    },
+    pages: {
+      specs: { eyebrow: 'מפרט טכני', title: 'מפרט ללא פשרות.', sub: 'כל פרט באופני SPINZ תוכנן בקפידה כדי להעניק לך חוויית רכיבה חלקה, בטוחה ונטולת מאמץ ברחובות העיר.' },
+      faq:   { eyebrow: 'שאלות נפוצות', title: 'כל מה שרצית לדעת.', sub: 'משלוחים, הרכבה, תשלומים ואחריות – התשובות לכל השאלות לפני שאתם עולים על האוכף.' },
+    },
     product: {
       eyebrow: 'הדגם שלנו',
       subtitle: 'סינגל ספיד אורבני. שלדת אלומיניום, עיצוב שאי אפשר להתעלם ממנו.',
@@ -189,6 +198,15 @@ export const dict = {
       privacy: 'Privacy Policy',
     },
     a11y: { skipToContent: 'Skip to main content' },
+    bar: {
+      launchPrice: 'Launch price for the first 100',
+      cta: 'Reserve your spot',
+      days: 'days', hours: 'hrs', minutes: 'min', seconds: 'sec',
+    },
+    pages: {
+      specs: { eyebrow: 'Specs', title: 'Built without compromise.', sub: 'Every detail on a SPINZ was chosen to give you a smooth, safe and effortless ride through the city.' },
+      faq:   { eyebrow: 'FAQ', title: 'Everything you wanted to know.', sub: 'Shipping, assembly, payments and warranty — every answer before you get in the saddle.' },
+    },
     product: {
       eyebrow: 'Our model',
       subtitle: 'Urban single speed. Aluminum frame, a design you can’t ignore.',

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { usePresale, PRESALE_COPY } from '../config/presale';
+import { useT } from '../i18n/LanguageContext';
+import { usePresale } from '../config/presale';
 
 const DARK = '#1C1C1C';
 const GOLD = '#C9A870';
@@ -34,6 +35,7 @@ function Unit({ value, label }: { value: number; label: string }) {
 }
 
 export default function AnnouncementBar() {
+  const t = useT();
   const navigate = useNavigate();
   const location = useLocation();
   const presale = usePresale();
@@ -87,7 +89,7 @@ export default function AnnouncementBar() {
         }}>
           <span style={{ color: GOLD, fontWeight: 900 }}>Pre-Sale</span>
           <span style={{ margin: '0 5px' }}>·</span>
-          מחיר השקה ל-100 הראשונים
+          {t.bar.launchPrice}
         </span>
 
         {/* Countdown – hidden on the narrowest screens to avoid crowding */}
@@ -101,13 +103,13 @@ export default function AnnouncementBar() {
             direction: 'ltr',
           }}
         >
-          <Unit value={d} label="ימים" />
+          <Unit value={d} label={t.bar.days} />
           <span style={{ color: 'rgba(237,235,230,0.4)', fontWeight: 700, alignSelf: 'flex-start', marginTop: '1px' }}>:</span>
-          <Unit value={h} label="שעות" />
+          <Unit value={h} label={t.bar.hours} />
           <span style={{ color: 'rgba(237,235,230,0.4)', fontWeight: 700, alignSelf: 'flex-start', marginTop: '1px' }}>:</span>
-          <Unit value={m} label="דק'" />
+          <Unit value={m} label={t.bar.minutes} />
           <span style={{ color: 'rgba(237,235,230,0.4)', fontWeight: 700, alignSelf: 'flex-start', marginTop: '1px' }}>:</span>
-          <Unit value={s} label="שנ'" />
+          <Unit value={s} label={t.bar.seconds} />
         </span>
 
         <span style={{
@@ -117,7 +119,7 @@ export default function AnnouncementBar() {
           padding: '4px 12px', borderRadius: '6px',
           whiteSpace: 'nowrap', flexShrink: 0,
         }}>
-          {PRESALE_COPY.barCta}
+          {t.bar.cta}
         </span>
       </div>
 

@@ -279,7 +279,7 @@ export default function Models() {
             PRE-SALE
           </span>
           <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 600, color: MUTED }}>
-            מהדורת השקה · ל-{presaleCfg.presaleUnits} הראשונים בלבד
+            {t.product.launchEdition(presaleCfg.presaleUnits)}
           </span>
         </div>
       )}

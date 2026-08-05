@@ -154,14 +154,14 @@ export default function ReviewsPage() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <Stars n={5} size={20} />
               <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 600, color: DARK }}>
-                {reviews.length} המלצות מלקוחות
+                {t.reviews.countLabel(reviews.length)}
               </span>
             </div>
             <button
               onClick={() => setModalOpen(true)}
               style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: GOLD, color: DARK, fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '14px', padding: '12px 24px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}
             >
-              <Plus size={18} /> השאירו המלצה
+              <Plus size={18} /> {t.reviews.leaveOne}
             </button>
           </div>
 

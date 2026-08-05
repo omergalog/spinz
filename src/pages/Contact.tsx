@@ -65,7 +65,7 @@ export default function Contact() {
           {/* Location note */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: MUTED }}>
             <MapPin size={16} color={GOLD} />
-            <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px' }}>Designed in Tel Aviv · משלוחים לכל הארץ</span>
+            <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px' }}>{t.pages.contact.designedIn}</span>
           </div>
         </div>
       </section>

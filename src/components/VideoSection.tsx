@@ -34,9 +34,11 @@ export default function VideoSection() {
     if (!video || !text) return;
     let raf: number;
 
-    const isMobile = window.innerWidth < 768;
-    const fadeStart = isMobile ? 6.3 : 11;
-    const fadeEnd   = isMobile ? 8.3 : 15;
+    // Both cuts now start at 61.0s of the same master, so the headline fades
+    // at the same moment of the footage on every screen size. (The mobile cut
+    // used to start 6.5s later, which is why these were split.)
+    const fadeStart = 11;
+    const fadeEnd   = 15;
 
     const tick = () => {
       const t = video.currentTime;

@@ -26,6 +26,7 @@ import AccessibilityWidget from './components/AccessibilityWidget';
 import WhatsAppFab from './components/WhatsAppFab';
 import { getPauseMotion, onPauseMotionChange } from './utils/motionStore';
 import PasswordGate from './components/PasswordGate';
+import { LanguageProvider, EN_PREFIX } from './i18n/LanguageContext';
 
 function Root() {
   const [pauseMotion, setPauseMotionState] = useState(getPauseMotion);
@@ -40,6 +41,7 @@ function Root() {
           transition={pauseMotion ? { duration: 0, delay: 0 } : undefined}
         >
           <BrowserRouter>
+            <LanguageProvider>
             <a
               href="#main-content"
               style={{
@@ -63,31 +65,38 @@ function Root() {
                 </Routes>
               ) : (
                 <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/bikes" element={<Bikes />} />
-                  <Route path="/specs" element={<SpecsPage />} />
-                  <Route path="/sizes" element={<SizesColors />} />
-                  <Route path="/faq" element={<FAQPage />} />
-                  <Route path="/guides" element={<Guides />} />
-                  <Route path="/guides/:slug" element={<GuideDetail />} />
-                  <Route path="/gallery" element={<GalleryPage />} />
-                  <Route path="/community" element={<Community />} />
-                  <Route path="/reviews" element={<ReviewsPage />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/story" element={<Story />} />
-                  <Route path="/terms" element={<Terms />} />
-                  <Route path="/presale-terms" element={<PresaleTerms />} />
-                  <Route path="/cancel-order" element={<CancelOrder />} />
-                  <Route path="/regulations" element={<Regulations />} />
-                  <Route path="/accessibility" element={<Accessibility />} />
-                  <Route path="/waitlist" element={<Waitlist />} />
-                  <Route path="/waitlist-terms" element={<WaitlistTerms />} />
+                  {/* The same page tree is mounted twice: bare paths stay Hebrew
+                      exactly as before, and /en/… serves the English version. */}
+                  {[null, EN_PREFIX].map(prefix => (
+                    <Route key={prefix ?? 'he'} path={prefix ?? '/'}>
+                      <Route index element={<Index />} />
+                      <Route path="bikes" element={<Bikes />} />
+                      <Route path="specs" element={<SpecsPage />} />
+                      <Route path="sizes" element={<SizesColors />} />
+                      <Route path="faq" element={<FAQPage />} />
+                      <Route path="guides" element={<Guides />} />
+                      <Route path="guides/:slug" element={<GuideDetail />} />
+                      <Route path="gallery" element={<GalleryPage />} />
+                      <Route path="community" element={<Community />} />
+                      <Route path="reviews" element={<ReviewsPage />} />
+                      <Route path="contact" element={<Contact />} />
+                      <Route path="story" element={<Story />} />
+                      <Route path="terms" element={<Terms />} />
+                      <Route path="presale-terms" element={<PresaleTerms />} />
+                      <Route path="cancel-order" element={<CancelOrder />} />
+                      <Route path="regulations" element={<Regulations />} />
+                      <Route path="accessibility" element={<Accessibility />} />
+                      <Route path="waitlist" element={<Waitlist />} />
+                      <Route path="waitlist-terms" element={<WaitlistTerms />} />
+                    </Route>
+                  ))}
                 </Routes>
               )}
             </main>
 
             <WhatsAppFab />
             <AccessibilityWidget />
+            </LanguageProvider>
           </BrowserRouter>
         </MotionConfig>
       </PasswordGate>

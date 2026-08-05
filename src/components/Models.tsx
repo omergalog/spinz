@@ -6,6 +6,7 @@ import { colorVariants, sizeVariants } from '../data/models';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../lib/supabase';
 import { fetchApprovedReviews } from '../lib/reviews';
+import { useLang, useT, useDir, localizePath } from '../i18n/LanguageContext';
 import { usePresale } from '../config/presale';
 
 const DARK   = '#1C1C1C';
@@ -108,6 +109,10 @@ export default function Models() {
   const [presaleQty, setPresaleQty] = useState<Record<string, number>>({});
 
   const presaleCfg = usePresale();
+  const lang = useLang();
+  const dir = useDir();
+  const t = useT();
+  const L = (to: string) => localizePath(to, lang);
 
   useEffect(() => {
     // Only moderated reviews may move the public rating.
@@ -131,6 +136,7 @@ export default function Models() {
 
   const { addItem } = useCart();
   const color = colorVariants[selectedColor];
+  const colorLabel = t.product.colors[color.id as keyof typeof t.product.colors];
   const size  = sizeVariants[selectedSize];
 
   // Preload all bike images on mount
@@ -166,8 +172,8 @@ export default function Models() {
     addItem(
       {
         id: `spinz-${size.id}-${color.id}`,
-        name: `SPINZ ${size.id} – ${color.label}`,
-        tagline: size.range,
+        name: `SPINZ ${size.id} – ${colorLabel}`,
+        tagline: t.product.heights[size.id as keyof typeof t.product.heights],
         image: color.image,
         // Must match the price shown on screen – during presale that is
         // the launch price, not the products-table price
@@ -176,7 +182,7 @@ export default function Models() {
         features: [],
       },
       color.id,
-      color.label,
+      colorLabel,
       color.skuCode,
       size.id,
     );
@@ -200,7 +206,7 @@ export default function Models() {
         transition={{ duration: 0.7 }}
         style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', letterSpacing: '0.4em', textTransform: 'uppercase', color: MUTED, display: 'block', marginBottom: '12px' }}
       >
-        הדגם שלנו
+        {t.product.eyebrow}
       </motion.span>
 
       {/* Heading */}
@@ -221,7 +227,7 @@ export default function Models() {
         transition={{ duration: 0.6, delay: 0.2 }}
         style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: MUTED, lineHeight: 1.6, margin: '0 0 32px' }}
       >
-        סינגל ספיד אורבני. שלדת אלומיניום, עיצוב שאי אפשר להתעלם ממנו.
+        {t.product.subtitle}
       </motion.p>
 
       {/* Rating row */}
@@ -253,7 +259,7 @@ export default function Models() {
             {reviewStats.avg.toFixed(1)}
           </span>
           <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: MUTED, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
-            {reviewStats.count >= 5 ? `${reviewStats.count} ביקורות` : 'המלצות מרוכבים'}
+            {reviewStats.count >= 5 ? t.product.reviewCount(reviewStats.count) : t.product.reviewsLabel}
           </span>
         </Link>
       </motion.div>
@@ -293,7 +299,7 @@ export default function Models() {
       </div>
       {presale && (
         <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13.5px', color: MUTED, margin: '10px 0 0' }}>
-          או <b style={{ color: DARK }}>₪{monthly.toLocaleString('he-IL')}</b> לחודש, ב-13 תשלומים
+          {t.product.monthlyPre} <b style={{ color: DARK }}>₪{monthly.toLocaleString(lang === 'en' ? 'en-US' : 'he-IL')}</b> {t.product.monthlyPost}
         </p>
       )}
     </div>
@@ -303,7 +309,7 @@ export default function Models() {
     <section
       ref={ref}
       id="models"
-      dir="rtl"
+      dir={dir}
       style={{ backgroundColor: BEIGE, position: 'relative' }}
       className="py-5 lg:py-0"
     >
@@ -325,7 +331,7 @@ export default function Models() {
               <motion.img
                 key={color.id}
                 src={color.image}
-                alt={color.label}
+                alt={colorLabel}
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: outOfStock ? 0.5 : 1, y: 0 }}
                 exit={{ opacity: 0, y: -30 }}
@@ -384,7 +390,7 @@ export default function Models() {
             >
               <div style={{ marginBottom: '12px' }}>
                 <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: color.hex, fontWeight: 700 }}>
-                  {color.label}
+                  {colorLabel}
                 </span>
               </div>
 
@@ -426,10 +432,10 @@ export default function Models() {
                     color: presaleSoldOut ? '#6A6862' : quotaLeft <= 5 ? '#B3543C' : color.hex,
                   }}>
                     {presaleSoldOut
-                      ? `מכסת מחיר ההשקה ל${color.label} ${size.label} אזלה`
+                      ? t.product.quotaSoldOut(colorLabel, size.label)
                       : quotaLeft <= 5
-                        ? `נשארו רק ${quotaLeft} במחיר השקה · ${color.label} ${size.label}`
-                        : `${quotaLeft} יחידות במחיר השקה · ${color.label} ${size.label}`}
+                        ? t.product.quotaFew(quotaLeft, colorLabel, size.label)
+                        : t.product.quotaLeft(quotaLeft, colorLabel, size.label)}
                   </span>
                 </div>
               )}
@@ -445,10 +451,10 @@ export default function Models() {
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                 <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: DARK, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                  מידה
+                  {t.product.size}
                 </span>
                 <Link to="/sizes" style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 600, color: GOLD, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
-                  איזו מידה מתאימה לי?
+                  {t.product.sizeHelp}
                 </Link>
               </div>
               <div style={{ display: 'flex', gap: '10px' }}>
@@ -501,7 +507,7 @@ export default function Models() {
                   color: '#999',
                   textAlign: 'center',
                 }}>
-                  אזל המלאי
+                  {t.product.outOfStock}
                 </div>
               ) : (
                 <motion.button
@@ -529,12 +535,12 @@ export default function Models() {
                 >
                   <AnimatePresence mode="wait">
                     {added ? (
-                      <motion.span key="check" dir="rtl" initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} transition={{ duration: 0.2 }} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        נוסף לעגלה! <Check size={16} />
+                      <motion.span key="check" dir={dir} initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} transition={{ duration: 0.2 }} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        {t.product.added} <Check size={16} />
                       </motion.span>
                     ) : (
-                      <motion.span key="cart" dir="rtl" initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} transition={{ duration: 0.2 }} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        הוסיפו לעגלה <ShoppingCart size={16} />
+                      <motion.span key="cart" dir={dir} initial={{ y: 8, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: -8, opacity: 0 }} transition={{ duration: 0.2 }} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        {t.product.addToCart} <ShoppingCart size={16} />
                       </motion.span>
                     )}
                   </AnimatePresence>
@@ -550,8 +556,8 @@ export default function Models() {
               style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: MUTED, marginTop: '14px', textAlign: 'center' }}
             >
               {presale
-                ? 'אחריות 5 שנים על השלדה · עד 13 תשלומים'
-                : 'משלוח עד 5 ימי עסקים · עד 13 תשלומים'}
+                ? t.product.trustPresale
+                : t.product.trustRegular}
             </motion.p>
 
             {/* Pre-sale disclosure – required before ordering in a distance sale */}
@@ -567,11 +573,11 @@ export default function Models() {
               >
                 <Calendar size={15} style={{ color: GOLD, flexShrink: 0, marginTop: '2px' }} />
                 <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: MUTED, lineHeight: 1.65, margin: 0 }}>
-                  הזמנה מוקדמת – המוצר טרם במלאי. מועד אספקה משוער:{' '}
-                  <b style={{ color: DARK }}>{presaleCfg.arrivalLabel}</b>.
-                  ניתן לבטל ולקבל החזר מלא בכל שלב לפני המסירה.{' '}
-                  <Link to="/presale-terms" style={{ color: '#8A6D3B', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
-                    תנאי מכירה מוקדמת
+                  {t.product.presaleNote1}{' '}
+                  <b style={{ color: DARK }}>{presaleCfg.arrivalLabel}</b>.{' '}
+                  {t.product.presaleNote2}{' '}
+                  <Link to={L("/presale-terms")} style={{ color: '#8A6D3B', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+                    {t.product.presaleTermsLink}
                   </Link>
                 </p>
               </motion.div>

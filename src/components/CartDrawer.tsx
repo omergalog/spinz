@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Plus, Minus, CheckCircle } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../lib/supabase';
+import { useT, useDir } from '../i18n/LanguageContext';
 
 const DARK    = '#1C1C1C';   // text on gold buttons
 const GOLD    = '#C9A870';
@@ -13,10 +14,12 @@ const SUBTLE  = '#FFFFFF';   // inputs / item tiles (white, so the white-bg
 const BORDER  = '#E0DCD4';
 
 function formatPrice(n: number) {
-  return `₪${n.toLocaleString('he-IL')}`;
+  return `₪${n.toLocaleString('he-IL')}`;  // מספרים זהים בשתי השפות
 }
 
 export default function CartDrawer() {
+  const t = useT();
+  const dir = useDir();
   const { items, updateQuantity, clearCart, totalCount, isOpen, closeCart } = useCart();
   const total = items.reduce((sum, i) => sum + i.model.price * i.quantity, 0);
   const [ordering, setOrdering] = useState(false);
@@ -62,18 +65,18 @@ export default function CartDrawer() {
           const left = parts[1]?.replace(/\D/g, '');
           setOrderError(
             left && Number(left) > 0
-              ? `נשארו רק ${left} יחידות מהפריט שבחרת. עדכנו את הכמות ונסו שוב.`
-              : 'אחד הפריטים אזל מהמלאי בזמן ההזמנה. עדכנו את העגלה ונסו שוב.'
+              ? t.cart.errQty(Number(left))
+              : t.cart.errOutOfStock
           );
         } else {
-          setOrderError('משהו השתבש בשליחת ההזמנה. נסו שוב או פנו אלינו בוואטסאפ.');
+          setOrderError(t.cart.errGeneric);
         }
         setOrdering(false);
         return;
       }
 
       if (!data?.ok) {
-        setOrderError('משהו השתבש בשליחת ההזמנה. נסו שוב או פנו אלינו בוואטסאפ.');
+        setOrderError(t.cart.errGeneric);
         setOrdering(false);
         return;
       }
@@ -84,7 +87,7 @@ export default function CartDrawer() {
       setForm({ name: '', email: '', phone: '', address: '' });
       setTimeout(() => { setOrdered(false); closeCart(); }, 2500);
     } catch {
-      setOrderError('משהו השתבש בשליחת ההזמנה. נסו שוב או פנו אלינו בוואטסאפ.');
+      setOrderError(t.cart.errGeneric);
     }
     setOrdering(false);
   };
@@ -120,7 +123,7 @@ export default function CartDrawer() {
               display: 'flex', flexDirection: 'column',
               borderLeft: `1px solid ${BORDER}`,
             }}
-            dir="rtl"
+            dir={dir}
           >
             {/* Header */}
             <div style={{ padding: '20px 24px', borderBottom: `1px solid ${BORDER}` }}>
@@ -133,7 +136,7 @@ export default function CartDrawer() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <ShoppingCart size={18} style={{ color: GOLD }} />
                 <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '18px', color: TEXT, margin: 0 }}>
-                  עגלת קניות
+                  {t.cart.title}
                 </h2>
                 {totalCount > 0 && (
                   <span style={{
@@ -158,7 +161,7 @@ export default function CartDrawer() {
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '16px', opacity: 0.5 }}>
                   <ShoppingCart size={48} style={{ color: TEXT }} />
                   <p style={{ fontFamily: "'Heebo', sans-serif", color: TEXT, fontSize: '15px', margin: 0 }}>
-                    העגלה ריקה
+                    {t.cart.empty}
                   </p>
                 </div>
               ) : (
@@ -227,8 +230,8 @@ export default function CartDrawer() {
                   style={{ position: 'absolute', inset: 0, backgroundColor: SURFACE, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', zIndex: 10 }}
                 >
                   <CheckCircle size={48} style={{ color: GOLD }} />
-                  <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '22px', color: '#EDEBE6', margin: 0 }}>ההזמנה התקבלה!</h3>
-                  <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: "#6A6862", margin: 0 }}>נחזור אליך בקרוב</p>
+                  <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '22px', color: '#EDEBE6', margin: 0 }}>{t.cart.orderReceived}</h3>
+                  <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: "#6A6862", margin: 0 }}>{t.cart.orderFollowUp}</p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -240,27 +243,27 @@ export default function CartDrawer() {
                   initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
                   transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                   style={{ position: 'absolute', inset: 0, backgroundColor: SURFACE, display: 'flex', flexDirection: 'column', zIndex: 5 }}
-                  dir="rtl"
+                  dir={dir}
                 >
                   {/* Header */}
                   <div style={{ padding: '20px 24px', borderBottom: `1px solid ${BORDER}`, display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <button
                       onClick={() => setStep('cart')}
-                      aria-label="חזרה לעגלה"
+                      aria-label={t.cart.backToCart}
                       style={{ background: 'none', border: 'none', color: "#6A6862", cursor: 'pointer', padding: '10px', margin: '-10px', fontSize: '20px', lineHeight: 1 }}
                     >
                       →
                     </button>
-                    <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '17px', color: TEXT, margin: 0 }}>פרטי משלוח</h3>
+                    <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '17px', color: TEXT, margin: 0 }}>{t.cart.shippingDetails}</h3>
                   </div>
 
                   {/* Form */}
                   <div style={{ flex: 1, overflowY: 'auto', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }} onWheel={e => e.stopPropagation()} onTouchMove={e => e.stopPropagation()}>
                     {[
-                      { key: 'name', label: 'שם מלא *', placeholder: 'שם מלא', type: 'text' },
-                      { key: 'phone', label: 'טלפון *', placeholder: '050-0000000', type: 'tel' },
-                      { key: 'email', label: 'מייל', placeholder: 'israel@example.com', type: 'email' },
-                      { key: 'address', label: 'כתובת למשלוח *', placeholder: 'רחוב, עיר, מיקוד', type: 'text' },
+                      { key: 'name', label: t.cart.nameLabel, placeholder: t.cart.namePlaceholder, type: 'text' },
+                      { key: 'phone', label: t.cart.phoneLabel, placeholder: '050-0000000', type: 'tel' },
+                      { key: 'email', label: t.cart.emailLabel, placeholder: 'israel@example.com', type: 'email' },
+                      { key: 'address', label: t.cart.addressLabel, placeholder: t.cart.addressPlaceholder, type: 'text' },
                     ].map(({ key, label, placeholder, type }) => (
                       <div key={key}>
                         <label style={{ display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: formErrors[key] ? '#FF6B6B' : "#6A6862", letterSpacing: '0.1em', marginBottom: '6px', textTransform: 'uppercase' }}>
@@ -284,17 +287,17 @@ export default function CartDrawer() {
                             boxSizing: 'border-box',
                           }}
                         />
-                        {formErrors[key] && <p style={{ color: '#FF6B6B', fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>שדה חובה</p>}
+                        {formErrors[key] && <p style={{ color: '#FF6B6B', fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>{t.cart.required}</p>}
                       </div>
                     ))}
 
                     {/* Summary */}
                     <div style={{ backgroundColor: SUBTLE, border: `1px solid ${BORDER}`, borderRadius: '8px', padding: '14px 16px', marginTop: '8px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                        <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: "#6A6862" }}>סה"כ להזמנה</span>
+                        <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: "#6A6862" }}>{t.cart.orderTotal}</span>
                         <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 700, color: GOLD }}>{formatPrice(total)}</span>
                       </div>
-                      <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: "#9A9690", margin: 0 }}>כולל מע"מ ומשלוח</p>
+                      <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: "#9A9690", margin: 0 }}>{t.cart.inclVat}</p>
                     </div>
                   </div>
 
@@ -312,19 +315,19 @@ export default function CartDrawer() {
                     )}
                     <button onClick={validateAndCheckout} disabled={ordering}
                       style={{ width: '100%', backgroundColor: GOLD, color: DARK, border: 'none', borderRadius: '4px', padding: '15px', fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: ordering ? 'not-allowed' : 'pointer', opacity: ordering ? 0.7 : 1 }}>
-                      {ordering ? '...' : 'אשר הזמנה'}
+                      {ordering ? '...' : t.cart.confirm}
                     </button>
                     <p style={{
                       fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#6A6862',
                       lineHeight: 1.6, margin: '10px 0 0', textAlign: 'center',
                     }}>
-                      בשליחת ההזמנה אתם מאשרים את{' '}
+                      {t.cart.agree1}{' '}
                       <a href="/presale-terms" target="_blank" rel="noopener noreferrer" style={{ color: '#8A6D3B', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
-                        תנאי המכירה המוקדמת
+                        {t.cart.agreePresale}
                       </a>{' '}
-                      ואת{' '}
+                      {t.cart.agreeAnd}{' '}
                       <a href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#8A6D3B', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
-                        תנאי השימוש
+                        {t.cart.agreeTerms}
                       </a>.
                     </p>
                   </div>
@@ -336,7 +339,7 @@ export default function CartDrawer() {
             {items.length > 0 && (
               <div style={{ padding: '24px', borderTop: `1px solid ${BORDER}` }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: "#6A6862" }}>סה"כ</span>
+                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: "#6A6862" }}>{t.cart.total}</span>
                   <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '22px', fontWeight: 800, color: GOLD }}>
                     {formatPrice(total)}
                   </span>
@@ -359,7 +362,7 @@ export default function CartDrawer() {
                   onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#B8933A'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = GOLD; }}
                 >
-                  {ordering ? '...' : 'המשך לתשלום'}
+                  {ordering ? '...' : t.cart.checkout}
                 </button>
                 <button
                   onClick={clearCart}
@@ -374,7 +377,7 @@ export default function CartDrawer() {
                   onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = TEXT; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = "#6A6862"; }}
                 >
-                  רוקן עגלה
+                  {t.cart.clear}
                 </button>
               </div>
             )}

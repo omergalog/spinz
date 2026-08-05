@@ -1,3 +1,4 @@
+import { useT } from '../i18n/LanguageContext';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 
@@ -19,6 +20,7 @@ const photos = Array.from({ length: TOTAL }, (_, i) => {
 
 // ── Full-screen viewer with prev/next, keyboard and swipe ──────────────
 function Lightbox({ index, onClose, onNav }: { index: number; onClose: () => void; onNav: (dir: 1 | -1) => void }) {
+  const t = useT();
   const touchX = useRef<number | null>(null);
 
   useEffect(() => {
@@ -72,7 +74,7 @@ function Lightbox({ index, onClose, onNav }: { index: number; onClose: () => voi
       {/* Close */}
       <button
         onClick={onClose}
-        aria-label="סגירה"
+        aria-label={t.gallery.close}
         style={{
           position: 'absolute', top: '20px', insetInlineStart: '20px', zIndex: 3,
           width: '46px', height: '46px', borderRadius: '50%',
@@ -91,9 +93,9 @@ function Lightbox({ index, onClose, onNav }: { index: number; onClose: () => voi
       </div>
 
       {/* Prev (right side in RTL) */}
-      <button aria-label="הקודם" onClick={e => { e.stopPropagation(); onNav(-1); }} style={{ ...arrowBtn, insetInlineEnd: 'clamp(8px, 2vw, 28px)' }}>›</button>
+      <button aria-label={t.gallery.prev} onClick={e => { e.stopPropagation(); onNav(-1); }} style={{ ...arrowBtn, insetInlineEnd: 'clamp(8px, 2vw, 28px)' }}>›</button>
       {/* Next (left side in RTL) */}
-      <button aria-label="הבא" onClick={e => { e.stopPropagation(); onNav(1); }} style={{ ...arrowBtn, insetInlineStart: 'clamp(8px, 2vw, 28px)' }}>‹</button>
+      <button aria-label={t.gallery.next} onClick={e => { e.stopPropagation(); onNav(1); }} style={{ ...arrowBtn, insetInlineStart: 'clamp(8px, 2vw, 28px)' }}>‹</button>
 
       {/* Image — plain <img> so it swaps instantly and never depends on an animation */}
       <img
@@ -109,6 +111,7 @@ function Lightbox({ index, onClose, onNav }: { index: number; onClose: () => voi
 }
 
 export default function Gallery({ hideHeader = false }: { hideHeader?: boolean }) {
+  const t = useT();
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const headingRef = useRef<HTMLDivElement>(null);
@@ -145,7 +148,7 @@ export default function Gallery({ hideHeader = false }: { hideHeader?: boolean }
                   className="leading-none"
                   style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(32px, 7vw, 80px)', color: TEXT, letterSpacing: '-0.02em' }}
                 >
-                  העיר שלך. הצבע שלך.
+                  {t.gallery.title}
                 </motion.h2>
               </div>
             </div>
@@ -158,14 +161,14 @@ export default function Gallery({ hideHeader = false }: { hideHeader?: boolean }
               className="flex items-center gap-2 pb-1 text-sm font-bold uppercase tracking-widest transition-all duration-200 whitespace-nowrap"
               style={{ color: '#C9A870', fontFamily: "'Heebo', sans-serif", textDecoration: 'none' }}
             >
-              לכל הדגמים ←
+              {t.gallery.allModels}
             </motion.a>
           </div>
         )}
 
         {/* Hint */}
         <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: TEXT_MUTED, margin: '0 0 18px' }}>
-          לחצו על תמונה כדי להגדיל ולדפדף בגלריה.
+          {t.gallery.hint}
         </p>
 
         {/* Thumbnail grid */}

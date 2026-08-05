@@ -87,6 +87,8 @@ export const dict = {
       ],
     },
     video: { unmute: 'הפעל סאונד', mute: 'השתק' },
+    gallery: { close: 'סגירה', prev: 'הקודם', next: 'הבא', title: 'העיר שלך. הצבע שלך.',
+               allModels: 'לכל הדגמים ←', hint: 'לחצו על תמונה כדי להגדיל ולדפדף בגלריה.' },
     lead: {
       eyebrow: 'צור קשר',
       title: 'תיראה טוב. תרגיש טוב. וסע.',
@@ -110,6 +112,28 @@ export const dict = {
     },
     pages: {
       specs: { eyebrow: 'מפרט טכני', title: 'מפרט ללא פשרות.', sub: 'כל פרט באופני SPINZ תוכנן בקפידה כדי להעניק לך חוויית רכיבה חלקה, בטוחה ונטולת מאמץ ברחובות העיר.' },
+      sizes: {
+        title: 'מידות וצבעים.', sub: 'שני גדלים, שלושה צבעים – ההתאמה המושלמת לגובה שלך ולסטייל שלך.',
+        sizesTitle: 'איזו מידה מתאימה לי?',
+        sizesIntro: 'הגובה שלך הוא הדרך הכי פשוטה לבחור. במקרה של ספק – עדיף לבחור מידה קטנה יותר.',
+        colorsTitle: 'שלושה צבעים. אופי משלך.',
+        colorsIntro: 'כל צבע זמין בשתי המידות. בחרו את זה שמדבר אליכם.',
+        cta: 'בחרו את שלכם ←',
+        riderHeight: 'גובה רוכב:',
+        items: [
+          { label: 'מידה S', height: '160–175 ס"מ', body: 'שלדה קומפקטית וזריזה, מושלמת לרכיבה עירונית קצרה ולמי שמחפש תחושת שליטה מלאה. קלה לתמרון בין מכוניות ובשבילים צרים.' },
+          { label: 'מידה L', height: '175–190 ס"מ', body: 'שלדה מרווחת יותר לתנוחת רכיבה נוחה וזקופה. מתאימה למרחקים ארוכים יותר ולרוכבים גבוהים שמחפשים יציבות ושיוט חלק.' },
+        ],
+        colorDesc: {
+          mat: 'הקלאסיקה. שחור עמוק ומאט שמשתלב עם הכל, ולא מפסיק להיראות נקי גם אחרי שנים על האספלט.',
+          beige: 'גוון חול חמים ורגוע. בולט בעדינות, משדר יוקרה שקטה ומושך מבטים בלי לצעוק.',
+          olive: 'אופי ושקט. ירוק אדמתי שמרגיש טבעי בעיר, לאלו שרוצים משהו קצת אחר מהרגיל.',
+        },
+      },
+      bikes:   { title: 'הדגמים.', sub: 'בחרו צבע ומידה – והאופניים שלכם בדרך. סינגל ספיד נקי, מעוצב לרחובות העיר.' },
+      gallery: { title: 'העיר שלך. הצבע שלך.', sub: 'האופניים בשטח – מהרחובות של תל אביב ומהקהילה שלנו.' },
+      contact: { title: 'צור קשר.', sub: 'יש שאלה? רוצים להתייעץ לפני שמזמינים? אנחנו כאן.',
+                 whatsappValue: 'שלחו לנו הודעה', email: 'אימייל', instagram: 'אינסטגרם' },
       faq:   { eyebrow: 'שאלות נפוצות', title: 'כל מה שרצית לדעת.', sub: 'משלוחים, הרכבה, תשלומים ואחריות – התשובות לכל השאלות לפני שאתם עולים על האוכף.' },
     },
     product: {
@@ -250,6 +274,8 @@ export const dict = {
       ],
     },
     video: { unmute: 'Unmute', mute: 'Mute' },
+    gallery: { close: 'Close', prev: 'Previous', next: 'Next', title: 'Your city. Your color.',
+               allModels: 'See all models →', hint: 'Tap an image to enlarge and browse the gallery.' },
     lead: {
       eyebrow: 'Contact',
       title: 'Look good. Feel good. Ride.',
@@ -273,6 +299,28 @@ export const dict = {
     },
     pages: {
       specs: { eyebrow: 'Specs', title: 'Built without compromise.', sub: 'Every detail on a SPINZ was chosen to give you a smooth, safe and effortless ride through the city.' },
+      sizes: {
+        title: 'Sizes & Colors.', sub: 'Two sizes, three colors — the right fit for your height and your style.',
+        sizesTitle: 'Which size fits me?',
+        sizesIntro: 'Your height is the simplest way to choose. If you’re between sizes, go with the smaller frame.',
+        colorsTitle: 'Three colors. Your character.',
+        colorsIntro: 'Every color comes in both sizes. Pick the one that speaks to you.',
+        cta: 'Choose yours →',
+        riderHeight: 'Rider height:',
+        items: [
+          { label: 'Size S', height: '160–175 cm', body: 'A compact, nimble frame — ideal for short city trips and riders who want full control. Easy to thread between cars and down narrow lanes.' },
+          { label: 'Size L', height: '175–190 cm', body: 'A roomier frame for a comfortable, upright riding position. Suits longer distances and taller riders after stability and smooth cruising.' },
+        ],
+        colorDesc: {
+          mat: 'The classic. A deep matte black that goes with everything and still looks sharp after years on the asphalt.',
+          beige: 'A warm, calm sand tone. Quietly striking — it turns heads without shouting.',
+          olive: 'Character and calm. An earthy green that feels at home in the city, for anyone after something a little different.',
+        },
+      },
+      bikes:   { title: 'The Models.', sub: 'Pick a color and a size — your bike is on its way. Clean single speed, designed for city streets.' },
+      gallery: { title: 'Your city. Your color.', sub: 'The bikes out in the wild — from Tel Aviv streets and our community.' },
+      contact: { title: 'Get in touch.', sub: 'Got a question? Want to talk it through before ordering? We’re here.',
+                 whatsappValue: 'Send us a message', email: 'Email', instagram: 'Instagram' },
       faq:   { eyebrow: 'FAQ', title: 'Everything you wanted to know.', sub: 'Shipping, assembly, payments and warranty — every answer before you get in the saddle.' },
     },
     product: {

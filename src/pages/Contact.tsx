@@ -1,3 +1,4 @@
+import { useT } from '../i18n/LanguageContext';
 import { motion } from 'framer-motion';
 import { MessageCircle, Mail, Instagram, MapPin } from 'lucide-react';
 import PageShell from '../components/PageShell';
@@ -11,20 +12,21 @@ const BORDER = '#E0DCD4';
 const CARD = '#FFFFFF';
 
 const WHATSAPP = '+972527565262';
-const whatsappHref = `https://wa.me/${WHATSAPP.replace(/\D/g, '')}?text=${encodeURIComponent('היי, אני מתעניין באופני Spinz')}`;
+const whatsappHref = `https://wa.me/${WHATSAPP.replace(/\D/g, '')}?text=${encodeURIComponent('Hi, I am interested in a Spinz bike')}`;
 
-const channels = [
-  { icon: MessageCircle, label: 'WhatsApp', value: 'שלחו לנו הודעה', href: whatsappHref },
-  { icon: Mail, label: 'אימייל', value: COMPANY.email, href: `mailto:${COMPANY.email}` },
-  { icon: Instagram, label: 'אינסטגרם', value: '@spinz.bikes', href: 'https://instagram.com/spinz.bikes' },
-];
 
 export default function Contact() {
+  const t = useT();
+  const channels = [
+    { icon: MessageCircle, label: 'WhatsApp', value: t.pages.contact.whatsappValue, href: whatsappHref },
+    { icon: Mail, label: t.pages.contact.email, value: COMPANY.email, href: `mailto:${COMPANY.email}` },
+    { icon: Instagram, label: t.pages.contact.instagram, value: '@spinz.bikes', href: 'https://instagram.com/spinz.bikes' },
+  ];
   return (
     <PageShell
       eyebrow="Get in Touch"
-      title="צור קשר."
-      subtitle="יש שאלה? רוצים להתייעץ לפני שמזמינים? אנחנו כאן."
+      title={t.pages.contact.title}
+      subtitle={t.pages.contact.sub}
       heroImage="/assets/for-hero.jpg"
       heroPosition="center 70%"
     >

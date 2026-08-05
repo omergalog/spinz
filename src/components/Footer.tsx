@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { useLang, useT, useDir, localizePath } from '../i18n/LanguageContext';
 
 const BG = '#1C1C1C';
 const BORDER = '#2A2A2A';
@@ -8,6 +9,7 @@ const GOLD = '#C9A870';
 const WHATSAPP_NUMBER = '+972527565262';
 
 function NewsletterForm() {
+  const t = useT();
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
 
@@ -19,7 +21,7 @@ function NewsletterForm() {
     const { error } = await supabase.from('newsletter').insert({ email: clean });
     if (error) {
       // Table may not exist yet – keep the address in leads so nothing is lost
-      await supabase.from('leads').insert({ name: 'ניוזלטר', email: clean, phone: null });
+      await supabase.from('leads').insert({ name: t.footer.newsletterAria, email: clean, phone: null });
     }
     setStatus('done');
     setEmail('');
@@ -28,7 +30,7 @@ function NewsletterForm() {
   if (status === 'done') {
     return (
       <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: GOLD, margin: 0, padding: '12px 0' }}>
-        ✓ נרשמת! נעדכן אותך בכל מה שחדש.
+        {t.footer.subscribed}
       </p>
     );
   }
@@ -36,7 +38,7 @@ function NewsletterForm() {
   return (
     <form onSubmit={submit} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
       <label htmlFor="newsletter-email" style={{ position: 'absolute', width: '1px', height: '1px', overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>
-        אימייל
+        {t.footer.emailLabel}
       </label>
       <input
         id="newsletter-email"
@@ -78,11 +80,11 @@ function NewsletterForm() {
         onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.filter = 'brightness(1.08)'; }}
         onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.filter = 'none'; }}
       >
-        {status === 'loading' ? 'שולח…' : 'הרשמה'}
+        {status === 'loading' ? t.footer.sending : t.footer.subscribe}
       </button>
       {status === 'error' && (
         <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: '#C17A56', margin: 0, width: '100%' }}>
-          כתובת מייל לא תקינה
+          {t.footer.badEmail}
         </p>
       )}
     </form>
@@ -91,11 +93,15 @@ function NewsletterForm() {
 
 export default function Footer() {
   const navigate = useNavigate();
-  const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, '')}?text=${encodeURIComponent('היי, אני מתעניין באופני Spinz')}`;
+  const lang = useLang();
+  const dir = useDir();
+  const t = useT();
+  const L = (to: string) => localizePath(to, lang);
+  const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, '')}?text=${encodeURIComponent(t.footer.whatsappText)}`;
 
   return (
     <>
-      <footer className="relative overflow-hidden" style={{ backgroundColor: BG }} dir="rtl">
+      <footer className="relative overflow-hidden" style={{ backgroundColor: BG }} dir={dir}>
 
         <div className="mx-auto max-w-7xl px-6 lg:px-16">
 
@@ -110,10 +116,10 @@ export default function Footer() {
                 fontSize: 'clamp(20px, 2.5vw, 26px)', color: '#EDEBE6',
                 letterSpacing: '-0.01em', margin: '0 0 6px',
               }}>
-                הישארו בעניינים
+                {t.footer.stayTitle}
               </h4>
               <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: '#888', margin: 0, lineHeight: 1.6 }}>
-                עדכונים על דגמים, אירועי קהילה והטבות – בלי ספאם, מבטיחים.
+                {t.footer.stayBody}
               </p>
             </div>
             <NewsletterForm />
@@ -129,7 +135,7 @@ export default function Footer() {
                 style={{ height: '36px', width: 'auto', filter: 'invert(1) brightness(2)', opacity: 0.9, marginBottom: '14px' }}
               />
               <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#888', lineHeight: 1.7, maxWidth: '220px' }}>
-                אופני עיר בעיצוב נקי. נבנו בתל אביב, בשביל הרחוב.
+                {t.footer.tagline}
               </p>
               <div style={{ display: 'flex', gap: '14px', marginTop: '18px' }}>
                 <a href="https://www.instagram.com/spinz.bikes" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
@@ -148,24 +154,24 @@ export default function Footer() {
             </div>
 
             {[
-              { title: 'אופניים', links: [
-                { label: 'הדגמים', to: '/bikes' },
-                { label: 'מפרט טכני', to: '/specs' },
-                { label: 'מידות וצבעים', to: '/sizes' },
+              { title: t.footer.cols.bikes, links: [
+                { label: t.nav.links.models, to: '/bikes' },
+                { label: t.nav.links.specs, to: '/specs' },
+                { label: t.nav.links.sizes, to: '/sizes' },
               ]},
-              { title: 'מידע', links: [
-                { label: 'שאלות ותשובות', to: '/faq' },
-                { label: 'מדריכים', to: '/guides' },
-                { label: 'תקנון ותנאי שימוש', to: '/regulations' },
-                { label: 'תנאי מכירה מוקדמת', to: '/presale-terms' },
-                { label: 'ביטול עסקה', to: '/cancel-order' },
-                { label: 'צור קשר', to: '/contact' },
+              { title: t.footer.cols.info, links: [
+                { label: t.nav.links.faq, to: '/faq' },
+                { label: t.nav.links.guides, to: '/guides' },
+                { label: t.footer.links.regulations, to: '/regulations' },
+                { label: t.footer.links.presaleTerms, to: '/presale-terms' },
+                { label: t.footer.links.cancelOrder, to: '/cancel-order' },
+                { label: t.nav.contact, to: '/contact' },
               ]},
-              { title: 'המותג', links: [
-                { label: 'הסיפור שלנו', to: '/story' },
-                { label: 'גלריה', to: '/gallery' },
-                { label: 'קהילה', to: '/community' },
-                { label: 'המלצות', to: '/reviews' },
+              { title: t.footer.cols.brand, links: [
+                { label: t.nav.links.story, to: '/story' },
+                { label: t.nav.links.gallery, to: '/gallery' },
+                { label: t.nav.links.community, to: '/community' },
+                { label: t.nav.links.reviews, to: '/reviews' },
               ]},
             ].map(col => (
               <div key={col.title}>
@@ -180,7 +186,7 @@ export default function Footer() {
                   {col.links.map(l => (
                     <li key={l.to}>
                       <Link
-                        to={l.to}
+                        to={L(l.to)}
                         style={{
                           fontFamily: "'Heebo', sans-serif", fontSize: '14px',
                           color: '#B5B2AC', textDecoration: 'none', transition: 'color 0.2s',
@@ -201,7 +207,7 @@ export default function Footer() {
           {/* Bottom bar */}
           <div className="flex flex-col items-center justify-between gap-2 py-6 md:flex-row" style={{ borderTop: `1px solid ${BORDER}` }}>
             <p className="text-xs" style={{ color: '#FFFFFF', fontFamily: "'Heebo', sans-serif" }}>
-              © 2026 Spinz. כל הזכויות שמורות.
+              {t.footer.rights}
             </p>
             <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
               <button
@@ -216,7 +222,7 @@ export default function Footer() {
                 onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = '#C9A870'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = '#888'; }}
               >
-                תקנון ותנאי שימוש
+                {t.footer.links.regulations}
               </button>
               <button
                 onClick={() => navigate('/terms')}
@@ -230,7 +236,7 @@ export default function Footer() {
                 onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = '#C9A870'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = '#888'; }}
               >
-                מדיניות פרטיות ותנאי שימוש
+                {t.footer.links.terms}
               </button>
               <Link
                 to="/accessibility"
@@ -243,7 +249,7 @@ export default function Footer() {
                 onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#C9A870'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#888'; }}
               >
-                הצהרת נגישות
+                {t.footer.links.accessibility}
               </Link>
             </div>
             <p className="text-xs" style={{ color: '#FFFFFF', fontFamily: "'Heebo', sans-serif" }}>

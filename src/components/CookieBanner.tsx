@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PrivacyModal from './PrivacyModal';
+import { useT, useDir } from '../i18n/LanguageContext';
 
 const DARK = '#1C1C1C';
 const GOLD = '#C9A870';
@@ -10,6 +11,8 @@ export default function CookieBanner({ loaderDone }: { loaderDone: boolean }) {
   const [visible, setVisible] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
   const barRef = useRef<HTMLDivElement>(null);
+  const t = useT();
+  const dir = useDir();
 
   // On narrow screens the banner spans the full width and would sit underneath
   // the two floating buttons. Publish its height so they can lift above it.
@@ -65,7 +68,7 @@ export default function CookieBanner({ loaderDone }: { loaderDone: boolean }) {
             flexDirection: 'column',
             gap: '16px',
           }}
-          dir="rtl"
+          dir={dir}
         >
           {/* Top row: icon + title */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -80,7 +83,7 @@ export default function CookieBanner({ loaderDone }: { loaderDone: boolean }) {
                 letterSpacing: '-0.01em',
               }}
             >
-              רגע לפני שממשיכים
+              {t.cookies.title}
             </h4>
             {/* Gold accent line */}
             <div style={{ flex: 1, height: '1px', backgroundColor: '#2A2A2A', marginRight: '4px' }} />
@@ -104,9 +107,7 @@ export default function CookieBanner({ loaderDone }: { loaderDone: boolean }) {
               margin: 0,
             }}
           >
-            אנחנו משתמשים בעוגיות <span style={{ color: GOLD, fontWeight: 600 }}>(Cookies)</span> כדי
-            שהאתר ירוץ חלק, לשפר את חווית הגלישה שלך ולהציג תוכן רלוונטי.
-            המשך הגלישה מהווה הסכמה לשימוש בהן.
+            {t.cookies.body1}<span style={{ color: GOLD, fontWeight: 600 }}>{t.cookies.body2}</span>{t.cookies.body3}
           </p>
 
           {/* Buttons */}
@@ -130,7 +131,7 @@ export default function CookieBanner({ loaderDone }: { loaderDone: boolean }) {
                 whiteSpace: 'nowrap',
               }}
             >
-              מסכים 🚴‍♂️
+              {t.cookies.accept}
             </motion.button>
 
             <motion.button
@@ -150,7 +151,7 @@ export default function CookieBanner({ loaderDone }: { loaderDone: boolean }) {
                 whiteSpace: 'nowrap',
               }}
             >
-              מדיניות ופרטיות
+              {t.cookies.privacy}
             </motion.button>
           </div>
         </motion.div>

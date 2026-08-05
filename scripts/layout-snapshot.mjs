@@ -82,6 +82,16 @@ async function capture(page, url) {
     return els.every(e => e && e.getBoundingClientRect().width > 0);
   }, null, { timeout: 15000 });
 
+  // כותרת ההירו נעה לפי currentTime של הסרטון (דהייה מונעת-וידאו), ולכן כל
+  // לכידה הייתה תופסת אותה במקום אחר. עוצרים את הסרטון בהתחלה כדי שהמדידה
+  // תהיה זהה בכל הרצה.
+  await page.evaluate(() => {
+    for (const v of document.querySelectorAll('video')) {
+      v.pause();
+      try { v.currentTime = 0; } catch { /* ignore */ }
+    }
+  });
+
   await page.evaluate(() => window.scrollTo(0, 0));
 
   // ממתין עד ששתי דגימות רצופות זהות — כלומר הרינדור התייצב

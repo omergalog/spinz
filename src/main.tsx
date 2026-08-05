@@ -26,7 +26,8 @@ import AccessibilityWidget from './components/AccessibilityWidget';
 import WhatsAppFab from './components/WhatsAppFab';
 import { getPauseMotion, onPauseMotionChange } from './utils/motionStore';
 import PasswordGate from './components/PasswordGate';
-import { LanguageProvider, EN_PREFIX } from './i18n/LanguageContext';
+import { LanguageProvider, EN_PREFIX, langFromPath } from './i18n/LanguageContext';
+import { getDict } from './i18n/dict';
 
 function Root() {
   const [pauseMotion, setPauseMotionState] = useState(getPauseMotion);
@@ -54,7 +55,7 @@ function Root() {
               onFocus={e => { e.currentTarget.style.top = '0'; }}
               onBlur={e => { e.currentTarget.style.top = '-100px'; }}
             >
-              דלג לתוכן הראשי
+              {getDict(langFromPath(window.location.pathname)).a11y.skipToContent}
             </a>
 
             <main id="main-content">

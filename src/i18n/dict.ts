@@ -112,6 +112,7 @@ export const dict = {
     },
     pages: {
       specs: { eyebrow: 'מפרט טכני', title: 'מפרט ללא פשרות.', sub: 'כל פרט באופני SPINZ תוכנן בקפידה כדי להעניק לך חוויית רכיבה חלקה, בטוחה ונטולת מאמץ ברחובות העיר.' },
+      story: { title: 'נעים להכיר, אנחנו Spinz.', sub: 'שלושה חברים מעמק חפר, עיר אחת גדולה, והרצון לחזור לרכיבה פשוטה. ככה נולד המותג.', cta: 'בואו להכיר את הדגמים ←' },
       sizes: {
         title: 'מידות וצבעים.', sub: 'שני גדלים, שלושה צבעים – ההתאמה המושלמת לגובה שלך ולסטייל שלך.',
         sizesTitle: 'איזו מידה מתאימה לי?',
@@ -299,6 +300,7 @@ export const dict = {
     },
     pages: {
       specs: { eyebrow: 'Specs', title: 'Built without compromise.', sub: 'Every detail on a SPINZ was chosen to give you a smooth, safe and effortless ride through the city.' },
+      story: { title: 'Nice to meet you — we’re Spinz.', sub: 'Three friends from Hefer Valley, one big city, and the urge to get back to simple riding. That’s how the brand was born.', cta: 'Meet the models →' },
       sizes: {
         title: 'Sizes & Colors.', sub: 'Two sizes, three colors — the right fit for your height and your style.',
         sizesTitle: 'Which size fits me?',

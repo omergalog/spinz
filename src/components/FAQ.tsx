@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { faqs } from '../data/faq';
+import { getFaqs, type FaqItem } from '../data/faq';
+import { useLang, useT } from '../i18n/LanguageContext';
 
 const GOLD   = '#C9A870';
 const CREAM  = '#1C1C1C';
@@ -9,7 +10,7 @@ const BG     = '#F5F2EC';
 const BORDER = '#DDD9D3';
 
 
-function FAQItem({ item, index }: { item: typeof faqs[0]; index: number }) {
+function FAQItem({ item, index }: { item: FaqItem; index: number }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-30px' });
@@ -107,6 +108,9 @@ export default function FAQ({ hideHeader = false }: { hideHeader?: boolean }) {
   const headingRef = useRef<HTMLDivElement>(null);
   const headingInView = useInView(headingRef, { once: true, margin: '-40px' });
 
+  const lang = useLang();
+  const t = useT();
+  const faqs = getFaqs(lang);
   const half = Math.ceil(faqs.length / 2);
   const left  = faqs.slice(0, half);
   const right = faqs.slice(half);
@@ -140,7 +144,7 @@ export default function FAQ({ hideHeader = false }: { hideHeader?: boolean }) {
               color: MUTED,
             }}
           >
-            שאלות נפוצות
+            {t.faq.eyebrow}
           </motion.span>
 
           <div ref={headingRef} style={{ overflow: 'hidden' }}>
@@ -158,7 +162,7 @@ export default function FAQ({ hideHeader = false }: { hideHeader?: boolean }) {
                 margin: 0,
               }}
             >
-              כל מה שרצית לדעת.
+              {t.faq.title}
             </motion.h2>
           </div>
         </div>

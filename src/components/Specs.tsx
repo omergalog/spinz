@@ -7,12 +7,12 @@ const CREAM = '#EDEBE6';
 const MUTED = '#EDEBE6';
 const BORDER = '#2A2A2A';
 
-const specs = [
+import { getSpecs, type SpecText } from '../data/specs';
+import { useLang, useT } from '../i18n/LanguageContext';
+
+const specIcons = [
   {
     num: '01',
-    title: 'קלילות עירונית',
-    sub: 'שלדת אלומיניום',
-    body: 'שלדת אלומיניום המעניקה תחושת קלילות יוצאת דופן. מאפשרת זינוק זריז בכל רמזור ונוחה לנשיאה אל תוך הדירה או המשרד במאמץ מינימלי.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 2L8 8H4l4 4-2 6 6-3 6 3-2-6 4-4h-4L12 2z"/>
@@ -21,9 +21,6 @@ const specs = [
   },
   {
     num: '02',
-    title: 'צמיגים עמידים לפנצ\'ר',
-    sub: 'Kenda 32 מ"מ',
-    body: 'אחיזה בטוחה וראש שקט. צמיגים אורבניים רחבים שבולעים את מהמורות העיר, פסי הרכבת הקלה והאספלט, בלי לעכב אותך.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/>
@@ -34,9 +31,6 @@ const specs = [
   },
   {
     num: '03',
-    title: 'יחס העברה חכם לעיר',
-    sub: 'גלגל שיניים 46T',
-    body: 'האיזון המושלם בין מהירות לשיוט קל. מנגנון הסינגל-ספיד מכויל בדיוק לעליות המתונות ולמישורים של הרחובות, כדי שתגיע מהר ובמאמץ מינימלי.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="3"/>
@@ -46,9 +40,6 @@ const specs = [
   },
   {
     num: '04',
-    title: 'הנדסת חומרים חכמה',
-    sub: 'אלומיניום + פלדה',
-    body: 'שילוב מדויק של שלדת אלומיניום קלה עם מזלג פלדה קדמי, שסופג את הרעידות מהכביש ומעניק חוויית רכיבה חלקה ונוחה יותר.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
@@ -60,9 +51,6 @@ const specs = [
   },
   {
     num: '05',
-    title: 'חישוקים מחוזקים',
-    sub: 'פרופיל גבוה 30 מ"מ',
-    body: 'גלגלים בעלי פרופיל גבוה – לא רק למראה אורבני מוקפד, אלא גם להבטחת עמידות גבוהה מול בורות, שפות מדרכה ובלאי עירוני.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/>
@@ -73,9 +61,6 @@ const specs = [
   },
   {
     num: '06',
-    title: 'התאמה בשנייה',
-    sub: 'Quick Release',
-    body: 'מנגנון שחרור מהיר למושב המאפשר כוונון גובה מיידי ללא צורך בכלים – מושלם לאופניים משפחתיים או לכמה רוכבים.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
@@ -84,9 +69,6 @@ const specs = [
   },
   {
     num: '07',
-    title: 'בטיחות ללא פשרות',
-    sub: 'תקני בטיחות בינלאומיים',
-    body: 'האופניים תוכננו ונבנו בהתאם לתקני בטיחות בינלאומיים מחמירים. כי על בטיחות לא מתפשרים.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
@@ -96,9 +78,6 @@ const specs = [
   },
   {
     num: '08',
-    title: 'פדלים רחבים משודרגים',
-    sub: 'יציבות מלאה',
-    body: 'פדלים רחבים מפלסטיק קשיח בעיצוב נקי, המעניקים שטח פנים גדול יותר לאחיזה בטוחה, מניעת החלקות ודיווש נוח בכל נעל.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="10" width="20" height="5" rx="2"/>
@@ -110,7 +89,7 @@ const specs = [
   },
 ];
 
-function SpecCard({ spec, index }: { spec: typeof specs[0]; index: number }) {
+function SpecCard({ spec, index }: { spec: SpecText & { num: string; icon: React.ReactNode }; index: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: '-40px' });
 
@@ -174,6 +153,10 @@ function SpecCard({ spec, index }: { spec: typeof specs[0]; index: number }) {
 }
 
 export default function Specs({ hideHeader = false }: { hideHeader?: boolean }) {
+  const lang = useLang();
+  const t = useT();
+  // הטקסט מגיע מהמילון, האייקונים מהקומפוננטה — מחוברים לפי סדר
+  const specs = specIcons.map((s, i) => ({ ...s, ...getSpecs(lang)[i] }));
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const headingRef = useRef<HTMLDivElement>(null);
@@ -209,7 +192,7 @@ export default function Specs({ hideHeader = false }: { hideHeader?: boolean }) 
               color: MUTED,
             }}
           >
-            מפרט טכני
+            {t.specs.eyebrow}
           </motion.span>
 
           <div ref={headingRef} style={{ overflow: 'hidden' }}>
@@ -227,7 +210,7 @@ export default function Specs({ hideHeader = false }: { hideHeader?: boolean }) 
                 margin: 0,
               }}
             >
-              מפרט ללא פשרות.
+              {t.specs.title}
             </motion.h2>
           </div>
 
@@ -244,7 +227,7 @@ export default function Specs({ hideHeader = false }: { hideHeader?: boolean }) 
               maxWidth: '540px',
             }}
           >
-            כל פרט באופני SPINZ תוכנן בקפידה כדי להעניק לך חוויית רכיבה חלקה, בטוחה ונטולת מאמץ ברחובות העיר.
+            {t.specs.intro}
           </motion.p>
         </div>
         )}

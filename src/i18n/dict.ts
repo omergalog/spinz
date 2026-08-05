@@ -69,6 +69,12 @@ export const dict = {
       privacy: 'מדיניות ופרטיות',
     },
     a11y: { skipToContent: 'דלג לתוכן הראשי' },
+    faq: { eyebrow: 'שאלות נפוצות', title: 'כל מה שרצית לדעת.' },
+    specs: {
+      eyebrow: 'מפרט טכני',
+      title: 'מפרט ללא פשרות.',
+      intro: 'כל פרט באופני SPINZ תוכנן בקפידה כדי להעניק לך חוויית רכיבה חלקה, בטוחה ונטולת מאמץ ברחובות העיר.',
+    },
   },
 
   en: {
@@ -132,6 +138,12 @@ export const dict = {
       privacy: 'Privacy Policy',
     },
     a11y: { skipToContent: 'Skip to main content' },
+    faq: { eyebrow: 'FAQ', title: 'Everything you wanted to know.' },
+    specs: {
+      eyebrow: 'Specs',
+      title: 'Built without compromise.',
+      intro: 'Every detail on a SPINZ was chosen to give you a smooth, safe and effortless ride through the city.',
+    },
   },
 } as const;
 

@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
+import { getDict, type Dict } from './dict';
 
 export type Lang = 'he' | 'en';
 
@@ -10,6 +11,9 @@ const LanguageContext = createContext<Lang>('he');
 
 export const useLang = () => useContext(LanguageContext);
 export const useDir = () => (useLang() === 'he' ? 'rtl' : 'ltr');
+
+/** The strings for the current language. */
+export const useT = (): Dict => getDict(useContext(LanguageContext));
 
 /** Strip the /en prefix so route matching and links stay language-agnostic. */
 export function stripLangPrefix(pathname: string): string {

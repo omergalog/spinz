@@ -6,6 +6,9 @@ import { useCart } from '../context/CartContext';
 import AnnouncementBar from './AnnouncementBar';
 import SearchModal from './SearchModal';
 import { scrollToTop } from '../lib/scrollTop';
+import LangSwitch from './LangSwitch';
+import { useLang, useT, useDir, localizePath } from '../i18n/LanguageContext';
+import type { Dict } from '../i18n/dict';
 import { usePresale } from '../config/presale';
 
 const DARK  = '#1C1C1C';
@@ -15,29 +18,29 @@ const GOLD  = '#C9A870';
 type MenuItem = { label: string; to: string };
 type Menu = { label: string; items: MenuItem[] };
 
-const menus: Menu[] = [
+const buildMenus = (t: Dict): Menu[] => [
   {
-    label: 'אופניים',
+    label: t.nav.groups.bikes,
     items: [
-      { label: 'הדגמים', to: '/bikes' },
-      { label: 'מפרט טכני', to: '/specs' },
-      { label: 'מידות וצבעים', to: '/sizes' },
+      { label: t.nav.links.models, to: '/bikes' },
+      { label: t.nav.links.specs, to: '/specs' },
+      { label: t.nav.links.sizes, to: '/sizes' },
     ],
   },
   {
-    label: 'מידע',
+    label: t.nav.groups.info,
     items: [
-      { label: 'שאלות ותשובות', to: '/faq' },
-      { label: 'מדריכים', to: '/guides' },
+      { label: t.nav.links.faq, to: '/faq' },
+      { label: t.nav.links.guides, to: '/guides' },
     ],
   },
   {
-    label: 'המותג',
+    label: t.nav.groups.brand,
     items: [
-      { label: 'הסיפור שלנו', to: '/story' },
-      { label: 'גלריה', to: '/gallery' },
-      { label: 'קהילה', to: '/community' },
-      { label: 'המלצות', to: '/reviews' },
+      { label: t.nav.links.story, to: '/story' },
+      { label: t.nav.links.gallery, to: '/gallery' },
+      { label: t.nav.links.community, to: '/community' },
+      { label: t.nav.links.reviews, to: '/reviews' },
     ],
   },
 ];
@@ -52,6 +55,12 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const presale = usePresale();
+  const lang = useLang();
+  const dir = useDir();
+  const t = useT();
+  const menus = buildMenus(t);
+  /** Keeps every nav link inside the current language. */
+  const L = (to: string) => localizePath(to, lang);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
@@ -98,10 +107,10 @@ export default function Navbar() {
   };
 
   const goContact = () => {
-    if (location.pathname === '/') {
+    if (location.pathname === L('/')) {
       document.getElementById('lead-form')?.scrollIntoView({ behavior: 'smooth' });
     } else {
-      navigate('/#lead-form');
+      navigate(L('/') + '#lead-form');
     }
   };
 
@@ -120,12 +129,12 @@ export default function Navbar() {
           WebkitBackfaceVisibility: 'hidden',
           paddingTop: 'env(safe-area-inset-top)',
         }}
-        dir="rtl"
+        dir={dir}
       >
         <AnnouncementBar />
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-9">
           {/* Logo */}
-          <Link to="/" onClick={goHome} aria-label="Spinz – דף הבית" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', flexShrink: 0, padding: '10px 0' }}>
+          <Link to={L("/")} onClick={goHome} aria-label={t.nav.logoAria} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', flexShrink: 0, padding: '10px 0' }}>
             <img src="/assets/logo.png" alt="SPINZ" className="h-6 md:h-[48px]" style={{ width: 'auto' }} />
           </Link>
 
@@ -133,7 +142,7 @@ export default function Navbar() {
           <nav className="hidden md:flex items-center gap-7">
             {/* Home link */}
             <Link
-              to="/"
+              to={L("/")}
               onClick={goHome}
               style={{
                 fontFamily: "'Heebo', sans-serif", color: '#555',
@@ -143,7 +152,7 @@ export default function Navbar() {
               onMouseEnter={e => { e.currentTarget.style.color = DARK; }}
               onMouseLeave={e => { e.currentTarget.style.color = '#555'; }}
             >
-              בית
+              {t.nav.home}
             </Link>
 
             {menus.map(menu => (
@@ -188,7 +197,7 @@ export default function Navbar() {
                       {menu.items.map(item => (
                         <Link
                           key={item.to}
-                          to={item.to}
+                          to={L(item.to)}
                           style={{
                             display: 'block', padding: '10px 14px',
                             fontFamily: "'Heebo', sans-serif", fontSize: '14px',
@@ -220,7 +229,7 @@ export default function Navbar() {
               onMouseEnter={e => { e.currentTarget.style.color = DARK; }}
               onMouseLeave={e => { e.currentTarget.style.color = '#555'; }}
             >
-              צור קשר
+              {t.nav.contact}
             </button>
           </nav>
 
@@ -238,14 +247,16 @@ export default function Navbar() {
               onMouseEnter={e => { e.currentTarget.style.backgroundColor = '#B8933A'; e.currentTarget.style.transform = 'translateY(2px)'; }}
               onMouseLeave={e => { e.currentTarget.style.backgroundColor = GOLD; e.currentTarget.style.transform = 'translateY(0)'; }}
             >
-              Let's Talk
+              {t.nav.cta}
             </button>
+
+            <div className="hidden md:block"><LangSwitch /></div>
 
             {/* Search – icon only, identical box to the cart button */}
             <button
               onClick={() => setSearchOpen(true)}
-              aria-label="חיפוש באתר"
-              title="חיפוש באתר (⌘K)"
+              aria-label={t.nav.search}
+              title={`${t.nav.search} (⌘K)`}
               className="flex items-center justify-center"
               style={{
                 border: `1px solid ${DARK}`, borderRadius: '4px',
@@ -289,7 +300,7 @@ export default function Navbar() {
             <button
               className="md:hidden flex flex-col justify-center items-center gap-[5px]"
               onClick={() => setMenuOpen(v => !v)}
-              aria-label="תפריט"
+              aria-label={t.nav.menu}
               style={{ width: '44px', height: '44px', backgroundColor: 'transparent', border: `1px solid ${DARK}`, borderRadius: '4px', cursor: 'pointer', flexShrink: 0 }}
             >
               <span style={{ display: 'block', width: '16px', height: '1.5px', backgroundColor: DARK, transition: 'transform 0.3s, opacity 0.3s', transform: menuOpen ? 'translateY(6.5px) rotate(45deg)' : 'none' }} />
@@ -311,7 +322,7 @@ export default function Navbar() {
             transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
             className="fixed inset-0 z-40 flex flex-col md:hidden overflow-y-auto"
             style={{ backgroundColor: DARK, paddingTop: presale.active ? '112px' : '72px' }}
-            dir="rtl"
+            dir={dir}
           >
             <nav className="flex flex-col">
               {/* Search */}
@@ -332,7 +343,7 @@ export default function Navbar() {
                   }}
                 >
                   <Search size={18} color={GOLD} />
-                  חיפוש באתר
+                  {t.nav.search}
                 </button>
               </motion.div>
 
@@ -344,7 +355,7 @@ export default function Navbar() {
                 style={{ borderBottom: '1px solid #2A2A2A' }}
               >
                 <Link
-                  to="/"
+                  to={L("/")}
                   onClick={goHome}
                   style={{
                     display: 'block', width: '100%', color: LIGHT, fontFamily: "'Heebo', sans-serif",
@@ -352,7 +363,7 @@ export default function Navbar() {
                     textDecoration: 'none', textAlign: 'right',
                   }}
                 >
-                  בית
+                  {t.nav.home}
                 </Link>
               </motion.div>
 
@@ -384,7 +395,7 @@ export default function Navbar() {
                         {menu.items.map(item => (
                           <Link
                             key={item.to}
-                            to={item.to}
+                            to={L(item.to)}
                             onClick={() => setMenuOpen(false)}
                             style={{
                               display: 'block', color: '#C9C5BD', fontFamily: "'Heebo', sans-serif",
@@ -413,11 +424,15 @@ export default function Navbar() {
                   cursor: 'pointer', textAlign: 'right',
                 }}
               >
-                צור קשר
+                {t.nav.contact}
               </motion.button>
             </nav>
 
-            <div style={{ padding: '36px' }}>
+            <div style={{ padding: '0 36px 12px', display: 'flex', justifyContent: 'flex-start' }}>
+              <LangSwitch variant="dark" />
+            </div>
+
+            <div style={{ padding: '0 36px 36px' }}>
               <button
                 onClick={() => { setMenuOpen(false); setTimeout(goContact, 350); }}
                 style={{
@@ -427,7 +442,7 @@ export default function Navbar() {
                   borderRadius: '4px', border: 'none', cursor: 'pointer',
                 }}
               >
-                Let's Talk
+                {t.nav.cta}
               </button>
             </div>
           </motion.div>

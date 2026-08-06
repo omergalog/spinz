@@ -14,7 +14,7 @@ const photos = Array.from({ length: TOTAL }, (_, i) => {
     // Small ~400px thumbnail for the grid, full 1024px for the lightbox
     thumb: `/assets/gallery/thumbs/g-${n}.jpg`,
     src: `/assets/gallery/g-${n}.jpg`,
-    alt: `אופני SPINZ Urban בתל אביב — תמונה ${i + 1}`,
+    n: i + 1,
   };
 });
 
@@ -101,7 +101,7 @@ function Lightbox({ index, onClose, onNav }: { index: number; onClose: () => voi
       <img
         key={index}
         src={photos[index].src}
-        alt={photos[index].alt}
+        alt={t.gallery.photoAlt(photos[index].n)}
         onClick={e => e.stopPropagation()}
         style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: '6px', boxShadow: '0 20px 60px rgba(0,0,0,0.5)', animation: 'lbFade 0.25s ease' }}
       />
@@ -179,11 +179,11 @@ export default function Gallery({ hideHeader = false }: { hideHeader?: boolean }
               onClick={() => setOpenIndex(i)}
               className="gallery-thumb relative overflow-hidden"
               style={{ aspectRatio: '1 / 1', backgroundColor: '#EDEAE4', border: 'none', padding: 0, cursor: 'pointer' }}
-              aria-label={`הגדלת ${photo.alt}`}
+              aria-label={t.gallery.enlarge(t.gallery.photoAlt(photo.n))}
             >
               <img
                 src={photo.thumb}
-                alt={photo.alt}
+                alt={t.gallery.photoAlt(photo.n)}
                 width={400}
                 height={400}
                 decoding="async"

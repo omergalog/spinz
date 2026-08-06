@@ -122,7 +122,9 @@ export const dict = {
     },
     video: { unmute: 'הפעל סאונד', mute: 'השתק' },
     gallery: { close: 'סגירה', prev: 'הקודם', next: 'הבא', title: 'העיר שלך. הצבע שלך.',
-               allModels: 'לכל הדגמים ←', hint: 'לחצו על תמונה כדי להגדיל ולדפדף בגלריה.' },
+               allModels: 'לכל הדגמים ←', hint: 'לחצו על תמונה כדי להגדיל ולדפדף בגלריה.',
+               photoAlt: (n: number) => `אופני SPINZ Urban בתל אביב — תמונה ${n}`,
+               enlarge: (alt: string) => `הגדלת ${alt}` },
     lead: {
       eyebrow: 'צור קשר',
       title: 'תיראה טוב. תרגיש טוב. וסע.',
@@ -350,7 +352,9 @@ export const dict = {
     },
     video: { unmute: 'Unmute', mute: 'Mute' },
     gallery: { close: 'Close', prev: 'Previous', next: 'Next', title: 'Your city. Your color.',
-               allModels: 'See all models →', hint: 'Tap an image to enlarge and browse the gallery.' },
+               allModels: 'See all models →', hint: 'Tap an image to enlarge and browse the gallery.',
+               photoAlt: (n: number) => `SPINZ Urban in Tel Aviv — photo ${n}`,
+               enlarge: (alt: string) => `Enlarge ${alt}` },
     lead: {
       eyebrow: 'Contact',
       title: 'Look good. Feel good. Ride.',

@@ -5,7 +5,6 @@ const SESSION_KEY = 'spinz_auth';
 
 export default function PasswordGate({ children }: { children: React.ReactNode }) {
   const [authed, setAuthed] = useState(() => {
-    if (window.location.pathname === '/waitlist' || window.location.hostname === 'waitlist.spinzbikes.com') return true;
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') return true;
     return sessionStorage.getItem(SESSION_KEY) === 'ok';
   });

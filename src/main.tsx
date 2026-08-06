@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { MotionConfig } from 'framer-motion';
 import './styles/globals.css';
 import Index from './pages/Index';
 import Story from './pages/Story';
 import Terms from './pages/Terms';
 import Accessibility from './pages/Accessibility';
-import Waitlist from './pages/Waitlist';
-import WaitlistTerms from './pages/WaitlistTerms';
 import Bikes from './pages/Bikes';
 import SpecsPage from './pages/SpecsPage';
 import SizesColors from './pages/SizesColors';
@@ -59,17 +57,11 @@ function Root() {
             </a>
 
             <main id="main-content">
-              {window.location.hostname === 'waitlist.spinzbikes.com' ? (
-                <Routes>
-                  <Route path="/" element={<Waitlist />} />
-                  <Route path="/terms" element={<WaitlistTerms />} />
-                </Routes>
-              ) : (
-                <Routes>
+              <Routes>
                   {/* The same page tree is mounted twice: bare paths stay Hebrew
                       exactly as before, and /en/… serves the English version. */}
-                  {[null, EN_PREFIX].map(prefix => (
-                    <Route key={prefix ?? 'he'} path={prefix ?? '/'}>
+                {[null, EN_PREFIX].map(prefix => (
+                  <Route key={prefix ?? 'he'} path={prefix ?? '/'}>
                       <Route index element={<Index />} />
                       <Route path="bikes" element={<Bikes />} />
                       <Route path="specs" element={<SpecsPage />} />
@@ -87,12 +79,12 @@ function Root() {
                       <Route path="cancel-order" element={<CancelOrder />} />
                       <Route path="regulations" element={<Regulations />} />
                       <Route path="accessibility" element={<Accessibility />} />
-                      <Route path="waitlist" element={<Waitlist />} />
-                      <Route path="waitlist-terms" element={<WaitlistTerms />} />
-                    </Route>
-                  ))}
-                </Routes>
-              )}
+                    {/* קישורים ישנים (למשל ל-waitlist שהוסר) וכתובות שגויות
+                        נוחתים בדף הבית של אותה שפה במקום בעמוד ריק. */}
+                    <Route path="*" element={<Navigate to={prefix ?? '/'} replace />} />
+                  </Route>
+                ))}
+              </Routes>
             </main>
 
             <WhatsAppFab />

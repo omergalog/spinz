@@ -52,7 +52,7 @@ export default function SearchModal({ open, onClose }: { open: boolean; onClose:
   const listRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  const results = useMemo(() => search(query, 8), [query]);
+  const results = useMemo(() => search(query, 8, lang), [query, lang]);
 
   useEffect(() => { setActive(0); }, [query]);
 

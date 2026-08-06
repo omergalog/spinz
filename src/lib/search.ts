@@ -1,4 +1,5 @@
-import { searchIndex, type SearchDoc } from '../data/searchIndex';
+import { getSearchIndex, type SearchDoc } from '../data/searchIndex';
+import type { Lang } from '../i18n/LanguageContext';
 
 export type SearchHit = {
   doc: SearchDoc;
@@ -85,10 +86,12 @@ function makeSnippet(doc: SearchDoc, terms: string[]): string {
 }
 
 type Prepared = { title: string[]; keywords: string[]; summary: string[]; body: string[] };
-const prepared = new Map<string, Prepared>();
+// ממופתח לפי האובייקט עצמו ולא לפי doc.id — המזהים זהים בשתי השפות,
+// ומפתוח לפי id היה מגיש לאנגלית את המילים העבריות.
+const prepared = new WeakMap<SearchDoc, Prepared>();
 
 function prepare(doc: SearchDoc): Prepared {
-  let p = prepared.get(doc.id);
+  let p = prepared.get(doc);
   if (!p) {
     const words = (s: string) => normalize(s).split(' ').filter(Boolean);
     p = {
@@ -97,18 +100,18 @@ function prepare(doc: SearchDoc): Prepared {
       summary: words(doc.summary),
       body: words(doc.body),
     };
-    prepared.set(doc.id, p);
+    prepared.set(doc, p);
   }
   return p;
 }
 
-export function search(query: string, limit = 8): SearchHit[] {
+export function search(query: string, limit = 8, lang: Lang = 'he'): SearchHit[] {
   const terms = tokenize(query);
   if (terms.length === 0) return [];
 
   const hits: SearchHit[] = [];
 
-  for (const doc of searchIndex) {
+  for (const doc of getSearchIndex(lang)) {
     const p = prepare(doc);
 
     let total = 0;

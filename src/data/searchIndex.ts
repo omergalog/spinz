@@ -1,5 +1,7 @@
-import { guides } from './guides';
-import { faqs } from './faq';
+import { getGuides } from './guides';
+import { getFaqs } from './faq';
+import type { Lang } from '../i18n/LanguageContext';
+import { getDict } from '../i18n/dict';
 import { colorVariants, sizeVariants } from './models';
 
 export type DocType = 'page' | 'guide' | 'faq' | 'product';
@@ -17,14 +19,7 @@ export type SearchDoc = {
   keywords?: string[];
 };
 
-const TYPE_LABEL: Record<DocType, string> = {
-  page: 'עמוד',
-  guide: 'מדריך',
-  faq: 'שאלה נפוצה',
-  product: 'מוצר',
-};
-
-export const typeLabel = (t: DocType) => TYPE_LABEL[t];
+export const typeLabel = (t: DocType, lang: Lang = 'he') => getDict(lang).search.types[t];
 
 /** People search their own height ("גובה 172"), so every value in range is indexed. */
 const heightRange = (from: number, to: number) =>
@@ -33,7 +28,7 @@ const heightRange = (from: number, to: number) =>
 const HEIGHTS = heightRange(155, 195);
 
 /* ── Static pages ─────────────────────────────────────────── */
-const pages: SearchDoc[] = [
+const pagesHe: SearchDoc[] = [
   {
     id: 'page-home', type: 'page', title: 'דף הבית', to: '/',
     summary: 'אופני עיר סינגל-ספיד בעיצוב נקי, נבנו בתל אביב.',
@@ -132,24 +127,47 @@ const pages: SearchDoc[] = [
   },
 ];
 
+
+/* ── Static pages, English ────────────────────────────────── */
+const pagesEn: SearchDoc[] = [
+  { id: 'page-home', type: 'page', title: 'Home', to: '/', summary: 'Clean-lined single-speed city bikes, built in Tel Aviv.', body: 'SPINZ urban single speed fixie city bike launch price pre-sale', keywords: ['home', 'spinz', 'bike'] },
+  { id: 'page-bikes', type: 'page', title: 'The Models', to: '/bikes', summary: 'Every model, colour and size — with price and availability.', body: 'models buy purchase order stock price 1090 1299 cart', keywords: ['buy', 'shop', 'price', 'order'] },
+  { id: 'page-specs', type: 'page', title: 'Specs', to: '/specs', summary: 'Frame, wheels, brakes, weight and the full technical data.', body: 'specs technical frame aluminum fork wheels 700c tires brakes weight drivetrain chain gear ratio bearings', keywords: ['specs', 'technical', 'weight', 'aluminum'] },
+  { id: 'page-sizes', type: 'page', title: 'Sizes & Colors', to: '/sizes', summary: 'Two frame sizes, three colours — and how to choose.', body: 'sizes colors 54 57 rider height matte black beige olive green', keywords: ['size', 'colour', 'color', 'fit', 'height', ...HEIGHTS] },
+  { id: 'page-faq', type: 'page', title: 'FAQ', to: '/faq', summary: 'Shipping, assembly, payments, warranty and returns.', body: 'questions answers help support shipping returns warranty payments', keywords: ['faq', 'help', 'support', 'questions'] },
+  { id: 'page-guides', type: 'page', title: 'Guides', to: '/guides', summary: 'Assembly, sizing, maintenance, safety and routes.', body: 'guides how to tips explained tutorial', keywords: ['guide', 'how to', 'tutorial'] },
+  { id: 'page-gallery', type: 'page', title: 'Gallery', to: '/gallery', summary: 'Professional photos of the bikes and of riding in the city.', body: 'gallery photos pictures images', keywords: ['photos', 'pictures', 'gallery'] },
+  { id: 'page-community', type: 'page', title: 'Community', to: '/community', summary: 'The riders, our Instagram, and how to join.', body: 'community riders instagram social join group rides', keywords: ['community', 'instagram', 'rides'] },
+  { id: 'page-reviews', type: 'page', title: 'Reviews', to: '/reviews', summary: 'What riders say about SPINZ.', body: 'reviews testimonials ratings stars customers feedback', keywords: ['reviews', 'testimonials', 'ratings'] },
+  { id: 'page-story', type: 'page', title: 'Our Story', to: '/story', summary: 'How and why the brand started, and what stands behind it.', body: 'story about brand founders tel aviv values', keywords: ['about', 'story', 'brand', 'who we are'] },
+  { id: 'page-contact', type: 'page', title: 'Contact', to: '/contact', summary: 'Phone, WhatsApp, email and a contact form.', body: 'contact phone whatsapp email address customer service enquiry', keywords: ['contact', 'phone', 'whatsapp', 'email'] },
+  { id: 'page-regulations', type: 'page', title: 'Terms & Conditions', to: '/regulations', summary: 'The full legal agreement: warranty, cancellation and jurisdiction.', body: 'terms conditions limited warranty cancellation refund jurisdiction assembly liability finish colour', keywords: ['terms', 'warranty', 'cancel', 'refund', 'legal'] },
+  { id: 'page-presale-terms', type: 'page', title: 'Pre-Sale Terms', to: '/presale-terms', summary: 'Pre-sale terms: launch price, delivery dates and cancellation.', body: 'pre-sale presale launch price first 100 delivery pre-order', keywords: ['presale', 'pre-order', 'launch price'] },
+  { id: 'page-cancel', type: 'page', title: 'Cancel an Order', to: '/cancel-order', summary: 'Cancellation form and a full refund, with no cancellation fee.', body: 'cancel order cancellation refund return product fee form', keywords: ['cancel', 'refund', 'return'] },
+  { id: 'page-terms', type: 'page', title: 'Privacy Policy & Terms of Use', to: '/terms', summary: 'What data we collect, how it is stored and what your rights are.', body: 'privacy policy terms of use personal data cookies security rights', keywords: ['privacy', 'cookies', 'data'] },
+  { id: 'page-accessibility', type: 'page', title: 'Accessibility Statement', to: '/accessibility', summary: 'The accessibility level of the site and how to report an issue.', body: 'accessibility statement accessible WCAG standard contrast screen reader', keywords: ['accessibility', 'wcag'] },
+];
+
 /* ── Products (colour × size are the real buyable variants) ── */
-const products: SearchDoc[] = colorVariants.flatMap(c =>
+const buildProducts = (lang: Lang): SearchDoc[] => colorVariants.flatMap(c =>
   sizeVariants.map<SearchDoc>(s => ({
     id: `product-${c.id}-${s.id}`,
     type: 'product',
-    title: `SPINZ ${s.label} – ${c.label}`,
-    summary: `${s.range} · מחיר השקה ₪1,090`,
-    body: `אופניים סינגל ספיד ${c.label} מידה ${s.label} ${s.range} ${c.skuCode} להזמין לקנות עגלה`,
+    title: `SPINZ ${s.label} – ${getDict(lang).product.colors[c.id as 'mat' | 'beige' | 'olive']}`,
+    summary: `${getDict(lang).product.heights[s.id as '54' | '57']} · ₪1,090`,
+    body: lang === 'en'
+      ? `single speed bike ${getDict(lang).product.colors[c.id as 'mat' | 'beige' | 'olive']} size ${s.label} ${c.skuCode} buy order cart`
+      : `אופניים סינגל ספיד ${c.label} מידה ${s.label} ${s.range} ${c.skuCode} להזמין לקנות עגלה`,
     to: '/bikes',
     keywords: [
-      c.label, s.label, 'לקנות', 'להזמין', 'גובה',
+      c.label, s.label, ...(lang === 'en' ? ['buy', 'order', 'height'] : ['לקנות', 'להזמין', 'גובה']),
       ...(s.id === '54' ? heightRange(155, 175) : heightRange(175, 195)),
     ],
   })),
 );
 
 /* ── Guides (full text: intro, section headings and body) ──── */
-const guideDocs: SearchDoc[] = guides.map(g => ({
+const buildGuides = (lang: Lang): SearchDoc[] => getGuides(lang).map(g => ({
   id: `guide-${g.slug}`,
   type: 'guide',
   title: g.title,
@@ -172,7 +190,7 @@ const guideDocs: SearchDoc[] = guides.map(g => ({
 }));
 
 /* ── FAQ entries ──────────────────────────────────────────── */
-const faqDocs: SearchDoc[] = faqs.map((f, i) => ({
+const buildFaqs = (lang: Lang): SearchDoc[] => getFaqs(lang).map((f, i) => ({
   id: `faq-${i}`,
   type: 'faq',
   title: f.q,
@@ -181,4 +199,19 @@ const faqDocs: SearchDoc[] = faqs.map((f, i) => ({
   to: '/faq',
 }));
 
-export const searchIndex: SearchDoc[] = [...pages, ...products, ...guideDocs, ...faqDocs];
+const cache = new Map<Lang, SearchDoc[]>();
+
+/** האינדקס בשפה הנבחרת — נבנה פעם אחת לכל שפה. */
+export function getSearchIndex(lang: Lang): SearchDoc[] {
+  let idx = cache.get(lang);
+  if (!idx) {
+    idx = [
+      ...(lang === 'en' ? pagesEn : pagesHe),
+      ...buildProducts(lang),
+      ...buildGuides(lang),
+      ...buildFaqs(lang),
+    ];
+    cache.set(lang, idx);
+  }
+  return idx;
+}

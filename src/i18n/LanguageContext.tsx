@@ -44,7 +44,34 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     // תיאור ה-SEO של האתר מתחלף עם השפה (עמודי מדריך דורסים אותו בעצמם)
     document.querySelector('meta[name="description"]')
       ?.setAttribute('content', getDict(lang).meta.description);
-  }, [lang]);
+
+    // hreflang: אומר לגוגל ששני הנתיבים הם אותו עמוד בשתי שפות, ולא תוכן כפול.
+    // x-default מפנה לעברית — קהל היעד העיקרי.
+    const origin = window.location.origin;
+    const bare = stripLangPrefix(pathname);
+    const alternates: [string, string][] = [
+      ['he', origin + bare],
+      ['en', origin + localizePath(bare, 'en')],
+      ['x-default', origin + bare],
+    ];
+    document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(el => el.remove());
+    for (const [code, href] of alternates) {
+      const link = document.createElement('link');
+      link.rel = 'alternate';
+      link.hreflang = code;
+      link.href = href;
+      document.head.appendChild(link);
+    }
+
+    // canonical לעמוד הנוכחי, כדי שפרמטרים בכתובת לא ייספרו כעמוד נפרד
+    let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement('link');
+      canonical.rel = 'canonical';
+      document.head.appendChild(canonical);
+    }
+    canonical.href = origin + localizePath(bare, lang);
+  }, [lang, pathname]);
 
   return <LanguageContext.Provider value={lang}>{children}</LanguageContext.Provider>;
 }

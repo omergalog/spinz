@@ -181,6 +181,8 @@ export const dict = {
         sending: 'שולח…', submit: 'שליחת הודעת ביטול',
         legal1: 'מועד קבלת הטופס אצלנו הוא המועד הקובע לביטול. אין באמור כדי לגרוע מזכויותיכם לפי',
         legal2: 'חוק הגנת הצרכן, התשמ״א־1981.',
+        questions: 'לשאלות:', alsoBy1: 'אפשר לבטל גם בטלפון', alsoBy2: 'בדוא״ל', alsoBy3: 'או בוואטסאפ.',
+        seeTerms1: 'לפרטים על זכות הביטול ראו', seeTerms2: 'תנאי המכירה המוקדמת',
         reasons: ['התחרטתי / לא מעוניין יותר', 'עיכוב במועד האספקה', 'המוצר הגיע פגום או לא תקין', 'הזמנתי בטעות / מידה או צבע שגויים', 'אחר'],
       },
       // התקנון בעברית הוא הנוסח המחייב ומרונדר מ-Regulations.tsx ישירות,
@@ -487,6 +489,8 @@ export const dict = {
         sending: 'Sending…', submit: 'Send cancellation notice',
         legal1: 'The time we receive this form is the operative date of cancellation. Nothing here derogates from your rights under',
         legal2: 'the Israeli Consumer Protection Law, 5741-1981.',
+        questions: 'Questions:', alsoBy1: 'You can also cancel by phone', alsoBy2: 'by email', alsoBy3: 'or on WhatsApp.',
+        seeTerms1: 'For details on your right to cancel, see the', seeTerms2: 'Pre-Sale Terms',
         reasons: ['Changed my mind / no longer interested', 'Delay in the delivery date', 'The product arrived damaged or faulty', 'Ordered by mistake / wrong size or color', 'Other'],
       },
       regulations: {

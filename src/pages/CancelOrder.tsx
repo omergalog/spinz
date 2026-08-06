@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import PageShell from '../components/PageShell';
 import LegalNotice from '../components/LegalNotice';
-import { useT, useDir } from '../i18n/LanguageContext';
+import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
 import { supabase } from '../lib/supabase';
 import { COMPANY } from '../config/company';
 
@@ -16,6 +16,8 @@ type Status = 'idle' | 'sending' | 'sent' | 'error';
 export default function CancelOrder() {
   const t = useT();
   const dir = useDir();
+  const lang = useLang();
+  const L = (to: string) => localizePath(to, lang);
   const c = t.pages.cancel;
   const REASONS = c.reasons;
   const [form, setForm] = useState({ name: '', phone: '', email: '', orderRef: '', reason: REASONS[0], details: '' });
@@ -106,7 +108,7 @@ export default function CancelOrder() {
                 {c.receivedBody1}
                 {c.receivedBody2}
                 <br />
-                לשאלות: <a href={`mailto:${COMPANY.email}`} style={{ color: GOLD }}>{COMPANY.email}</a> · {COMPANY.phone}
+                {c.questions} <a href={`mailto:${COMPANY.email}`} style={{ color: GOLD }}>{COMPANY.email}</a> · {COMPANY.phone}
               </p>
             </div>
           ) : (
@@ -116,9 +118,9 @@ export default function CancelOrder() {
                 borderRadius: '10px', padding: '14px 18px', marginBottom: '26px',
                 fontFamily: "'Heebo', sans-serif", fontSize: '13.5px', color: MUTED, lineHeight: 1.75,
               }}>
-                אפשר לבטל גם בטלפון <a href={`tel:${COMPANY.phone}`} style={{ color: GOLD }}>{COMPANY.phone}</a>,
-                בדוא״ל <a href={`mailto:${COMPANY.email}`} style={{ color: GOLD }}>{COMPANY.email}</a> או בוואטסאפ.
-                לפרטים על זכות הביטול ראו <a href="/presale-terms" style={{ color: GOLD }}>תנאי המכירה המוקדמת</a>.
+                {c.alsoBy1} <a href={`tel:${COMPANY.phone}`} style={{ color: GOLD }}>{COMPANY.phone}</a>,{' '}
+                {c.alsoBy2} <a href={`mailto:${COMPANY.email}`} style={{ color: GOLD }}>{COMPANY.email}</a> {c.alsoBy3}{' '}
+                {c.seeTerms1} <a href={L('/presale-terms')} style={{ color: GOLD }}>{c.seeTerms2}</a>.
               </div>
 
               <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>

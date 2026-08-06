@@ -41,6 +41,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const html = document.documentElement;
     html.lang = lang;
     html.dir = lang === 'he' ? 'rtl' : 'ltr';
+    // תיאור ה-SEO של האתר מתחלף עם השפה (עמודי מדריך דורסים אותו בעצמם)
+    document.querySelector('meta[name="description"]')
+      ?.setAttribute('content', getDict(lang).meta.description);
   }, [lang]);
 
   return <LanguageContext.Provider value={lang}>{children}</LanguageContext.Provider>;

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { setPauseMotion } from '../utils/motionStore';
 import { COMPANY } from '../config/company';
+import { useT } from '../i18n/LanguageContext';
 
 const GOLD = '#C9A870';
 const DARK = '#1C1C1C';
@@ -125,6 +126,7 @@ const CONTROLS: {
 ];
 
 export default function AccessibilityWidget() {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [settings, setSettings] = useState<Settings>(() => {
     try {
@@ -322,7 +324,7 @@ export default function AccessibilityWidget() {
       {/* Toggle button */}
       <button
         onClick={() => setOpen(o => !o)}
-        aria-label="פתח תפריט נגישות"
+        aria-label={t.a11y.accessibility}
         aria-expanded={open}
         style={{
           width: '48px', height: '48px',

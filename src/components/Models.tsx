@@ -399,7 +399,7 @@ export default function Models() {
                   <button
                     key={c.id}
                     onClick={() => setSelectedColor(i)}
-                    title={c.label}
+                    title={t.product.colors[c.id as keyof typeof t.product.colors]}
                     style={{
                       width: '38px',
                       height: '38px',

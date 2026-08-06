@@ -68,7 +68,8 @@ export const dict = {
       accept: 'מסכים 🚴‍♂️',
       privacy: 'מדיניות ופרטיות',
     },
-    a11y: { skipToContent: 'דלג לתוכן הראשי' },
+    a11y: { skipToContent: 'דלג לתוכן הראשי', whatsapp: 'פנה אלינו ב-WhatsApp', accessibility: 'פתח תפריט נגישות' },
+    meta: { description: 'Spinz — אופני עיר סינגל ספיד. בנויים לרחובות, מעוצבים לבלוט.' },
     search: {
       placeholder: 'חיפוש באתר – דגמים, מדריכים, אחריות…',
       fieldAria: 'שדה חיפוש', closeAria: 'סגור חיפוש', dialogAria: 'חיפוש באתר',
@@ -324,7 +325,8 @@ export const dict = {
       accept: 'Got it 🚴‍♂️',
       privacy: 'Privacy Policy',
     },
-    a11y: { skipToContent: 'Skip to main content' },
+    a11y: { skipToContent: 'Skip to main content', whatsapp: 'Message us on WhatsApp', accessibility: 'Open accessibility menu' },
+    meta: { description: 'Spinz — urban single-speed city bikes. Built for the street, designed to stand out.' },
     search: {
       placeholder: 'Search the site — models, guides, warranty…',
       fieldAria: 'Search field', closeAria: 'Close search', dialogAria: 'Search the site',

@@ -1,18 +1,20 @@
 import { motion } from 'framer-motion';
+import { useT } from '../i18n/LanguageContext';
 
 const WHATSAPP_NUMBER = '+972527565262';
 
 /** Floating WhatsApp button. Mounted once globally so it follows the user on
  *  every page and every breakpoint. */
 export default function WhatsAppFab() {
-  const href = `https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, '')}?text=${encodeURIComponent('היי, אני מתעניין באופני Spinz')}`;
+  const t = useT();
+  const href = `https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, '')}?text=${encodeURIComponent(t.footer.whatsappText)}`;
 
   return (
     <motion.a
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="פנה אלינו ב-WhatsApp"
+      aria-label={t.a11y.whatsapp}
       initial={{ scale: 0, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ type: 'spring', stiffness: 200, damping: 18, delay: 1.5 }}

@@ -1,3 +1,4 @@
+import { useDir } from '../i18n/LanguageContext';
 import { useRef } from 'react';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 
@@ -5,6 +6,7 @@ const GOLD  = '#C9A870';
 const CREAM = '#EDEBE6';
 
 export default function Lifestyle() {
+  const dir = useDir();
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -46,7 +48,7 @@ export default function Lifestyle() {
 
       {/* Content */}
       <div
-        dir="rtl"
+        dir={dir}
         style={{
           position: 'absolute',
           inset: 0,

@@ -1,3 +1,4 @@
+import { useDir } from '../i18n/LanguageContext';
 import { motion } from 'framer-motion';
 
 const DARK       = '#1C1C1C';
@@ -6,6 +7,7 @@ const GOLD       = '#C9A870';
 const TEXT_LIGHT = '#EDEBE6';
 
 export default function Hero() {
+  const dir = useDir();
   return (
     <section
       className="relative flex h-[68vh] md:min-h-screen flex-col overflow-hidden"
@@ -105,7 +107,7 @@ export default function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 1.3 }}
             style={{ display: 'flex', gap: '16px', alignItems: 'center', marginTop: '40px', flexWrap: 'wrap', justifyContent: 'center' }}
-            dir="rtl"
+            dir={dir}
           >
             <a
               href="#models"

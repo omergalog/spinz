@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { getFaqs, type FaqItem } from '../data/faq';
-import { useLang, useT } from '../i18n/LanguageContext';
+import { useLang, useT, useDir } from '../i18n/LanguageContext';
 
 const GOLD   = '#C9A870';
 const CREAM  = '#1C1C1C';
@@ -35,7 +35,7 @@ function FAQItem({ item, index }: { item: FaqItem; index: number }) {
           background: 'none',
           border: 'none',
           cursor: 'pointer',
-          textAlign: 'right',
+          textAlign: 'start',
         }}
       >
         <span style={{
@@ -103,6 +103,7 @@ function FAQItem({ item, index }: { item: FaqItem; index: number }) {
 }
 
 export default function FAQ({ hideHeader = false }: { hideHeader?: boolean }) {
+  const dir = useDir();
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const headingRef = useRef<HTMLDivElement>(null);
@@ -119,7 +120,7 @@ export default function FAQ({ hideHeader = false }: { hideHeader?: boolean }) {
     <section
       ref={ref}
       id="faq"
-      dir="rtl"
+      dir={dir}
       style={{ backgroundColor: BG, position: 'relative' }}
       className="py-7 lg:py-28"
     >

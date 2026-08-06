@@ -185,7 +185,7 @@ export default function Navbar() {
                       exit={{ opacity: 0, y: 8 }}
                       transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
                       style={{
-                        position: 'absolute', top: '100%', right: 0,
+                        position: 'absolute', top: '100%', insetInlineStart: 0,
                         marginTop: '8px', minWidth: '190px',
                         backgroundColor: '#FFFFFF',
                         border: '1px solid #E0DCD4',
@@ -339,7 +339,7 @@ export default function Navbar() {
                     backgroundColor: '#252525', border: '1px solid #333333',
                     borderRadius: '8px', padding: '14px 16px', cursor: 'pointer',
                     color: '#9A9690', fontFamily: "'Heebo', sans-serif", fontSize: '16px',
-                    textAlign: 'right',
+                    textAlign: 'start',
                   }}
                 >
                   <Search size={18} color={GOLD} />
@@ -360,7 +360,7 @@ export default function Navbar() {
                   style={{
                     display: 'block', width: '100%', color: LIGHT, fontFamily: "'Heebo', sans-serif",
                     fontSize: '24px', fontWeight: 600, padding: '18px 36px',
-                    textDecoration: 'none', textAlign: 'right',
+                    textDecoration: 'none', textAlign: 'start',
                   }}
                 >
                   {t.nav.home}
@@ -377,7 +377,7 @@ export default function Navbar() {
                     style={{
                       width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                       color: LIGHT, fontFamily: "'Heebo', sans-serif", fontSize: '24px', fontWeight: 600,
-                      padding: '18px 36px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'right',
+                      padding: '18px 36px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'start',
                     }}
                   >
                     {menu.label}
@@ -421,7 +421,7 @@ export default function Navbar() {
                   width: '100%', color: GOLD, fontFamily: "'Heebo', sans-serif",
                   fontSize: '24px', fontWeight: 600, padding: '18px 36px',
                   borderBottom: '1px solid #2A2A2A', background: 'none', border: 'none',
-                  cursor: 'pointer', textAlign: 'right',
+                  cursor: 'pointer', textAlign: 'start',
                 }}
               >
                 {t.nav.contact}

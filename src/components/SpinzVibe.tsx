@@ -1,3 +1,4 @@
+import { useDir } from '../i18n/LanguageContext';
 import { useRef, useEffect, useState } from 'react';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -31,6 +32,7 @@ function CountUp({ target, suffix = '', duration = 2800, delay = 0 }: { target: 
 }
 
 export default function SpinzVibe() {
+  const dir = useDir();
   const sectionRef = useRef<HTMLElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(contentRef, { once: true, margin: '-80px' });
@@ -69,7 +71,7 @@ export default function SpinzVibe() {
       {/* Content */}
       <div
         ref={contentRef}
-        dir="rtl"
+        dir={dir}
         className="mx-auto max-w-7xl px-6 lg:px-16"
         style={{ position: 'relative', zIndex: 1, paddingTop: 'clamp(48px, 8vw, 112px)', paddingBottom: 'clamp(48px, 8vw, 112px)' }}
       >

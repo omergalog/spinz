@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import PageShell from '../components/PageShell';
 import { getGuides } from '../data/guides';
-import { useT, useLang, localizePath } from '../i18n/LanguageContext';
+import { useT, useLang, localizePath, useDir } from '../i18n/LanguageContext';
 
 const GOLD = '#C9A870';
 const DARK = '#1C1C1C';
@@ -10,6 +10,7 @@ const MUTED = '#6A6862';
 const BORDER = '#E0DCD4';
 
 export default function Guides() {
+  const dir = useDir();
   const t = useT();
   const lang = useLang();
   const guides = getGuides(lang);
@@ -21,7 +22,7 @@ export default function Guides() {
       heroImage="/assets/lifestyle-hero.jpg"
       heroPosition="center 35%"
     >
-      <section style={{ backgroundColor: '#F5F2EC', padding: 'clamp(48px, 8vw, 88px) clamp(20px, 6vw, 64px)' }} dir="rtl">
+      <section style={{ backgroundColor: '#F5F2EC', padding: 'clamp(48px, 8vw, 88px) clamp(20px, 6vw, 64px)' }} dir={dir}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '22px' }}>
           {guides.map((g, i) => {
             const Icon = g.icon;

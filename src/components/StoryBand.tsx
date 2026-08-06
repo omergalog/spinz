@@ -1,4 +1,4 @@
-import { useT, useLang, localizePath } from '../i18n/LanguageContext';
+import { useT, useLang, localizePath, useDir } from '../i18n/LanguageContext';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
@@ -7,11 +7,12 @@ const CREAM = '#EDEBE6';
 const GOLD = '#C9A870';
 
 export default function StoryBand() {
+  const dir = useDir();
   const t = useT();
   const lang = useLang();
   return (
     <section
-      dir="rtl"
+      dir={dir}
       style={{ position: 'relative', backgroundColor: DARK, overflow: 'hidden' }}
       className="min-h-[50vh] lg:min-h-[82vh] flex items-center"
     >

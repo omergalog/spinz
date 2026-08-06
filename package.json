@@ -10,7 +10,9 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "snapshot": "node scripts/layout-snapshot.mjs baseline",
     "snapshot:check": "node scripts/layout-snapshot.mjs check",
-    "lang:audit": "node scripts/lang-audit.mjs"
+    "lang:audit": "node scripts/lang-audit.mjs",
+    "lang:audit:ui": "node scripts/lang-audit-ui.mjs",
+    "dir:audit": "node scripts/dir-audit.mjs"
   },
   "dependencies": {
     "@emailjs/browser": "^4.3.3",

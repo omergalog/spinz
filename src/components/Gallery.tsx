@@ -1,4 +1,4 @@
-import { useT } from '../i18n/LanguageContext';
+import { useT, useDir } from '../i18n/LanguageContext';
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 
@@ -111,6 +111,7 @@ function Lightbox({ index, onClose, onNav }: { index: number; onClose: () => voi
 }
 
 export default function Gallery({ hideHeader = false }: { hideHeader?: boolean }) {
+  const dir = useDir();
   const t = useT();
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
@@ -125,7 +126,7 @@ export default function Gallery({ hideHeader = false }: { hideHeader?: boolean }
 
   return (
     <section ref={ref} id="gallery" className="relative py-7 lg:py-32" style={{ backgroundColor: BG }}>
-      <div className="mx-auto max-w-7xl px-6 lg:px-16 pt-2 lg:pt-20" dir="rtl">
+      <div className="mx-auto max-w-7xl px-6 lg:px-16 pt-2 lg:pt-20" dir={dir}>
 
         {/* Header */}
         {!hideHeader && (
@@ -195,7 +196,7 @@ export default function Gallery({ hideHeader = false }: { hideHeader?: boolean }
         </div>
 
         {/* Follow prompt */}
-        <div className="mt-10 flex items-center justify-center gap-5" dir="rtl">
+        <div className="mt-10 flex items-center justify-center gap-5" dir={dir}>
           <div className="h-px flex-1" style={{ backgroundColor: BORDER }} />
           <span className="text-[11px] uppercase tracking-[0.3em]" style={{ color: '#CCC', fontFamily: "'Heebo', sans-serif" }}>
             Spinz – 2026

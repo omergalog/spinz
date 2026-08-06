@@ -1,4 +1,4 @@
-import { useT, useLang, localizePath } from '../i18n/LanguageContext';
+import { useT, useLang, localizePath, useDir } from '../i18n/LanguageContext';
 import { getStory } from '../data/story';
 import PageShell from '../components/PageShell';
 import { Link } from 'react-router-dom';
@@ -30,6 +30,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 export default function Story() {
+  const dir = useDir();
   const t = useT();
   const lang = useLang();
   const sections = getStory(lang);
@@ -41,7 +42,7 @@ export default function Story() {
       heroImage="/assets/story-hero.jpg"
       heroPosition="center 40%"
     >
-      <div style={{ backgroundColor: '#F5F2EC', padding: 'clamp(32px, 6vw, 72px) clamp(20px, 6vw, 64px)' }} dir="rtl">
+      <div style={{ backgroundColor: '#F5F2EC', padding: 'clamp(32px, 6vw, 72px) clamp(20px, 6vw, 64px)' }} dir={dir}>
         <div style={{ maxWidth: '760px', margin: '0 auto' }}>
 
           {sections.map((s, i) => (

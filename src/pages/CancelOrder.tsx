@@ -68,7 +68,7 @@ export default function CancelOrder() {
       </span>
       <input
         type={opts.type ?? 'text'}
-        dir={opts.dir ?? 'rtl'}
+        dir={opts.dir ?? dir}
         value={form[key as keyof typeof form]}
         onChange={e => set(key, e.target.value)}
         placeholder={placeholder}

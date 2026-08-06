@@ -217,7 +217,7 @@ export default function SearchModal({ open, onClose }: { open: boolean; onClose:
                     onMouseEnter={() => setActive(i)}
                     onClick={() => go(r.doc.to, query)}
                     style={{
-                      display: 'block', width: '100%', textAlign: 'right',
+                      display: 'block', width: '100%', textAlign: 'start',
                       padding: '11px 13px', borderRadius: '10px',
                       backgroundColor: i === active ? '#FFFFFF' : 'transparent',
                       border: `1px solid ${i === active ? BORDER : 'transparent'}`,

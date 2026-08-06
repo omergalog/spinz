@@ -68,7 +68,12 @@ export const dict = {
       accept: 'מסכים 🚴‍♂️',
       privacy: 'מדיניות ופרטיות',
     },
-    a11y: { skipToContent: 'דלג לתוכן הראשי', whatsapp: 'פנה אלינו ב-WhatsApp', accessibility: 'פתח תפריט נגישות' },
+    a11y: {
+      skipToContent: 'דלג לתוכן הראשי', whatsapp: 'פנה אלינו ב-WhatsApp', accessibility: 'פתח תפריט נגישות',
+      panelTitle: 'נגישות', reset: 'איפוס', panelAria: 'תפריט נגישות', closeAria: 'סגור תפריט נגישות',
+      smaller: 'הקטן טקסט', larger: 'הגדל טקסט', contactLine: 'פנייה בנושא נגישות:',
+      controls: { contrast: 'ניגודיות גבוהה', links: 'הדגש קישורים', motion: 'עצור אנימציות', cursor: 'סמן גדול', text: 'גודל טקסט' },
+    },
     meta: { description: 'Spinz — אופני עיר סינגל ספיד. בנויים לרחובות, מעוצבים לבלוט.' },
     search: {
       placeholder: 'חיפוש באתר – דגמים, מדריכים, אחריות…',
@@ -376,7 +381,12 @@ export const dict = {
       accept: 'Got it 🚴‍♂️',
       privacy: 'Privacy Policy',
     },
-    a11y: { skipToContent: 'Skip to main content', whatsapp: 'Message us on WhatsApp', accessibility: 'Open accessibility menu' },
+    a11y: {
+      skipToContent: 'Skip to main content', whatsapp: 'Message us on WhatsApp', accessibility: 'Open accessibility menu',
+      panelTitle: 'Accessibility', reset: 'Reset', panelAria: 'Accessibility menu', closeAria: 'Close accessibility menu',
+      smaller: 'Decrease text size', larger: 'Increase text size', contactLine: 'Accessibility enquiries:',
+      controls: { contrast: 'High contrast', links: 'Underline links', motion: 'Pause animations', cursor: 'Large cursor', text: 'Text size' },
+    },
     meta: { description: 'Spinz — urban single-speed city bikes. Built for the street, designed to stand out.' },
     search: {
       placeholder: 'Search the site — models, guides, warranty…',

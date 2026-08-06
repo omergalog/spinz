@@ -1,3 +1,4 @@
+import { useDir } from '../i18n/LanguageContext';
 import { useRef, useEffect, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -47,6 +48,7 @@ function RevealText({ children, delay = 0 }: { children: React.ReactNode; delay?
 }
 
 export default function About() {
+  const dir = useDir();
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const navigate = useNavigate();
@@ -57,7 +59,7 @@ export default function About() {
       id="about"
       style={{ backgroundColor: DARK }}
       className="px-5 py-10 md:p-9"
-      dir="rtl"
+      dir={dir}
     >
       <div className="mx-auto max-w-7xl">
       <div style={{ borderTop: '1px solid #2A2A2A' }} className="pt-8 md:pt-16">

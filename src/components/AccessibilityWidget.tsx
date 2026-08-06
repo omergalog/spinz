@@ -114,15 +114,15 @@ function applySettings(s: Settings) {
 
 const CONTROLS: {
   key: keyof Settings;
-  label: string;
+  labelKey: 'contrast' | 'links' | 'motion' | 'cursor' | 'text';
   type: 'toggle' | 'stepper';
   icon: string;
 }[] = [
-  { key: 'highContrast',    label: 'ניגודיות גבוהה',     type: 'toggle',  icon: '◐' },
-  { key: 'underlineLinks',  label: 'הדגש קישורים',       type: 'toggle',  icon: '🔗' },
-  { key: 'pauseAnimations', label: 'עצור אנימציות',      type: 'toggle',  icon: '⏸' },
-  { key: 'bigCursor',       label: 'סמן גדול',           type: 'toggle',  icon: '↖' },
-  { key: 'fontSize',        label: 'גודל טקסט',          type: 'stepper', icon: 'Aa' },
+  { key: 'highContrast',    labelKey: 'contrast' as const,     type: 'toggle',  icon: '◐' },
+  { key: 'underlineLinks',  labelKey: 'links' as const,       type: 'toggle',  icon: '🔗' },
+  { key: 'pauseAnimations', labelKey: 'motion' as const,      type: 'toggle',  icon: '⏸' },
+  { key: 'bigCursor',       labelKey: 'cursor' as const,           type: 'toggle',  icon: '↖' },
+  { key: 'fontSize',        labelKey: 'text' as const,          type: 'stepper', icon: 'Aa' },
 ];
 
 export default function AccessibilityWidget() {
@@ -171,7 +171,7 @@ export default function AccessibilityWidget() {
       {open && (
         <div
           role="dialog"
-          aria-label="תפריט נגישות"
+          aria-label={t.a11y.panelAria}
           style={{
             position: 'absolute',
             bottom: '64px',
@@ -187,7 +187,7 @@ export default function AccessibilityWidget() {
           {/* Header */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
             <span style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '15px', color: '#1C1C1C' }}>
-              נגישות
+              {t.a11y.panelTitle}
             </span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <button
@@ -202,11 +202,11 @@ export default function AccessibilityWidget() {
                   transition: 'color 0.2s',
                 }}
               >
-                איפוס
+                {t.a11y.reset}
               </button>
               <button
                 onClick={() => setOpen(false)}
-                aria-label="סגור תפריט נגישות"
+                aria-label={t.a11y.closeAria}
                 style={{
                   width: '26px', height: '26px', borderRadius: '50%',
                   backgroundColor: '#E8E0D0', border: 'none', cursor: 'pointer',
@@ -242,7 +242,7 @@ export default function AccessibilityWidget() {
                       color: active ? '#1C1C1C' : '#5A5040',
                       fontWeight: active ? 700 : 400,
                     }}>
-                      {ctrl.label}
+                      {t.a11y.controls[ctrl.labelKey]}
                     </span>
                   </div>
 
@@ -250,7 +250,7 @@ export default function AccessibilityWidget() {
                     <button
                       onClick={() => toggle(ctrl.key)}
                       aria-pressed={!!val}
-                      aria-label={ctrl.label}
+                      aria-label={t.a11y.controls[ctrl.labelKey]}
                       style={{
                         width: '36px', height: '20px',
                         borderRadius: '10px',
@@ -275,7 +275,7 @@ export default function AccessibilityWidget() {
                       <button
                         onClick={() => step(-1)}
                         disabled={(settings.fontSize as number) <= -2}
-                        aria-label="הקטן טקסט"
+                        aria-label={t.a11y.smaller}
                         style={{
                           width: '24px', height: '24px', borderRadius: '6px',
                           backgroundColor: '#D8D0C0', border: 'none', cursor: 'pointer',
@@ -293,7 +293,7 @@ export default function AccessibilityWidget() {
                       <button
                         onClick={() => step(1)}
                         disabled={(settings.fontSize as number) >= 4}
-                        aria-label="הגדל טקסט"
+                        aria-label={t.a11y.larger}
                         style={{
                           width: '24px', height: '24px', borderRadius: '6px',
                           backgroundColor: '#D8D0C0', border: 'none', cursor: 'pointer',
@@ -313,7 +313,7 @@ export default function AccessibilityWidget() {
             fontFamily: "'Heebo', sans-serif", fontSize: '10px', color: '#8A7A6A',
             margin: '14px 0 0', textAlign: 'center', lineHeight: 1.6,
           }}>
-            פנייה בנושא נגישות:{' '}
+            {t.a11y.contactLine}{' '}
             <a href={`mailto:${COMPANY.email}`} style={{ color: '#8A6830' }}>
               {COMPANY.email}
             </a>

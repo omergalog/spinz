@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useT } from '../i18n/LanguageContext';
+import { useT, useDir } from '../i18n/LanguageContext';
 import { usePresale } from '../config/presale';
 
 const DARK = '#1C1C1C';
@@ -22,12 +22,13 @@ function useCountdown(target: Date) {
 }
 
 function Unit({ value, label }: { value: number; label: string }) {
+  const dir = useDir();
   return (
     <span style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1 }}>
       <span style={{ fontSize: '13px', fontWeight: 800, fontVariantNumeric: 'tabular-nums', color: CREAM }}>
         {String(value).padStart(2, '0')}
       </span>
-      <span dir="rtl" style={{ fontSize: '7.5px', letterSpacing: '0.1em', color: 'rgba(237,235,230,0.55)', marginTop: '2px' }}>
+      <span dir={dir} style={{ fontSize: '7.5px', letterSpacing: '0.1em', color: 'rgba(237,235,230,0.55)', marginTop: '2px' }}>
         {label}
       </span>
     </span>
@@ -35,6 +36,7 @@ function Unit({ value, label }: { value: number; label: string }) {
 }
 
 export default function AnnouncementBar() {
+  const dir = useDir();
   const t = useT();
   const navigate = useNavigate();
   const location = useLocation();
@@ -53,7 +55,7 @@ export default function AnnouncementBar() {
 
   return (
     <div
-      dir="rtl"
+      dir={dir}
       onClick={goModels}
       style={{
         position: 'relative', zIndex: 60,

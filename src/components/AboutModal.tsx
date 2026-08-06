@@ -1,3 +1,4 @@
+import { useDir } from '../i18n/LanguageContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 
@@ -39,6 +40,7 @@ const sections = [
 ];
 
 export default function AboutModal({ isOpen, onClose }: Props) {
+  const dir = useDir();
   return (
     <AnimatePresence>
       {isOpen && (
@@ -67,7 +69,7 @@ export default function AboutModal({ isOpen, onClose }: Props) {
                 border: `1px solid ${BORDER}`,
                 display: 'flex', flexDirection: 'column',
               }}
-              dir="rtl"
+              dir={dir}
             >
               {/* Header */}
               <div style={{ padding: '24px 28px', borderBottom: `1px solid ${BORDER}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>

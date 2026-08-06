@@ -367,7 +367,7 @@ export default function LeadForm() {
                         fontSize: '16px',
                         padding: '8px 0',
                         boxSizing: 'border-box',
-                        textAlign: 'right',
+                        textAlign: 'start',
                         direction: 'ltr',
                       }}
                       {...register('whatsapp', {

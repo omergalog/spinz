@@ -1,3 +1,4 @@
+import { useDir } from '../i18n/LanguageContext';
 import { useEffect } from 'react';
 import Navbar from './Navbar';
 import Footer from './Footer';
@@ -18,13 +19,14 @@ type Props = {
 };
 
 export default function PageShell({ children, eyebrow, title, subtitle, heroImage, heroPosition }: Props) {
+  const dir = useDir();
   const presale = usePresale();
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
   return (
     <CartProvider>
       <CartDrawer />
-      <div style={{ backgroundColor: '#F5F2EC', minHeight: '100vh' }} dir="rtl">
+      <div style={{ backgroundColor: '#F5F2EC', minHeight: '100vh' }} dir={dir}>
         <Navbar />
 
         {/* Spacer for fixed navbar (+ announcement bar when presale active) */}
@@ -62,7 +64,7 @@ export default function PageShell({ children, eyebrow, title, subtitle, heroImag
                 />
               </>
             )}
-            <div style={{ position: 'absolute', top: 0, right: 0, width: '3px', height: '64px', backgroundColor: '#C9A870', opacity: 0.7 }} />
+            <div style={{ position: 'absolute', top: 0, insetInlineStart: 0, width: '3px', height: '64px', backgroundColor: '#C9A870', opacity: 0.7 }} />
             <div style={{ maxWidth: '1280px', margin: '0 auto', position: 'relative' }}>
               {eyebrow && (
                 <span style={{

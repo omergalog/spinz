@@ -189,7 +189,7 @@ export default function PrivacyModal({ isOpen, onClose }: Props) {
 
                 <div style={{ borderTop: `1px solid ${BORDER}`, paddingTop: '16px', marginTop: '4px' }}>
                   <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: '#666', margin: 0 }}>
-                    תאריך עדכון אחרון: אפריל 2026
+                    {en ? 'Last updated: April 2026' : 'תאריך עדכון אחרון: אפריל 2026'}
                   </p>
                 </div>
               </div>

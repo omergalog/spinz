@@ -1,5 +1,5 @@
 import PageShell from '../components/PageShell';
-import { useT, useLang } from '../i18n/LanguageContext';
+import { useT, useLang, useDir } from '../i18n/LanguageContext';
 import { COMPANY, COMPANY_LINE, COMPANY_LINE_EN } from '../config/company';
 
 const DARK = '#1C1C1C';
@@ -31,6 +31,7 @@ function Section({ title, children }: { title: string | null; children: React.Re
 }
 
 export default function Accessibility() {
+  const dir = useDir();
   const t = useT();
   const lang = useLang();
   const a = t.pages.accessibility;
@@ -51,7 +52,7 @@ export default function Accessibility() {
       heroImage="/assets/photo-beige-bike.jpg"
       heroPosition="center 55%"
     >
-      <div style={{ backgroundColor: '#F5F2EC', padding: 'clamp(32px, 6vw, 72px) clamp(20px, 6vw, 64px)' }} dir="rtl">
+      <div style={{ backgroundColor: '#F5F2EC', padding: 'clamp(32px, 6vw, 72px) clamp(20px, 6vw, 64px)' }} dir={dir}>
         <div style={{ maxWidth: '760px', margin: '0 auto' }}>
 
           <div style={{ marginBottom: '30px' }}>

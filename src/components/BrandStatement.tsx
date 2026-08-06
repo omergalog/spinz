@@ -1,3 +1,4 @@
+import { useDir } from '../i18n/LanguageContext';
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 
@@ -45,6 +46,7 @@ function RevealText({ children, delay = 0 }: { children: React.ReactNode; delay?
 }
 
 export default function BrandStatement() {
+  const dir = useDir();
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
 
@@ -54,7 +56,7 @@ export default function BrandStatement() {
       id="why-spinz"
       style={{ backgroundColor: LIGHT, overflow: 'hidden' }}
       className="px-5 py-10 md:p-9"
-      dir="rtl"
+      dir={dir}
     >
       <div className="mx-auto max-w-7xl">
       {/* Desktop: 2-col grid | Mobile: single column */}

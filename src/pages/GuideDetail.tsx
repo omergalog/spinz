@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import PageShell from '../components/PageShell';
 import { getGuide, getGuides, type GuideBlock } from '../data/guides';
-import { useT, useLang, localizePath } from '../i18n/LanguageContext';
+import { useT, useLang, localizePath, useDir } from '../i18n/LanguageContext';
 
 const DARK = '#1C1C1C';
 const MUTED = '#4A4845';
@@ -70,6 +70,7 @@ function Block({ block }: { block: GuideBlock }) {
 }
 
 export default function GuideDetail() {
+  const dir = useDir();
   const t = useT();
   const lang = useLang();
   const L = (to: string) => localizePath(to, lang);
@@ -105,7 +106,7 @@ export default function GuideDetail() {
       heroImage={guide.heroImage}
       heroPosition={guide.heroPosition}
     >
-      <div style={{ backgroundColor: '#F5F2EC', padding: 'clamp(32px, 6vw, 72px) clamp(20px, 6vw, 64px)' }} dir="rtl">
+      <div style={{ backgroundColor: '#F5F2EC', padding: 'clamp(32px, 6vw, 72px) clamp(20px, 6vw, 64px)' }} dir={dir}>
         <div style={{ maxWidth: '760px', margin: '0 auto' }}>
 
           {/* Breadcrumb */}

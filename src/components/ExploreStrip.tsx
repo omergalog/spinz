@@ -1,4 +1,4 @@
-import { useT, useLang, localizePath } from '../i18n/LanguageContext';
+import { useT, useLang, localizePath, useDir } from '../i18n/LanguageContext';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -29,10 +29,11 @@ const cards = [
 ];
 
 export default function ExploreStrip() {
+  const dir = useDir();
   const t = useT();
   const lang = useLang();
   return (
-    <section dir="rtl" style={{ backgroundColor: '#F5F2EC' }} className="py-7 lg:py-24">
+    <section dir={dir} style={{ backgroundColor: '#F5F2EC' }} className="py-7 lg:py-24">
       <div className="mx-auto max-w-7xl px-6 lg:px-16">
 
         {/* Header row */}

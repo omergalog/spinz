@@ -1,3 +1,4 @@
+import { useDir } from '../i18n/LanguageContext';
 import { Home, Bike, Image, MessageCircle } from 'lucide-react';
 
 const DARK = '#1C1C1C';
@@ -16,10 +17,11 @@ function scrollTo(href: string) {
 }
 
 export default function BottomNav() {
+  const dir = useDir();
   return (
     <nav
       className="md:hidden fixed bottom-0 left-0 right-0 z-50 flex"
-      dir="rtl"
+      dir={dir}
       style={{
         backgroundColor: DARK,
         borderTop: `1px solid #2A2A2A`,

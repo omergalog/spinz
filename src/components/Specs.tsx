@@ -8,7 +8,7 @@ const MUTED = '#EDEBE6';
 const BORDER = '#2A2A2A';
 
 import { getSpecs, type SpecText } from '../data/specs';
-import { useLang, useT } from '../i18n/LanguageContext';
+import { useLang, useT, useDir } from '../i18n/LanguageContext';
 
 const specIcons = [
   {
@@ -153,6 +153,7 @@ function SpecCard({ spec, index }: { spec: SpecText & { num: string; icon: React
 }
 
 export default function Specs({ hideHeader = false }: { hideHeader?: boolean }) {
+  const dir = useDir();
   const lang = useLang();
   const t = useT();
   // הטקסט מגיע מהמילון, האייקונים מהקומפוננטה — מחוברים לפי סדר
@@ -166,7 +167,7 @@ export default function Specs({ hideHeader = false }: { hideHeader?: boolean }) 
     <section
       ref={ref}
       id="specs"
-      dir="rtl"
+      dir={dir}
       style={{ backgroundColor: DARK, position: 'relative' }}
       className="py-7 lg:py-28"
     >

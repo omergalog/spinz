@@ -1,4 +1,4 @@
-import { useT, useLang, localizePath } from '../i18n/LanguageContext';
+import { useT, useLang, localizePath, useDir } from '../i18n/LanguageContext';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Instagram, Bike, Coffee, MapPin, Handshake, ArrowLeft } from 'lucide-react';
@@ -23,6 +23,7 @@ const streetPhotos = [
 ];
 
 export default function Community() {
+  const dir = useDir();
   const t = useT();
   const lang = useLang();
   const c = t.pages.community;
@@ -35,7 +36,7 @@ export default function Community() {
       heroPosition="center 35%"
     >
       {/* ── Manifesto: split image + text ───────────────────────────── */}
-      <section style={{ backgroundColor: '#F5F2EC', padding: 'clamp(56px, 9vw, 110px) clamp(20px, 6vw, 64px)' }} dir="rtl">
+      <section style={{ backgroundColor: '#F5F2EC', padding: 'clamp(56px, 9vw, 110px) clamp(20px, 6vw, 64px)' }} dir={dir}>
         <div style={{ maxWidth: '1120px', margin: '0 auto', display: 'flex', flexWrap: 'wrap', gap: 'clamp(28px, 5vw, 60px)', alignItems: 'center' }}>
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -71,7 +72,7 @@ export default function Community() {
       </section>
 
       {/* ── Announcement: first community ride (coming soon) ─────────── */}
-      <section style={{ position: 'relative', overflow: 'hidden', backgroundColor: DARK, padding: 'clamp(64px, 10vw, 130px) clamp(20px, 6vw, 64px)' }} dir="rtl">
+      <section style={{ position: 'relative', overflow: 'hidden', backgroundColor: DARK, padding: 'clamp(64px, 10vw, 130px) clamp(20px, 6vw, 64px)' }} dir={dir}>
         <div style={{ position: 'absolute', top: '-20%', right: '-10%', width: '60%', height: '70%', background: 'radial-gradient(circle, rgba(201,168,112,0.16) 0%, transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', bottom: '-25%', left: '-10%', width: '55%', height: '65%', background: 'radial-gradient(circle, rgba(201,168,112,0.10) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
@@ -141,7 +142,7 @@ export default function Community() {
       </section>
 
       {/* ── On the streets (real photos) ────────────────────────────── */}
-      <section style={{ backgroundColor: '#F5F2EC', padding: 'clamp(56px, 8vw, 96px) clamp(20px, 6vw, 64px)' }} dir="rtl">
+      <section style={{ backgroundColor: '#F5F2EC', padding: 'clamp(56px, 8vw, 96px) clamp(20px, 6vw, 64px)' }} dir={dir}>
         <div style={{ maxWidth: '1120px', margin: '0 auto' }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '32px' }}>
             <div>
@@ -177,7 +178,7 @@ export default function Community() {
       </section>
 
       {/* ── Partnership invitation (honest, no fabricated partners) ──── */}
-      <section style={{ backgroundColor: '#F0EDE6', padding: 'clamp(48px, 7vw, 84px) clamp(20px, 6vw, 64px)' }} dir="rtl">
+      <section style={{ backgroundColor: '#F0EDE6', padding: 'clamp(48px, 7vw, 84px) clamp(20px, 6vw, 64px)' }} dir={dir}>
         <div style={{ maxWidth: '720px', margin: '0 auto', textAlign: 'center' }}>
           <div style={{ width: '48px', height: '48px', borderRadius: '13px', backgroundColor: '#FFFFFF', border: `1px solid ${GOLD}44`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: GOLD, margin: '0 auto 18px' }}>
             <Handshake size={22} strokeWidth={1.8} />
@@ -195,7 +196,7 @@ export default function Community() {
       </section>
 
       {/* ── Instagram CTA ───────────────────────────────────────────── */}
-      <section style={{ backgroundColor: DARK, padding: 'clamp(48px, 7vw, 80px) clamp(20px, 6vw, 64px)', textAlign: 'center' }} dir="rtl">
+      <section style={{ backgroundColor: DARK, padding: 'clamp(48px, 7vw, 80px) clamp(20px, 6vw, 64px)', textAlign: 'center' }} dir={dir}>
         <Instagram size={36} color={GOLD} style={{ margin: '0 auto 16px' }} />
         <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(22px, 3.5vw, 34px)', color: CREAM, margin: '0 0 12px' }}>
           {c.joinTitle}

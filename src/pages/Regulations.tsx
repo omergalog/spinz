@@ -1,4 +1,6 @@
 import PageShell from '../components/PageShell';
+import RegulationsEn from './RegulationsEn';
+import { useLang } from '../i18n/LanguageContext';
 import { COMPANY as CO } from '../config/company';
 
 const DARK = '#1C1C1C';
@@ -32,6 +34,8 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 export default function Regulations() {
+  // הנוסח העברי הוא המחייב — הקוד שלו נשאר כפי שהוא, בלי שכבת תרגום.
+  if (useLang() === 'en') return <RegulationsEn />;
   return (
     <PageShell
       eyebrow="Terms"

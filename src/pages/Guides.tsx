@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import PageShell from '../components/PageShell';
-import { guides } from '../data/guides';
+import { getGuides } from '../data/guides';
+import { useT, useLang, localizePath } from '../i18n/LanguageContext';
 
 const GOLD = '#C9A870';
 const DARK = '#1C1C1C';
@@ -9,11 +10,14 @@ const MUTED = '#6A6862';
 const BORDER = '#E0DCD4';
 
 export default function Guides() {
+  const t = useT();
+  const lang = useLang();
+  const guides = getGuides(lang);
   return (
     <PageShell
       eyebrow="Guides & Tips"
-      title="מדריכים"
-      subtitle="כל מה שצריך לדעת — מהרכבה בבית ועד תחזוקה, בטיחות והמסלולים הכי שווים בעיר."
+      title={t.pages.guides.title}
+      subtitle={t.pages.guides.sub}
       heroImage="/assets/lifestyle-hero.jpg"
       heroPosition="center 35%"
     >
@@ -30,7 +34,7 @@ export default function Guides() {
                 transition={{ duration: 0.6, delay: (i % 3) * 0.08 }}
               >
                 <Link
-                  to={`/guides/${g.slug}`}
+                  to={localizePath(`/guides/${g.slug}`, lang)}
                   className="guide-card"
                   style={{
                     display: 'block', backgroundColor: '#FFFFFF', border: `1px solid ${BORDER}`,
@@ -69,7 +73,7 @@ export default function Guides() {
                       {g.summary}
                     </p>
                     <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13.5px', fontWeight: 700, color: GOLD }}>
-                      קראו את המדריך ←
+                      {t.pages.guides.read}
                     </span>
                   </div>
                 </Link>

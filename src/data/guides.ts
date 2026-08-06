@@ -459,4 +459,20 @@ export const guides: Guide[] = [
   },
 ];
 
-export const getGuide = (slug: string) => guides.find(g => g.slug === slug);
+import type { Lang } from '../i18n/LanguageContext';
+import { guidesEn } from './guides.en';
+
+/**
+ * המדריכים בשפה הנבחרת. המבנה (אייקון, תמונת הירו, מיקומה) מגיע תמיד
+ * מהמקור העברי — כך שהחלפת תמונה משנה את שתי השפות בבת אחת.
+ */
+export const getGuides = (lang: Lang): Guide[] =>
+  lang === 'en'
+    ? guides.map(g => {
+        const en = guidesEn[g.slug];
+        return en ? { ...g, ...en } : g;
+      })
+    : guides;
+
+export const getGuide = (slug: string, lang: Lang = 'he') =>
+  getGuides(lang).find(g => g.slug === slug);

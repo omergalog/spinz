@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
 import PageShell from '../components/PageShell';
-import { getGuide, guides, type GuideBlock } from '../data/guides';
+import { getGuide, getGuides, type GuideBlock } from '../data/guides';
+import { useT, useLang, localizePath } from '../i18n/LanguageContext';
 
 const DARK = '#1C1C1C';
 const MUTED = '#4A4845';
@@ -69,8 +70,11 @@ function Block({ block }: { block: GuideBlock }) {
 }
 
 export default function GuideDetail() {
+  const t = useT();
+  const lang = useLang();
+  const L = (to: string) => localizePath(to, lang);
   const { slug } = useParams();
-  const guide = slug ? getGuide(slug) : undefined;
+  const guide = slug ? getGuide(slug, lang) : undefined;
 
   // Same route (/guides/:slug) stays mounted across related-guide clicks, so
   // reset the scroll to the top of the new guide whenever the slug changes.
@@ -89,9 +93,9 @@ export default function GuideDetail() {
     };
   }, [guide]);
 
-  if (!guide) return <Navigate to="/guides" replace />;
+  if (!guide) return <Navigate to={L("/guides")} replace />;
 
-  const related = guides.filter(g => g.slug !== guide.slug).slice(0, 3);
+  const related = getGuides(lang).filter(g => g.slug !== guide.slug).slice(0, 3);
 
   return (
     <PageShell
@@ -106,7 +110,7 @@ export default function GuideDetail() {
 
           {/* Breadcrumb */}
           <nav style={{ marginBottom: '22px', fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#9A9690' }}>
-            <Link to="/guides" style={{ color: GOLD, textDecoration: 'none' }}>מדריכים</Link>
+            <Link to={L("/guides")} style={{ color: GOLD, textDecoration: 'none' }}>{t.pages.guides.crumb}</Link>
             <span aria-hidden> ← </span>
             <span>{guide.title}</span>
           </nav>
@@ -143,7 +147,7 @@ export default function GuideDetail() {
           {guide.faq && guide.faq.length > 0 && (
             <section style={{ marginTop: '44px', paddingTop: '32px', borderTop: `1px solid ${BORDER}` }}>
               <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(18px, 2.4vw, 23px)', color: DARK, margin: '0 0 20px' }}>
-                שאלות נפוצות
+                {t.pages.guides.faqTitle}
               </h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
                 {guide.faq.map((f, i) => (
@@ -162,28 +166,28 @@ export default function GuideDetail() {
             background: 'linear-gradient(135deg, #1C1C1C 0%, #2A2620 100%)', textAlign: 'center',
           }}>
             <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', fontWeight: 800, color: '#EDEBE6', margin: '0 0 6px' }}>
-              מוכנים לצאת לדרך?
+              {t.pages.guides.ctaTitle}
             </p>
             <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: 'rgba(237,235,230,0.7)', margin: '0 0 20px' }}>
-              גלו את SPINZ Urban — סינגל ספיד אורבני, מעוצב לרחובות העיר.
+              {t.pages.guides.ctaBody}
             </p>
-            <Link to="/bikes" style={{
+            <Link to={L("/bikes")} style={{
               display: 'inline-block', backgroundColor: GOLD, color: DARK, fontFamily: "'Heebo', sans-serif",
               fontSize: '14px', fontWeight: 700, letterSpacing: '0.05em', textDecoration: 'none',
               padding: '13px 30px', borderRadius: '8px',
             }}>
-              לצפייה בדגם ←
+              {t.pages.guides.ctaLink}
             </Link>
           </div>
 
           {/* Related guides */}
           <section style={{ marginTop: '48px', paddingTop: '32px', borderTop: `1px solid ${BORDER}` }}>
             <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '18px', color: DARK, margin: '0 0 18px' }}>
-              מדריכים נוספים
+              {t.pages.guides.more}
             </h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px' }}>
               {related.map(r => (
-                <Link key={r.slug} to={`/guides/${r.slug}`} style={{
+                <Link key={r.slug} to={L(`/guides/${r.slug}`)} style={{
                   display: 'block', backgroundColor: '#FFFFFF', border: `1px solid ${BORDER}`,
                   borderRadius: '12px', overflow: 'hidden', textDecoration: 'none',
                 }}>

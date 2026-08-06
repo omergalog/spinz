@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import PageShell from '../components/PageShell';
+import TermsEn from './TermsEn';
+import { useLang } from '../i18n/LanguageContext';
 import { COMPANY, COMPANY_LINE } from '../config/company';
 
 const DARK = '#1C1C1C';
@@ -109,6 +111,8 @@ function Section({ title, children }: { title: string | null; children: React.Re
 }
 
 export default function Terms() {
+  // הנוסח העברי הוא המחייב — נשאר כפי שהוא, בלי שכבת תרגום.
+  if (useLang() === 'en') return <TermsEn />;
   const [tab, setTab] = useState<'terms' | 'privacy'>('terms');
   const sections = tab === 'privacy' ? privacySections : termsSections;
 

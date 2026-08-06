@@ -20,3 +20,7 @@ export const COMPANY = {
 /** מחרוזת מלאה לשימוש בסעיפי "פרטי החברה" */
 export const COMPANY_LINE =
   `${COMPANY.legalNameHe} (${COMPANY.legalNameEn}), ח.פ. ${COMPANY.companyNumber}, ${COMPANY.address}`;
+
+/** אותה מחרוזת באנגלית — השם הרשום בעברית נשאר בסוגריים, כנדרש במסמך משפטי. */
+export const COMPANY_LINE_EN =
+  `${COMPANY.legalNameEn} (${COMPANY.legalNameHe}), company no. ${COMPANY.companyNumber}, ${COMPANY.address}`;

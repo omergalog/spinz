@@ -1,4 +1,6 @@
 import PageShell from '../components/PageShell';
+import PresaleTermsEn from './PresaleTermsEn';
+import { useLang } from '../i18n/LanguageContext';
 import { usePresale } from '../config/presale';
 import { COMPANY as CO } from '../config/company';
 
@@ -33,6 +35,8 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 export default function PresaleTerms() {
+  // הנוסח העברי הוא המחייב — נשאר כפי שהוא, בלי שכבת תרגום.
+  if (useLang() === 'en') return <PresaleTermsEn />;
   const presale = usePresale();
 
   return (

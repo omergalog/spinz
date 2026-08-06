@@ -1,6 +1,6 @@
 import PageShell from '../components/PageShell';
 import { useT, useLang } from '../i18n/LanguageContext';
-import { COMPANY, COMPANY_LINE } from '../config/company';
+import { COMPANY, COMPANY_LINE, COMPANY_LINE_EN } from '../config/company';
 
 const DARK = '#1C1C1C';
 const MUTED = '#4A4845';
@@ -35,7 +35,7 @@ export default function Accessibility() {
   const lang = useLang();
   const a = t.pages.accessibility;
   const sections = [
-    { title: null, text: `${COMPANY_LINE} ${a.s0}` },
+    { title: null, text: `${lang === 'en' ? COMPANY_LINE_EN : COMPANY_LINE} ${a.s0}` },
     { title: a.s1t, text: a.s1 },
     { title: a.s2t, text: a.s2 },
     { title: a.s3t, text: a.s3 },

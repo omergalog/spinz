@@ -1,6 +1,12 @@
 import { useState } from 'react';
 
 const PASSWORD = 'spinz2026';
+
+// השער מוצג לפני שכבת השפה נטענת, ולכן קורא את השפה ישירות מהכתובת.
+const EN = typeof window !== 'undefined' && window.location.pathname.startsWith('/en');
+const TXT = EN
+  ? { intro: 'This site is in private preview', placeholder: 'Password', wrong: 'Incorrect password', enter: 'Enter' }
+  : { intro: 'האתר בתצוגה מקדימה פרטית', placeholder: 'סיסמא', wrong: 'סיסמא שגויה', enter: 'כניסה' };
 const SESSION_KEY = 'spinz_auth';
 
 export default function PasswordGate({ children }: { children: React.ReactNode }) {
@@ -51,7 +57,7 @@ export default function PasswordGate({ children }: { children: React.ReactNode }
         animation: shake ? 'shake 0.4s ease' : 'none',
       }}>
         <p style={{ color: '#888', fontSize: '13px', marginBottom: '20px', textAlign: 'center' }}>
-          האתר בתצוגה מקדימה פרטית
+          {TXT.intro}
         </p>
 
         <input
@@ -59,7 +65,7 @@ export default function PasswordGate({ children }: { children: React.ReactNode }
           value={input}
           onChange={e => { setInput(e.target.value); setError(false); }}
           onKeyDown={e => e.key === 'Enter' && submit()}
-          placeholder="סיסמא"
+          placeholder={TXT.placeholder}
           autoFocus
           dir="ltr"
           style={{
@@ -80,7 +86,7 @@ export default function PasswordGate({ children }: { children: React.ReactNode }
 
         {error && (
           <p style={{ color: '#FF6B6B', fontSize: '12px', textAlign: 'center', marginBottom: '12px' }}>
-            סיסמא שגויה
+            {TXT.wrong}
           </p>
         )}
 
@@ -99,7 +105,7 @@ export default function PasswordGate({ children }: { children: React.ReactNode }
             fontFamily: "'Heebo', sans-serif",
           }}
         >
-          כניסה
+          {TXT.enter}
         </button>
       </div>
 

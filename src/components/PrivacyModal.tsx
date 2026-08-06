@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useLang, useDir } from '../i18n/LanguageContext';
+import { privacySectionsEn, termsSectionsEn } from '../pages/TermsEn';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { COMPANY, COMPANY_LINE } from '../config/company';
@@ -95,6 +97,10 @@ const termsSections = [
 ];
 
 export default function PrivacyModal({ isOpen, onClose }: Props) {
+  const lang = useLang();
+  const dir = useDir();
+  // באנגלית מוצג אותו תוכן שבעמוד /en/terms — מקור אחד לשני המקומות.
+  const en = lang === 'en';
   const [tab, setTab] = useState<'privacy' | 'terms'>('terms');
 
   return (
@@ -125,7 +131,7 @@ export default function PrivacyModal({ isOpen, onClose }: Props) {
                 border: `1px solid ${BORDER}`,
                 display: 'flex', flexDirection: 'column',
               }}
-              dir="rtl"
+              dir={dir}
             >
               {/* Header */}
               <div style={{ padding: '24px 28px', borderBottom: `1px solid ${BORDER}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
@@ -138,8 +144,8 @@ export default function PrivacyModal({ isOpen, onClose }: Props) {
               {/* Tabs */}
               <div style={{ display: 'flex', borderBottom: `1px solid ${BORDER}`, flexShrink: 0 }}>
                 {[
-                  { id: 'terms', label: 'תנאי שימוש' },
-                  { id: 'privacy', label: 'מדיניות פרטיות' },
+                  { id: 'terms', label: en ? 'Terms of Use' : 'תנאי שימוש' },
+                  { id: 'privacy', label: en ? 'Privacy Policy' : 'מדיניות פרטיות' },
                 ].map(t => (
                   <button
                     key={t.id}
@@ -168,7 +174,7 @@ export default function PrivacyModal({ isOpen, onClose }: Props) {
                 style={{ overflowY: 'auto', padding: '28px', display: 'flex', flexDirection: 'column', gap: '20px' }}
                 onWheel={e => e.stopPropagation()}
               >
-                {(tab === 'privacy' ? privacySections : termsSections).map(({ title, text }, i) => (
+                {(en ? (tab === 'privacy' ? privacySectionsEn : termsSectionsEn) : (tab === 'privacy' ? privacySections : termsSections)).map(({ title, text }, i) => (
                   <div key={i}>
                     {title && (
                       <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '14px', color: GOLD, margin: '0 0 6px', letterSpacing: '0.05em' }}>

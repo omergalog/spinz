@@ -10,7 +10,7 @@ const BORDER = '#E0DCD4';
 
 const COMPANY_LINE = `${CO.legalNameEn} (${CO.legalNameHe}), company no. ${CO.companyNumber}`;
 
-const privacySections = [
+export const privacySectionsEn = [
   { title: null, text: `${COMPANY_LINE} is committed to protecting your privacy and to full transparency in how we use the information you share with us.` },
   { title: 'Information we collect', text: 'When you use the site, fill in a form or make a purchase, we may collect personal details such as your name, email address, phone number and shipping address, along with technical information about your visit (browser, device and pages viewed).' },
   { title: 'How we use the information', text: 'Information is collected in order to process orders, provide customer service, improve the user experience, and — with your consent — send updates and offers. We do not sell your information to third parties.' },
@@ -22,7 +22,7 @@ const privacySections = [
   { title: 'Company details', text: `The site is operated by ${COMPANY_LINE}. Email: ${CO.email} · Phone: ${CO.phone}.` },
 ];
 
-const termsSections = [
+export const termsSectionsEn = [
   { title: 'General', text: `The site is operated by ${COMPANY_LINE}, which sells bicycles. Use of the site and its services constitutes acceptance of these terms.` },
   { title: 'The products', text: `${CO.legalNameEn} sells urban single-speed bicycles. The bikes are designed in Tel Aviv and built from standard components available worldwide.` },
   { title: 'Technical specification', text: 'Frame: aluminum, urban geometry | Fork: steel | Wheels: 700c double-wall | Tires: Kenda 32 mm, puncture-resistant | Drivetrain: single speed, 46T chainring | Brakes: front and rear caliper.' },
@@ -60,7 +60,7 @@ function Section({ title, children }: { title: string | null; children: React.Re
  */
 export default function TermsEn() {
   const [tab, setTab] = useState<'terms' | 'privacy'>('terms');
-  const sections = tab === 'privacy' ? privacySections : termsSections;
+  const sections = tab === 'privacy' ? privacySectionsEn : termsSectionsEn;
 
   return (
     <PageShell

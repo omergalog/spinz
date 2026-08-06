@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import PageShell from '../components/PageShell';
+import LegalNotice from '../components/LegalNotice';
+import { useT, useDir } from '../i18n/LanguageContext';
 import { supabase } from '../lib/supabase';
 import { COMPANY } from '../config/company';
 
@@ -10,15 +12,12 @@ const BORDER = '#E0DCD4';
 
 type Status = 'idle' | 'sending' | 'sent' | 'error';
 
-const REASONS = [
-  'התחרטתי / לא מעוניין יותר',
-  'עיכוב במועד האספקה',
-  'המוצר הגיע פגום או לא תקין',
-  'הזמנתי בטעות / מידה או צבע שגויים',
-  'אחר',
-];
 
 export default function CancelOrder() {
+  const t = useT();
+  const dir = useDir();
+  const c = t.pages.cancel;
+  const REASONS = c.reasons;
   const [form, setForm] = useState({ name: '', phone: '', email: '', orderRef: '', reason: REASONS[0], details: '' });
   const [status, setStatus] = useState<Status>('idle');
   const [errors, setErrors] = useState<Record<string, boolean>>({});
@@ -83,14 +82,16 @@ export default function CancelOrder() {
 
   return (
     <PageShell
-      eyebrow="ביטול עסקה"
-      title="ביטול עסקה."
-      subtitle="מילוי הטופס מהווה הודעת ביטול רשמית. נטפל בפנייה ונחזור אליכם עם אישור."
+      eyebrow={c.eyebrow}
+      title={c.title}
+      subtitle={c.sub}
       heroImage="/assets/photo-black-detail.jpg"
       heroPosition="center 55%"
     >
-      <div style={{ backgroundColor: '#F5F2EC', padding: 'clamp(32px, 6vw, 72px) clamp(20px, 6vw, 64px)' }} dir="rtl">
+      <div style={{ backgroundColor: '#F5F2EC', padding: 'clamp(32px, 6vw, 72px) clamp(20px, 6vw, 64px)' }} dir={dir}>
         <div style={{ maxWidth: '620px', margin: '0 auto' }}>
+
+          <LegalNotice />
 
           {status === 'sent' ? (
             <div style={{
@@ -99,11 +100,11 @@ export default function CancelOrder() {
             }}>
               <div style={{ fontSize: '34px', marginBottom: '10px' }}>✓</div>
               <h2 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '21px', color: DARK, margin: '0 0 10px' }}>
-                בקשת הביטול נקלטה
+                {c.received}
               </h2>
               <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14.5px', color: MUTED, lineHeight: 1.8, margin: 0 }}>
-                מועד קבלת ההודעה נרשם אצלנו והוא הקובע לצורך הביטול.
-                נחזור אליכם עם אישור ופרטי ההחזר תוך יום עסקים אחד.
+                {c.receivedBody1}
+                {c.receivedBody2}
                 <br />
                 לשאלות: <a href={`mailto:${COMPANY.email}`} style={{ color: GOLD }}>{COMPANY.email}</a> · {COMPANY.phone}
               </p>
@@ -121,14 +122,14 @@ export default function CancelOrder() {
               </div>
 
               <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                {field('name', 'שם מלא', 'שם מלא', { required: true })}
-                {field('phone', 'טלפון', '050-0000000', { type: 'tel', required: true, dir: 'ltr' })}
-                {field('email', 'דוא״ל', 'israel@example.com', { type: 'email', dir: 'ltr' })}
-                {field('orderRef', 'מספר הזמנה (אם ידוע)', 'לא חובה')}
+                {field('name', c.name, c.name, { required: true })}
+                {field('phone', c.phone, '050-0000000', { type: 'tel', required: true, dir: 'ltr' })}
+                {field('email', c.email, 'israel@example.com', { type: 'email', dir: 'ltr' })}
+                {field('orderRef', c.orderNo, c.optional)}
 
                 <label style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 600, color: DARK }}>
-                    סיבת הביטול
+                    {c.reason}
                   </span>
                   <select
                     value={form.reason}
@@ -145,13 +146,13 @@ export default function CancelOrder() {
 
                 <label style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 600, color: DARK }}>
-                    פרטים נוספים
+                    {c.details}
                   </span>
                   <textarea
                     value={form.details}
                     onChange={e => set('details', e.target.value)}
                     rows={4}
-                    placeholder="אפשר להוסיף כל מידע שיעזור לנו לטפל מהר יותר"
+                    placeholder={c.detailsPh}
                     style={{
                       padding: '12px 14px', borderRadius: '9px', border: `1px solid ${BORDER}`,
                       backgroundColor: '#FFFFFF', color: DARK, resize: 'vertical',
@@ -171,12 +172,12 @@ export default function CancelOrder() {
                     opacity: status === 'sending' ? 0.7 : 1,
                   }}
                 >
-                  {status === 'sending' ? 'שולח…' : 'שליחת הודעת ביטול'}
+                  {status === 'sending' ? c.sending : c.submit}
                 </button>
 
                 <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: '#9A9690', margin: 0, lineHeight: 1.7 }}>
-                  מועד קבלת הטופס אצלנו הוא המועד הקובע לביטול. אין באמור כדי לגרוע מזכויותיכם לפי
-                  חוק הגנת הצרכן, התשמ״א־1981.
+                  {c.legal1}{' '}
+                  {c.legal2}
                 </p>
               </form>
             </>

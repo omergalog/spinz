@@ -1,4 +1,5 @@
 import PageShell from '../components/PageShell';
+import { useT, useLang } from '../i18n/LanguageContext';
 import { COMPANY, COMPANY_LINE } from '../config/company';
 
 const DARK = '#1C1C1C';
@@ -6,36 +7,6 @@ const MUTED = '#4A4845';
 const GOLD = '#C9A870';
 const BORDER = '#E0DCD4';
 
-const sections = [
-  {
-    title: null,
-    text: `${COMPANY_LINE} מחויבת לנגישות דיגיטלית ולהבטחת חוויית שימוש שוויונית לכלל המשתמשים, לרבות אנשים עם מוגבלויות. אנו פועלים בהתאם לתקן ישראלי 5568 ולהנחיות WCAG 2.1 ברמה AA.`,
-  },
-  {
-    title: 'מה אנחנו עושים',
-    text: 'האתר תוכנן עם תמיכה בניווט מקלדת, ניגודיות צבעים מתאימה, תיאורי טקסט לתמונות (alt text) ומבנה סמנטי ברור התומך בתוכנות קריאת מסך.',
-  },
-  {
-    title: 'רמת הנגישות',
-    text: 'אנו שואפים לעמוד בדרישות תקן WCAG 2.1 ברמה AA. אם נתקלת בחסם נגישות כלשהו – נשמח לשמוע ולתקן.',
-  },
-  {
-    title: 'תוכן חיצוני',
-    text: 'חלקים מהאתר מסתמכים על תכנים של צדדים שלישיים (כגון סרטונים, מפות או ווידג\'טים חיצוניים) שאינם בשליטתנו המלאה. אנו פועלים לצמצם חסמים גם בתחומים אלו.',
-  },
-  {
-    title: 'נתקלת בבעיה?',
-    text: 'אם נתקלת בתוכן שאינו נגיש עבורך, נשמח שתיצור איתנו קשר. נשתדל לטפל בפנייה תוך 7 ימי עסקים.',
-  },
-  {
-    title: 'יצירת קשר בנושא נגישות',
-    text: `דוא"ל: ${COMPANY.email}\nטלפון: ${COMPANY.phone}\nניתן לפנות אלינו גם דרך WhatsApp.`,
-  },
-  {
-    title: 'רכז נגישות',
-    text: `רכז הנגישות של ${COMPANY.legalNameHe} אחראי לנושא ונותן מענה לפניות הציבור בכל הקשור לנגישות האתר. לפניות: ${COMPANY.email}`,
-  },
-];
 
 function Section({ title, children }: { title: string | null; children: React.ReactNode }) {
   return (
@@ -60,11 +31,23 @@ function Section({ title, children }: { title: string | null; children: React.Re
 }
 
 export default function Accessibility() {
+  const t = useT();
+  const lang = useLang();
+  const a = t.pages.accessibility;
+  const sections = [
+    { title: null, text: `${COMPANY_LINE} ${a.s0}` },
+    { title: a.s1t, text: a.s1 },
+    { title: a.s2t, text: a.s2 },
+    { title: a.s3t, text: a.s3 },
+    { title: a.s4t, text: a.s4 },
+    { title: a.s5t, text: `${a.emailLabel}: ${COMPANY.email}\n${a.phoneLabel}: ${COMPANY.phone}\n${a.viaWhatsapp}` },
+    { title: a.s6t, text: `${a.coordinator(lang === 'en' ? COMPANY.legalNameEn : COMPANY.legalNameHe)} ${COMPANY.email}` },
+  ];
   return (
     <PageShell
       eyebrow="Accessibility"
-      title="הצהרת נגישות"
-      subtitle="אנחנו מחויבים לחוויית שימוש שוויונית לכולם – בהתאם לתקן ישראלי 5568 ולתקן WCAG 2.1 ברמה AA."
+      title={a.title}
+      subtitle={a.sub}
       heroImage="/assets/photo-beige-bike.jpg"
       heroPosition="center 55%"
     >
@@ -78,7 +61,7 @@ export default function Accessibility() {
               fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 700,
               color: '#8A6D2F', letterSpacing: '0.04em',
             }}>
-              תקן ישראלי 5568 · WCAG 2.1 AA
+              {a.badge}
             </span>
           </div>
 
@@ -90,7 +73,7 @@ export default function Accessibility() {
             fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', color: '#9A9690',
             lineHeight: 1.7, marginTop: '14px', paddingTop: '18px', borderTop: `1px solid ${BORDER}`,
           }}>
-            הצהרת הנגישות עודכנה לאחרונה ביולי 2026.
+            {a.updated}
           </p>
 
         </div>

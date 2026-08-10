@@ -133,10 +133,12 @@ export default function Navbar() {
       >
         <AnnouncementBar />
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-9">
-          {/* Logo */}
-          <Link to={L("/")} onClick={goHome} aria-label={t.nav.logoAria} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', flexShrink: 0, padding: '10px 0' }}>
-            <img src="/assets/logo.png" alt="SPINZ" className="h-6 md:h-[48px]" style={{ width: 'auto' }} />
-          </Link>
+          {/* Logo — in an equal-weight side so the nav stays truly centered */}
+          <div className="flex shrink-0 justify-start lg:flex-1 lg:basis-0">
+            <Link to={L("/")} onClick={goHome} aria-label={t.nav.logoAria} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', flexShrink: 0, padding: '10px 0' }}>
+              <img src="/assets/logo.png" alt="SPINZ" className="h-6 md:h-[48px]" style={{ width: 'auto' }} />
+            </Link>
+          </div>
 
           {/* Desktop nav with dropdowns */}
           <nav className="hidden md:flex items-center gap-7">
@@ -234,7 +236,7 @@ export default function Navbar() {
           </nav>
 
           {/* CTA + search + cart + hamburger */}
-          <div className="flex items-center gap-2 md:gap-3">
+          <div className="flex items-center gap-2 md:gap-3 lg:flex-1 lg:basis-0 lg:justify-end">
             <button
               onClick={goContact}
               className="hidden md:inline-block font-bold uppercase tracking-widest text-xs py-[6px] px-[10px]"

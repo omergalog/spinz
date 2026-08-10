@@ -61,6 +61,11 @@ const CAPTURE = () => {
 };
 
 async function capture(page, url) {
+  // באנר העוגיות מופיע אחרי 2.6 שניות ומרים איתו את הכפתורים הצפים, כך
+  // שלכידה אחת תופסת אותו ואחרת לא. מסמנים אותו כנצפה כדי שהמדידה תהיה קבועה.
+  await page.addInitScript(() => {
+    try { localStorage.setItem('spinz-cookies', '1'); } catch { /* ignore */ }
+  });
   await page.goto(url, { waitUntil: 'networkidle' });
 
   // אנימציות רצות הופכות כל מדידה לאקראית: נקודה מהבהבת משנה גודל בכל פריים,

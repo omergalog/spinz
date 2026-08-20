@@ -111,7 +111,12 @@ export default function CartDrawer() {
             transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
             style={{
               position: 'fixed', top: 0, right: 0, bottom: 0,
-              width: '100%', maxWidth: '420px',
+              width: '100%',
+              // עמוד התשלום רחב יותר: כשמופעל 3DS, מסך קוד האימות של
+              // חברת האשראי נטען בתוך המסגרת, והוא לא מעוצב לרוחב של
+              // מגירת עגלה. בנייד ממילא מסך מלא.
+              maxWidth: step === 'payment' ? '560px' : '420px',
+              transition: 'max-width 0.35s cubic-bezier(0.22, 1, 0.36, 1)',
               zIndex: 999,
               backgroundColor: SURFACE,
               display: 'flex', flexDirection: 'column',

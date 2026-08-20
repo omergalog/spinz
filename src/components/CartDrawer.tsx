@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShoppingCart, Plus, Minus, CheckCircle } from 'lucide-react';
+import { X, ShoppingCart, Plus, Minus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { supabase } from '../lib/supabase';
+import { OutOfStockError, openCheckout, submitToIframe } from '../lib/payment';
 import { useT, useDir } from '../i18n/LanguageContext';
 
 const DARK    = '#1C1C1C';   // text on gold buttons
@@ -12,6 +12,9 @@ const SURFACE = '#F5F2EC';   // drawer background (cream)
 const SUBTLE  = '#FFFFFF';   // inputs / item tiles (white, so the white-bg
                              // bike photo blends into them seamlessly)
 const BORDER  = '#E0DCD4';
+
+// שם קבוע ל-iframe, כדי שהטופס המוגש ידע לאן לכוון
+const TRANZILA_FRAME = 'spinz-tranzila-frame';
 
 function formatPrice(n: number) {
   return `₪${n.toLocaleString('he-IL')}`;  // מספרים זהים בשתי השפות
@@ -23,11 +26,21 @@ export default function CartDrawer() {
   const { items, updateQuantity, clearCart, totalCount, isOpen, closeCart } = useCart();
   const total = items.reduce((sum, i) => sum + i.model.price * i.quantity, 0);
   const [ordering, setOrdering] = useState(false);
-  const [ordered, setOrdered] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
-  const [step, setStep] = useState<'cart' | 'details'>('cart');
+  const [step, setStep] = useState<'cart' | 'details' | 'payment'>('cart');
+  const [payFrameReady, setPayFrameReady] = useState(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const [form, setForm] = useState({ name: '', email: '', phone: '', address: '' });
   const [formErrors, setFormErrors] = useState<Record<string, boolean>>({});
+
+  // סגירת המגירה מאפסת את התהליך. בלי זה, פתיחה חוזרת הייתה מציגה
+  // מסגרת תשלום ישנה ששייכת לסל שכבר פג.
+  useEffect(() => {
+    if (isOpen) return;
+    setStep('cart');
+    setPayFrameReady(false);
+    setOrderError(null);
+  }, [isOpen]);
 
   const validateAndCheckout = () => {
     const errors: Record<string, boolean> = {};
@@ -43,51 +56,31 @@ export default function CartDrawer() {
     setOrdering(true);
     setOrderError(null);
     try {
-      // One atomic server call: validates stock, locks rows, sets the price
-      // server-side and decrements stock + presale quota together.
-      const { data, error } = await supabase.rpc('place_order', {
-        p_items: items.map(i => ({
+      // השרת מתמחר, שומר את הסל ומחזיר טופס מוכן. שום סכום לא נשלח
+      // מכאן — אחרת אפשר היה לשנות אותו בכלי הפיתוח של הדפדפן.
+      const session = await openCheckout({
+        items: items.map(i => ({
           color: i.colorId,
           size: i.size,
           quantity: i.quantity,
           colorSkuCode: i.colorSkuCode,
         })),
-        p_name: form.name,
-        p_phone: form.phone,
-        p_email: form.email || null,
-        p_notes: form.address,
+        name: form.name,
+        phone: form.phone,
+        email: form.email || undefined,
+        address: form.address,
       });
 
-      if (error) {
-        const msg = String(error.message || '');
-        if (msg.includes('OUT_OF_STOCK')) {
-          const parts = msg.split('OUT_OF_STOCK:')[1]?.split(':') ?? [];
-          const left = parts[1]?.replace(/\D/g, '');
-          setOrderError(
-            left && Number(left) > 0
-              ? t.cart.errQty(Number(left))
-              : t.cart.errOutOfStock
-          );
-        } else {
-          setOrderError(t.cart.errGeneric);
-        }
-        setOrdering(false);
-        return;
-      }
-
-      if (!data?.ok) {
+      setPayFrameReady(false);
+      setStep('payment');
+      // ה-iframe נוצר ברינדור הבא, ולכן ההגשה מחכה לו.
+      requestAnimationFrame(() => submitToIframe(session, TRANZILA_FRAME));
+    } catch (e) {
+      if (e instanceof OutOfStockError) {
+        setOrderError(e.left > 0 ? t.cart.errQty(e.left) : t.cart.errOutOfStock);
+      } else {
         setOrderError(t.cart.errGeneric);
-        setOrdering(false);
-        return;
       }
-
-      clearCart();
-      setOrdered(true);
-      setStep('cart');
-      setForm({ name: '', email: '', phone: '', address: '' });
-      setTimeout(() => { setOrdered(false); closeCart(); }, 2500);
-    } catch {
-      setOrderError(t.cart.errGeneric);
     }
     setOrdering(false);
   };
@@ -222,20 +215,6 @@ export default function CartDrawer() {
               )}
             </div>
 
-            {/* Order success */}
-            <AnimatePresence>
-              {ordered && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-                  style={{ position: 'absolute', inset: 0, backgroundColor: SURFACE, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px', zIndex: 10 }}
-                >
-                  <CheckCircle size={48} style={{ color: GOLD }} />
-                  <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '22px', color: '#EDEBE6', margin: 0 }}>{t.cart.orderReceived}</h3>
-                  <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: "#6A6862", margin: 0 }}>{t.cart.orderFollowUp}</p>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
             {/* Details step */}
             <AnimatePresence>
               {step === 'details' && (
@@ -329,6 +308,59 @@ export default function CartDrawer() {
                       <a href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#8A6D3B', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
                         {t.cart.agreeTerms}
                       </a>.
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+
+            {/* Payment step — עמוד הסליקה של טרנזילה */}
+            <AnimatePresence>
+              {step === 'payment' && (
+                <motion.div
+                  initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
+                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                  style={{ position: 'absolute', inset: 0, backgroundColor: SURFACE, display: 'flex', flexDirection: 'column', zIndex: 6 }}
+                  dir={dir}
+                >
+                  <div style={{ padding: '20px 24px', borderBottom: `1px solid ${BORDER}`, display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <button
+                      onClick={() => setStep('details')}
+                      aria-label={t.cart.backToDetails}
+                      style={{ background: 'none', border: 'none', color: '#6A6862', cursor: 'pointer', padding: '10px', margin: '-10px', fontSize: '20px', lineHeight: 1 }}
+                    >
+                      →
+                    </button>
+                    <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '17px', color: TEXT, margin: 0 }}>{t.cart.payTitle}</h3>
+                  </div>
+
+                  <div style={{ flex: 1, position: 'relative', backgroundColor: SUBTLE }}>
+                    {!payFrameReady && (
+                      <p style={{
+                        position: 'absolute', inset: 0, display: 'flex',
+                        alignItems: 'center', justifyContent: 'center', margin: 0,
+                        fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#6A6862',
+                      }}>
+                        {t.cart.payLoading}
+                      </p>
+                    )}
+                    {/* allowpaymentrequest נדרש כדי ש-Google Pay יופיע בתוך המסגרת */}
+                    <iframe
+                      ref={iframeRef}
+                      name={TRANZILA_FRAME}
+                      title={t.cart.payTitle}
+                      onLoad={() => setPayFrameReady(true)}
+                      allow="payment"
+                      // @ts-expect-error — תכונה לא סטנדרטית שטרנזילה דורשת ל-Google Pay
+                      allowpaymentrequest="true"
+                      style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
+                    />
+                  </div>
+
+                  <div style={{ padding: '14px 24px', borderTop: `1px solid ${BORDER}` }}>
+                    <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#6A6862', lineHeight: 1.6, margin: 0, textAlign: 'center' }}>
+                      {t.cart.payNote}
                     </p>
                   </div>
                 </motion.div>

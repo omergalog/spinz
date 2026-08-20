@@ -19,6 +19,7 @@ import ReviewsPage from './pages/ReviewsPage';
 import Contact from './pages/Contact';
 import PresaleTerms from './pages/PresaleTerms';
 import CancelOrder from './pages/CancelOrder';
+import OrderResult from './pages/OrderResult';
 import Regulations from './pages/Regulations';
 import AccessibilityWidget from './components/AccessibilityWidget';
 import WhatsAppFab from './components/WhatsAppFab';
@@ -77,6 +78,8 @@ function Root() {
                       <Route path="terms" element={<Terms />} />
                       <Route path="presale-terms" element={<PresaleTerms />} />
                       <Route path="cancel-order" element={<CancelOrder />} />
+                      <Route path="order/success" element={<OrderResult outcome="success" />} />
+                      <Route path="order/failed" element={<OrderResult outcome="failed" />} />
                       <Route path="regulations" element={<Regulations />} />
                       <Route path="accessibility" element={<Accessibility />} />
                     {/* קישורים ישנים (למשל ל-waitlist שהוסר) וכתובות שגויות

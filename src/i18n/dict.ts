@@ -312,6 +312,10 @@ export const dict = {
       total: 'סה"כ',
       errQty: (n: number) => `נשארו רק ${n} יחידות מהפריט שבחרת. עדכנו את הכמות ונסו שוב.`,
       backToCart: 'חזרה לעגלה',
+      payTitle: 'תשלום מאובטח',
+      payLoading: 'טוען עמוד תשלום מאובטח…',
+      payNote: 'פרטי האשראי נמסרים ישירות לחברת הסליקה טרנזילה ואינם עוברים דרך האתר.',
+      backToDetails: 'חזרה לפרטים',
     },
     faq: { eyebrow: 'שאלות נפוצות', title: 'כל מה שרצית לדעת.' },
     specs: {
@@ -647,6 +651,10 @@ export const dict = {
       total: 'Total',
       errQty: (n: number) => `Only ${n} of that item are left. Adjust the quantity and try again.`,
       backToCart: 'Back to cart',
+      payTitle: 'Secure payment',
+      payLoading: 'Loading secure payment page…',
+      payNote: 'Card details go straight to Tranzila, our payment processor, and never pass through this site.',
+      backToDetails: 'Back to details',
     },
     faq: { eyebrow: 'FAQ', title: 'Everything you wanted to know.' },
     specs: {

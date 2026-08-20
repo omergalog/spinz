@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Plus, Minus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { OutOfStockError, loadApplePay, openCheckout, submitToIframe } from '../lib/payment';
+import { OutOfStockError, checkCoupon, loadApplePay, openCheckout, submitToIframe }
+  from '../lib/payment';
 import { useT, useDir } from '../i18n/LanguageContext';
 
 const DARK    = '#1C1C1C';   // text on gold buttons
@@ -31,6 +32,9 @@ export default function CartDrawer() {
   const [orderError, setOrderError] = useState<string | null>(null);
   const [step, setStep] = useState<'cart' | 'details' | 'payment'>('cart');
   const [payFrameReady, setPayFrameReady] = useState(false);
+  const [coupon, setCoupon] = useState('');
+  const [couponState, setCouponState] = useState<'idle' | 'checking' | 'ok' | 'bad'>('idle');
+  const [discount, setDiscount] = useState(0);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [form, setForm] = useState({ name: '', email: '', phone: '', address: '' });
   const [formErrors, setFormErrors] = useState<Record<string, boolean>>({});
@@ -65,7 +69,20 @@ export default function CartDrawer() {
     setStep('cart');
     setPayFrameReady(false);
     setOrderError(null);
+    setCoupon('');
+    setCouponState('idle');
+    setDiscount(0);
   }, [isOpen]);
+
+  const applyCoupon = async () => {
+    if (!coupon.trim()) return;
+    setCouponState('checking');
+    // ההנחה מחושבת בשרת. כאן רק מציגים את התוצאה, כדי שהסכום שמוצג
+    // יהיה בדיוק זה שייגבה.
+    const r = await checkCoupon(coupon.trim(), total);
+    setDiscount(r.valid ? r.discount : 0);
+    setCouponState(r.valid ? 'ok' : 'bad');
+  };
 
   const validateAndCheckout = () => {
     const errors: Record<string, boolean> = {};
@@ -94,6 +111,7 @@ export default function CartDrawer() {
         phone: form.phone,
         email: form.email || undefined,
         address: form.address,
+        coupon: couponState === 'ok' ? coupon.trim() : undefined,
       });
 
       setPayFrameReady(false);
@@ -301,11 +319,60 @@ export default function CartDrawer() {
                       </div>
                     ))}
 
+                    {/* Coupon */}
+                    <div>
+                      <label style={{ display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#6A6862', letterSpacing: '0.1em', marginBottom: '6px', textTransform: 'uppercase' }}>
+                        {t.cart.couponLabel}
+                      </label>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <input
+                          type="text"
+                          dir="ltr"
+                          placeholder={t.cart.couponPlaceholder}
+                          value={coupon}
+                          onChange={e => { setCoupon(e.target.value); setCouponState('idle'); setDiscount(0); }}
+                          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); applyCoupon(); } }}
+                          style={{
+                            flex: 1, padding: '11px 14px', backgroundColor: SUBTLE,
+                            border: `1px solid ${couponState === 'bad' ? '#FF6B6B' : BORDER}`,
+                            borderRadius: '8px', color: TEXT,
+                            fontFamily: "'Heebo', sans-serif", fontSize: '14px',
+                            outline: 'none', direction: 'ltr', boxSizing: 'border-box',
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={applyCoupon}
+                          disabled={couponState === 'checking' || !coupon.trim()}
+                          style={{
+                            padding: '0 18px', backgroundColor: 'transparent',
+                            border: `1px solid ${BORDER}`, borderRadius: '8px', color: TEXT,
+                            fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 700,
+                            cursor: coupon.trim() ? 'pointer' : 'not-allowed',
+                            opacity: coupon.trim() ? 1 : 0.5, whiteSpace: 'nowrap',
+                          }}>
+                          {couponState === 'checking' ? '…' : t.cart.couponApply}
+                        </button>
+                      </div>
+                      {couponState === 'bad' && (
+                        <p style={{ color: '#FF6B6B', fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>{t.cart.couponBad}</p>
+                      )}
+                      {couponState === 'ok' && (
+                        <p style={{ color: '#3B6B33', fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>{t.cart.couponOk}</p>
+                      )}
+                    </div>
+
                     {/* Summary */}
                     <div style={{ backgroundColor: SUBTLE, border: `1px solid ${BORDER}`, borderRadius: '8px', padding: '14px 16px', marginTop: '8px' }}>
+                      {discount > 0 && (
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#3B6B33' }}>{t.cart.discount}</span>
+                          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 700, color: '#3B6B33' }}>−{formatPrice(discount)}</span>
+                        </div>
+                      )}
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
                         <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: "#6A6862" }}>{t.cart.orderTotal}</span>
-                        <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 700, color: GOLD }}>{formatPrice(total)}</span>
+                        <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 700, color: GOLD }}>{formatPrice(total - discount)}</span>
                       </div>
                       <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: "#9A9690", margin: 0 }}>{t.cart.inclVat}</p>
                     </div>

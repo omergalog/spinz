@@ -41,9 +41,9 @@ Deno.serve(async (req) => {
     return json({ error: 'bad_json' }, 400);
   }
 
-  const { items, name, phone, email, address } = body as {
+  const { items, name, phone, email, address, coupon } = body as {
     items?: Array<Record<string, unknown>>;
-    name?: string; phone?: string; email?: string; address?: string;
+    name?: string; phone?: string; email?: string; address?: string; coupon?: string;
   };
 
   if (!Array.isArray(items) || items.length === 0) return json({ error: 'EMPTY_CART' }, 400);
@@ -63,6 +63,8 @@ Deno.serve(async (req) => {
     p_phone: phone,
     p_email: email ?? null,
     p_notes: address ?? null,
+    // קוד בלבד. ההנחה מחושבת בשרת, כמו המחיר עצמו.
+    p_coupon: coupon ?? null,
   });
 
   if (error) {

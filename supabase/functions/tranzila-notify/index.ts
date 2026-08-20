@@ -161,6 +161,10 @@ Deno.serve(async (req) => {
   await log(data?.already ? 'הודעה חוזרת — ההזמנה כבר קיימת' : 'הזמנה נוצרה',
             { order_ids: data?.order_ids });
 
+  // מימוש הקופון קורה כאן ולא ביצירת הסל, אחרת עגלה נטושה הייתה
+  // שורפת שימוש מהמכסה.
+  if (!data?.already) await db.rpc('redeem_coupon', { p_session_id: sessionId });
+
   // כישלון במייל לא מפיל את ההזמנה — הכסף כבר נגבה
   const mailErr = await confirmOrderOnce(db, sessionId);
   if (mailErr) await log(`שליחת אישור ההזמנה נכשלה: ${mailErr}`);

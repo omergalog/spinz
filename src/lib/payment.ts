@@ -24,6 +24,27 @@ export type CheckoutSession = {
   fields: Record<string, string>;
 };
 
+export type CouponResult = {
+  valid: boolean;
+  total: number;
+  discount: number;
+  label?: string;
+};
+
+/**
+ * בדיקת קוד קופון לתצוגה בעגלה.
+ *
+ * אותה פונקציה בדיוק מחשבת גם את המחיר שנשלח לתשלום, ולכן אין מצב
+ * שהעגלה מציגה סכום אחד והחיוב יוצא אחר.
+ */
+export async function checkCoupon(code: string, subtotal: number): Promise<CouponResult> {
+  const { data, error } = await supabase.rpc('apply_coupon', {
+    p_code: code, p_subtotal: subtotal,
+  });
+  if (error || !data) return { valid: false, total: subtotal, discount: 0 };
+  return data as CouponResult;
+}
+
 export class OutOfStockError extends Error {
   constructor(public left: number) { super('OUT_OF_STOCK'); }
 }
@@ -34,6 +55,7 @@ export async function openCheckout(input: {
   phone: string;
   email?: string;
   address?: string;
+  coupon?: string;
 }): Promise<CheckoutSession> {
   const { data: { session } } = await supabase.auth.getSession();
 

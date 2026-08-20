@@ -8,6 +8,7 @@ import { supabase } from '../lib/supabase';
 import { fetchApprovedReviews } from '../lib/reviews';
 import { useLang, useT, useDir, localizePath } from '../i18n/LanguageContext';
 import { usePresale } from '../config/presale';
+import { checkCoupon } from '../lib/payment';
 
 const DARK   = '#1C1C1C';
 const BEIGE  = '#FFFFFF';
@@ -134,7 +135,13 @@ export default function Models() {
     });
   }, [added]);
 
-  const { addItem } = useCart();
+  const { addItem, coupon, setCoupon } = useCart();
+
+  // תצוגת הקופון. ההנחה מחושבת בשרת — כאן רק מציגים את התוצאה, ואותה
+  // פונקציה עצמה תקבע את הסכום שייגבה בפועל.
+  const [couponInput, setCouponInput] = useState(coupon);
+  const [couponState, setCouponState] = useState<'idle' | 'checking' | 'ok' | 'bad'>(coupon ? 'ok' : 'idle');
+  const [couponPrice, setCouponPrice] = useState<number | null>(null);
   const color = colorVariants[selectedColor];
   const colorLabel = t.product.colors[color.id as keyof typeof t.product.colors];
   const size  = sizeVariants[selectedSize];
@@ -188,6 +195,28 @@ export default function Models() {
     );
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
+  };
+
+  // מחיר אחרי קופון. נבדק מחדש בכל שינוי וריאנט או מחיר, אחרת אפשר
+  // היה להישאר עם מספר ישן על המסך.
+  useEffect(() => {
+    if (!coupon) { setCouponPrice(null); return; }
+    let alive = true;
+    checkCoupon(coupon, shownPrice).then(r => {
+      if (!alive) return;
+      setCouponPrice(r.valid ? r.total : null);
+      setCouponState(r.valid ? 'ok' : 'bad');
+    });
+    return () => { alive = false; };
+  }, [coupon, shownPrice]);
+
+  const applyCoupon = async () => {
+    const code = couponInput.trim();
+    if (!code) { setCoupon(''); setCouponState('idle'); setCouponPrice(null); return; }
+    setCouponState('checking');
+    const r = await checkCoupon(code, shownPrice);
+    if (r.valid) { setCoupon(code); setCouponPrice(r.total); setCouponState('ok'); }
+    else { setCoupon(''); setCouponPrice(null); setCouponState('bad'); }
   };
 
   // The upper block (label → heading → subtitle → rating → presale banner).
@@ -284,10 +313,14 @@ export default function Models() {
         </div>
       )}
       <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' }}>
-        <span style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(34px, 5vw, 46px)', color: DARK, letterSpacing: '-0.01em' }}>
-          ₪{shownPrice.toLocaleString('he-IL')}
+        <span style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(34px, 5vw, 46px)', color: couponPrice != null ? '#3B6B33' : DARK, letterSpacing: '-0.01em' }}>
+          ₪{(couponPrice ?? shownPrice).toLocaleString('he-IL')}
         </span>
-        {presale ? (
+        {couponPrice != null ? (
+          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', color: '#999', textDecoration: 'line-through', textDecorationColor: '#3B6B33' }}>
+            ₪{shownPrice.toLocaleString('he-IL')}
+          </span>
+        ) : presale ? (
           <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', color: '#999', textDecoration: 'line-through', textDecorationColor: '#C17A56' }}>
             ₪{presaleCfg.regularPrice.toLocaleString('he-IL')}
           </span>
@@ -297,11 +330,56 @@ export default function Models() {
           </span>
         ) : null}
       </div>
-      {presale && (
+      {presale && couponPrice == null && (
         <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13.5px', color: MUTED, margin: '10px 0 0' }}>
           {t.product.monthlyPre} <b style={{ color: DARK }}>₪{monthly.toLocaleString(lang === 'en' ? 'en-US' : 'he-IL')}</b> {t.product.monthlyPost}
         </p>
       )}
+
+      {/* קופון. הקוד נשמר ועובר לעגלה; ההנחה עצמה מחושבת בשרת, ולכן
+          מה שמוצג כאן הוא בדיוק מה שייגבה. */}
+      <div style={{ marginTop: '14px', maxWidth: '340px' }}>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <input
+            type="text"
+            dir="ltr"
+            value={couponInput}
+            onChange={e => { setCouponInput(e.target.value); setCouponState('idle'); }}
+            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); applyCoupon(); } }}
+            placeholder={t.cart.couponPlaceholder}
+            style={{
+              flex: 1, padding: '9px 12px', backgroundColor: '#FFFFFF',
+              border: `1px solid ${couponState === 'bad' ? '#FF6B6B'
+                        : couponState === 'ok' ? '#3B6B33' : '#E0DCD4'}`,
+              borderRadius: '8px', color: DARK,
+              fontFamily: "'Heebo', sans-serif", fontSize: '13px',
+              outline: 'none', direction: 'ltr', boxSizing: 'border-box',
+            }}
+          />
+          <button
+            type="button"
+            onClick={applyCoupon}
+            disabled={couponState === 'checking'}
+            style={{
+              padding: '0 16px', backgroundColor: 'transparent',
+              border: '1px solid #E0DCD4', borderRadius: '8px', color: DARK,
+              fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 700,
+              cursor: 'pointer', whiteSpace: 'nowrap',
+            }}>
+            {couponState === 'checking' ? '…' : t.cart.couponApply}
+          </button>
+        </div>
+        {couponState === 'bad' && (
+          <p style={{ color: '#FF6B6B', fontSize: '11.5px', margin: '5px 0 0', fontFamily: "'Heebo', sans-serif" }}>
+            {t.cart.couponBad}
+          </p>
+        )}
+        {couponState === 'ok' && couponPrice != null && (
+          <p style={{ color: '#3B6B33', fontSize: '11.5px', margin: '5px 0 0', fontFamily: "'Heebo', sans-serif" }}>
+            {t.cart.couponOk}
+          </p>
+        )}
+      </div>
     </div>
   );
 

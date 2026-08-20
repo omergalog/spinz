@@ -25,14 +25,14 @@ function formatPrice(n: number) {
 export default function CartDrawer() {
   const t = useT();
   const dir = useDir();
-  const { items, updateQuantity, clearCart, totalCount, isOpen, closeCart } = useCart();
+  const { items, updateQuantity, clearCart, totalCount, isOpen, closeCart, coupon: savedCoupon, setCoupon: saveCoupon } = useCart();
   const navigate = useNavigate();
   const total = items.reduce((sum, i) => sum + i.model.price * i.quantity, 0);
   const [ordering, setOrdering] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
   const [step, setStep] = useState<'cart' | 'details' | 'payment'>('cart');
   const [payFrameReady, setPayFrameReady] = useState(false);
-  const [coupon, setCoupon] = useState('');
+  const [coupon, setCoupon] = useState(savedCoupon);
   const [couponState, setCouponState] = useState<'idle' | 'checking' | 'ok' | 'bad'>('idle');
   const [discount, setDiscount] = useState(0);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -51,7 +51,7 @@ export default function CartDrawer() {
 
       // העגלה מתרוקנת רק בהצלחה. בכישלון הלקוח אמור להיות מסוגל
       // לנסות שוב בלי לבנות אותה מחדש.
-      if (e.data.outcome === 'success') clearCart();
+      if (e.data.outcome === 'success') { clearCart(); saveCoupon(''); }
 
       closeCart();
       setStep('cart');
@@ -60,7 +60,22 @@ export default function CartDrawer() {
 
     window.addEventListener('message', onMessage);
     return () => window.removeEventListener('message', onMessage);
-  }, [clearCart, closeCart, navigate]);
+  }, [clearCart, closeCart, navigate, saveCoupon]);
+
+  // הקוד שהוזן בעמוד המוצר נבדק כאן מחדש מול סכום העגלה האמיתי.
+  // בעמוד המוצר הוא נבדק מול מחיר יחידה אחת, ולכן הסכומים יכולים
+  // להיות שונים כשיש בעגלה יותר מפריט אחד.
+  useEffect(() => {
+    if (!isOpen || !savedCoupon || total <= 0) return;
+    let alive = true;
+    checkCoupon(savedCoupon, total).then(r => {
+      if (!alive) return;
+      setCoupon(savedCoupon);
+      setDiscount(r.valid ? r.discount : 0);
+      setCouponState(r.valid ? 'ok' : 'bad');
+    });
+    return () => { alive = false; };
+  }, [isOpen, savedCoupon, total]);
 
   // סגירת המגירה מאפסת את התהליך. בלי זה, פתיחה חוזרת הייתה מציגה
   // מסגרת תשלום ישנה ששייכת לסל שכבר פג.
@@ -69,9 +84,7 @@ export default function CartDrawer() {
     setStep('cart');
     setPayFrameReady(false);
     setOrderError(null);
-    setCoupon('');
     setCouponState('idle');
-    setDiscount(0);
   }, [isOpen]);
 
   const applyCoupon = async () => {
@@ -82,6 +95,7 @@ export default function CartDrawer() {
     const r = await checkCoupon(coupon.trim(), total);
     setDiscount(r.valid ? r.discount : 0);
     setCouponState(r.valid ? 'ok' : 'bad');
+    saveCoupon(r.valid ? coupon.trim() : '');
   };
 
   const validateAndCheckout = () => {

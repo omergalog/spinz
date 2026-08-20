@@ -19,6 +19,9 @@ interface CartContextType {
   clearCart: () => void;
   totalCount: number;
   isOpen: boolean;
+  /** קוד הקופון שהוזן. ההנחה עצמה מחושבת בשרת בלבד. */
+  coupon: string;
+  setCoupon: (code: string) => void;
   openCart: () => void;
   closeCart: () => void;
 }
@@ -35,6 +38,21 @@ export function CartProvider({ children }: { children: ReactNode }) {
     } catch { return []; }
   });
   const [isOpen, setIsOpen] = useState(false);
+
+  // הקופון חי כאן ולא בעגלה, כדי שהוא יישמר בין עמוד המוצר לבין
+  // הצ׳קאאוט. הוא נשמר בדפדפן כדי שרענון לא יאבד אותו — הערך הזה
+  // הוא קוד בלבד, לא הנחה: השרת מחשב מחדש בכל מקרה.
+  const [coupon, setCouponState] = useState<string>(() => {
+    try { return localStorage.getItem('spinz_coupon') ?? ''; } catch { return ''; }
+  });
+
+  const setCoupon = (code: string) => {
+    setCouponState(code);
+    try {
+      if (code) localStorage.setItem('spinz_coupon', code);
+      else localStorage.removeItem('spinz_coupon');
+    } catch { /* מצב פרטי בדפדפן — לא נורא */ }
+  };
 
   useEffect(() => {
     localStorage.setItem('spinz-cart', JSON.stringify(items));
@@ -106,7 +124,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const totalCount = items.reduce((sum, i) => sum + i.quantity, 0);
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, totalCount, isOpen, openCart: () => setIsOpen(true), closeCart: () => setIsOpen(false) }}>
+    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, totalCount, isOpen, coupon, setCoupon, openCart: () => setIsOpen(true), closeCart: () => setIsOpen(false) }}>
       {children}
     </CartContext.Provider>
   );

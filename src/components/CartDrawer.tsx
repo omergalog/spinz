@@ -486,10 +486,29 @@ export default function CartDrawer() {
             {/* Footer */}
             {items.length > 0 && (
               <div style={{ padding: '24px', borderTop: `1px solid ${BORDER}` }}>
+                {/* ההנחה מוצגת כאן ולא רק במסך הפרטים: זו השורה שהלקוח
+                    מסתכל עליה לפני שהוא מחליט להמשיך. */}
+                {discount > 0 && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#3B6B33' }}>
+                      {t.cart.discount}{coupon ? ` · ${coupon.toUpperCase()}` : ''}
+                    </span>
+                    <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, color: '#3B6B33' }}>
+                      −{formatPrice(discount)}
+                    </span>
+                  </div>
+                )}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                   <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: "#6A6862" }}>{t.cart.total}</span>
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '22px', fontWeight: 800, color: GOLD }}>
-                    {formatPrice(total)}
+                  <span style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
+                    {discount > 0 && (
+                      <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', color: '#9A9690', textDecoration: 'line-through' }}>
+                        {formatPrice(total)}
+                      </span>
+                    )}
+                    <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '22px', fontWeight: 800, color: GOLD }}>
+                      {formatPrice(total - discount)}
+                    </span>
                   </span>
                 </div>
                 <button

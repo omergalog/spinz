@@ -10,7 +10,7 @@
  * ולעיתים מנסה שוב. יצירת ההזמנה קורית פעם אחת בלבד.
  */
 import { createClient } from 'jsr:@supabase/supabase-js@2';
-import { amountMatches, looksLikeUnitMismatch, reportAmountToIls, verifyTransaction }
+import { amountMatches, looksLikeUnitMismatch, reportAmountToIls, safeLast4, verifyTransaction }
   from '../_shared/tranzila.ts';
 import { confirmOrderOnce } from '../_shared/email.ts';
 
@@ -139,7 +139,7 @@ Deno.serve(async (req) => {
     p_amount: reportAmountToIls(reported),
     p_index: index,
     p_txn_id: Number(payload.transaction_id ?? 0) || null,
-    p_last4: payload.ccno ?? null,
+    p_last4: safeLast4(payload.ccno),
   });
 
   if (error || !data?.ok) {

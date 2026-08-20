@@ -18,8 +18,17 @@ import { amountMatches, isApproved, listTransactions, reportAmountToIls }
   from '../_shared/tranzila.ts';
 import { confirmOrderOnce } from '../_shared/email.ts';
 
-/** חלון הזמן שבו סל ועסקה עוד יכולים להיות אותו דבר */
-const MATCH_WINDOW_MS = 3 * 60 * 60 * 1000;
+/**
+ * חלון הזמן שבו סל ועסקה עוד יכולים להיות אותו דבר.
+ *
+ * רחב בכוונה. הדוח מחזיר תאריך בלי אזור זמן, ולכן ייתכן פער קבוע של
+ * שעתיים-שלוש בין שעון המסוף לשעון שלנו. חלון צר היה מפספס את הסל
+ * הנכון בדיוק בגלל הפער הזה.
+ *
+ * ההרחבה בטוחה משום שהתאמה מתקבלת רק כשיש מועמד יחיד. חלון רחב יותר
+ * מגדיל את הסיכוי לשני מועמדים — וזה נשלח לבדיקה ידנית, לא לניחוש.
+ */
+const MATCH_WINDOW_MS = 8 * 60 * 60 * 1000;
 
 const ymd = (d: Date) => d.toISOString().slice(0, 10);
 
@@ -145,7 +154,18 @@ Deno.serve(async (req) => {
     }
   }
 
-  return new Response(JSON.stringify(result), {
+  // מיילים שלא יצאו. תקלה זמנית אצל ספק הדיוור השאירה קודם לקוח
+  // ששילם בלי שום אישור, ובלי ניסיון נוסף לעולם.
+  const { data: unsent } = await db.from('checkout_sessions')
+    .select('id').eq('status', 'paid').is('confirmation_sent_at', null)
+    .gte('created_at', since.toISOString()).limit(50);
+
+  for (const u of unsent ?? []) {
+    const err = await confirmOrderOnce(db, u.id);
+    if (err) console.error('resend confirmation', u.id, err);
+  }
+
+  return new Response(JSON.stringify({ ...result, mails_retried: (unsent ?? []).length }), {
     headers: { 'Content-Type': 'application/json' },
   });
 });

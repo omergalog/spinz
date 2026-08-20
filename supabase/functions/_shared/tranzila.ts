@@ -128,7 +128,14 @@ export async function verifyTransaction(index: number): Promise<Verified> {
  * לכן פירוש אחד בלבד, וניתן לשינוי דרך משתנה סביבה אם יתברר בבדיקה
  * שהמסוף מדווח בשקלים.
  */
-const AMOUNT_UNIT = (Deno.env.get('TRANZILA_REPORT_AMOUNT_UNIT') ?? 'agorot').toLowerCase();
+const AMOUNT_UNIT = (Deno.env.get('TRANZILA_REPORT_AMOUNT_UNIT') ?? 'agorot').trim().toLowerCase();
+
+// ערך שאינו אחד מהשניים נפל קודם בשקט לאגורות. אם מישהו יכתוב
+// 'shekels' או 'ILS' והמסוף באמת מדווח בשקלים, כל ההזמנות היו נכשלות
+// בלי סיבה נראית לעין.
+if (AMOUNT_UNIT !== 'agorot' && AMOUNT_UNIT !== 'shekel') {
+  throw new Error(`TRANZILA_REPORT_AMOUNT_UNIT חייב להיות agorot או shekel, התקבל: ${AMOUNT_UNIT}`);
+}
 
 export function reportAmountToIls(reported: number): number {
   return AMOUNT_UNIT === 'shekel' ? reported : reported / 100;
@@ -203,6 +210,17 @@ export async function listTransactions(
   }
 
   return all;
+}
+
+/**
+ * ארבע ספרות בלבד.
+ *
+ * השדה מגיע מהודעה שאינה מאומתת, ונשמר ומוצג ללקוח במייל. אין כאן
+ * סיכון להרצת קוד — הפלט מוברח — אבל אין סיבה לשמור זבל.
+ */
+export function safeLast4(v: unknown): string | null {
+  const s = String(v ?? '').replace(/\D/g, '');
+  return /^\d{4}$/.test(s) ? s : null;
 }
 
 /** האם העסקה הצליחה בפועל */

@@ -24,6 +24,7 @@ import Regulations from './pages/Regulations';
 import AccessibilityWidget from './components/AccessibilityWidget';
 import WhatsAppFab from './components/WhatsAppFab';
 import { getPauseMotion, onPauseMotionChange } from './utils/motionStore';
+import { initPixel } from './lib/pixel';
 import PasswordGate from './components/PasswordGate';
 import { LanguageProvider, EN_PREFIX, langFromPath } from './i18n/LanguageContext';
 import { getDict } from './i18n/dict';
@@ -32,6 +33,9 @@ function Root() {
   const [pauseMotion, setPauseMotionState] = useState(getPauseMotion);
 
   useEffect(() => onPauseMotionChange(setPauseMotionState), []);
+
+  // הפיקסל נטען רק אם הוגדר מזהה. בלעדיו זו פעולה ריקה.
+  useEffect(() => { initPixel(); }, []);
 
   return (
     <>

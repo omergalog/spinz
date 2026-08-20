@@ -13,6 +13,7 @@ import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { amountMatches, looksLikeUnitMismatch, reportAmountToIls, safeLast4, verifyTransaction }
   from '../_shared/tranzila.ts';
 import { confirmOrderOnce } from '../_shared/email.ts';
+import { sendPurchase } from '../_shared/meta.ts';
 
 Deno.serve(async (req) => {
   // טרנזילה מצפה ל-200 בכל מקרה. שגיאה שמוחזרת אליה רק תגרום
@@ -163,6 +164,29 @@ Deno.serve(async (req) => {
   // כישלון במייל לא מפיל את ההזמנה — הכסף כבר נגבה
   const mailErr = await confirmOrderOnce(db, sessionId);
   if (mailErr) await log(`שליחת אישור ההזמנה נכשלה: ${mailErr}`);
+
+  // אירוע רכישה למטא. נשלח פעם אחת בלבד, ורק כשההזמנה נוצרה באמת —
+  // ולכן מזהה האירוע הוא מזהה הסל: גם אם ההודעה תגיע שוב, מטא תזהה
+  // שזו אותה רכישה ולא תספור פעמיים.
+  if (!data?.already) {
+    const { data: s } = await db.from('checkout_sessions')
+      .select('customer_email, customer_phone, total_price, items')
+      .eq('id', sessionId).maybeSingle();
+
+    if (s) {
+      const metaErr = await sendPurchase({
+        eventId: sessionId,
+        value: s.total_price,
+        email: s.customer_email,
+        phone: s.customer_phone,
+        contents: (s.items ?? []).map((i: Record<string, unknown>) => ({
+          id: `spinz-${i.color}-${i.size}`,
+          quantity: Number(i.quantity ?? 1),
+        })),
+      });
+      if (metaErr) await log(`אירוע הרכישה למטא נכשל: ${metaErr}`);
+    }
+  }
 
   return ok();
 });

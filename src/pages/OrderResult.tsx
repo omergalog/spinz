@@ -4,6 +4,7 @@ import { CheckCircle, Clock, XCircle } from 'lucide-react';
 import PageShell from '../components/PageShell';
 import { useDir, useLang, localizePath } from '../i18n/LanguageContext';
 import { fetchStatus, type PaymentStatus } from '../lib/payment';
+import { pixelPurchase } from '../lib/pixel';
 import { COMPANY } from '../config/company';
 
 const DARK = '#1C1C1C';
@@ -81,6 +82,8 @@ export default function OrderResult({ outcome }: { outcome: 'success' | 'failed'
         setTotal(s.total);
         if (s.status !== 'pending') {
           setStatus(s.status);
+          // אותו מזהה אירוע שהשרת שולח, כדי שמטא תאחד ולא תספור פעמיים
+          if (s.status === 'paid') pixelPurchase(sessionId, s.total);
           return;                       // הגיע למצב סופי — מפסיקים לשאול
         }
       }

@@ -77,7 +77,16 @@ Deno.serve(async (req) => {
 
   const sessionId = data.session_id as string;
   const total = Number(data.total);
-  const maxPay = Number(data.max_installments ?? 1);
+
+  // לחברות האשראי יש רצפה לגובה תשלום בודד, ועסקה שיורדת מתחתיה
+  // נדחית (קוד 403). באופניים ב-₪1,090 זה לא מורגש, אבל בציוד נלווה
+  // בעשרות שקלים פריסה ל-12 תשלומים פשוט תיכשל — ולכן מספר התשלומים
+  // המוצע נגזר גם מהסכום.
+  const minPart = Math.max(1, Number(data.min_installment_amount ?? 100));
+  const maxPay = Math.max(1, Math.min(
+    Number(data.max_installments ?? 1),
+    Math.floor(total / minPart),
+  ));
 
   const fields: Record<string, string> = {
     sum: total.toFixed(2),
@@ -97,12 +106,13 @@ Deno.serve(async (req) => {
 
     // החזרה עוברת דרך פונקציית שרת ולא ישירות לאתר: טרנזילה חוזרת
     // ב-POST, ואתר סטטי על Vercel אינו יודע לקבל POST.
-    success_url_address: `${FUNCTIONS}/tranzila-return`,
-    fail_url_address: `${FUNCTIONS}/tranzila-return?r=fail`,
-    notify_url_address: `${FUNCTIONS}/tranzila-notify`,
+    success_url_address: `${FUNCTIONS}/tranzila-return?s=${sessionId}`,
+    fail_url_address: `${FUNCTIONS}/tranzila-return?r=fail&s=${sessionId}`,
+    notify_url_address: `${FUNCTIONS}/tranzila-notify?s=${sessionId}`,
 
-    // חוזר אלינו כפי שהוא בכל תשובה, וכך אנחנו יודעים לאיזה סל
-    // התשלום שייך בלי לסמוך על עוגייה או על סדר הבקשות.
+    // ערוץ שני למזהה הסל. הראשון הוא מחרוזת השאילתה בכתובות למעלה.
+    // התיעוד אינו מבטיח שפרמטר עצמי יוחזר בהודעה, ולכן לא סומכים עליו
+    // לבדו — אבל אם כן, הוא מגיע גם דרך כאן.
     sessionid: sessionId,
 
     // מונע חיוב כפול אם הלקוח לוחץ פעמיים או מרענן

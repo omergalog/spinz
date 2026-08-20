@@ -23,19 +23,26 @@ Deno.serve(async (req) => {
     payload = Object.fromEntries(new URLSearchParams(raw || url.search));
   } catch { /* חזרה בלי גוף — עדיין מפנים את הלקוח */ }
 
-  const sessionId = payload.sessionid ?? '';
+  const sessionId = url.searchParams.get('s') || payload.sessionid || '';
 
   try {
     const db = createClient(
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     );
-    await db.from('payment_events').insert({
-      session_id: /^[0-9a-f-]{36}$/i.test(sessionId) ? sessionId : null,
-      source: outcome === 'failed' ? 'fail' : 'success',
-      payload,
-      note: 'הלקוח חזר מעמוד התשלום',
-    });
+    // הכתובת ציבורית וכל אחד יכול לשלוח אליה. רושמים רק כשהמזהה
+    // שייך לסל אמיתי, כדי שלא יהיה כאן ערוץ להצפת הטבלה.
+    const valid = /^[0-9a-f-]{36}$/i.test(sessionId) &&
+      !!(await db.from('checkout_sessions').select('id').eq('id', sessionId).maybeSingle()).data;
+
+    if (valid) {
+      await db.from('payment_events').insert({
+        session_id: sessionId,
+        source: outcome === 'failed' ? 'fail' : 'success',
+        payload,
+        note: 'הלקוח חזר מעמוד התשלום',
+      });
+    }
   } catch (e) {
     console.error('return log', e);
   }

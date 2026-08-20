@@ -14,7 +14,9 @@
  *   GET /tranzila-reconcile?days=2
  */
 import { createClient } from 'jsr:@supabase/supabase-js@2';
-import { amountMatches, isApproved, listTransactions } from '../_shared/tranzila.ts';
+import { amountMatches, isApproved, listTransactions, reportAmountToIls }
+  from '../_shared/tranzila.ts';
+import { confirmOrderOnce } from '../_shared/email.ts';
 
 /** חלון הזמן שבו סל ועסקה עוד יכולים להיות אותו דבר */
 const MATCH_WINDOW_MS = 3 * 60 * 60 * 1000;
@@ -47,24 +49,34 @@ Deno.serve(async (req) => {
     .select('id, total_price, status, created_at, tranzila_index')
     .gte('created_at', since.toISOString());
 
-  const seen = new Set(
-    (known ?? []).map(s => s.tranzila_index).filter(Boolean).map(Number),
+  const paid = new Set(
+    (known ?? []).filter(s => s.status === 'paid')
+      .map(s => Number(s.tranzila_index)).filter(Boolean),
   );
 
   const result = { checked: txns.length, matched: 0, recovered: 0, orphans: 0 };
 
   for (const t of txns) {
-    if (seen.has(Number(t.index))) { result.matched++; continue; }
+    const idx = Number(t.index);
+    if (paid.has(idx)) { result.matched++; continue; }
 
     const when = new Date(t.transaction_date).getTime();
 
-    // סל פתוח, פג או שנכשל — כלומר כזה שמעולם לא הפך להזמנה
-    const candidates = (known ?? []).filter(s =>
-      s.status !== 'paid' &&
-      !s.tranzila_index &&
-      amountMatches(Number(t.amount), s.total_price) &&
-      Math.abs(new Date(s.created_at).getTime() - when) < MATCH_WINDOW_MS
-    );
+    // התאמה מדויקת קודמת לכול: סל שכבר נושא את מספר העסקה הזה אך לא
+    // נסגר. כך נראית הזמנה ששולמה ונפלה על תקלה זמנית באימות — אין
+    // כאן ניחוש, המספר עצמו מקשר.
+    let candidates = (known ?? []).filter(s =>
+      s.status !== 'paid' && Number(s.tranzila_index) === idx);
+
+    // רק אם אין קישור מפורש, נופלים להתאמה לפי סכום וחלון זמן
+    if (candidates.length === 0) {
+      candidates = (known ?? []).filter(s =>
+        s.status !== 'paid' &&
+        !s.tranzila_index &&
+        amountMatches(Number(t.amount), s.total_price) &&
+        Math.abs(new Date(s.created_at).getTime() - when) < MATCH_WINDOW_MS
+      );
+    }
 
     if (candidates.length !== 1) {
       // אפס מועמדים או יותר מאחד — לא מנחשים
@@ -89,11 +101,19 @@ Deno.serve(async (req) => {
 
     const { data, error } = await db.rpc('finalize_checkout_session', {
       p_session_id: session.id,
-      p_amount: session.total_price,
-      p_index: Number(t.index),
+      p_amount: reportAmountToIls(Number(t.amount)),   // הסכום שנגבה, לא זה שביקשנו
+      p_index: idx,
       p_txn_id: null,
       p_last4: null,
     });
+
+    // אם השחזור נכשל, הסל חייב לחזור למצב לא-ממתין. אחרת הוא ממשיך
+    // להיספר כמלאי שמור ומקטין את הזמינות המוצגת באתר ללא סיבה.
+    if (error) {
+      await db.from('checkout_sessions')
+        .update({ status: 'failed', tranzila_index: idx, failure_reason: error.message })
+        .eq('id', session.id);
+    }
 
     await db.from('payment_events').insert({
       session_id: session.id,
@@ -104,7 +124,14 @@ Deno.serve(async (req) => {
         : `הזמנה שוחזרה מהשוואה — ההודעה מטרנזילה מעולם לא הגיעה (${data?.order_ids?.length ?? 0} שורות)`,
     });
 
-    if (error) result.orphans++; else result.recovered++;
+    if (error) {
+      result.orphans++;
+    } else {
+      result.recovered++;
+      // הלקוח הזה מעולם לא קיבל אישור, כי ההודעה לא הגיעה
+      const mailErr = await confirmOrderOnce(db, session.id);
+      if (mailErr) console.error('reconcile mail', mailErr);
+    }
   }
 
   return new Response(JSON.stringify(result), {

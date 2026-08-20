@@ -80,13 +80,27 @@ export async function verifyTransaction(index: number): Promise<Verified> {
     }),
   });
 
+  // כשל תקשורת או שגיאת שרת אינם דחייה של העסקה. לסמן אותם ככישלון
+  // היה מבטל הזמנה ששולמה בגלל דקה של תקלה אצלם.
   if (!res.ok) {
-    return { ok: false, reason: `report_http_${res.status}`, raw: await res.text() };
+    return {
+      ok: false,
+      retry: res.status >= 500 || res.status === 429 || res.status === 408,
+      reason: `report_http_${res.status}`,
+      raw: await res.text(),
+    };
   }
 
   const data = await res.json();
+
+  // טרנזילה מחזירה 200 גם על שגיאה, עם error_code בגוף
+  if (data?.error_code && Number(data.error_code) !== 0) {
+    return { ok: false, retry: true, reason: `report_error_${data.error_code}`, raw: data };
+  }
+
   const txn = data?.transactions?.[0];
-  if (!txn) return { ok: false, reason: 'not_found', raw: data };
+  // ייתכן שהשורה טרם נוצרה בדוח. זו אינה הוכחה שלא נגבה כסף.
+  if (!txn) return { ok: false, retry: true, reason: 'not_found', raw: data };
 
   const code = String(txn.processor_response_code ?? '');
 
@@ -103,13 +117,36 @@ export async function verifyTransaction(index: number): Promise<Verified> {
 }
 
 /**
- * התיעוד מתאר את שדה amount בדוח כ"יחידת המטבע הקטנה" אך הדוגמאות
- * מציגות שקלים שלמים. במקום להמר, מקבלים את שתי הקריאות — הפער
- * ביניהן הוא פי 100 ולכן אין סיכון לבלבול בין סכומים אמיתיים.
+ * ממיר את הסכום מהדוח לשקלים.
+ *
+ * התיעוד מגדיר את השדה כיחידת המטבע הקטנה, כלומר אגורות. הגרסה
+ * הראשונה כאן קיבלה את שתי הקריאות "ליתר ביטחון", וזו הייתה טעות
+ * חמורה: מי שמשנה את הסכום בטופס ל-10.90 גורם לדוח להחזיר 1090
+ * אגורות, וההשוואה מול הזמנה של ₪1,090 הייתה עוברת. קבלת שתי
+ * הקריאות פותחת בדיוק את החור שההשוואה נועדה לסגור.
+ *
+ * לכן פירוש אחד בלבד, וניתן לשינוי דרך משתנה סביבה אם יתברר בבדיקה
+ * שהמסוף מדווח בשקלים.
  */
-export function amountMatches(reported: number, expected: number): boolean {
-  const near = (a: number, b: number) => Math.abs(a - b) < 0.02;
-  return near(reported, expected) || near(reported / 100, expected);
+const AMOUNT_UNIT = (Deno.env.get('TRANZILA_REPORT_AMOUNT_UNIT') ?? 'agorot').toLowerCase();
+
+export function reportAmountToIls(reported: number): number {
+  return AMOUNT_UNIT === 'shekel' ? reported : reported / 100;
+}
+
+export function amountMatches(reported: number, expectedIls: number): boolean {
+  return Math.abs(reportAmountToIls(reported) - expectedIls) < 0.02;
+}
+
+/**
+ * האם הסכום היה תואם דווקא בפירוש ההפוך.
+ *
+ * אם זה קורה, המסוף מדווח ביחידה אחרת מזו שהוגדרה. לא מאשרים את
+ * העסקה — אבל רושמים הודעה מפורשת, כדי שלא נחפש את זה בעיוורון.
+ */
+export function looksLikeUnitMismatch(reported: number, expectedIls: number): boolean {
+  const other = AMOUNT_UNIT === 'shekel' ? reported / 100 : reported;
+  return Math.abs(other - expectedIls) < 0.02;
 }
 
 export type ReportTxn = {
@@ -154,7 +191,15 @@ export async function listTransactions(
     const data = await res.json();
     const rows: ReportTxn[] = data?.transactions ?? [];
     all.push(...rows);
-    if (rows.length < 1000) break;
+
+    // הדוח מדווח כמה שורות קיימות בסך הכול. בלי ההשוואה הזו, חריגה
+    // ממכסת הדפדוף הייתה מסתיימת בשקט ונראית כמו "הכול תקין".
+    const total = Number(data?.total ?? all.length);
+    if (rows.length < 1000) {
+      if (all.length < total) throw new Error(`report_truncated_${all.length}_of_${total}`);
+      break;
+    }
+    if (page === 20) throw new Error(`report_truncated_${all.length}_of_${total}`);
   }
 
   return all;

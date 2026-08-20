@@ -10,7 +10,9 @@
  * ולעיתים מנסה שוב. יצירת ההזמנה קורית פעם אחת בלבד.
  */
 import { createClient } from 'jsr:@supabase/supabase-js@2';
-import { amountMatches, verifyTransaction } from '../_shared/tranzila.ts';
+import { amountMatches, looksLikeUnitMismatch, reportAmountToIls, verifyTransaction }
+  from '../_shared/tranzila.ts';
+import { confirmOrderOnce } from '../_shared/email.ts';
 
 Deno.serve(async (req) => {
   // טרנזילה מצפה ל-200 בכל מקרה. שגיאה שמוחזרת אליה רק תגרום
@@ -34,8 +36,15 @@ Deno.serve(async (req) => {
     return ok();
   }
 
-  const sessionId = payload.sessionid ?? '';
-  const index = Number(payload.index ?? payload.transaction_id ?? 0);
+  // מזהה הסל מגיע בשני ערוצים בכוונה. התיעוד אינו מבטיח שפרמטר עצמי
+  // שנשלח לעמוד התשלום יוחזר בהודעה, ולכן הוא נשתל גם במחרוזת השאילתה
+  // של כתובת ה-notify עצמה. די באחד מהם.
+  const sessionId = new URL(req.url).searchParams.get('s') || payload.sessionid || '';
+
+  // רק index. transaction_id הוא מספר אחר לגמרי, ושליחתו כ-
+  // transaction_index הייתה מאמתת עסקה זרה — שאולי אף תעבור את
+  // בדיקת הסכום ותסגור את ההזמנה על חשבון לקוח אחר.
+  const index = Number(payload.index ?? 0);
 
   const log = (note: string, extra: Record<string, unknown> = {}) =>
     db.from('payment_events').insert({
@@ -60,8 +69,10 @@ Deno.serve(async (req) => {
     v = await verifyTransaction(index);
   }
 
+  // מצב שאינו סופי: הסל נשאר ממתין ואינו מסומן, כדי שההשוואה היומית
+  // תוכל להרים אותו. סימון ככישלון היה מוציא אותו מטווח ההשוואה לתמיד.
   if (v.retry) {
-    await log('שב"א טרם החזירה תשובה — הסל נשאר ממתין');
+    await log(`האימות טרם סופי (${v.reason}) — הסל נשאר ממתין להשוואה`);
     return ok();
   }
 
@@ -81,21 +92,31 @@ Deno.serve(async (req) => {
     return ok();
   }
 
-  if (!amountMatches(v.amount ?? 0, session.total_price)) {
+  const reported = Number(v.amount ?? 0);
+
+  if (!amountMatches(reported, session.total_price)) {
+    // אם הסכום תואם דווקא בפירוש ההפוך, המסוף מדווח ביחידה אחרת.
+    // לא מאשרים, אבל אומרים את זה במפורש במקום להשאיר חידה.
+    const unit = looksLikeUnitMismatch(reported, session.total_price)
+      ? ' — נראה שהמסוף מדווח ביחידה אחרת. להגדיר TRANZILA_REPORT_AMOUNT_UNIT'
+      : '';
+
     await db.from('checkout_sessions')
       .update({
         status: 'failed',
-        failure_reason: `סכום שנגבה ${v.amount} אינו תואם ל-${session.total_price}`,
+        failure_reason: `סכום שנגבה ${reported} אינו תואם ל-${session.total_price}${unit}`,
         tranzila_index: index,
       })
       .eq('id', sessionId).eq('status', 'pending');
-    await log('פער סכומים — ההזמנה לא נוצרה', { verified: v.raw });
+    await log(`פער סכומים — ההזמנה לא נוצרה${unit}`, { verified: v.raw });
     return ok();
   }
 
   const { data, error } = await db.rpc('finalize_checkout_session', {
     p_session_id: sessionId,
-    p_amount: session.total_price,
+    // הסכום שאומת מול טרנזילה, לא זה של הסל. העברת סכום הסל הפכה את
+    // הבדיקה בבסיס הנתונים להשוואה של ערך לעצמו.
+    p_amount: reportAmountToIls(reported),
     p_index: index,
     p_txn_id: Number(payload.transaction_id ?? 0) || null,
     p_last4: payload.ccno ?? null,
@@ -108,5 +129,10 @@ Deno.serve(async (req) => {
 
   await log(data?.already ? 'הודעה חוזרת — ההזמנה כבר קיימת' : 'הזמנה נוצרה',
             { order_ids: data?.order_ids });
+
+  // כישלון במייל לא מפיל את ההזמנה — הכסף כבר נגבה
+  const mailErr = await confirmOrderOnce(db, sessionId);
+  if (mailErr) await log(`שליחת אישור ההזמנה נכשלה: ${mailErr}`);
+
   return ok();
 });

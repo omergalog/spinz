@@ -1,17 +1,50 @@
 /**
- * מקבל את החזרה של הלקוח מעמוד התשלום ומעביר אותו לעמוד באתר.
+ * מקבל את החזרה של הלקוח מעמוד התשלום ומחזיר אותו לאתר.
  *
- * למה צריך שכבה כזו: טרנזילה חוזרת ב-POST, והאתר הוא אתר סטטי על
- * Vercel שיודע להגיש רק GET. POST לכתובת רגילה באתר היה מחזיר שגיאה
- * מול הלקוח מיד אחרי שחויב. לכן החזרה נוחתת כאן, ומכאן הלקוח מופנה
- * ב-303 לעמוד רגיל.
+ * הדף הזה נטען בתוך המסגרת שבה בוצע התשלום, ולכן הוא אינו יכול פשוט
+ * להפנות: הפניה רגילה הייתה טוענת את האתר בתוך המסגרת, והאתר חוסם
+ * את עצמו מלהיטען כך (frame-ancestors 'none'). הלקוח היה רואה מסך
+ * ריק מיד אחרי שחויב.
  *
- * זו אינה נקודת האמת. ההזמנה נוצרת ב-tranzila-notify בלבד, אחרי אימות
- * מול טרנזילה. כאן רק מעבירים את הלקוח הלאה.
+ * לכן במקום הפניה מוחזר דף זעיר שמודיע לעמוד שמעליו שהתשלום הסתיים,
+ * והעמוד עצמו מנווט. שלוש דרכים, מהבטוחה לגסה, כי כישלון כאן מתרחש
+ * בדיוק אחרי שנלקח כסף:
+ *   1. הודעה לחלון האב — עובד גם בין מקורות שונים
+ *   2. ניווט של החלון העליון — עשוי להיחסם בלי אינטראקציה
+ *   3. קישור גלוי, אם שני הראשונים נכשלו
+ *
+ * זו אינה נקודת האמת. ההזמנה נוצרת ב-tranzila-notify בלבד.
  */
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 const SITE = Deno.env.get('SITE_URL') ?? 'https://spinzbikes.com';
+
+const page = (target: string, outcome: string, sessionId: string) => `<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<title>מעבירים אותך חזרה…</title>
+<style>
+  body{margin:0;height:100vh;display:flex;align-items:center;justify-content:center;
+       font-family:Arial,Helvetica,sans-serif;background:#F5F2EC;color:#1C1C1C;text-align:center}
+  a{color:#8A6D3B;font-weight:700}
+</style></head>
+<body>
+  <div>
+    <p>מעבירים אותך חזרה לאתר…</p>
+    <p><a id="go" href="${target}" target="_top">להמשך לחצו כאן</a></p>
+  </div>
+<script>
+(function () {
+  var target = ${JSON.stringify(target)};
+  try {
+    window.parent.postMessage(
+      { source: 'spinz-tranzila', outcome: ${JSON.stringify(outcome)},
+        sessionId: ${JSON.stringify(sessionId)}, url: target },
+      ${JSON.stringify(SITE)});
+  } catch (e) {}
+  try { window.top.location.replace(target); } catch (e) {}
+})();
+</script>
+</body></html>`;
 
 Deno.serve(async (req) => {
   const url = new URL(req.url);
@@ -21,7 +54,7 @@ Deno.serve(async (req) => {
   try {
     const raw = await req.text();
     payload = Object.fromEntries(new URLSearchParams(raw || url.search));
-  } catch { /* חזרה בלי גוף — עדיין מפנים את הלקוח */ }
+  } catch { /* חזרה בלי גוף — עדיין מחזירים את הלקוח */ }
 
   const sessionId = url.searchParams.get('s') || payload.sessionid || '';
 
@@ -30,8 +63,9 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     );
-    // הכתובת ציבורית וכל אחד יכול לשלוח אליה. רושמים רק כשהמזהה
-    // שייך לסל אמיתי, כדי שלא יהיה כאן ערוץ להצפת הטבלה.
+
+    // הכתובת ציבורית. רושמים רק כשהמזהה שייך לסל אמיתי, כדי שלא יהיה
+    // כאן ערוץ להצפת הטבלה.
     const valid = /^[0-9a-f-]{36}$/i.test(sessionId) &&
       !!(await db.from('checkout_sessions').select('id').eq('id', sessionId).maybeSingle()).data;
 
@@ -50,5 +84,8 @@ Deno.serve(async (req) => {
   const to = new URL(`${SITE}/order/${outcome}`);
   if (sessionId) to.searchParams.set('s', sessionId);
 
-  return new Response(null, { status: 303, headers: { Location: to.toString() } });
+  return new Response(page(to.toString(), outcome, sessionId), {
+    status: 200,
+    headers: { 'Content-Type': 'text/html; charset=utf-8' },
+  });
 });

@@ -45,9 +45,12 @@ Deno.serve(async (req) => {
   }
 
   // מה שכבר ידוע לנו
+  // הסלים נטענים מוקדם יותר מהעסקאות: עסקה שקרתה מיד אחרי תחילת
+  // הטווח שייכת לסל שנוצר לפניו. בלי ההרחבה, הסל האמיתי היה נופל
+  // מחוץ לרשימה ועסקה הייתה עלולה להיתפס לסל אחר.
   const { data: known } = await db.from('checkout_sessions')
     .select('id, total_price, status, created_at, tranzila_index')
-    .gte('created_at', since.toISOString());
+    .gte('created_at', new Date(since.getTime() - MATCH_WINDOW_MS).toISOString());
 
   const paid = new Set(
     (known ?? []).filter(s => s.status === 'paid')
@@ -65,13 +68,15 @@ Deno.serve(async (req) => {
     // התאמה מדויקת קודמת לכול: סל שכבר נושא את מספר העסקה הזה אך לא
     // נסגר. כך נראית הזמנה ששולמה ונפלה על תקלה זמנית באימות — אין
     // כאן ניחוש, המספר עצמו מקשר.
-    let candidates = (known ?? []).filter(s =>
-      s.status !== 'paid' && Number(s.tranzila_index) === idx);
+    // overbooked פירושו "נגבה, המלאי אזל, מחכה לזיכוי". זהו מצב סופי
+    // שכבר תועד. ניסיון לשחזר אותו רק היה מוחק את הסימון.
+    const open = (known ?? []).filter(s => s.status !== 'paid' && s.status !== 'overbooked');
+
+    let candidates = open.filter(s => Number(s.tranzila_index) === idx);
 
     // רק אם אין קישור מפורש, נופלים להתאמה לפי סכום וחלון זמן
     if (candidates.length === 0) {
-      candidates = (known ?? []).filter(s =>
-        s.status !== 'paid' &&
+      candidates = open.filter(s =>
         !s.tranzila_index &&
         amountMatches(Number(t.amount), s.total_price) &&
         Math.abs(new Date(s.created_at).getTime() - when) < MATCH_WINDOW_MS
@@ -109,9 +114,15 @@ Deno.serve(async (req) => {
 
     // אם השחזור נכשל, הסל חייב לחזור למצב לא-ממתין. אחרת הוא ממשיך
     // להיספר כמלאי שמור ומקטין את הזמינות המוצגת באתר ללא סיבה.
-    if (error) {
+    // finalize מסמנת overbooked בעצמה, ואת זה לא דורסים.
+    const failed = error || !data?.ok;
+    if (failed && data?.reason !== 'PAID_BUT_OUT_OF_STOCK') {
       await db.from('checkout_sessions')
-        .update({ status: 'failed', tranzila_index: idx, failure_reason: error.message })
+        .update({
+          status: 'failed',
+          tranzila_index: idx,
+          failure_reason: error?.message ?? data?.reason ?? 'שחזור נכשל',
+        })
         .eq('id', session.id);
     }
 
@@ -119,12 +130,12 @@ Deno.serve(async (req) => {
       session_id: session.id,
       source: 'reconcile',
       payload: t as unknown as Record<string, unknown>,
-      note: error
-        ? `שחזור נכשל: ${error.message}`
+      note: failed
+        ? `שחזור נכשל: ${error?.message ?? data?.reason}`
         : `הזמנה שוחזרה מהשוואה — ההודעה מטרנזילה מעולם לא הגיעה (${data?.order_ids?.length ?? 0} שורות)`,
     });
 
-    if (error) {
+    if (failed) {
       result.orphans++;
     } else {
       result.recovered++;

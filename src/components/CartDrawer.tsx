@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Plus, Minus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
@@ -24,6 +25,7 @@ export default function CartDrawer() {
   const t = useT();
   const dir = useDir();
   const { items, updateQuantity, clearCart, totalCount, isOpen, closeCart } = useCart();
+  const navigate = useNavigate();
   const total = items.reduce((sum, i) => sum + i.model.price * i.quantity, 0);
   const [ordering, setOrdering] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
@@ -32,6 +34,29 @@ export default function CartDrawer() {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [form, setForm] = useState({ name: '', email: '', phone: '', address: '' });
   const [formErrors, setFormErrors] = useState<Record<string, boolean>>({});
+
+  // עמוד התשלום חי בתוך מסגרת, ולכן סיום התשלום אינו יכול פשוט להפנות
+  // את הדפדפן — האתר חוסם את עצמו מלהיטען בתוך מסגרת. במקום זאת דף
+  // החזרה שולח הודעה לכאן, וכאן מנווטים.
+  useEffect(() => {
+    const onMessage = (e: MessageEvent) => {
+      if (e.data?.source !== 'spinz-tranzila') return;
+
+      const id = String(e.data.sessionId ?? '');
+      if (!/^[0-9a-f-]{36}$/i.test(id)) return;
+
+      // העגלה מתרוקנת רק בהצלחה. בכישלון הלקוח אמור להיות מסוגל
+      // לנסות שוב בלי לבנות אותה מחדש.
+      if (e.data.outcome === 'success') clearCart();
+
+      closeCart();
+      setStep('cart');
+      navigate(`/order/${e.data.outcome === 'failed' ? 'failed' : 'success'}?s=${id}`);
+    };
+
+    window.addEventListener('message', onMessage);
+    return () => window.removeEventListener('message', onMessage);
+  }, [clearCart, closeCart, navigate]);
 
   // סגירת המגירה מאפסת את התהליך. בלי זה, פתיחה חוזרת הייתה מציגה
   // מסגרת תשלום ישנה ששייכת לסל שכבר פג.

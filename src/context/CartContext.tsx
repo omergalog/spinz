@@ -48,14 +48,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
     (async () => {
       const [{ data: settings }, { data: products }] = await Promise.all([
         supabase.from('site_settings').select('presale_active, presale_price').eq('id', 1).single(),
-        supabase.from('products').select('slug, price, sale_price'),
+        supabase.from('products').select('slug, price, sale_price, presale_qty'),
       ]);
       if (!alive) return;
 
+      // אותה נוסחה בדיוק כמו בשרת. presale_active לבדו אינו מספיק:
+      // מחיר ההשקה תקף רק כל עוד נשארה מכסה לאותו וריאנט, והשרת בודק
+      // זאת. בלי התנאי הזה עגלה שנשמרה בדפדפן הייתה מציגה ₪1,090
+      // בעוד שבעמוד התשלום נגבה המחיר המלא.
       const priceFor = (colorId: string, size: string): number | null => {
-        if (settings?.presale_active) return settings.presale_price ?? null;
         const row = (products ?? []).find(p => p.slug === `spinz-${colorId}-${size}`);
         if (!row) return null;
+        if (settings?.presale_active && (row.presale_qty ?? 0) > 0) {
+          return settings.presale_price ?? null;
+        }
         return row.sale_price ?? row.price ?? null;
       };
 

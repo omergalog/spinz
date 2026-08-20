@@ -46,16 +46,20 @@ Deno.serve(async (req) => {
   // בדיקת הסכום ותסגור את ההזמנה על חשבון לקוח אחר.
   const index = Number(payload.index ?? 0);
 
+  const valid = /^[0-9a-f-]{36}$/i.test(sessionId);
+
   const log = (note: string, extra: Record<string, unknown> = {}) =>
     db.from('payment_events').insert({
-      session_id: /^[0-9a-f-]{36}$/i.test(sessionId) ? sessionId : null,
+      session_id: valid ? sessionId : null,
       source: 'notify',
       payload: { ...payload, ...extra },
       note,
     });
 
-  if (!sessionId || !index) {
-    await log('הודעה בלי מזהה סל או בלי אינדקס עסקה');
+  // הכתובת ציבורית. בקשה בלי מזהה תקין אינה נרשמת, אחרת כל אחד יכול
+  // להציף את היומן ולהטביע בו את מה שבאמת חשוב.
+  if (!valid || !index) {
+    console.warn('notify ללא מזהה סל תקין או ללא אינדקס');
     return ok();
   }
 
@@ -92,6 +96,22 @@ Deno.serve(async (req) => {
     return ok();
   }
 
+  if (session.status === 'paid') {
+    await log('הודעה חוזרת — ההזמנה כבר קיימת');
+    return ok();
+  }
+
+  // סל שפג תוקפו בזמן שהלקוח עמד באימות של חברת האשראי. הכסף נגבה,
+  // ולכן חייבים לתעד את מספר העסקה — בלעדיו ההשוואה היומית לא תדע
+  // לאיזה סל התשלום שייך ולא תוכל לשחזר.
+  if (session.status !== 'pending') {
+    await db.from('checkout_sessions')
+      .update({ tranzila_index: index, failure_reason: `נגבה תשלום על סל במצב ${session.status}` })
+      .eq('id', sessionId);
+    await log(`נגבה תשלום אך הסל במצב ${session.status} — דורש בדיקה`, { verified: v.raw });
+    return ok();
+  }
+
   const reported = Number(v.amount ?? 0);
 
   if (!amountMatches(reported, session.total_price)) {
@@ -122,8 +142,18 @@ Deno.serve(async (req) => {
     p_last4: payload.ccno ?? null,
   });
 
-  if (error) {
-    await log(`יצירת ההזמנה נכשלה: ${error.message}`, { verified: v.raw });
+  if (error || !data?.ok) {
+    const reason = error?.message ?? data?.reason ?? 'לא ידוע';
+
+    // הכסף נגבה. חייבים לרשום את מספר העסקה על הסל, אחרת ההשוואה
+    // היומית לא תוכל לקשר ביניהם ואיש לא יידע שיש כאן מה לתקן.
+    if (data?.reason !== 'PAID_BUT_OUT_OF_STOCK') {
+      await db.from('checkout_sessions')
+        .update({ tranzila_index: index, failure_reason: reason })
+        .eq('id', sessionId);
+    }
+
+    await log(`יצירת ההזמנה נכשלה: ${reason}`, { verified: v.raw });
     return ok();
   }
 

@@ -2,8 +2,11 @@
  * מצב סל תשלום, לעמוד התודה.
  *
  * הלקוח חוזר מעמוד התשלום לפני שהודעת ה-notify בהכרח הספיקה להיקלט,
- * ולכן העמוד מחכה כאן עד שהמצב מתייצב. מזהה הסל הוא UUID אקראי ואינו
- * ניתן לניחוש, ומוחזר ממנו רק מה שהלקוח כבר יודע.
+ * ולכן העמוד מחכה כאן עד שהמצב מתייצב.
+ *
+ * מזהה הסל נמצא בשורת הכתובת של הדפדפן, ומשם הוא מגיע להיסטוריה
+ * ועלול לדלוף בכותרת Referer. לכן לא מוחזרים ממנו פרטים אישיים —
+ * רק מצב, סכום, וארבע ספרות שהלקוח ממילא ראה בעמוד התשלום.
  */
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 
@@ -32,7 +35,7 @@ Deno.serve(async (req) => {
   );
 
   const { data } = await db.from('checkout_sessions')
-    .select('status, total_price, card_last4, order_ids, customer_email')
+    .select('status, total_price, card_last4, order_ids')
     .eq('id', id).maybeSingle();
 
   if (!data) return reply({ error: 'not_found' }, 404);
@@ -41,7 +44,6 @@ Deno.serve(async (req) => {
     status: data.status,
     total: data.total_price,
     last4: data.card_last4,
-    email: data.customer_email,
     orders: (data.order_ids ?? []).length,
   });
 });

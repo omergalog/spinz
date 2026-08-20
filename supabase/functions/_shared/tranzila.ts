@@ -111,3 +111,56 @@ export function amountMatches(reported: number, expected: number): boolean {
   const near = (a: number, b: number) => Math.abs(a - b) < 0.02;
   return near(reported, expected) || near(reported / 100, expected);
 }
+
+export type ReportTxn = {
+  index: number;
+  transaction_date: string;
+  amount: number;
+  transtatus: number;
+  processor_response_code: string;
+  [k: string]: unknown;
+};
+
+/**
+ * שולף את כל העסקאות בטווח תאריכים.
+ *
+ * משמש להשוואה היומית מול ההזמנות שלנו. התיעוד מגביל ל-1000 שורות
+ * לעמוד, ולכן יש כאן דפדוף — אחרת יום עמוס היה נחתך בשקט, וזה בדיוק
+ * סוג הכשל שהשוואה אמורה למנוע.
+ */
+export async function listTransactions(
+  startDate: string,
+  endDate: string,
+): Promise<ReportTxn[]> {
+  const all: ReportTxn[] = [];
+
+  for (let page = 1; page <= 20; page++) {
+    const res = await fetch(REPORT_URL, {
+      method: 'POST',
+      headers: await authHeaders(),
+      body: JSON.stringify({
+        terminal_name: TERMINAL,
+        transaction_start_date: startDate,
+        transaction_end_date: endDate,
+        detailed: 'N',
+        page,
+        page_results: 1000,
+        order_direction: 'asc',
+      }),
+    });
+
+    if (!res.ok) throw new Error(`report_http_${res.status}`);
+
+    const data = await res.json();
+    const rows: ReportTxn[] = data?.transactions ?? [];
+    all.push(...rows);
+    if (rows.length < 1000) break;
+  }
+
+  return all;
+}
+
+/** האם העסקה הצליחה בפועל */
+export function isApproved(t: ReportTxn): boolean {
+  return String(t.processor_response_code ?? '') === '000' && Number(t.transtatus ?? 0) === 1;
+}

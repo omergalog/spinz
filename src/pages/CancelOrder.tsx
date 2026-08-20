@@ -38,13 +38,17 @@ export default function CancelOrder() {
     if (Object.keys(errs).length) return;
 
     setStatus('sending');
-    const { error } = await supabase.from('cancellations').insert({
-      customer_name: form.name.trim(),
-      customer_phone: form.phone.trim(),
-      customer_email: form.email.trim() || null,
-      order_ref: form.orderRef.trim() || null,
-      reason: form.reason,
-      details: form.details.trim() || null,
+
+    // הפונקציה מקשרת את הבקשה לתשלום עצמו לפי מספר האסמכתה מהמייל,
+    // ובגיבוי לפי הטלפון. בלי הקישור הזה, זיכוי הלקוח מחייב חיפוש
+    // ידני בממשק טרנזילה לפי שם וסכום.
+    const { error } = await supabase.rpc('request_cancellation', {
+      p_name: form.name.trim(),
+      p_phone: form.phone.trim(),
+      p_email: form.email.trim() || null,
+      p_reference: form.orderRef.trim() || null,
+      p_reason: form.reason,
+      p_details: form.details.trim() || null,
     });
 
     if (error) {

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Plus, Minus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { OutOfStockError, openCheckout, submitToIframe } from '../lib/payment';
+import { OutOfStockError, loadApplePay, openCheckout, submitToIframe } from '../lib/payment';
 import { useT, useDir } from '../i18n/LanguageContext';
 
 const DARK    = '#1C1C1C';   // text on gold buttons
@@ -73,6 +73,7 @@ export default function CartDrawer() {
 
       setPayFrameReady(false);
       setStep('payment');
+      loadApplePay();
       // ה-iframe נוצר ברינדור הבא, ולכן ההגשה מחכה לו.
       requestAnimationFrame(() => submitToIframe(session, TRANZILA_FRAME));
     } catch (e) {

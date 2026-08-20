@@ -54,6 +54,8 @@ export async function authHeaders(): Promise<Record<string, string>> {
 
 export type Verified = {
   ok: boolean;
+  /** המצב עדיין לא סופי — לנסות שוב, לא לסמן ככישלון */
+  retry?: boolean;
   amount?: number;
   reason?: string;
   raw?: unknown;
@@ -86,10 +88,15 @@ export async function verifyTransaction(index: number): Promise<Verified> {
   const txn = data?.transactions?.[0];
   if (!txn) return { ok: false, reason: 'not_found', raw: data };
 
-  const approved = String(txn.processor_response_code ?? '') === '000';
+  const code = String(txn.processor_response_code ?? '');
+
+  // 'shva' פירושו שהתשובה משב"א טרם חזרה. זו אינה דחייה, ולסמן אותה
+  // ככישלון היה מבטל הזמנה ששולמה. מסמנים כזמנית ומנסים שוב.
+  if (code === 'shva') return { ok: false, retry: true, reason: 'pending_shva', raw: txn };
+
   const settled = Number(txn.transtatus ?? 0) === 1;
-  if (!approved || !settled) {
-    return { ok: false, reason: `status_${txn.processor_response_code}_${txn.transtatus}`, raw: txn };
+  if (code !== '000' || !settled) {
+    return { ok: false, reason: `status_${code}_${txn.transtatus}`, raw: txn };
   }
 
   return { ok: true, amount: Number(txn.amount), raw: txn };

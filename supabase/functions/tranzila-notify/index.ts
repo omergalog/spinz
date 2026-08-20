@@ -51,7 +51,20 @@ Deno.serve(async (req) => {
   }
 
   // אימות עצמאי — לא סומכים על Response=000 שהגיע בהודעה עצמה
-  const v = await verifyTransaction(index);
+  let v = await verifyTransaction(index);
+
+  // שב"א טרם ענתה. ממתינים מעט ושואלים שוב, במקום לפסול עסקה שאולי
+  // דווקא הצליחה.
+  for (let i = 0; i < 3 && v.retry; i++) {
+    await new Promise(r => setTimeout(r, 2000));
+    v = await verifyTransaction(index);
+  }
+
+  if (v.retry) {
+    await log('שב"א טרם החזירה תשובה — הסל נשאר ממתין');
+    return ok();
+  }
+
   if (!v.ok) {
     await db.from('checkout_sessions')
       .update({ status: 'failed', failure_reason: v.reason, tranzila_index: index })

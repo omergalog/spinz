@@ -96,3 +96,49 @@ export async function fetchStatus(sessionId: string): Promise<{
   if (!res.ok) return null;
   return res.json();
 }
+
+/**
+ * טוען את הסקריפט של Apple Pay.
+ *
+ * apple_pay=1 לבדו אינו מספיק: טרנזילה דורשת שבעמוד שמארח את המסגרת
+ * ירוץ הסקריפט שלה, והוא תלוי ב-jQuery. בלעדיו כפתור Apple Pay פשוט
+ * לא יופיע, בלי הודעת שגיאה.
+ *
+ * נטען רק כשנפתח עמוד התשלום ורק על מכשירי אפל, כדי לא לגרור jQuery
+ * לכל מבקר באתר.
+ */
+let applePayLoading: Promise<void> | null = null;
+
+export function loadApplePay(): Promise<void> {
+  if (applePayLoading) return applePayLoading;
+
+  // ApplePaySession קיים רק בדפדפנים שתומכים. אין טעם בשאר.
+  if (typeof window === 'undefined' || !('ApplePaySession' in window)) {
+    applePayLoading = Promise.resolve();
+    return applePayLoading;
+  }
+
+  const add = (src: string) => new Promise<void>((resolve, reject) => {
+    const el = document.createElement('script');
+    el.src = src;
+    el.async = false;                 // הסדר חשוב — הסקריפט תלוי ב-jQuery
+    el.onload = () => resolve();
+    el.onerror = () => reject(new Error(`failed: ${src}`));
+    document.head.appendChild(el);
+  });
+
+  applePayLoading = add('https://code.jquery.com/jquery-3.6.0.js')
+    .then(() => add(`https://directng.tranzila.com/assets/js/tranzilanapple_v3.js?v=${Date.now()}`))
+    .then(() => {
+      // noConflict כדי שה-jQuery הזה לא ידרוס משתנים גלובליים באתר
+      const w = window as unknown as { jQuery?: { noConflict: (b: boolean) => unknown }; $n?: unknown };
+      if (w.jQuery) w.$n = w.jQuery.noConflict(true);
+    })
+    .catch(err => {
+      // כישלון כאן מוריד רק את Apple Pay. כרטיס אשראי ימשיך לעבוד.
+      console.warn('Apple Pay script', err);
+      applePayLoading = null;
+    });
+
+  return applePayLoading;
+}

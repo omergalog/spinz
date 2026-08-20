@@ -336,35 +336,50 @@ export default function Models() {
         </p>
       )}
 
-      {/* קופון. הקוד נשמר ועובר לעגלה; ההנחה עצמה מחושבת בשרת, ולכן
-          מה שמוצג כאן הוא בדיוק מה שייגבה. */}
-      <div style={{ marginTop: '14px', maxWidth: '340px' }}>
-        <div style={{ display: 'flex', gap: '8px' }}>
+      {/* קופון.
+          השדה עצמו LTR כי קודים נכתבים באנגלית, ולכן ההסבר בעברית
+          יושב מעליו ולא בתוכו — עברית בשדה LTR מוצגת עם הסימנים בצד
+          הלא נכון. הכפתור צמוד לשדה כדי שייקראו כיחידה אחת. */}
+      <div style={{ marginTop: '16px', maxWidth: '320px' }}>
+        <label style={{
+          display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '12px',
+          color: MUTED, marginBottom: '7px',
+        }}>
+          {t.cart.couponHint}
+        </label>
+        <div style={{
+          display: 'flex', alignItems: 'stretch', backgroundColor: '#FFFFFF',
+          border: `1px solid ${couponState === 'bad' ? '#FF6B6B'
+                    : couponState === 'ok' ? '#3B6B33' : '#E0DCD4'}`,
+          borderRadius: '8px', overflow: 'hidden',
+          transition: 'border-color 0.2s',
+        }}>
           <input
             type="text"
             dir="ltr"
             value={couponInput}
-            onChange={e => { setCouponInput(e.target.value); setCouponState('idle'); }}
+            onChange={e => { setCouponInput(e.target.value.toUpperCase()); setCouponState('idle'); }}
             onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); applyCoupon(); } }}
             placeholder={t.cart.couponPlaceholder}
             style={{
-              flex: 1, padding: '9px 12px', backgroundColor: '#FFFFFF',
-              border: `1px solid ${couponState === 'bad' ? '#FF6B6B'
-                        : couponState === 'ok' ? '#3B6B33' : '#E0DCD4'}`,
-              borderRadius: '8px', color: DARK,
-              fontFamily: "'Heebo', sans-serif", fontSize: '13px',
-              outline: 'none', direction: 'ltr', boxSizing: 'border-box',
+              flex: 1, minWidth: 0, padding: '11px 14px',
+              backgroundColor: 'transparent', border: 'none', outline: 'none',
+              color: DARK, fontFamily: "'Heebo', sans-serif", fontSize: '14px',
+              letterSpacing: '0.06em',
+              direction: 'ltr', textAlign: 'left',
             }}
           />
           <button
             type="button"
             onClick={applyCoupon}
-            disabled={couponState === 'checking'}
+            disabled={couponState === 'checking' || !couponInput.trim()}
             style={{
-              padding: '0 16px', backgroundColor: 'transparent',
-              border: '1px solid #E0DCD4', borderRadius: '8px', color: DARK,
-              fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 700,
-              cursor: 'pointer', whiteSpace: 'nowrap',
+              padding: '0 18px', backgroundColor: '#F5F2EC',
+              border: 'none', borderInlineStart: '1px solid #E0DCD4',
+              color: couponInput.trim() ? DARK : '#B5B1AA',
+              fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 700,
+              cursor: couponInput.trim() ? 'pointer' : 'default',
+              whiteSpace: 'nowrap', transition: 'color 0.2s',
             }}>
             {couponState === 'checking' ? '…' : t.cart.couponApply}
           </button>

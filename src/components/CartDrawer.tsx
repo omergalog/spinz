@@ -336,22 +336,26 @@ export default function CartDrawer() {
                     {/* Coupon */}
                     <div>
                       <label style={{ display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#6A6862', letterSpacing: '0.1em', marginBottom: '6px', textTransform: 'uppercase' }}>
-                        {t.cart.couponLabel}
+                        {t.cart.couponHint}
                       </label>
-                      <div style={{ display: 'flex', gap: '8px' }}>
+                      <div style={{
+                        display: 'flex', alignItems: 'stretch', backgroundColor: SUBTLE,
+                        border: `1px solid ${couponState === 'bad' ? '#FF6B6B'
+                                  : couponState === 'ok' ? '#3B6B33' : BORDER}`,
+                        borderRadius: '8px', overflow: 'hidden',
+                      }}>
                         <input
                           type="text"
                           dir="ltr"
                           placeholder={t.cart.couponPlaceholder}
                           value={coupon}
-                          onChange={e => { setCoupon(e.target.value); setCouponState('idle'); setDiscount(0); }}
+                          onChange={e => { setCoupon(e.target.value.toUpperCase()); setCouponState('idle'); setDiscount(0); }}
                           onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); applyCoupon(); } }}
                           style={{
-                            flex: 1, padding: '11px 14px', backgroundColor: SUBTLE,
-                            border: `1px solid ${couponState === 'bad' ? '#FF6B6B' : BORDER}`,
-                            borderRadius: '8px', color: TEXT,
-                            fontFamily: "'Heebo', sans-serif", fontSize: '14px',
-                            outline: 'none', direction: 'ltr', boxSizing: 'border-box',
+                            flex: 1, minWidth: 0, padding: '11px 14px',
+                            backgroundColor: 'transparent', border: 'none', outline: 'none',
+                            color: TEXT, fontFamily: "'Heebo', sans-serif", fontSize: '14px',
+                            letterSpacing: '0.06em', direction: 'ltr', textAlign: 'left',
                           }}
                         />
                         <button
@@ -359,11 +363,11 @@ export default function CartDrawer() {
                           onClick={applyCoupon}
                           disabled={couponState === 'checking' || !coupon.trim()}
                           style={{
-                            padding: '0 18px', backgroundColor: 'transparent',
-                            border: `1px solid ${BORDER}`, borderRadius: '8px', color: TEXT,
+                            padding: '0 18px', backgroundColor: '#EFEBE3',
+                            border: 'none', borderInlineStart: `1px solid ${BORDER}`,
+                            color: coupon.trim() ? TEXT : '#B5B1AA',
                             fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 700,
-                            cursor: coupon.trim() ? 'pointer' : 'not-allowed',
-                            opacity: coupon.trim() ? 1 : 0.5, whiteSpace: 'nowrap',
+                            cursor: coupon.trim() ? 'pointer' : 'default', whiteSpace: 'nowrap',
                           }}>
                           {couponState === 'checking' ? '…' : t.cart.couponApply}
                         </button>

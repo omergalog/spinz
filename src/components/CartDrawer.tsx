@@ -88,8 +88,8 @@ export default function CartDrawer() {
     setCouponState('idle');
   }, [isOpen]);
 
-  const applyCoupon = async () => {
-    if (!coupon.trim()) return;
+  const applyCoupon = async (): Promise<boolean> => {
+    if (!coupon.trim()) { setCouponState('idle'); setDiscount(0); return false; }
     setCouponState('checking');
     // ההנחה מחושבת בשרת. כאן רק מציגים את התוצאה, כדי שהסכום שמוצג
     // יהיה בדיוק זה שייגבה.
@@ -97,15 +97,24 @@ export default function CartDrawer() {
     setDiscount(r.valid ? r.discount : 0);
     setCouponState(r.valid ? 'ok' : 'bad');
     saveCoupon(r.valid ? coupon.trim() : '');
+    return r.valid;
   };
 
-  const validateAndCheckout = () => {
+  const validateAndCheckout = async () => {
     const errors: Record<string, boolean> = {};
     if (!form.name.trim()) errors.name = true;
     if (!form.phone.trim()) errors.phone = true;
     if (!form.address.trim()) errors.address = true;
     setFormErrors(errors);
     if (Object.keys(errors).length > 0) return;
+
+    // קוד שהוקלד ולא הוחל: מחילים אותו כאן ומראים את התוצאה, במקום
+    // להתעלם ממנו בשקט. אחרת המסך מציג קוד וההזמנה נשלחת בלעדיו.
+    if (coupon.trim() && couponState !== 'ok') {
+      const ok = await applyCoupon();
+      if (!ok) return;          // קוד שגוי — נעצרים ומראים למה
+    }
+
     handleCheckout();
   };
 
@@ -126,10 +135,8 @@ export default function CartDrawer() {
         phone: form.phone,
         email: form.email || undefined,
         address: form.address,
-        // הקוד נשלח תמיד, גם אם לא נלחץ "החל". השרת מאמת אותו בכל
-        // מקרה, ולכן אין מה להרוויח מלסנן כאן — ויש מה להפסיד:
-        // לקוח שהקליד קוד ולא לחץ היה מחויב במחיר המלא.
-        coupon: (coupon.trim() || savedCoupon || '') || undefined,
+        // רק קוד שהוחל בפועל. מה שמופיע על המסך הוא מה שנגבה.
+        coupon: couponState === 'ok' ? coupon.trim() : undefined,
         lang,
       });
 

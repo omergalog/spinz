@@ -39,20 +39,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
   });
   const [isOpen, setIsOpen] = useState(false);
 
-  // הקופון חי כאן ולא בעגלה, כדי שהוא יישמר בין עמוד המוצר לבין
-  // הצ׳קאאוט. הוא נשמר בדפדפן כדי שרענון לא יאבד אותו — הערך הזה
-  // הוא קוד בלבד, לא הנחה: השרת מחשב מחדש בכל מקרה.
-  const [coupon, setCouponState] = useState<string>(() => {
-    try { return localStorage.getItem('spinz_coupon') ?? ''; } catch { return ''; }
-  });
-
-  const setCoupon = (code: string) => {
-    setCouponState(code);
-    try {
-      if (code) localStorage.setItem('spinz_coupon', code);
-      else localStorage.removeItem('spinz_coupon');
-    } catch { /* מצב פרטי בדפדפן — לא נורא */ }
-  };
+  // הקופון חי כאן ולא בקומפוננטה, כדי שיעבור מעמוד המוצר לצ׳קאאוט.
+  //
+  // בכוונה בזיכרון בלבד ולא בדפדפן: קוד ששורד רענון היה מופיע מוחל
+  // מעצמו בביקור הבא, בלי שהלקוח הקליד דבר — וזו בדיוק הדרך לחיוב
+  // לא צפוי, לשני הכיוונים. רענון מחזיר את המחיר המקורי.
+  const [coupon, setCoupon] = useState('');
 
   useEffect(() => {
     localStorage.setItem('spinz-cart', JSON.stringify(items));

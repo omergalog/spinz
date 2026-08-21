@@ -25,6 +25,47 @@ const json = (body: unknown, status = 200) =>
     headers: { ...CORS, 'Content-Type': 'application/json' },
   });
 
+
+const COLOR_HE: Record<string, string> = {
+  mat: 'שחור מט', beige: "בז'", olive: 'ירוק זית',
+};
+
+/**
+ * שורות המוצרים לחשבונית.
+ *
+ * שתי מלכודות שהתיעוד מזהיר מפניהן:
+ *
+ * 1. אם מוגדר אחוז מע"מ על מודול החשבוניות, יש לשלוח מחיר *לפני*
+ *    מע"מ וטרנזילה מוסיפה אותו. שליחת מחיר כולל מע"מ הייתה מנפחת
+ *    את החשבונית. הערך נשלט ב-INVOICE_VAT_RATE ומוגדר 0 כברירת
+ *    מחדל, כלומר "המחיר שנשלח הוא הסופי".
+ *
+ * 2. סכום השורות חייב להשתוות לסכום העסקה. כשמופעל קופון, הסל זול
+ *    מסכום המחירים המקוריים, ולכן כל שורה מוקטנת באותו יחס.
+ */
+function buildInvoiceLines(items: Array<Record<string, unknown>>, total: number): string {
+  if (!Array.isArray(items) || items.length === 0) return '';
+
+  const vat = Number(Deno.env.get('INVOICE_VAT_RATE') ?? '0');
+  const gross = items.reduce(
+    (sum, i) => sum + Number(i.unit_price ?? 0) * Number(i.quantity ?? 0), 0);
+  if (gross <= 0) return '';
+
+  const ratio = total / gross;                       // הנחת הקופון, אם הייתה
+
+  const lines = items.map(i => {
+    const color = COLOR_HE[String(i.color)] ?? String(i.color);
+    const unit = Number(i.unit_price ?? 0) * ratio / (1 + vat);
+    return {
+      product_name: `SPINZ Urban · ${color} · מידה ${i.size}`,
+      product_quantity: Number(i.quantity ?? 1),
+      product_price: Math.round(unit * 100) / 100,
+    };
+  });
+
+  return JSON.stringify(lines);
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: CORS });
   if (req.method !== 'POST') return json({ error: 'method' }, 405);
@@ -41,9 +82,10 @@ Deno.serve(async (req) => {
     return json({ error: 'bad_json' }, 400);
   }
 
-  const { items, name, phone, email, address, coupon } = body as {
+  const { items, name, phone, email, address, coupon, lang } = body as {
     items?: Array<Record<string, unknown>>;
-    name?: string; phone?: string; email?: string; address?: string; coupon?: string;
+    name?: string; phone?: string; email?: string; address?: string;
+    coupon?: string; lang?: string;
   };
 
   if (!Array.isArray(items) || items.length === 0) return json({ error: 'EMPTY_CART' }, 400);
@@ -80,6 +122,10 @@ Deno.serve(async (req) => {
   const sessionId = data.session_id as string;
   const total = Number(data.total);
 
+  // שורות החשבונית. הסל כבר מתומחר בשרת, ולכן נמשך משם ולא מהדפדפן.
+  const { data: session } = await db.from('checkout_sessions')
+    .select('items').eq('id', sessionId).maybeSingle();
+
   // לחברות האשראי יש רצפה לגובה תשלום בודד, ועסקה שיורדת מתחתיה
   // נדחית (קוד 403). באופניים ב-₪1,090 זה לא מורגש, אבל בציוד נלווה
   // בעשרות שקלים פריסה ל-12 תשלומים פשוט תיכשל — ולכן מספר התשלומים
@@ -89,6 +135,8 @@ Deno.serve(async (req) => {
     Number(data.max_installments ?? 1),
     Math.floor(total / minPart),
   ));
+
+  const invoiceLines = buildInvoiceLines(session?.items ?? [], total);
 
   const fields: Record<string, string> = {
     sum: total.toFixed(2),
@@ -105,6 +153,8 @@ Deno.serve(async (req) => {
     zip: '',
 
     pdesc: 'SPINZ — אופני עיר',
+    // שפת החשבונית שנשלחת ללקוח
+    Ilang: lang === 'en' ? 'ENG' : 'HEB',
 
     // החזרה עוברת דרך פונקציית שרת ולא ישירות לאתר: טרנזילה חוזרת
     // ב-POST, ואתר סטטי על Vercel אינו יודע לקבל POST.
@@ -124,6 +174,11 @@ Deno.serve(async (req) => {
     bit_pay: '1',
     apple_pay: '1',
     google_pay: '1',
+
+    // פירוט שורות לחשבונית. אם הסכומים לא יסתדרו, טרנזילה תדפיס
+    // חשבונית תקינה בלי הפירוט — כלומר טעות כאן לא מייצרת חשבונית
+    // שגויה, רק פחות מפורטת.
+    ...(invoiceLines ? { json_purchase_data: invoiceLines } : {}),
 
     // מיתוג העמוד
     nologo: '1',

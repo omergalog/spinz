@@ -5,7 +5,7 @@ import { X, ShoppingCart, Plus, Minus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { OutOfStockError, checkCoupon, loadApplePay, openCheckout, submitToIframe }
   from '../lib/payment';
-import { useT, useDir } from '../i18n/LanguageContext';
+import { useT, useDir, useLang } from '../i18n/LanguageContext';
 
 const DARK    = '#1C1C1C';   // text on gold buttons
 const GOLD    = '#C9A870';
@@ -25,6 +25,7 @@ function formatPrice(n: number) {
 export default function CartDrawer() {
   const t = useT();
   const dir = useDir();
+  const lang = useLang();
   const { items, updateQuantity, clearCart, totalCount, isOpen, closeCart, coupon: savedCoupon, setCoupon: saveCoupon } = useCart();
   const navigate = useNavigate();
   const total = items.reduce((sum, i) => sum + i.model.price * i.quantity, 0);
@@ -126,6 +127,7 @@ export default function CartDrawer() {
         email: form.email || undefined,
         address: form.address,
         coupon: couponState === 'ok' ? coupon.trim() : undefined,
+        lang,
       });
 
       setPayFrameReady(false);

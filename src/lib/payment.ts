@@ -56,6 +56,8 @@ export async function openCheckout(input: {
   email?: string;
   address?: string;
   coupon?: string;
+  /** שפת החשבונית שטרנזילה תשלח ללקוח */
+  lang?: string;
 }): Promise<CheckoutSession> {
   const { data: { session } } = await supabase.auth.getSession();
 

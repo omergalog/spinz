@@ -16,6 +16,7 @@
  * זו אינה נקודת האמת. ההזמנה נוצרת ב-tranzila-notify בלבד.
  */
 import { createClient } from 'jsr:@supabase/supabase-js@2';
+import { ALLOWED_ORIGINS } from '../_shared/cors.ts';
 
 const SITE = Deno.env.get('SITE_URL') ?? 'https://spinzbikes.com';
 
@@ -35,12 +36,14 @@ const page = (target: string, outcome: string, sessionId: string) => `<!doctype 
 <script>
 (function () {
   var target = ${JSON.stringify(target)};
-  try {
-    window.parent.postMessage(
-      { source: 'spinz-tranzila', outcome: ${JSON.stringify(outcome)},
-        sessionId: ${JSON.stringify(sessionId)}, url: target },
-      ${JSON.stringify(SITE)});
-  } catch (e) {}
+  // ההודעה נשלחת לכל המקורות המורשים ולא לאחד. הדפדפן מוסר אותה רק
+  // למקור שתואם באמת, והשאר נזרקות בשקט — כך הודעה אינה הולכת לאיבוד
+  // רק בגלל www.
+  var msg = { source: 'spinz-tranzila', outcome: ${JSON.stringify(outcome)},
+              sessionId: ${JSON.stringify(sessionId)}, url: target };
+  ${JSON.stringify(ALLOWED_ORIGINS)}.forEach(function (o) {
+    try { window.parent.postMessage(msg, o); } catch (e) {}
+  });
   try { window.top.location.replace(target); } catch (e) {}
 })();
 </script>

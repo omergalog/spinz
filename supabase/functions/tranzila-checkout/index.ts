@@ -8,21 +8,15 @@
  */
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { IFRAME_URL } from '../_shared/tranzila.ts';
+import { corsHeaders } from '../_shared/cors.ts';
 
 const SITE = Deno.env.get('SITE_URL') ?? 'https://spinzbikes.com';
 const FUNCTIONS = `${Deno.env.get('SUPABASE_URL')}/functions/v1`;
 
-const CORS = {
-  'Access-Control-Allow-Origin': SITE,
-  'Access-Control-Allow-Headers': 'authorization, content-type, apikey',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Vary': 'Origin',
-};
-
-const json = (body: unknown, status = 200) =>
+const json = (body: unknown, status: number, req: Request) =>
   new Response(JSON.stringify(body), {
     status,
-    headers: { ...CORS, 'Content-Type': 'application/json' },
+    headers: { ...corsHeaders(req), 'Content-Type': 'application/json' },
   });
 
 
@@ -67,8 +61,8 @@ function buildInvoiceLines(items: Array<Record<string, unknown>>, total: number)
 }
 
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') return new Response(null, { headers: CORS });
-  if (req.method !== 'POST') return json({ error: 'method' }, 405);
+  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders(req) });
+  if (req.method !== 'POST') return json({ error: 'method' }, 405, req);
 
   const db = createClient(
     Deno.env.get('SUPABASE_URL')!,
@@ -79,7 +73,7 @@ Deno.serve(async (req) => {
   try {
     body = await req.json();
   } catch {
-    return json({ error: 'bad_json' }, 400);
+    return json({ error: 'bad_json' }, 400, req);
   }
 
   const { items, name, phone, email, address, coupon, lang } = body as {
@@ -88,8 +82,8 @@ Deno.serve(async (req) => {
     coupon?: string; lang?: string;
   };
 
-  if (!Array.isArray(items) || items.length === 0) return json({ error: 'EMPTY_CART' }, 400);
-  if (!name?.trim() || !phone?.trim()) return json({ error: 'MISSING_DETAILS' }, 400);
+  if (!Array.isArray(items) || items.length === 0) return json({ error: 'EMPTY_CART' }, 400, req);
+  if (!name?.trim() || !phone?.trim()) return json({ error: 'MISSING_DETAILS' }, 400, req);
 
   // ניקוי: רק השדות שאנחנו מכירים עוברים הלאה, וכל השאר נזרק.
   const clean = items.map(i => ({
@@ -113,10 +107,10 @@ Deno.serve(async (req) => {
     const msg = String(error.message ?? '');
     if (msg.includes('OUT_OF_STOCK')) {
       const left = msg.split('OUT_OF_STOCK:')[1]?.split(':')[1]?.replace(/\D/g, '');
-      return json({ error: 'OUT_OF_STOCK', left: Number(left ?? 0) }, 409);
+      return json({ error: 'OUT_OF_STOCK', left: Number(left ?? 0) }, 409, req);
     }
     console.error('create_checkout_session', msg);
-    return json({ error: 'SERVER' }, 500);
+    return json({ error: 'SERVER' }, 500, req);
   }
 
   const sessionId = data.session_id as string;
@@ -195,5 +189,5 @@ Deno.serve(async (req) => {
     fields.cred_type = '1';
   }
 
-  return json({ ok: true, session_id: sessionId, total, action: IFRAME_URL, fields });
+  return json({ ok: true, session_id: sessionId, total, action: IFRAME_URL, fields }, 200, req);
 });

@@ -9,22 +9,17 @@
  * רק מצב, סכום, וארבע ספרות שהלקוח ממילא ראה בעמוד התשלום.
  */
 import { createClient } from 'jsr:@supabase/supabase-js@2';
+import { corsHeaders } from '../_shared/cors.ts';
 
 const SITE = Deno.env.get('SITE_URL') ?? 'https://spinzbikes.com';
-const CORS = {
-  'Access-Control-Allow-Origin': SITE,
-  'Access-Control-Allow-Headers': 'authorization, content-type, apikey',
-  'Vary': 'Origin',
-};
-
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') return new Response(null, { headers: CORS });
+  if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders(req) });
 
   const id = new URL(req.url).searchParams.get('s') ?? '';
   const reply = (b: unknown, s = 200) =>
     new Response(JSON.stringify(b), {
       status: s,
-      headers: { ...CORS, 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders(req), 'Content-Type': 'application/json' },
     });
 
   if (!/^[0-9a-f-]{36}$/i.test(id)) return reply({ error: 'bad_id' }, 400);

@@ -126,7 +126,10 @@ export default function CartDrawer() {
         phone: form.phone,
         email: form.email || undefined,
         address: form.address,
-        coupon: couponState === 'ok' ? coupon.trim() : undefined,
+        // הקוד נשלח תמיד, גם אם לא נלחץ "החל". השרת מאמת אותו בכל
+        // מקרה, ולכן אין מה להרוויח מלסנן כאן — ויש מה להפסיד:
+        // לקוח שהקליד קוד ולא לחץ היה מחויב במחיר המלא.
+        coupon: (coupon.trim() || savedCoupon || '') || undefined,
         lang,
       });
 

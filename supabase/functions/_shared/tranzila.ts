@@ -108,9 +108,14 @@ export async function verifyTransaction(index: number): Promise<Verified> {
   // ככישלון היה מבטל הזמנה ששולמה. מסמנים כזמנית ומנסים שוב.
   if (code === 'shva') return { ok: false, retry: true, reason: 'pending_shva', raw: txn };
 
-  const settled = Number(txn.transtatus ?? 0) === 1;
-  if (code !== '000' || !settled) {
-    return { ok: false, reason: `status_${code}_${txn.transtatus}`, raw: txn };
+  // האישור נקבע לפי קוד המענה של חברת האשראי בלבד.
+  //
+  // הגרסה הראשונה דרשה גם transtatus=1, וזו הייתה טעות: השדה הזה
+  // מתאר סליקה מול שב"א, שקורית בהעברה היומית ולא ברגע החיוב. עסקה
+  // תקינה שנבדקת מיד אחרי התשלום מחזירה 000 עם transtatus=0 —
+  // והבדיקה פסלה אותה, כלומר הלקוח חויב וההזמנה לא נוצרה.
+  if (code !== '000') {
+    return { ok: false, reason: `declined_${code}`, raw: txn };
   }
 
   return { ok: true, amount: Number(txn.amount), raw: txn };
@@ -225,5 +230,6 @@ export function safeLast4(v: unknown): string | null {
 
 /** האם העסקה הצליחה בפועל */
 export function isApproved(t: ReportTxn): boolean {
-  return String(t.processor_response_code ?? '') === '000' && Number(t.transtatus ?? 0) === 1;
+  // transtatus אינו נבדק במכוון — ראה ההסבר ב-verifyTransaction
+  return String(t.processor_response_code ?? '') === '000';
 }

@@ -249,3 +249,19 @@ input:-webkit-autofill:focus {
   padding-top: 0 !important;
   margin-top: 4px !important;
 }
+
+
+/* מילוי אוטומטי בדפדפן.
+   כרום צובע שדה שהושלם אוטומטית ברקע משלו, ומתעלם מ-background-color.
+   בערכת נושא בהירה זה יצא טקסט כהה על רקע כהה — השדה נראה שחור.
+   צל פנימי עבה הוא הדרך היחידה לגבור על הצביעה הזו. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: #1C1C1C;
+  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset;
+          box-shadow: 0 0 0 1000px #FFFFFF inset;
+  caret-color: #1C1C1C;
+  transition: background-color 9999s ease-in-out 0s;
+}

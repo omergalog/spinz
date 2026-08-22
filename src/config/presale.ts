@@ -19,7 +19,7 @@ export type PresaleSettings = {
 /** ברירת מחדל – מוצגת מיד עד שה-DB עונה (מונע הבהוב) */
 export const PRESALE_DEFAULTS: PresaleSettings = {
   active: true,
-  regularPrice: 1200,
+  regularPrice: 1299,
   presalePrice: 1090,
   presaleUnits: 100,
   arrivalLabel: 'ספטמבר 2026',

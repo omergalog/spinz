@@ -16,7 +16,7 @@ const BORDER = '#E2DED8';
 const MUTED  = '#6A6862';
 const GOLD   = '#C9A870';
 
-const BASE_PRICE = 2290;
+const BASE_PRICE = 1299;
 
 export default function Models() {
   const ref = useRef<HTMLElement>(null);
@@ -108,6 +108,10 @@ export default function Models() {
   const [salePrice, setSalePrice] = useState<number | null>(null);
   const [reviewStats, setReviewStats] = useState<{ avg: number; count: number }>({ avg: 5, count: 0 });
   const [presaleQty, setPresaleQty] = useState<Record<string, number>>({});
+  // עד שהמכסות נטענות אי אפשר לדעת אם הווריאנט עדיין במחיר השקה.
+  // בלי הדגל הזה הרינדור הראשון הניח שהמכסה אזלה והציג לרגע את מחיר
+  // המחירון המלא — הלקוח ראה מחיר גבוה שקפץ למחיר ההשקה.
+  const [presaleReady, setPresaleReady] = useState(false);
 
   const presaleCfg = usePresale();
   const lang = useLang();
@@ -132,6 +136,7 @@ export default function Models() {
       const map: Record<string, number> = {};
       data.forEach(row => { map[String(row.slug)] = row.presale_qty ?? 0; });
       setPresaleQty(map);
+      setPresaleReady(true);
     });
   }, [added]);
 
@@ -169,8 +174,8 @@ export default function Models() {
   // Presale applies per variant, and only while that variant has quota left
   const variantSlug = `spinz-${color.id}-${size.id}`;
   const quotaLeft = presaleQty[variantSlug] ?? 0;
-  const presale = presaleCfg.active && quotaLeft > 0;
-  const presaleSoldOut = presaleCfg.active && quotaLeft <= 0;
+  const presale = presaleCfg.active && (!presaleReady || quotaLeft > 0);
+  const presaleSoldOut = presaleCfg.active && presaleReady && quotaLeft <= 0;
   const shownPrice = presale ? presaleCfg.presalePrice : displayPrice;
   const monthly = Math.round(shownPrice / 13);
 

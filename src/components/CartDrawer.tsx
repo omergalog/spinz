@@ -338,17 +338,22 @@ export default function CartDrawer() {
                   {/* Form */}
                   <div style={{ flex: 1, overflowY: 'auto', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }} onWheel={e => e.stopPropagation()} onTouchMove={e => e.stopPropagation()}>
                     {[
-                      { key: 'name', label: t.cart.nameLabel, placeholder: t.cart.namePlaceholder, type: 'text' },
-                      { key: 'phone', label: t.cart.phoneLabel, placeholder: '050-0000000', type: 'tel' },
-                      { key: 'email', label: t.cart.emailLabel, placeholder: 'israel@example.com', type: 'email' },
-                      { key: 'address', label: t.cart.addressLabel, placeholder: t.cart.addressPlaceholder, type: 'text' },
-                    ].map(({ key, label, placeholder, type }) => (
+                      // autoComplete הוא מה שמאפשר לדפדפן להשלים את השדה.
+                      // בלעדיו הוא זיהה רק את שדה המייל, לפי type, ושאר
+                      // הפרטים נותרו למילוי ידני בכל הזמנה.
+                      { key: 'name', label: t.cart.nameLabel, placeholder: t.cart.namePlaceholder, type: 'text', auto: 'name' },
+                      { key: 'phone', label: t.cart.phoneLabel, placeholder: '050-0000000', type: 'tel', auto: 'tel' },
+                      { key: 'email', label: t.cart.emailLabel, placeholder: 'israel@example.com', type: 'email', auto: 'email' },
+                      { key: 'address', label: t.cart.addressLabel, placeholder: t.cart.addressPlaceholder, type: 'text', auto: 'street-address' },
+                    ].map(({ key, label, placeholder, type, auto }) => (
                       <div key={key}>
                         <label style={{ display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: formErrors[key] ? '#FF6B6B' : "#6A6862", letterSpacing: '0.1em', marginBottom: '6px', textTransform: 'uppercase' }}>
                           {label}
                         </label>
                         <input
                           type={type}
+                          name={key}
+                          autoComplete={auto}
                           // Email/phone hold Latin characters – force LTR so the
                           // caret and separators don't jump inside an RTL form
                           dir={type === 'email' || type === 'tel' ? 'ltr' : 'rtl'}

@@ -53,13 +53,25 @@ function baseName(name?: string): string {
   return cut || n;
 }
 
+/**
+ * ההפרש בין מחירון השורות לסכום שנגבה בפועל.
+ *
+ * הסל שומר את שורות המוצר במחיר המלא, וקוד קופון מוריד רק את הסכום
+ * הכולל. בלי השורה הזו הלקוח רואה 1,090 בשורה ו-1 בסיכום, וזה נקרא
+ * כטעות בחיוב.
+ */
+function discount(o: OrderEmail): number {
+  const list = o.items.reduce((s, i) => s + i.unit_price * i.quantity, 0);
+  return Math.max(0, Math.round(list - o.total));
+}
+
 function rows(items: OrderItem[]): string {
   return items.map(i => `
     <tr>
       <td style="padding:12px 0;border-bottom:1px solid #E0DCD4;">
         <div style="font-weight:700;color:#1C1C1C;">${esc(baseName(i.product_name))}</div>
         <div style="font-size:13px;color:#6A6862;">
-          ${esc(COLORS[i.color] ?? i.color)} · מידה ${esc(i.size)}${i.quantity > 1 ? ` · ${i.quantity} יח׳` : ''}
+          ${esc(COLORS[i.color] ?? i.color)}, מידה ${esc(i.size)}${i.quantity > 1 ? `, ${i.quantity} יח׳` : ''}
         </div>
       </td>
       <td style="padding:12px 0;border-bottom:1px solid #E0DCD4;text-align:left;white-space:nowrap;color:#1C1C1C;">
@@ -77,13 +89,18 @@ function html(o: OrderEmail): string {
     </div>
 
     <div style="padding:28px;">
-      <h1 style="margin:0 0 6px;font-size:21px;color:#1C1C1C;">תודה, ${esc(o.name)} — ההזמנה נקלטה</h1>
+      <h1 style="margin:0 0 6px;font-size:21px;color:#1C1C1C;">תודה ${esc(o.name)}, ההזמנה נקלטה</h1>
       <p style="margin:0 0 22px;font-size:14px;color:#4A4845;line-height:1.7;">
-        התשלום התקבל בהצלחה. נעדכן אותך במייל כשהאופניים יוצאים לדרך.
+        התשלום התקבל. נעדכן אותך במייל כשהמשלוח יוצא אליך.
       </p>
 
       <table style="width:100%;border-collapse:collapse;font-size:14px;">
         ${rows(o.items)}
+        ${discount(o) > 0 ? `
+        <tr>
+          <td style="padding:12px 0 0;color:#4A4845;">הנחה</td>
+          <td style="padding:12px 0 0;text-align:left;white-space:nowrap;color:#4A4845;">-${ils(discount(o))}</td>
+        </tr>` : ''}
         <tr>
           <td style="padding:14px 0;font-weight:800;color:#1C1C1C;">סה״כ שולם</td>
           <td style="padding:14px 0;text-align:left;font-weight:800;font-size:17px;color:#C9A870;">${ils(o.total)}</td>
@@ -102,7 +119,11 @@ function html(o: OrderEmail): string {
         ולקבל <strong>החזר מלא ללא דמי ביטול</strong>. ביטול מתבצע
         <a href="${SITE}/cancel-order" style="color:#8A6D3B;">בטופס הביטול</a>
         או במייל ${SUPPORT}.
-        הפירוט המלא ב<a href="${SITE}/presale-terms" style="color:#8A6D3B;">תנאי המכירה המוקדמת</a>.
+      </p>
+      <p style="margin:8px 0 0;font-size:13px;color:#4A4845;line-height:1.8;">
+        בביטול לאחר קבלת האופניים יש להחזירם במצב המאפשר מכירה חוזרת, ככל הניתן באריזה המקורית.
+        החזרה מרצון היא על חשבון הלקוח, ועל ירידת ערך שנגרמה לאחר המסירה ניתן לחייב בהתאם לדין.
+        הפירוט המלא ב<a href="${SITE}/regulations" style="color:#8A6D3B;">תקנון ומדיניות הביטול</a>.
       </p>
 
       <p style="margin:24px 0 0;font-size:13px;color:#4A4845;line-height:1.8;">
@@ -119,15 +140,18 @@ function html(o: OrderEmail): string {
 
 function text(o: OrderEmail): string {
   const lines = o.items.map(i =>
-    `- ${baseName(i.product_name)} · ${COLORS[i.color] ?? i.color} · מידה ${i.size}` +
-    `${i.quantity > 1 ? ` · ${i.quantity} יח׳` : ''} — ${ils(i.unit_price * i.quantity)}`);
+    `- ${baseName(i.product_name)}, ${COLORS[i.color] ?? i.color}, מידה ${i.size}` +
+    `${i.quantity > 1 ? `, ${i.quantity} יח׳` : ''}: ${ils(i.unit_price * i.quantity)}`);
+
+  const off = discount(o);
 
   return [
-    `תודה ${o.name} — ההזמנה נקלטה.`,
+    `תודה ${o.name}, ההזמנה נקלטה.`,
     '',
-    'התשלום התקבל בהצלחה. נעדכן אותך כשהאופניים יוצאים לדרך.',
+    'התשלום התקבל. נעדכן אותך כשהמשלוח יוצא אליך.',
     '',
     ...lines,
+    off > 0 ? `הנחה: -${ils(off)}` : '',
     `סה״כ שולם: ${ils(o.total)}`,
     '',
     `מספר אסמכתה: ${o.reference}`,
@@ -135,7 +159,8 @@ function text(o: OrderEmail): string {
     o.address ? `כתובת למשלוח: ${o.address}` : '',
     '',
     'זכות ביטול: עד המסירה או תוך 14 יום מקבלת האופניים, החזר מלא ללא דמי ביטול.',
-    `${SITE}/cancel-order · ${SUPPORT}`,
+    'בהחזרה לאחר קבלה יש להחזיר את האופניים במצב המאפשר מכירה חוזרת.',
+    `${SITE}/cancel-order  |  ${SUPPORT}  |  ${SITE}/regulations`,
     '',
     COMPANY,
   ].filter(Boolean).join('\n');
@@ -163,7 +188,7 @@ export async function sendOrderConfirmation(o: OrderEmail): Promise<string | nul
         to: [o.to],
         bcc: BCC ? [BCC] : undefined,
         reply_to: SUPPORT,
-        subject: `SPINZ — ההזמנה שלך התקבלה (${o.reference})`,
+        subject: `ההזמנה שלך ב-SPINZ התקבלה (${o.reference})`,
         html: html(o),
         text: text(o),
       }),

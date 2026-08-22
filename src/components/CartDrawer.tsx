@@ -527,7 +527,8 @@ export default function CartDrawer() {
                 {presaleOff > 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                     <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#3B6B33' }}>
-                      {t.cart.presaleDiscount}
+                      {items.every(i => i.model.price === presale.presalePrice)
+                        ? t.cart.presaleDiscount : t.cart.discount}
                     </span>
                     <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, color: '#3B6B33' }}>
                       −{formatPrice(presaleOff)}

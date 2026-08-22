@@ -323,6 +323,7 @@ export const dict = {
       couponBad: 'הקוד אינו תקף',
       couponOk: 'הקוד הוחל',
       discount: 'הנחה',
+      presaleDiscount: 'הנחת השקה',
     },
     faq: { eyebrow: 'שאלות נפוצות', title: 'כל מה שרצית לדעת.' },
     specs: {
@@ -669,6 +670,7 @@ export const dict = {
       couponBad: 'Code is not valid',
       couponOk: 'Code applied',
       discount: 'Discount',
+      presaleDiscount: 'Launch discount',
     },
     faq: { eyebrow: 'FAQ', title: 'Everything you wanted to know.' },
     specs: {

@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext';
 import { OutOfStockError, checkCoupon, loadApplePay, openCheckout, submitToIframe }
   from '../lib/payment';
 import { useT, useDir, useLang } from '../i18n/LanguageContext';
+import { usePresale } from '../config/presale';
 
 const DARK    = '#1C1C1C';   // text on gold buttons
 const GOLD    = '#C9A870';
@@ -28,7 +29,23 @@ export default function CartDrawer() {
   const lang = useLang();
   const { items, updateQuantity, clearCart, totalCount, isOpen, closeCart, coupon: savedCoupon, setCoupon: saveCoupon } = useCart();
   const navigate = useNavigate();
+  const presale = usePresale();
+
   const total = items.reduce((sum, i) => sum + i.model.price * i.quantity, 0);
+
+  /**
+   * המחיר לפני הנחת ההשקה.
+   *
+   * בעמוד המוצר הלקוח רואה 1,299 מחוק ליד 1,090, ובעגלה הוא ראה רק
+   * 1,090 — כלומר ההנחה הגדולה מבין השתיים נעלמה בדיוק במסך ההחלטה.
+   * ההשוואה למחיר המלא ולא לדגל הפרי-סייל בלבד מונעת "הנחה" שלילית
+   * ביום שמחיר ההשקה יעודכן כלפי מעלה.
+   */
+  const listUnit = (m: { price: number }) =>
+    presale.active && m.price < presale.regularPrice ? presale.regularPrice : m.price;
+
+  const listTotal  = items.reduce((sum, i) => sum + listUnit(i.model) * i.quantity, 0);
+  const presaleOff = Math.max(0, listTotal - total);
   const [ordering, setOrdering] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
   const [step, setStep] = useState<'cart' | 'details' | 'payment'>('cart');
@@ -262,8 +279,15 @@ export default function CartDrawer() {
                           <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '16px', color: TEXT, margin: '0 0 4px' }}>
                             {item.model.name}
                           </h3>
-                          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 700, color: GOLD }}>
-                            {formatPrice(item.model.price * item.quantity)}
+                          <span style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
+                            <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 700, color: GOLD }}>
+                              {formatPrice(item.model.price * item.quantity)}
+                            </span>
+                            {listUnit(item.model) > item.model.price && (
+                              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#9A9690', textDecoration: 'line-through' }}>
+                                {formatPrice(listUnit(item.model) * item.quantity)}
+                              </span>
+                            )}
                           </span>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
@@ -500,6 +524,16 @@ export default function CartDrawer() {
               <div style={{ padding: '24px', borderTop: `1px solid ${BORDER}` }}>
                 {/* ההנחה מוצגת כאן ולא רק במסך הפרטים: זו השורה שהלקוח
                     מסתכל עליה לפני שהוא מחליט להמשיך. */}
+                {presaleOff > 0 && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#3B6B33' }}>
+                      {t.cart.presaleDiscount}
+                    </span>
+                    <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, color: '#3B6B33' }}>
+                      −{formatPrice(presaleOff)}
+                    </span>
+                  </div>
+                )}
                 {discount > 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                     <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#3B6B33' }}>
@@ -513,9 +547,9 @@ export default function CartDrawer() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                   <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: "#6A6862" }}>{t.cart.total}</span>
                   <span style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
-                    {discount > 0 && (
+                    {listTotal > total - discount && (
                       <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', color: '#9A9690', textDecoration: 'line-through' }}>
-                        {formatPrice(total)}
+                        {formatPrice(listTotal)}
                       </span>
                     )}
                     <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '22px', fontWeight: 800, color: GOLD }}>

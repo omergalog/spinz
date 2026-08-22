@@ -34,6 +34,8 @@ export type OrderEmail = {
   last4?: string | null;
   reference: string;
   address?: string | null;
+  discount?: number | null;
+  couponCode?: string | null;
 };
 
 const ils = (n: number) => `₪${n.toLocaleString('he-IL')}`;
@@ -54,13 +56,18 @@ function baseName(name?: string): string {
 }
 
 /**
- * ההפרש בין מחירון השורות לסכום שנגבה בפועל.
+ * ההנחה שירדה מהסל.
  *
  * הסל שומר את שורות המוצר במחיר המלא, וקוד קופון מוריד רק את הסכום
  * הכולל. בלי השורה הזו הלקוח רואה 1,090 בשורה ו-1 בסיכום, וזה נקרא
  * כטעות בחיוב.
+ *
+ * המספר נלקח מהעמודה שנשמרה בעת יצירת הסל ולא מהפרש מחושב: ביום
+ * שיתווסף משלוח או עיגול, חישוב ההפרש היה מייחס אותם להנחה.
+ * ההפרש נשאר כרשת ביטחון להזמנות שנוצרו לפני שהעמודה מולאה.
  */
 function discount(o: OrderEmail): number {
+  if (o.discount != null) return Math.max(0, Math.round(o.discount));
   const list = o.items.reduce((s, i) => s + i.unit_price * i.quantity, 0);
   return Math.max(0, Math.round(list - o.total));
 }
@@ -98,7 +105,7 @@ function html(o: OrderEmail): string {
         ${rows(o.items)}
         ${discount(o) > 0 ? `
         <tr>
-          <td style="padding:12px 0 0;color:#4A4845;">הנחה</td>
+          <td style="padding:12px 0 0;color:#4A4845;">הנחה${o.couponCode ? ` <span style="color:#6A6862;">(${esc(o.couponCode.toUpperCase())})</span>` : ''}</td>
           <td style="padding:12px 0 0;text-align:left;white-space:nowrap;color:#4A4845;">-${ils(discount(o))}</td>
         </tr>` : ''}
         <tr>
@@ -151,7 +158,7 @@ function text(o: OrderEmail): string {
     'התשלום התקבל. נעדכן אותך כשהמשלוח יוצא אליך.',
     '',
     ...lines,
-    off > 0 ? `הנחה: -${ils(off)}` : '',
+    off > 0 ? `הנחה${o.couponCode ? ` (${o.couponCode.toUpperCase()})` : ''}: -${ils(off)}` : '',
     `סה״כ שולם: ${ils(o.total)}`,
     '',
     `מספר אסמכתה: ${o.reference}`,
@@ -220,7 +227,7 @@ export async function confirmOrderOnce(db: Db, sessionId: string): Promise<strin
   if (!claimed) return null;
 
   const { data: s } = await db.from('checkout_sessions')
-    .select('customer_email, customer_name, customer_notes, items, total_price, card_last4')
+    .select('customer_email, customer_name, customer_notes, items, total_price, card_last4, discount, coupon_code')
     .eq('id', sessionId).maybeSingle();
 
   if (!s) return 'הסל לא נמצא';
@@ -232,6 +239,8 @@ export async function confirmOrderOnce(db: Db, sessionId: string): Promise<strin
     total: s.total_price,
     last4: s.card_last4,
     address: s.customer_notes,
+    discount: s.discount,
+    couponCode: s.coupon_code,
     reference: sessionId.slice(0, 8).toUpperCase(),
   });
 

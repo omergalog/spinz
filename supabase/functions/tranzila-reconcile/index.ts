@@ -14,7 +14,7 @@
  *   GET /tranzila-reconcile?days=2
  */
 import { createClient } from 'jsr:@supabase/supabase-js@2';
-import { amountMatches, isApproved, listTransactions, reportAmountToIls }
+import { amountMatches, isApproved, isCharge, listTransactions, reportAmountToIls }
   from '../_shared/tranzila.ts';
 import { confirmOrderOnce } from '../_shared/email.ts';
 
@@ -55,7 +55,8 @@ Deno.serve(async (req) => {
 
   let txns;
   try {
-    txns = (await listTransactions(ymd(since), ymd(until))).filter(isApproved);
+    txns = (await listTransactions(ymd(since), ymd(until)))
+      .filter(isApproved).filter(isCharge);
   } catch (e) {
     console.error('reconcile report', e);
     return new Response(JSON.stringify({ error: String(e) }), {

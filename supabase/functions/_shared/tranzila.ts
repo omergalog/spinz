@@ -233,3 +233,18 @@ export function isApproved(t: ReportTxn): boolean {
   // transtatus אינו נבדק במכוון — ראה ההסבר ב-verifyTransaction
   return String(t.processor_response_code ?? '') === '000';
 }
+
+/**
+ * האם העסקה היא חיוב, להבדיל מזיכוי.
+ *
+ * ההשוואה מחפשת תשלומים שלא הפכו להזמנה. זיכוי הוא עסקה מאושרת לכל
+ * דבר, ובלי הסינון הזה כל החזר כספי היה מופיע כתשלום יתום שדורש
+ * טיפול ידני — ומטביע בתוכו את המקרים האמיתיים.
+ *
+ * ⚠ נמדד מול הדוח בפועל, לא הונח: חיוב חוזר עם txn_type='DEBIT',
+ * וזיכוי חוזר עם השדה **ריק**. הניחוש הראשון כאן חיפש את המילה
+ * credit ולא תפס דבר.
+ */
+export function isCharge(t: ReportTxn): boolean {
+  return String(t.txn_type ?? '').trim().toUpperCase() === 'DEBIT';
+}

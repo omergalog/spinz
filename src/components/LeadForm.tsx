@@ -272,6 +272,7 @@ export default function LeadForm() {
                     </label>
                     <input
                       type="text"
+                      autoComplete="name"
                       placeholder={t.lead.namePh}
                       style={{
                         width: '100%',
@@ -311,6 +312,7 @@ export default function LeadForm() {
                     </label>
                     <input
                       type="email"
+                      autoComplete="email"
                       dir="ltr"
                       placeholder="israel@example.com"
                       style={{
@@ -354,6 +356,7 @@ export default function LeadForm() {
                     </label>
                     <input
                       type="tel"
+                      autoComplete="tel"
                       inputMode="numeric"
                       placeholder="05X-XXX-XXXX"
                       style={{

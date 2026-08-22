@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShoppingCart, Plus, Minus } from 'lucide-react';
+import { X, ShoppingCart, Plus, Minus, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { OutOfStockError, checkCoupon, loadApplePay, openCheckout, submitToIframe }
   from '../lib/payment';
@@ -30,6 +30,15 @@ export default function CartDrawer() {
   const { items, updateQuantity, clearCart, totalCount, isOpen, closeCart, coupon: savedCoupon, setCoupon: saveCoupon } = useCart();
   const navigate = useNavigate();
   const presale = usePresale();
+
+  // חץ "חזרה" מצביע לכיוון שממנו הגיע המסך, ולכן מתהפך עם השפה.
+  // קודם היה כאן התו ← קבוע: נכון בעברית, מצביע קדימה באנגלית.
+  const Back = dir === 'rtl' ? ArrowRight : ArrowLeft;
+  const backBtn = {
+    background: 'none', border: 'none', color: '#6A6862', cursor: 'pointer',
+    width: '44px', height: '44px', margin: '-10px', flexShrink: 0,
+    display: 'flex', alignItems: 'center', justifyContent: 'center',
+  } as const;
 
   const total = items.reduce((sum, i) => sum + i.model.price * i.quantity, 0);
 
@@ -328,9 +337,9 @@ export default function CartDrawer() {
                     <button
                       onClick={() => setStep('cart')}
                       aria-label={t.cart.backToCart}
-                      style={{ background: 'none', border: 'none', color: "#6A6862", cursor: 'pointer', padding: '10px', margin: '-10px', fontSize: '20px', lineHeight: 1 }}
+                      style={backBtn}
                     >
-                      →
+                      <Back size={19} />
                     </button>
                     <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '17px', color: TEXT, margin: 0 }}>{t.cart.shippingDetails}</h3>
                   </div>
@@ -485,9 +494,9 @@ export default function CartDrawer() {
                     <button
                       onClick={() => setStep('details')}
                       aria-label={t.cart.backToDetails}
-                      style={{ background: 'none', border: 'none', color: '#6A6862', cursor: 'pointer', padding: '10px', margin: '-10px', fontSize: '20px', lineHeight: 1 }}
+                      style={backBtn}
                     >
-                      →
+                      <Back size={19} />
                     </button>
                     <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '17px', color: TEXT, margin: 0 }}>{t.cart.payTitle}</h3>
                   </div>

@@ -154,7 +154,9 @@ Deno.serve(async (req) => {
     // ב-POST, ואתר סטטי על Vercel אינו יודע לקבל POST.
     success_url_address: `${FUNCTIONS}/tranzila-return?s=${sessionId}`,
     fail_url_address: `${FUNCTIONS}/tranzila-return?r=fail&s=${sessionId}`,
-    notify_url_address: `${FUNCTIONS}/tranzila-notify?s=${sessionId}`,
+    // שפת הלקוח נוסעת בכתובת החזרה ולא בבסיס הנתונים: היא נחוצה רק
+    // כדי לבחור את שפת מייל האישור, וכך אין צורך בעמודה נוספת בסל.
+    notify_url_address: `${FUNCTIONS}/tranzila-notify?s=${sessionId}&l=${lang === 'en' ? 'en' : 'he'}`,
 
     // ערוץ שני למזהה הסל. הראשון הוא מחרוזת השאילתה בכתובות למעלה.
     // התיעוד אינו מבטיח שפרמטר עצמי יוחזר בהודעה, ולכן לא סומכים עליו

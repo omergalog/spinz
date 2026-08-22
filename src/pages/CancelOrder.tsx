@@ -13,6 +13,13 @@ const BORDER = '#E0DCD4';
 type Status = 'idle' | 'sending' | 'sent' | 'error';
 
 
+// שמות שהדפדפן מזהה, כדי שההשלמה האוטומטית תמלא את הטופס.
+// בלעדיהם רק שדה המייל זוהה — לפי type, ולא לפי הצהרה.
+const AUTOFILL: Record<string, string> = {
+  name: 'name', fullName: 'name', phone: 'tel', email: 'email',
+  address: 'street-address', reference: 'off', order: 'off',
+};
+
 export default function CancelOrder() {
   const t = useT();
   const dir = useDir();
@@ -72,6 +79,8 @@ export default function CancelOrder() {
       </span>
       <input
         type={opts.type ?? 'text'}
+        name={key}
+        autoComplete={AUTOFILL[key] ?? 'on'}
         dir={opts.dir ?? dir}
         value={form[key as keyof typeof form]}
         onChange={e => set(key, e.target.value)}

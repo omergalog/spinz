@@ -112,7 +112,7 @@ export default function GuideDetail() {
           {/* Breadcrumb */}
           <nav style={{ marginBottom: '22px', fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#9A9690' }}>
             <Link to={L("/guides")} style={{ color: GOLD, textDecoration: 'none' }}>{t.pages.guides.crumb}</Link>
-            <span aria-hidden> ← </span>
+            <span aria-hidden> {dir === 'rtl' ? '←' : '→'} </span>
             <span>{guide.title}</span>
           </nav>
 

@@ -87,7 +87,7 @@ export default function PresaleTerms() {
 
           <Section title="3. מחיר ההשקה">
             <p style={{ margin: 0 }}>
-              מחיר ההשקה ({presale.presalePrice.toLocaleString('he-IL')} ₪ במקום {presale.regularPrice.toLocaleString('he-IL')} ₪)
+              מחיר ההשקה (₪{presale.presalePrice.toLocaleString('he-IL')} במקום ₪{presale.regularPrice.toLocaleString('he-IL')})
               תקף למספר מוגבל של יחידות בכל צבע ומידה, כמוצג באתר בזמן אמת. עם מיצוי המכסה של דגם מסוים,
               אותו דגם יימכר במחירו הרגיל. המחיר הקובע הוא המחיר שהוצג בעת אישור ההזמנה וחיוב האמצעי התשלום.
             </p>
@@ -114,7 +114,7 @@ export default function PresaleTerms() {
 
           <Section title="5. דמי ביטול והחזרת המוצר">
             <p style={{ margin: '0 0 8px' }}>
-              <b>איננו גובים דמי ביטול כלל.</b> החוק מתיר לנו לגבות עד 5% מסכום העסקה או 100 ₪
+              <b>איננו גובים דמי ביטול כלל.</b> החוק מתיר לנו לגבות עד 5% מסכום העסקה או ₪100
               (לפי הנמוך), אך בחרנו לוותר על כך – בכל ביטול תקבלו החזר כספי מלא.
             </p>
             <p style={{ margin: 0 }}>

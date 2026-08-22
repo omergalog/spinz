@@ -40,7 +40,9 @@ Deno.serve(async (req) => {
   // מזהה הסל מגיע בשני ערוצים בכוונה. התיעוד אינו מבטיח שפרמטר עצמי
   // שנשלח לעמוד התשלום יוחזר בהודעה, ולכן הוא נשתל גם במחרוזת השאילתה
   // של כתובת ה-notify עצמה. די באחד מהם.
-  const sessionId = new URL(req.url).searchParams.get('s') || payload.sessionid || '';
+  const url = new URL(req.url);
+  const sessionId = url.searchParams.get('s') || payload.sessionid || '';
+  const lang = url.searchParams.get('l') === 'en' ? 'en' : 'he';
 
   // רק index. transaction_id הוא מספר אחר לגמרי, ושליחתו כ-
   // transaction_index הייתה מאמתת עסקה זרה — שאולי אף תעבור את
@@ -166,7 +168,7 @@ Deno.serve(async (req) => {
   if (!data?.already) await db.rpc('redeem_coupon', { p_session_id: sessionId });
 
   // כישלון במייל לא מפיל את ההזמנה — הכסף כבר נגבה
-  const mailErr = await confirmOrderOnce(db, sessionId);
+  const mailErr = await confirmOrderOnce(db, sessionId, lang);
   if (mailErr) await log(`שליחת אישור ההזמנה נכשלה: ${mailErr}`);
 
   // אירוע רכישה למטא. נשלח פעם אחת בלבד, ורק כשההזמנה נוצרה באמת —

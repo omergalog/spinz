@@ -33,6 +33,16 @@ const MATCH_WINDOW_MS = 8 * 60 * 60 * 1000;
 const ymd = (d: Date) => d.toISOString().slice(0, 10);
 
 Deno.serve(async (req) => {
+  // הכתובת הייתה פתוחה לכל אחד. היא אינה יכולה להמציא תשלומים —
+  // היא פועלת רק על עסקאות שקיימות באמת בטרנזילה — אבל כל קריאה
+  // מושכת דוחות ומשכתבת שורות, וזה מספיק כדי להעמיס בחינם.
+  const secret = Deno.env.get('RECONCILE_SECRET') ?? '';
+  if (secret) {
+    const given = req.headers.get('x-reconcile-secret')
+      ?? new URL(req.url).searchParams.get('key') ?? '';
+    if (given !== secret) return new Response('forbidden', { status: 403 });
+  }
+
   const days = Math.min(31, Math.max(1, Number(new URL(req.url).searchParams.get('days') ?? 2)));
 
   const db = createClient(

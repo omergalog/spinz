@@ -38,11 +38,17 @@ export type CouponResult = {
  * שהעגלה מציגה סכום אחד והחיוב יוצא אחר.
  */
 export async function checkCoupon(code: string, subtotal: number): Promise<CouponResult> {
-  const { data, error } = await supabase.rpc('apply_coupon', {
-    p_code: code, p_subtotal: subtotal,
-  });
-  if (error || !data) return { valid: false, total: subtotal, discount: 0 };
-  return data as CouponResult;
+  try {
+    const res = await fetch(`${FUNCTIONS}/tranzila-coupon`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, subtotal }),
+    });
+    if (!res.ok) return { valid: false, total: subtotal, discount: 0 };
+    return await res.json() as CouponResult;
+  } catch {
+    return { valid: false, total: subtotal, discount: 0 };
+  }
 }
 
 export class OutOfStockError extends Error {

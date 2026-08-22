@@ -266,10 +266,25 @@ input, textarea, select { color-scheme: light; }
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-  -webkit-text-fill-color: #1C1C1C;
-  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset;
-          box-shadow: 0 0 0 1000px #FFFFFF inset;
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: #1C1C1C !important;
+  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+          box-shadow: 0 0 0 1000px #FFFFFF inset !important;
   caret-color: #1C1C1C;
   transition: background-color 9999s ease-in-out 0s;
+}
+
+/* השדה שנבחר בפועל מהרשימה מקבל מצב פנימי נפרד של כרום, שאינו נכלל
+   ב-:-webkit-autofill ולכן נשאר כהה גם אחרי הכלל שלמעלה. הוא נמצא
+   בבלוק נפרד בכוונה: שם הסלקטור אינו מוכר לשאר הדפדפנים, ובקבוצה
+   משותפת הוא היה מבטל את כל הכלל. */
+input:-internal-autofill-selected,
+input:-internal-autofill-previewed {
+  -webkit-text-fill-color: #1C1C1C !important;
+  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+          box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+  background-color: #FFFFFF !important;
+  background-image: none !important;
 }

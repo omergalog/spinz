@@ -14,6 +14,10 @@
 }
 
 html {
+  /* האתר בהיר תמיד. בלי ההצהרה הזו כרום מצייר רכיבים שהוא מרנדר
+     בעצמו — ובראשם שדות שהושלמו אוטומטית — לפי מצב כהה של המערכת,
+     והשדה יוצא שחור עם טקסט לבן בתוך טופס קרם. */
+  color-scheme: light;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -222,6 +226,8 @@ html {
    LeadForm – mobile card-style fields
 ───────────────────────────────────────── */
 /* Fix browser autofill background */
+input, textarea, select { color-scheme: light; }
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
@@ -255,6 +261,8 @@ input:-webkit-autofill:focus {
    כרום צובע שדה שהושלם אוטומטית ברקע משלו, ומתעלם מ-background-color.
    בערכת נושא בהירה זה יצא טקסט כהה על רקע כהה — השדה נראה שחור.
    צל פנימי עבה הוא הדרך היחידה לגבור על הצביעה הזו. */
+input, textarea, select { color-scheme: light; }
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,

@@ -40,11 +40,24 @@ const ils = (n: number) => `₪${n.toLocaleString('he-IL')}`;
 const esc = (s: string) =>
   s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
 
+/**
+ * שם המוצר בלי הצבע והמידה.
+ *
+ * בבסיס הנתונים השם הוא "SPINZ Urban — שחור מט 54", והשורה שמתחתיו
+ * ממילא מציגה צבע ומידה. בלי החיתוך אותו מידע הופיע פעמיים.
+ * מוצרים שאין בשמם מקף — אביזרים למשל — נשארים כפי שהם.
+ */
+function baseName(name?: string): string {
+  const n = (name ?? 'SPINZ').trim();
+  const cut = n.split(/\s[—–-]\s/)[0].trim();
+  return cut || n;
+}
+
 function rows(items: OrderItem[]): string {
   return items.map(i => `
     <tr>
       <td style="padding:12px 0;border-bottom:1px solid #E0DCD4;">
-        <div style="font-weight:700;color:#1C1C1C;">${esc(i.product_name || 'SPINZ')}</div>
+        <div style="font-weight:700;color:#1C1C1C;">${esc(baseName(i.product_name))}</div>
         <div style="font-size:13px;color:#6A6862;">
           ${esc(COLORS[i.color] ?? i.color)} · מידה ${esc(i.size)}${i.quantity > 1 ? ` · ${i.quantity} יח׳` : ''}
         </div>
@@ -106,7 +119,7 @@ function html(o: OrderEmail): string {
 
 function text(o: OrderEmail): string {
   const lines = o.items.map(i =>
-    `- ${i.product_name || 'SPINZ'} · ${COLORS[i.color] ?? i.color} · מידה ${i.size}` +
+    `- ${baseName(i.product_name)} · ${COLORS[i.color] ?? i.color} · מידה ${i.size}` +
     `${i.quantity > 1 ? ` · ${i.quantity} יח׳` : ''} — ${ils(i.unit_price * i.quantity)}`);
 
   return [

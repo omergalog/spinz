@@ -12,7 +12,6 @@ const BCC = Deno.env.get('ORDER_EMAIL_BCC') ?? 'info@spinzbikes.com';
 const SITE = Deno.env.get('SITE_URL') ?? 'https://spinzbikes.com';
 
 const COMPANY = 'אופני סיבוב בערבון מוגבל בע״מ (SPINZ BIKES LTD), ח.פ. 517343661, התמר 137, בית חרות';
-const PHONE = '052-756-5262';
 const SUPPORT = 'info@spinzbikes.com';
 
 const COLORS: Record<string, string> = {
@@ -60,8 +59,12 @@ function html(o: OrderEmail): string {
   return `<div dir="rtl" style="font-family:Arial,Helvetica,sans-serif;background:#F5F2EC;padding:32px 16px;">
   <div style="max-width:560px;margin:0 auto;background:#fff;border:1px solid #E0DCD4;border-radius:10px;overflow:hidden;">
 
-    <div style="background:#1C1C1C;padding:26px 28px;">
-      <div style="color:#C9A870;font-size:22px;font-weight:800;letter-spacing:.18em;">SPINZ</div>
+    <div style="background:#1C1C1C;padding:24px 28px;">
+      <!-- הלוגו מוגש מהאתר ולא מוטמע במייל: קובץ מוטמע מגדיל את
+           ההודעה ומגדיל את הסיכוי שתסומן כספאם. הרוחב מוגבל ב-CSS
+           כי תוכנות דואר מתעלמות מגודל הקובץ עצמו. -->
+      <img src="${SITE}/assets/logo-email.png" alt="SPINZ"
+           width="150" style="width:150px;max-width:60%;height:auto;display:block;border:0;">
     </div>
 
     <div style="padding:28px;">
@@ -88,13 +91,13 @@ function html(o: OrderEmail): string {
       <p style="margin:0;font-size:13px;color:#4A4845;line-height:1.8;">
         ניתן לבטל את העסקה בכל עת עד למסירה, או תוך 14 יום מקבלת האופניים,
         ולקבל <strong>החזר מלא ללא דמי ביטול</strong>. ביטול מתבצע
-        <a href="${SITE}/cancel-order" style="color:#8A6D3B;">בטופס הביטול</a>,
-        בטלפון ${PHONE} או במייל ${SUPPORT}.
+        <a href="${SITE}/cancel-order" style="color:#8A6D3B;">בטופס הביטול</a>
+        או במייל ${SUPPORT}.
         הפירוט המלא ב<a href="${SITE}/presale-terms" style="color:#8A6D3B;">תנאי המכירה המוקדמת</a>.
       </p>
 
       <p style="margin:24px 0 0;font-size:13px;color:#4A4845;line-height:1.8;">
-        שאלה? השב למייל הזה, או חייג ${PHONE}.
+        שאלה? השב למייל הזה ונחזור אליך.
       </p>
     </div>
 
@@ -123,7 +126,7 @@ function text(o: OrderEmail): string {
     o.address ? `כתובת למשלוח: ${o.address}` : '',
     '',
     'זכות ביטול: עד המסירה או תוך 14 יום מקבלת האופניים, החזר מלא ללא דמי ביטול.',
-    `${SITE}/cancel-order · ${PHONE} · ${SUPPORT}`,
+    `${SITE}/cancel-order · ${SUPPORT}`,
     '',
     COMPANY,
   ].filter(Boolean).join('\n');

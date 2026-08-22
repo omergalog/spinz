@@ -59,12 +59,8 @@ function html(o: OrderEmail): string {
   return `<div dir="rtl" style="font-family:Arial,Helvetica,sans-serif;background:#F5F2EC;padding:32px 16px;">
   <div style="max-width:560px;margin:0 auto;background:#fff;border:1px solid #E0DCD4;border-radius:10px;overflow:hidden;">
 
-    <div style="background:#1C1C1C;padding:24px 28px;">
-      <!-- הלוגו מוגש מהאתר ולא מוטמע במייל: קובץ מוטמע מגדיל את
-           ההודעה ומגדיל את הסיכוי שתסומן כספאם. הרוחב מוגבל ב-CSS
-           כי תוכנות דואר מתעלמות מגודל הקובץ עצמו. -->
-      <img src="${SITE}/assets/logo-email.png" alt="SPINZ"
-           width="150" style="width:150px;max-width:60%;height:auto;display:block;border:0;">
+    <div style="background:#1C1C1C;padding:26px 28px;text-align:center;">
+      <div style="color:#C9A870;font-size:22px;font-weight:800;letter-spacing:.18em;">SPINZ</div>
     </div>
 
     <div style="padding:28px;">

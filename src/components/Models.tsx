@@ -177,7 +177,7 @@ export default function Models() {
   const presale = presaleCfg.active && (!presaleReady || quotaLeft > 0);
   const presaleSoldOut = presaleCfg.active && presaleReady && quotaLeft <= 0;
   const shownPrice = presale ? presaleCfg.presalePrice : displayPrice;
-  const monthly = Math.round(shownPrice / 13);
+  const monthly = Math.round(shownPrice / presaleCfg.installments);
 
   const handleAddToCart = () => {
     if (outOfStock) return;
@@ -337,7 +337,7 @@ export default function Models() {
       </div>
       {presale && couponPrice == null && (
         <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13.5px', color: MUTED, margin: '10px 0 0' }}>
-          {t.product.monthlyPre} <b style={{ color: DARK }}>₪{monthly.toLocaleString(lang === 'en' ? 'en-US' : 'he-IL')}</b> {t.product.monthlyPost}
+          {t.product.monthlyPre} <b style={{ color: DARK }}>₪{monthly.toLocaleString(lang === 'en' ? 'en-US' : 'he-IL')}</b> {t.product.monthlyPost(presaleCfg.installments)}
         </p>
       )}
 

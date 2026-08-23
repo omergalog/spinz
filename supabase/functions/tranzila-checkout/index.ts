@@ -27,20 +27,20 @@ const COLOR_HE: Record<string, string> = {
 /**
  * שורות המוצרים לחשבונית.
  *
- * התיעוד קובע תנאי אחד חד־משמעי: **סכום השורות חייב להשתוות לסכום
- * העסקה**, אחרת הפירוט נדחה. לכן השורות נשלחות במחיר הסופי, כולל
- * מע"מ, ולא לפניו.
+ * המחיר בשורה נשלח **לפני מע"מ**, וטרנזילה מוסיפה אותו. חשבונית
+ * אמיתית מ-23.08.2026 מוכיחה זאת: שורה של 0.85, מע"מ 18% של 0.15,
+ * וסה"כ 1.00 — בדיוק סכום העסקה.
  *
- * קודם הן חולקו ב-(1 + מע"מ) לפי הנחה שטרנזילה מוסיפה אותו בעצמה.
- * בפועל זה יצר שורות שסכומן 0.85 מול עסקה של 1.00 — הפרה ישירה של
- * התנאי, ומועמד ראשי לכך שהחשבונית לא הופקה כלל.
+ * שליחת מחיר כולל מע"מ הייתה מנפחת את החשבונית ל-1.18 מול עסקה של
+ * 1.00. שיעור המע"מ נשלט ב-INVOICE_VAT_RATE.
  *
  * שתי התאמות נוספות: קופון מקטין כל שורה באותו יחס, ועיגול לאגורות
- * נספג בשורה האחרונה כדי שהשוויון יישמר לגרוש.
+ * נספג בשורה האחרונה כדי שהסכום לפני מע"מ יישאר מדויק.
  */
 function buildInvoiceLines(items: Array<Record<string, unknown>>, total: number): string {
   if (!Array.isArray(items) || items.length === 0) return '';
 
+  const vat = Number(Deno.env.get('INVOICE_VAT_RATE') ?? '0');
   const gross = items.reduce(
     (sum, i) => sum + Number(i.unit_price ?? 0) * Number(i.quantity ?? 0), 0);
   if (gross <= 0) return '';
@@ -53,15 +53,13 @@ function buildInvoiceLines(items: Array<Record<string, unknown>>, total: number)
     return {
       product_name: `SPINZ Urban · ${color} · מידה ${i.size}`,
       product_quantity: qty,
-      product_price: Math.round(Number(i.unit_price ?? 0) * ratio * 100) / 100,
+      product_price: Math.round(Number(i.unit_price ?? 0) * ratio / (1 + vat) * 100) / 100,
     };
   });
 
-  // התיעוד דורש שוויון מוחלט בין סכום השורות לסכום העסקה, אחרת
-  // הפירוט נדחה. עיגול לאגורות יוצר סטייה של פרוטות, והשורה
-  // האחרונה סופגת אותה — אותה שיטה שבה נרשמות שורות ההזמנה.
+  const net = total / (1 + vat);
   const linesTotal = lines.reduce((s, l) => s + l.product_price * l.product_quantity, 0);
-  const drift = Math.round((total - linesTotal) * 100) / 100;
+  const drift = Math.round((net - linesTotal) * 100) / 100;
   if (drift !== 0) {
     const last = lines[lines.length - 1];
     last.product_price = Math.round(

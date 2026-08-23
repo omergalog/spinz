@@ -158,7 +158,9 @@ export function loadApplePay(): Promise<void> {
   });
 
   applePayLoading = add('https://code.jquery.com/jquery-3.6.0.js')
-    .then(() => add(`https://directng.tranzila.com/assets/js/tranzilanapple_v3.js?v=${Date.now()}`))
+    // הכתובת שבתיעוד של טרנזילה. קודם נטען עותק מנתיב אחר, שלא מופיע
+    // בתיעוד — חשוד סביר לכך שחלון Apple Pay הציג סכום שאינו הנשלח.
+    .then(() => add(`https://direct.tranzila.com/js/tranzilanapple_v3.js?v=${Date.now()}`))
     .then(() => {
       // noConflict כדי שה-jQuery הזה לא ידרוס משתנים גלובליים באתר
       const w = window as unknown as { jQuery?: { noConflict: (b: boolean) => unknown }; $n?: unknown };

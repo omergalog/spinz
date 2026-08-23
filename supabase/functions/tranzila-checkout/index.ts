@@ -109,6 +109,12 @@ Deno.serve(async (req) => {
       const left = msg.split('OUT_OF_STOCK:')[1]?.split(':')[1]?.replace(/\D/g, '');
       return json({ error: 'OUT_OF_STOCK', left: Number(left ?? 0) }, 409, req);
     }
+    // סלים פתוחים רבים מדי הוא מצב לגיטימי של לקוח שניסה שוב, ולא
+    // תקלת שרת. הוא הוחזר עד כה כ-SERVER, והלקוח קיבל "משהו השתבש"
+    // בלי דרך לדעת שכל מה שנדרש הוא להמתין.
+    if (msg.includes('TOO_MANY_OPEN_CARTS')) {
+      return json({ error: 'TOO_MANY_OPEN_CARTS' }, 429, req);
+    }
     console.error('create_checkout_session', msg);
     return json({ error: 'SERVER' }, 500, req);
   }

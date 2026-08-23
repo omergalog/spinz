@@ -51,6 +51,10 @@ export async function checkCoupon(code: string, subtotal: number): Promise<Coupo
   }
 }
 
+export class TooManyCartsError extends Error {
+  constructor() { super('TOO_MANY_OPEN_CARTS'); }
+}
+
 export class OutOfStockError extends Error {
   constructor(public left: number) { super('OUT_OF_STOCK'); }
 }
@@ -83,6 +87,7 @@ export async function openCheckout(input: {
 
   if (!res.ok) {
     if (body?.error === 'OUT_OF_STOCK') throw new OutOfStockError(Number(body.left ?? 0));
+    if (body?.error === 'TOO_MANY_OPEN_CARTS') throw new TooManyCartsError();
     throw new Error(body?.error ?? 'SERVER');
   }
   return body as CheckoutSession;

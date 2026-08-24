@@ -102,6 +102,17 @@ Deno.serve(async (req) => {
     colorSkuCode: String(i.colorSkuCode ?? ''),
   }));
 
+  // כל סל פתוח משריין מלאי ל-25 דקות. מכסת שלושת הסלים נמדדת לפי
+  // מספר טלפון, ומספר טלפון עולה כלום להחליף — כלומר אפשר היה לרוקן
+  // את המלאי המוצג בלי לשלם שקל. מכסה לכתובת חוסמת את זה.
+  const ip = (req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim();
+  if (ip) {
+    const { data: allowed } = await db.rpc('take_rate_token', {
+      p_bucket: 'checkout', p_client: ip, p_limit: 12,
+    });
+    if (allowed === false) return json({ error: 'TOO_MANY_OPEN_CARTS' }, 429, req);
+  }
+
   const { data, error } = await db.rpc('create_checkout_session', {
     p_items: clean,
     p_name: name,

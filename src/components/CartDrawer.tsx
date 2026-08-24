@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Plus, Minus, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { OutOfStockError, TooManyCartsError, checkCoupon, loadApplePay, openCheckout, submitToIframe }
+import { CouponRejectedError, OutOfStockError, TooManyCartsError, checkCoupon, loadApplePay, openCheckout, submitToIframe }
   from '../lib/payment';
 import { useT, useDir, useLang } from '../i18n/LanguageContext';
 import { usePresale } from '../config/presale';
@@ -172,7 +172,12 @@ export default function CartDrawer() {
       // ה-iframe נוצר ברינדור הבא, ולכן ההגשה מחכה לו.
       requestAnimationFrame(() => submitToIframe(session, TRANZILA_FRAME));
     } catch (e) {
-      if (e instanceof TooManyCartsError) {
+      if (e instanceof CouponRejectedError) {
+        // הקוד חדל להיות תקף בין ההחלה לאישור. מנקים אותו כדי שהמסך
+        // יציג את המחיר שייגבה בפועל, ולא סכום שכבר אינו קיים.
+        setDiscount(0); setCouponState('bad'); saveCoupon('');
+        setOrderError(t.cart.errCouponRejected);
+      } else if (e instanceof TooManyCartsError) {
         setOrderError(t.cart.errTooManyCarts);
       } else if (e instanceof OutOfStockError) {
         setOrderError(e.left > 0 ? t.cart.errQty(e.left) : t.cart.errOutOfStock);

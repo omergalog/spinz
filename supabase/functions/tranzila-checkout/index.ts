@@ -121,6 +121,11 @@ Deno.serve(async (req) => {
     // סלים פתוחים רבים מדי הוא מצב לגיטימי של לקוח שניסה שוב, ולא
     // תקלת שרת. הוא הוחזר עד כה כ-SERVER, והלקוח קיבל "משהו השתבש"
     // בלי דרך לדעת שכל מה שנדרש הוא להמתין.
+    // קופון שנדחה בשרת חייב לעצור את התהליך ולהיאמר ללקוח. הוא ראה
+    // מחיר מוזל על המסך, ושתיקה כאן פירושה חיוב בסכום אחר.
+    if (msg.includes('COUPON_REJECTED')) {
+      return json({ error: 'COUPON_REJECTED' }, 409, req);
+    }
     if (msg.includes('TOO_MANY_OPEN_CARTS')) {
       return json({ error: 'TOO_MANY_OPEN_CARTS' }, 429, req);
     }

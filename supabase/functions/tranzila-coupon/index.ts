@@ -28,7 +28,11 @@ Deno.serve(async (req) => {
   try { body = await req.json(); } catch { return reply({ valid: false }, 400); }
 
   const code = String(body.code ?? '').trim();
-  const subtotal = Number(body.subtotal ?? 0);
+  // הסכום מגיע מהדפדפן ומשמש לתצוגה בלבד — החיוב מתומחר בשרת. ובכל
+  // זאת הוא לא מוחזר כפי שהתקבל: סכום שלילי או לא-מספרי הוחזר קודם
+  // כמות שהוא, וייצר מסך שמראה מחיר שלילי.
+  const raw = Number(body.subtotal);
+  const subtotal = Number.isFinite(raw) ? Math.min(Math.max(Math.round(raw), 0), 1_000_000) : 0;
   if (!code || subtotal <= 0) return reply({ valid: false, total: subtotal, discount: 0 });
 
   // 20 ניסיונות לעשר דקות לכתובת. מספיק בשופע ללקוח שמקליד קוד,

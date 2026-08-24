@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { CheckCircle, AlertCircle } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+import { submitLead } from '../lib/payment';
 import { COMPANY } from '../config/company';
 
 const DARK       = '#1C1C1C';
@@ -104,10 +104,10 @@ export default function LeadForm() {
   const onSubmit = async (data: FormData) => {
     setStatus('loading');
     try {
-      await supabase.from('leads').insert({
+      await submitLead({
         name: data.name,
         email: data.email,
-        phone: data.whatsapp || null,
+        phone: data.whatsapp || undefined,
       });
       setStatus('success');
       reset();

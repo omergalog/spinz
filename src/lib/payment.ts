@@ -184,3 +184,19 @@ export function loadApplePay(): Promise<void> {
 
   return applePayLoading;
 }
+
+
+/**
+ * שליחת פנייה מהאתר.
+ *
+ * עוברת דרך פונקציית שרת ולא ישירות לטבלה: הכתיבה הישירה הייתה
+ * פתוחה לכל אחד, בלי מכסה ובלי גבולות אורך.
+ */
+export async function submitLead(lead: { name?: string; email?: string; phone?: string }) {
+  const res = await fetch(`${FUNCTIONS}/lead-submit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(lead),
+  });
+  if (!res.ok) throw new Error('lead_failed');
+}

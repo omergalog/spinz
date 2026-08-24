@@ -3,6 +3,7 @@ import PageShell from '../components/PageShell';
 import LegalNotice from '../components/LegalNotice';
 import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
 import { supabase } from '../lib/supabase';
+import { submitLead } from '../lib/payment';
 import { COMPANY } from '../config/company';
 
 const DARK = '#1C1C1C';
@@ -60,9 +61,9 @@ export default function CancelOrder() {
 
     if (error) {
       // Never lose a cancellation request – fall back to the leads table
-      await supabase.from('leads').insert({
+      await submitLead({
         name: `[ביטול עסקה] ${form.name.trim()}`,
-        email: form.email.trim() || null,
+        email: form.email.trim() || undefined,
         phone: form.phone.trim(),
       });
     }

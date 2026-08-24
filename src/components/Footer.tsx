@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import { submitLead } from '../lib/payment';
 import { useLang, useT, useDir, localizePath } from '../i18n/LanguageContext';
 
 const BG = '#1C1C1C';
@@ -21,7 +22,7 @@ function NewsletterForm() {
     const { error } = await supabase.from('newsletter').insert({ email: clean });
     if (error) {
       // Table may not exist yet – keep the address in leads so nothing is lost
-      await supabase.from('leads').insert({ name: t.footer.newsletterAria, email: clean, phone: null });
+      await submitLead({ name: t.footer.newsletterAria, email: clean });
     }
     setStatus('done');
     setEmail('');

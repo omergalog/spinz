@@ -155,7 +155,8 @@ export default function VideoSection() {
         </motion.p>
 
         <div style={{ overflow: 'hidden' }}>
-          <motion.h2
+          {/* h1 ולא h2: זו הכותרת הראשית של דף הבית, והיחידה בו. */}
+          <motion.h1
             initial={{ y: '110%' }}
             animate={visible ? { y: '0%' } : {}}
             transition={{ duration: 1.0, ease: [0.76, 0, 0.24, 1], delay: 0.25 }}
@@ -169,7 +170,7 @@ export default function VideoSection() {
             }}
           >
             SPINZ. MORE THAN A BIKE
-          </motion.h2>
+          </motion.h1>
         </div>
 
       </div>

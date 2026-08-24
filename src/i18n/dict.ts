@@ -74,7 +74,8 @@ export const dict = {
       smaller: 'הקטן טקסט', larger: 'הגדל טקסט', contactLine: 'פנייה בנושא נגישות:',
       controls: { contrast: 'ניגודיות גבוהה', links: 'הדגש קישורים', motion: 'עצור אנימציות', cursor: 'סמן גדול', text: 'גודל טקסט' },
     },
-    meta: { description: 'Spinz — אופני עיר סינגל ספיד. בנויים לרחובות, מעוצבים לבלוט.' },
+    meta: { description: 'Spinz — אופני עיר סינגל ספיד. בנויים לרחובות, מעוצבים לבלוט.',
+            homeTitle: 'SPINZ — אופני עיר סינגל ספיד' },
     search: {
       placeholder: 'חיפוש באתר – דגמים, מדריכים, אחריות…',
       fieldAria: 'שדה חיפוש', closeAria: 'סגור חיפוש', dialogAria: 'חיפוש באתר',
@@ -400,7 +401,8 @@ export const dict = {
       smaller: 'Decrease text size', larger: 'Increase text size', contactLine: 'Accessibility enquiries:',
       controls: { contrast: 'High contrast', links: 'Underline links', motion: 'Pause animations', cursor: 'Large cursor', text: 'Text size' },
     },
-    meta: { description: 'Spinz — urban single-speed city bikes. Built for the street, designed to stand out.' },
+    meta: { description: 'Spinz — urban single-speed city bikes. Built for the street, designed to stand out.',
+            homeTitle: 'SPINZ — Single Speed Urban Bikes' },
     search: {
       placeholder: 'Search the site — models, guides, warranty…',
       fieldAria: 'Search field', closeAria: 'Close search', dialogAria: 'Search the site',

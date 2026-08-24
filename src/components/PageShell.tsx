@@ -23,6 +23,17 @@ export default function PageShell({ children, eyebrow, title, subtitle, heroImag
   const presale = usePresale();
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
+  // כותרת הלשונית ותוצאת החיפוש בגוגל. עד כה כל 16 העמודים נשאו את
+  // המילה "Spinz" בלבד, בשתי השפות — לשוניות שאי אפשר להבחין ביניהן,
+  // ורשימת תוצאות שכולה זהה.
+  useEffect(() => {
+    // כותרות העמודים נכתבו כמשפטי שיווק ומסתיימות בנקודה. בלשונית
+    // ובתוצאת חיפוש היא מיותרת, ולכן נחתכת.
+    const clean = (title ?? '').replace(/[.。]\s*$/, '').trim();
+    document.title = clean ? `${clean} | SPINZ` : 'SPINZ';
+    return () => { document.title = 'SPINZ'; };
+  }, [title]);
+
   return (
     <CartProvider>
       <CartDrawer />

@@ -12,6 +12,7 @@ import CartDrawer from '../components/CartDrawer';
 import CookieBanner from '../components/CookieBanner';
 import { CartProvider } from '../context/CartContext';
 import { useLenis } from '../hooks/useLenis';
+import { useT } from '../i18n/LanguageContext';
 
 // Read fresh on every mount (lazy initializer) — NOT once at module load.
 // Otherwise navigating back to the homepage replays the intro loader, because
@@ -20,6 +21,10 @@ const hasLoaded = () =>
   typeof window !== 'undefined' && sessionStorage.getItem('spinz-loaded') === '1';
 
 const Index = () => {
+  const t = useT();
+  // דף הבית אינו עובר דרך PageShell, ולכן כותרתו נקבעת כאן.
+  useEffect(() => { document.title = t.meta.homeTitle; }, [t]);
+
   const [showLoader, setShowLoader] = useState(() => !hasLoaded());
   const [loaderDone, setLoaderDone] = useState(hasLoaded);
   useLenis();

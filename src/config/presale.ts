@@ -16,6 +16,8 @@ export type PresaleSettings = {
   deadline: Date;
   /** מספר התשלומים שהמסוף מאושר אליו. אותו ערך שקובע מה נגבה בפועל. */
   installments: number;
+  /** רצפת הסכום לתשלום בודד, כפי שהיא נשלחת לטרנזילה. */
+  minInstallment: number;
 };
 
 /** ברירת מחדל – מוצגת מיד עד שה-DB עונה (מונע הבהוב) */
@@ -27,6 +29,7 @@ export const PRESALE_DEFAULTS: PresaleSettings = {
   arrivalLabel: 'ספטמבר 2026',
   deadline: new Date('2026-09-30T23:59:59'),
   installments: 12,
+  minInstallment: 100,
 };
 
 /** טקסטים קבועים (לא נשלטים מהאדמין) */
@@ -48,7 +51,7 @@ export function usePresale(): PresaleSettings {
     let alive = true;
     supabase
       .from('site_settings')
-      .select('presale_active, regular_price, presale_price, presale_units, arrival_label, deadline, max_installments')
+      .select('presale_active, regular_price, presale_price, presale_units, arrival_label, deadline, max_installments, min_installment_amount')
       .eq('id', 1)
       .single()
       .then(({ data }) => {
@@ -63,6 +66,7 @@ export function usePresale(): PresaleSettings {
           // המספר שמוצג ללקוח והמספר שנשלח לטרנזילה חייבים להיות אחד.
           // קודם הוא היה כתוב קשיח בקוד, והבטיח 13 בעוד שנגבה תשלום אחד.
           installments: data.max_installments ?? PRESALE_DEFAULTS.installments,
+          minInstallment: data.min_installment_amount ?? PRESALE_DEFAULTS.minInstallment,
         });
       });
     return () => { alive = false; };

@@ -177,7 +177,19 @@ export default function Models() {
   const presale = presaleCfg.active && (!presaleReady || quotaLeft > 0);
   const presaleSoldOut = presaleCfg.active && presaleReady && quotaLeft <= 0;
   const shownPrice = presale ? presaleCfg.presalePrice : displayPrice;
-  const monthly = Math.round(shownPrice / presaleCfg.installments);
+  /**
+   * מספר התשלומים שהלקוח באמת יוכל לבחור.
+   *
+   * טרנזילה מקבלת maxpay שנגזר גם מרצפת התשלום הבודד, ולכן במחיר
+   * ₪1,090 עם רצפה של ₪100 מוצעים 10 תשלומים בלבד — בעוד שהעמוד
+   * הבטיח 12. אותה נוסחה בדיוק מופיעה כאן, כדי שההבטחה לא תוכל
+   * לחרוג ממה שנשלח לחיוב.
+   */
+  const payments = Math.max(1, Math.min(
+    presaleCfg.installments,
+    Math.floor(shownPrice / Math.max(1, presaleCfg.minInstallment)),
+  ));
+  const monthly = Math.round(shownPrice / payments);
 
   const handleAddToCart = () => {
     if (outOfStock) return;
@@ -337,7 +349,7 @@ export default function Models() {
       </div>
       {presale && couponPrice == null && (
         <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13.5px', color: MUTED, margin: '10px 0 0' }}>
-          {t.product.monthlyPre} <b style={{ color: DARK }}>₪{monthly.toLocaleString(lang === 'en' ? 'en-US' : 'he-IL')}</b> {t.product.monthlyPost(presaleCfg.installments)}
+          {t.product.monthlyPre} <b style={{ color: DARK }}>₪{monthly.toLocaleString(lang === 'en' ? 'en-US' : 'he-IL')}</b> {t.product.monthlyPost(payments)}
         </p>
       )}
 

@@ -215,5 +215,13 @@ Deno.serve(async (req) => {
     fields.cred_type = '1';
   }
 
-  return json({ ok: true, session_id: sessionId, total, action: IFRAME_URL, fields }, 200, req);
+  // הסכום והנחתו מוחזרים כפי שנקבעו בשרת, כדי שהמסך יוכל להציג את
+  // המספר המחייב ולא את זה שחישבה תצוגת הקופון רגע קודם.
+  return json({
+    ok: true, session_id: sessionId, total,
+    subtotal: Number(data.subtotal ?? total),
+    discount: Number(data.discount ?? 0),
+    coupon: data.coupon ?? null,
+    action: IFRAME_URL, fields,
+  }, 200, req);
 });

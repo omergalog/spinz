@@ -50,6 +50,23 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('spinz-cart', JSON.stringify(items));
   }, [items]);
 
+  // ריקון שנעשה מחוץ לקומפוננטה — למשל בעמוד תוצאת התשלום, אחרי
+  // שהשרת אישר שהעסקה שולמה. בלי ההאזנה הזו העגלה שבמצב הרכיב הייתה
+  // נכתבת בחזרה לאחסון, והמוצר היה חוזר להופיע אחרי שכבר שולם עליו.
+  // מטפל גם בלשונית שנייה שפתוחה באותו זמן.
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key !== 'spinz-cart') return;
+      if (e.newValue === null) { setItems([]); setCoupon(''); return; }
+      try {
+        const next = JSON.parse(e.newValue);
+        if (Array.isArray(next)) setItems(next);
+      } catch { /* ערך פגום — משאירים את הקיים */ }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
+
   // Re-price the cart on load: a saved cart holds the price from the moment
   // it was added, which goes stale when presale/product prices change in the
   // admin. Always charge the current price.

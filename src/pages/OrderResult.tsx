@@ -53,6 +53,24 @@ const COPY = {
   },
 } as const;
 
+/**
+ * ריקון העגלה אחרי תשלום שאושר.
+ *
+ * הריקון נעשה עד כה רק כשדף החזרה הספיק לשלוח הודעה למסגרת ההורה.
+ * לקוח שחזר בדרך אחרת — הפניה מלאה של החלון, לשונית שנסגרה ונפתחה,
+ * או מכשיר שחסם את ההודעה — נשאר עם המוצר בעגלה אחרי ששילם עליו.
+ *
+ * כאן ההסתמכות היא על מצב התשלום שהשרת אישר, ולא על הודעה שעשויה
+ * ללכת לאיבוד. הכתיבה היא לאחסון הדפדפן, שהוא מקור האמת של העגלה,
+ * ואירוע storage מיידע חלונות אחרים שפתוחים באותו רגע.
+ */
+function clearPaidCart() {
+  try {
+    localStorage.removeItem('spinz-cart');
+    window.dispatchEvent(new StorageEvent('storage', { key: 'spinz-cart', newValue: null }));
+  } catch { /* אחסון חסום — אין מה לנקות */ }
+}
+
 export default function OrderResult({ outcome }: { outcome: 'success' | 'failed' }) {
   const dir = useDir();
   const lang = useLang();
@@ -83,7 +101,10 @@ export default function OrderResult({ outcome }: { outcome: 'success' | 'failed'
         if (s.status !== 'pending') {
           setStatus(s.status);
           // אותו מזהה אירוע שהשרת שולח, כדי שמטא תאחד ולא תספור פעמיים
-          if (s.status === 'paid') pixelPurchase(sessionId, s.total);
+          if (s.status === 'paid') {
+            pixelPurchase(sessionId, s.total);
+            clearPaidCart();
+          }
           return;                       // הגיע למצב סופי — מפסיקים לשאול
         }
       }

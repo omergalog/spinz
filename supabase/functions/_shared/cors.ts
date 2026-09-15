@@ -18,6 +18,9 @@ export const ALLOWED_ORIGINS = [
   'https://spinzbikes.com',
   'http://localhost:3000',
   'http://localhost:5173',
+  // האדמין יושב בדומיין נפרד. בלעדיו הדפדפן חוסם כל קריאה שלו
+  // לפונקציות, גם כשהשרת מבצע את הפעולה בהצלחה.
+  'https://admin.spinzbikes.com',
 ];
 
 export function corsHeaders(req: Request): Record<string, string> {

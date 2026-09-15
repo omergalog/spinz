@@ -37,7 +37,7 @@ const pagesHe: SearchDoc[] = [
   },
   {
     id: 'page-bikes', type: 'page', title: 'הדגמים', to: '/bikes',
-    summary: 'כל הדגמים, הצבעים והמידות – עם המחיר והזמינות.',
+    summary: 'כל הדגמים, הצבעים והמידות, עם המחיר והזמינות.',
     body: 'דגמים אופניים לקנות רכישה הזמנה מלאי מחיר 1090 1299 עגלה',
     keywords: ['לקנות', 'קנייה', 'חנות', 'מחיר', 'bikes', 'shop'],
   },
@@ -49,7 +49,7 @@ const pagesHe: SearchDoc[] = [
   },
   {
     id: 'page-sizes', type: 'page', title: 'מידות וצבעים', to: '/sizes',
-    summary: 'שתי מידות שלדה, שלושה צבעים – ואיך בוחרים ביניהם.',
+    summary: 'שתי מידות שלדה, שלושה צבעים, ואיך בוחרים ביניהם.',
     body: `מידות צבעים 54 57 גובה רוכב ${colorVariants.map(c => c.label).join(' ')} ${sizeVariants.map(s => `${s.label} ${s.range}`).join(' ')}`,
     keywords: ['מידה', 'צבע', 'שחור מט', 'בז', 'ירוק זית', 'size', 'color', 'גובה', ...HEIGHTS],
   },
@@ -131,9 +131,9 @@ const pagesHe: SearchDoc[] = [
 /* ── Static pages, English ────────────────────────────────── */
 const pagesEn: SearchDoc[] = [
   { id: 'page-home', type: 'page', title: 'Home', to: '/', summary: 'Clean-lined single-speed city bikes, built in Tel Aviv.', body: 'SPINZ urban single speed fixie city bike launch price pre-sale', keywords: ['home', 'spinz', 'bike'] },
-  { id: 'page-bikes', type: 'page', title: 'The Models', to: '/bikes', summary: 'Every model, colour and size — with price and availability.', body: 'models buy purchase order stock price 1090 1299 cart', keywords: ['buy', 'shop', 'price', 'order'] },
+  { id: 'page-bikes', type: 'page', title: 'The Models', to: '/bikes', summary: 'Every model, colour and size, with price and availability.', body: 'models buy purchase order stock price 1090 1299 cart', keywords: ['buy', 'shop', 'price', 'order'] },
   { id: 'page-specs', type: 'page', title: 'Specs', to: '/specs', summary: 'Frame, wheels, brakes, weight and the full technical data.', body: 'specs technical frame aluminum fork wheels 700c tires brakes weight drivetrain chain gear ratio bearings', keywords: ['specs', 'technical', 'weight', 'aluminum'] },
-  { id: 'page-sizes', type: 'page', title: 'Sizes & Colors', to: '/sizes', summary: 'Two frame sizes, three colours — and how to choose.', body: 'sizes colors 54 57 rider height matte black beige olive green', keywords: ['size', 'colour', 'color', 'fit', 'height', ...HEIGHTS] },
+  { id: 'page-sizes', type: 'page', title: 'Sizes & Colors', to: '/sizes', summary: 'Two frame sizes, three colours, and how to choose.', body: 'sizes colors 54 57 rider height matte black beige olive green', keywords: ['size', 'colour', 'color', 'fit', 'height', ...HEIGHTS] },
   { id: 'page-faq', type: 'page', title: 'FAQ', to: '/faq', summary: 'Shipping, assembly, payments, warranty and returns.', body: 'questions answers help support shipping returns warranty payments', keywords: ['faq', 'help', 'support', 'questions'] },
   { id: 'page-guides', type: 'page', title: 'Guides', to: '/guides', summary: 'Assembly, sizing, maintenance, safety and routes.', body: 'guides how to tips explained tutorial', keywords: ['guide', 'how to', 'tutorial'] },
   { id: 'page-gallery', type: 'page', title: 'Gallery', to: '/gallery', summary: 'Professional photos of the bikes and of riding in the city.', body: 'gallery photos pictures images', keywords: ['photos', 'pictures', 'gallery'] },
@@ -153,7 +153,7 @@ const buildProducts = (lang: Lang): SearchDoc[] => colorVariants.flatMap(c =>
   sizeVariants.map<SearchDoc>(s => ({
     id: `product-${c.id}-${s.id}`,
     type: 'product',
-    title: `SPINZ ${s.label} – ${getDict(lang).product.colors[c.id as 'mat' | 'beige' | 'olive']}`,
+    title: `SPINZ ${s.label}, ${getDict(lang).product.colors[c.id as 'mat' | 'beige' | 'olive']}`,
     summary: `${getDict(lang).product.heights[s.id as '54' | '57']} · ₪1,090`,
     body: lang === 'en'
       ? `single speed bike ${getDict(lang).product.colors[c.id as 'mat' | 'beige' | 'olive']} size ${s.label} ${c.skuCode} buy order cart`

@@ -21,8 +21,8 @@ export const guidesEn: Record<string, GuideTextEn> = {
   assembly: {
     title: 'Assembling your SPINZ at home',
     summary: 'The bike arrives about 85% assembled. Final assembly takes under 20 minutes, with no prior experience.',
-    metaTitle: 'How to assemble a bike at home — step by step | SPINZ',
-    metaDescription: 'A complete assembly guide for the SPINZ single speed: what’s in the box, attaching the handlebars, fitting the pedals, setting saddle height and a safety check — in under 20 minutes.',
+    metaTitle: 'How to assemble a bike at home: step by step | SPINZ',
+    metaDescription: 'A complete assembly guide for the SPINZ single speed: what’s in the box, attaching the handlebars, fitting the pedals, setting saddle height and a safety check, in under 20 minutes.',
     readTime: '6 min read',
     facts: [
       { label: 'Time', value: '15–20 minutes' },
@@ -30,7 +30,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
       { label: 'Tools', value: 'Included in the box' },
     ],
     intro:
-      'Every SPINZ leaves our warehouse mostly assembled — the frame, wheels, drivetrain and brakes are already fitted and tuned. What’s left for you is attaching a few final parts and tightening them properly: fifteen to thirty minutes of work that needs no prior experience. This guide walks you through it step by step, points out what to watch for, and finishes with a short safety check before your first ride.',
+      'Every SPINZ leaves our warehouse mostly assembled: the frame, wheels, drivetrain and brakes are already fitted and tuned. What’s left for you is attaching a few final parts and tightening them properly: fifteen to thirty minutes of work that needs no prior experience. This guide walks you through it step by step, points out what to watch for, and finishes with a short safety check before your first ride.',
     sections: [
       {
         heading: 'What’s in the box',
@@ -42,11 +42,11 @@ export const guidesEn: Record<string, GuideTextEn> = {
               'The frame, with the rear wheel, drivetrain and brakes already installed.',
               'The front wheel (sometimes fitted, sometimes packed separately).',
               'The handlebars and the stem.',
-              'Two pedals — marked L (left) and R (right).',
+              'Two pedals, marked L (left) and R (right).',
               'A small tool kit: Allen keys, plus a QR code to the assembly video.',
             ],
           },
-          { type: 'tip', text: 'Keep the box and packing materials until you’ve confirmed everything is in order — they’re useful if you ever need to return or ship the bike.' },
+          { type: 'tip', text: 'Keep the box and packing materials until you’ve confirmed everything is in order, they’re useful if you ever need to return or ship the bike.' },
         ],
       },
       {
@@ -55,10 +55,10 @@ export const guidesEn: Record<string, GuideTextEn> = {
           {
             type: 'steps',
             items: [
-              'Carefully lift the bike out of the box and remove all protective material — foam, tape and cable ties.',
+              'Carefully lift the bike out of the box and remove all protective material: foam, tape and cable ties.',
               'Attach the handlebars to the stem: slide the stem into the steerer tube, line it up square to the front wheel, and tighten the Allen bolts gently and evenly (a little on each bolt, in rotation).',
               'If the front wheel came separately, fit it into the fork, close the quick release, and make sure the wheel sits centered between the fork legs.',
-              'Thread in the pedals — this is the step you least want to get wrong. The right pedal (R) threads clockwise; the left pedal (L) threads counter-clockwise. Start each one by hand so you don’t cross-thread it.',
+              'Thread in the pedals, this is the step you least want to get wrong. The right pedal (R) threads clockwise; the left pedal (L) threads counter-clockwise. Start each one by hand so you don’t cross-thread it.',
               'Set the saddle height with the quick release and close it firmly. Check that the saddle is straight and centered front to back.',
               'Check tire pressure (60–80 PSI is recommended, and it’s printed on the tire wall), then squeeze both brake levers to confirm they bite properly.',
             ],
@@ -73,9 +73,9 @@ export const guidesEn: Record<string, GuideTextEn> = {
           {
             type: 'list',
             items: [
-              'Lift the front wheel and spin it — it should run free and true, without rubbing the brake.',
-              'Hold the front wheel and try to twist the handlebars against it — they shouldn’t move. If they do, tighten the stem bolts.',
-              'Squeeze each brake in turn and try to push the bike — the matching wheel should lock.',
+              'Lift the front wheel and spin it, it should run free and true, without rubbing the brake.',
+              'Hold the front wheel and try to twist the handlebars against it, they shouldn’t move. If they do, tighten the stem bolts.',
+              'Squeeze each brake in turn and try to push the bike, the matching wheel should lock.',
               'Check that both pedals are threaded all the way in and don’t wobble.',
               'Push down on the saddle and handlebars to confirm they’re solid and don’t slip.',
             ],
@@ -111,8 +111,8 @@ export const guidesEn: Record<string, GuideTextEn> = {
           {
             type: 'list',
             items: [
-              'Size 54 (S) — fits riders 160–175 cm.',
-              'Size 57 (L) — fits riders 175–190 cm.',
+              'Size 54 (S), fits riders 160–175 cm.',
+              'Size 57 (L), fits riders 175–190 cm.',
             ],
           },
           { type: 'paragraph', text: 'These ranges reflect population averages and are a recommendation. Your build, leg length and personal comfort can move you a size up or down.' },
@@ -142,7 +142,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
             items: [
               'Sit on the saddle and put your heel on the pedal at its lowest point.',
               'At the right height, your leg should be almost completely straight with your heel on the pedal.',
-              'When you then pedal with the ball of your foot, you’ll have a slight, comfortable bend in the knee — that’s the right height.',
+              'When you then pedal with the ball of your foot, you’ll have a slight, comfortable bend in the knee, that’s the right height.',
               'Close the quick release firmly and check that the saddle doesn’t sink under your weight.',
             ],
           },
@@ -159,31 +159,31 @@ export const guidesEn: Record<string, GuideTextEn> = {
   maintenance: {
     title: 'Routine bike maintenance',
     summary: 'A little regular upkeep keeps the bike smooth, quiet and safe for years.',
-    metaTitle: 'Routine bike maintenance — a single-speed guide | SPINZ',
-    metaDescription: 'How to maintain a single-speed bike: chain lubrication, cleaning the frame, checking tire pressure, a weekly and monthly routine, and when to see a mechanic — a complete guide.',
+    metaTitle: 'Routine bike maintenance: a single-speed guide | SPINZ',
+    metaDescription: 'How to maintain a single-speed bike: chain lubrication, cleaning the frame, checking tire pressure, a weekly and monthly routine, and when to see a mechanic, a complete guide.',
     readTime: '5 min read',
     facts: [
       { label: 'Frequency', value: 'Weekly + monthly' },
       { label: 'Difficulty', value: 'Easy' },
     ],
     intro:
-      'One of the great advantages of a single speed is simplicity — fewer moving parts, fewer things to go wrong. Even so, a little regular maintenance makes an enormous difference: it keeps the ride quiet, extends the life of your components, and prevents breakdowns exactly when you’re in a hurry. Here is the routine we recommend, broken down by how often to do it.',
+      'One of the great advantages of a single speed is simplicity, fewer moving parts, fewer things to go wrong. Even so, a little regular maintenance makes an enormous difference: it keeps the ride quiet, extends the life of your components, and prevents breakdowns exactly when you’re in a hurry. Here is the routine we recommend, broken down by how often to do it.',
     sections: [
       {
-        heading: 'Weekly routine — 5 minutes',
+        heading: 'Weekly routine (5 minutes)',
         blocks: [
           {
             type: 'list',
             items: [
               'Check tire pressure and inflate as needed (60–80 PSI). Correct pressure saves energy and prevents punctures.',
-              'Glance at the chain — if it looks dry or sounds squeaky, it’s time to lube it.',
+              'Glance at the chain, if it looks dry or sounds squeaky, it’s time to lube it.',
               'Confirm the brakes bite properly and the levers don’t pull all the way to the bar.',
             ],
           },
         ],
       },
       {
-        heading: 'Lubricating the chain — the single most important step',
+        heading: 'Lubricating the chain, the single most important step',
         blocks: [
           { type: 'paragraph', text: 'A well-lubed chain is the heart of a smooth, quiet ride. Lube it every 2–4 weeks, or straight after riding in the rain:' },
           {
@@ -191,7 +191,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
             items: [
               'Wipe the chain with a dry rag to remove old grime.',
               'Drip bike-specific chain lube onto every link while slowly turning the cranks backwards.',
-              'Keep turning for a minute so the lube works in, then wipe off the excess thoroughly — leftover lube attracts dust.',
+              'Keep turning for a minute so the lube works in, then wipe off the excess thoroughly, leftover lube attracts dust.',
             ],
           },
           { type: 'tip', text: 'Use bike-specific chain lube only. Regular WD-40 or motor oil damage the chain and attract dirt.' },
@@ -203,7 +203,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
           {
             type: 'list',
             items: [
-              'Wipe the frame with a damp cloth after riding in rain or dust — aluminum holds up fine, but cleaning keeps it looking sharp.',
+              'Wipe the frame with a damp cloth after riding in rain or dust, aluminum holds up fine, but cleaning keeps it looking sharp.',
               'Avoid high-pressure washing, which can force water into the bearings.',
               'Store the bike somewhere dry and under cover. Long exposure to sun and damp shortens the life of tires and grips.',
             ],
@@ -220,7 +220,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
     faq: [
       { q: 'How often should I lube the chain?', a: 'Every 2–4 weeks with normal use, and always straight after riding in the rain. If the chain squeaks, that’s your cue.' },
       { q: 'Can I hose the bike down?', a: 'Better not at high pressure. A damp cloth and a little mild soap are plenty, and they won’t put your bearings at risk.' },
-      { q: 'I got a puncture — what now?', a: 'Our tires are puncture-resistant with an internal protection strip, but flats are still possible. Replacing an inner tube is a simple job that any bike shop does in a few minutes.' },
+      { q: 'I got a puncture, what now?', a: 'Our tires are puncture-resistant with an internal protection strip, but flats are still possible. Replacing an inner tube is a simple job that any bike shop does in a few minutes.' },
     ],
   },
 
@@ -228,19 +228,19 @@ export const guidesEn: Record<string, GuideTextEn> = {
     title: 'Adjusting brakes and chain tension',
     summary: 'A single speed is simple to maintain. A few basic adjustments keep braking sharp and the drivetrain quiet.',
     metaTitle: 'Brake adjustment and chain tension for single-speed bikes | SPINZ',
-    metaDescription: 'An adjustment guide: how to set up V-brakes and dual-pivot calipers, tension a brake cable, check single-speed chain tension, and know when to replace pads — step by step.',
+    metaDescription: 'An adjustment guide: how to set up V-brakes and dual-pivot calipers, tension a brake cable, check single-speed chain tension, and know when to replace pads, step by step.',
     readTime: '5 min read',
     facts: [
       { label: 'Difficulty', value: 'Moderate' },
       { label: 'Tools', value: '5 mm Allen key' },
     ],
     intro:
-      'Sharp brakes and correct chain tension are a matter of safety, not just comfort. The good news: on a single speed there are no gears to fuss with, so it all comes down to a handful of simple adjustments. This guide covers brake setup, chain tension and spotting wear — all with tools you have at home.',
+      'Sharp brakes and correct chain tension are a matter of safety, not just comfort. The good news: on a single speed there are no gears to fuss with, so it all comes down to a handful of simple adjustments. This guide covers brake setup, chain tension and spotting wear, all with tools you have at home.',
     sections: [
       {
         heading: 'How a properly set brake should feel',
         blocks: [
-          { type: 'paragraph', text: 'The lever should bite at roughly 50% of its travel — not instantly, but well before it touches the handlebar. The pads should meet the rim squarely, without ever touching the tire itself.' },
+          { type: 'paragraph', text: 'The lever should bite at roughly 50% of its travel, not instantly, but well before it touches the handlebar. The pads should meet the rim squarely, without ever touching the tire itself.' },
         ],
       },
       {
@@ -251,17 +251,17 @@ export const guidesEn: Record<string, GuideTextEn> = {
             items: [
               'Spin the wheel and check that the pads aren’t rubbing it while the brake is released.',
               'If the brake feels loose (the lever pulls too far), tighten the cable: slightly loosen the anchor bolt at the caliper, pull the cable a little tighter, and clamp it again.',
-              'For fine adjustment, use the barrel adjuster at the base of the lever — turning it out moves the pads closer to the rim.',
+              'For fine adjustment, use the barrel adjuster at the base of the lever, turning it out moves the pads closer to the rim.',
               'Make sure both pads meet the rim at the same time and flat against it. If one side sits closer, even it out with the centering screws.',
             ],
           },
-          { type: 'tip', text: 'A pad that touches the tire instead of the rim is dangerous — it can wear through the sidewall. Always check the pad sits fully on the metal braking surface.' },
+          { type: 'tip', text: 'A pad that touches the tire instead of the rim is dangerous, it can wear through the sidewall. Always check the pad sits fully on the metal braking surface.' },
         ],
       },
       {
         heading: 'Chain tension on a single speed',
         blocks: [
-          { type: 'paragraph', text: 'Unlike a geared bike, a single speed has a fixed chain tension that needs to be right — neither too slack nor too tight:' },
+          { type: 'paragraph', text: 'Unlike a geared bike, a single speed has a fixed chain tension that needs to be right, neither too slack nor too tight:' },
           {
             type: 'steps',
             items: [
@@ -281,8 +281,8 @@ export const guidesEn: Record<string, GuideTextEn> = {
       },
     ],
     faq: [
-      { q: 'My brake squeals — is that normal?', a: 'A light squeal in the wet is normal. A constant squeal points to dirty pads, a bad contact angle, or wear — clean them and readjust.' },
-      { q: 'The chain skips while pedaling — what’s wrong?', a: 'In most cases the chain is too slack. Tension it by moving the rear wheel back. If it persists, the cog may be worn.' },
+      { q: 'My brake squeals, is that normal?', a: 'A light squeal in the wet is normal. A constant squeal points to dirty pads, a bad contact angle, or wear, clean them and readjust.' },
+      { q: 'The chain skips while pedaling, what’s wrong?', a: 'In most cases the chain is too slack. Tension it by moving the rear wheel back. If it persists, the cog may be worn.' },
       { q: 'Are the parts standard?', a: 'Yes. Our brakes, chain and cogs are all standard sizes, available at any bike shop in Israel.' },
     ],
   },
@@ -290,7 +290,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
   'city-safety': {
     title: 'Riding safely on city streets',
     summary: 'Safe city riding starts with the right gear, good habits and knowing the road rules.',
-    metaTitle: 'Bicycle safety in the city — a complete guide | SPINZ',
+    metaTitle: 'Bicycle safety in the city: a complete guide | SPINZ',
     metaDescription: 'A safety guide for city cyclists: essential gear, Israeli road rules for bikes, signaling and road positioning, common hazards, and riding at night and in the rain.',
     readTime: '6 min read',
     facts: [
@@ -298,7 +298,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
       { label: 'Lights', value: 'Required at night' },
     ],
     intro:
-      'The city is where a SPINZ belongs — but it’s also a fast-moving environment that demands attention. Most urban cycling accidents are avoidable with a few simple habits and the right gear. This guide brings together what matters most for riding the city with confidence, in line with both the law and common sense.',
+      'The city is where a SPINZ belongs, but it’s also a fast-moving environment that demands attention. Most urban cycling accidents are avoidable with a few simple habits and the right gear. This guide brings together what matters most for riding the city with confidence, in line with both the law and common sense.',
     sections: [
       {
         heading: 'Essential safety gear',
@@ -306,10 +306,10 @@ export const guidesEn: Record<string, GuideTextEn> = {
           {
             type: 'list',
             items: [
-              'Helmet — always wear one, even for short trips. By law it’s required for riders under 18, and strongly recommended for everyone.',
-              'Lights — a white front light and a red rear light are legally required after dark, and worth using on overcast days too.',
+              'Helmet, always wear one, even for short trips. By law it’s required for riders under 18, and strongly recommended for everyone.',
+              'Lights, a white front light and a red rear light are legally required after dark, and worth using on overcast days too.',
               'Reflectors on the wheels and pedals make a real difference to how visible you are.',
-              'A bell — useful for warning pedestrians and other riders.',
+              'A bell, useful for warning pedestrians and other riders.',
             ],
           },
         ],
@@ -321,7 +321,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
             type: 'list',
             items: [
               'Ride with the flow of traffic, on the right-hand side of the road or in the bike lane where one exists.',
-              'Stop at red lights and stop signs — the same rules apply to bikes as to motor vehicles.',
+              'Stop at red lights and stop signs, the same rules apply to bikes as to motor vehicles.',
               'Riding on a pedestrian sidewalk is not allowed unless it is explicitly marked for bicycles.',
               'You may not carry a passenger on a bike not built for it, and you may not ride with earphones in both ears.',
             ],
@@ -334,13 +334,13 @@ export const guidesEn: Record<string, GuideTextEn> = {
           {
             type: 'steps',
             items: [
-              'Signal clearly with your hand before every turn or lane change — arm extended in the direction you’re going.',
+              'Signal clearly with your hand before every turn or lane change, arm extended in the direction you’re going.',
               'Hold a straight, predictable line. Sudden movements confuse drivers.',
-              'Make eye contact with drivers at junctions before you cross — never assume they’ve seen you.',
+              'Make eye contact with drivers at junctions before you cross, never assume they’ve seen you.',
               'Ride at least an open-door’s width away from parked cars (the “door zone”).',
             ],
           },
-          { type: 'tip', text: 'The most common urban hazard is getting “doored” — a driver opening a door without looking. Ride a little further from parked cars than feels intuitive.' },
+          { type: 'tip', text: 'The most common urban hazard is getting “doored”, a driver opening a door without looking. Ride a little further from parked cars than feels intuitive.' },
         ],
       },
       {
@@ -350,7 +350,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
             type: 'list',
             items: [
               'At night: turn your lights on, wear something light-colored or reflective, and slow down at dark junctions.',
-              'In the rain: leave more braking distance — braking on a wet rim takes longer. Brake early and gently.',
+              'In the rain: leave more braking distance, braking on a wet rim takes longer. Brake early and gently.',
               'Watch for slick surfaces: crosswalk stripes, manhole covers and road markings all get slippery when wet.',
             ],
           },
@@ -366,38 +366,38 @@ export const guidesEn: Record<string, GuideTextEn> = {
 
   'tel-aviv-routes': {
     title: 'Our favorite bike routes in Tel Aviv',
-    summary: 'Four routes worth starting with to get to know the city — from the sea to the boulevards.',
-    metaTitle: 'Bike routes in Tel Aviv — 4 recommended rides | SPINZ',
-    metaDescription: 'Our favorite cycling routes in Tel Aviv: the seaside promenade, Yarkon Park, Rothschild Boulevard and Jaffa Port — distances, highlights and tips.',
+    summary: 'Four routes worth starting with to get to know the city, from the sea to the boulevards.',
+    metaTitle: 'Bike routes in Tel Aviv: 4 recommended rides | SPINZ',
+    metaDescription: 'Our favorite cycling routes in Tel Aviv: the seaside promenade, Yarkon Park, Rothschild Boulevard and Jaffa Port, distances, highlights and tips.',
     readTime: '5 min read',
     facts: [
       { label: 'Routes', value: '4 recommended' },
       { label: 'Level', value: 'Beginner and up' },
     ],
     intro:
-      'Tel Aviv is one of the friendliest cycling cities in the world — flat, full of dedicated paths, and all of it within pedaling distance of the sea. We’ve put together four favorite routes that work well even for beginners, each with its own character. Grab a water bottle, pump up the tires, and go.',
+      'Tel Aviv is one of the friendliest cycling cities in the world, flat, full of dedicated paths, and all of it within pedaling distance of the sea. We’ve put together four favorite routes that work well even for beginners, each with its own character. Grab a water bottle, pump up the tires, and go.',
     sections: [
       {
-        heading: 'The seaside promenade — Tel Aviv Port to Jaffa',
+        heading: 'The seaside promenade, Tel Aviv Port to Jaffa',
         blocks: [
           { type: 'paragraph', text: 'The classic and most spectacular ride: an uninterrupted bike path along the shoreline, from Tel Aviv Port in the north to the old port of Jaffa in the south. About 8 km each way, completely flat, with sea views the whole way. Perfect at sunset.' },
           { type: 'image', src: '/assets/photo-olive-lifestyle.jpg', alt: 'Riding a SPINZ along the Tel Aviv seaside promenade' },
         ],
       },
       {
-        heading: 'Yarkon Park — green and calm',
+        heading: 'Yarkon Park, green and calm',
         blocks: [
           { type: 'paragraph', text: 'When you want to escape the traffic, Yarkon Park offers kilometers of green paths along the river, well away from cars. Great for families, for an easy cruise, and as a gentle start if you’re new to the saddle.' },
         ],
       },
       {
-        heading: 'Rothschild Boulevard — the urban classic',
+        heading: 'Rothschild Boulevard, the urban classic',
         blocks: [
           { type: 'paragraph', text: 'The central bike path along Rothschild is the beating heart of city riding in Tel Aviv. Bauhaus architecture on both sides, coffee kiosks along the way, and an atmosphere that is Tel Aviv at its best. Link it up with Ben Gurion Boulevard for a lovely loop.' },
         ],
       },
       {
-        heading: 'Jaffa Port — finish with coffee by the sea',
+        heading: 'Jaffa Port, finish with coffee by the sea',
         blocks: [
           { type: 'paragraph', text: 'A natural continuation of the promenade: the alleyways of Old Jaffa, the restored port, and terraces looking out over the water. A perfect place to stop for a coffee before heading back the same way or through the Neve Tzedek neighborhood.' },
           { type: 'tip', text: 'Most of these routes are flat and well suited to a single speed. Bring a water bottle, a good lock for stops, and a hat or sunscreen in summer.' },
@@ -407,7 +407,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
     faq: [
       { q: 'Are these routes suitable for a single speed?', a: 'Absolutely. Tel Aviv is almost entirely flat, and every route here is comfortable without gears.' },
       { q: 'Where can I park the bike along the way?', a: 'There are bike racks and cafés all along these routes. Always use a good lock when you stop in the city.' },
-      { q: 'Are they good for families and beginners?', a: 'Yes — especially Yarkon Park and the seaside promenade, which are flat, separated from traffic and relaxed.' },
+      { q: 'Are they good for families and beginners?', a: 'Yes, especially Yarkon Park and the seaside promenade, which are flat, separated from traffic and relaxed.' },
     ],
   },
 };

@@ -37,7 +37,7 @@ export default function PresaleTermsEn() {
     <PageShell
       eyebrow="Pre-Sale"
       title="Pre-Sale Terms"
-      subtitle="What to know before ordering at the launch price — delivery dates, right of cancellation and refunds."
+      subtitle="What to know before ordering at the launch price: delivery dates, right of cancellation and refunds."
       heroImage="/assets/photo-beige-bike.jpg"
       heroPosition="center 55%"
     >
@@ -54,10 +54,10 @@ export default function PresaleTermsEn() {
               In short
             </h2>
             <ul style={{ margin: 0, paddingInlineStart: '18px', fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: MUTED, lineHeight: 1.9 }}>
-              <li>These bikes are a pre-order — they are <b>not yet in stock</b>.</li>
+              <li>These bikes are a pre-order and are <b>not yet in stock</b>.</li>
               <li>Estimated delivery: <b>{presale.arrivalLabel}</b>.</li>
               <li>You can cancel and receive a <b>full refund</b> at any stage before delivery.</li>
-              <li>Even after receiving the bike — 14 days to cancel, and <b>we charge no cancellation fee</b>.</li>
+              <li>Even after receiving the bike you have 14 days to cancel, and <b>we charge no cancellation fee</b>.</li>
               <li>If we run past the estimated date, we will tell you in advance and you can cancel at no cost.</li>
             </ul>
           </div>
@@ -97,8 +97,8 @@ export default function PresaleTermsEn() {
               In accordance with the Israeli Consumer Protection Law, a distance-selling transaction may be cancelled:
             </p>
             <ul style={{ margin: '0 0 8px', paddingInlineStart: '18px' }}>
-              <li><b>Before receiving the product</b> — at any stage, with a full refund.</li>
-              <li><b>After receiving the product</b> — within 14 days of receiving it or of receiving the transaction details document, whichever is later.</li>
+              <li><b>Before receiving the product</b>: at any stage, with a full refund.</li>
+              <li><b>After receiving the product</b>: within 14 days of receiving it or of receiving the transaction details document, whichever is later.</li>
               <li>
                 For people with disabilities, senior citizens and new immigrants, the cancellation period is extended
                 to <b>4 months</b>, provided the transaction included a conversation between the parties.
@@ -114,7 +114,7 @@ export default function PresaleTermsEn() {
           <Section title="5. Cancellation fees and returning the product">
             <p style={{ margin: '0 0 8px' }}>
               <b>We do not charge any cancellation fee at all.</b> The law permits us to charge up to 5% of the
-              transaction value or ₪100 (whichever is lower), but we have chosen to waive it — every cancellation
+              transaction value or ₪100 (whichever is lower), but we have chosen to waive it. Every cancellation
               receives a full refund.
             </p>
             <p style={{ margin: 0 }}>

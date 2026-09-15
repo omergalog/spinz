@@ -27,12 +27,12 @@ const he: SpecText[] = [
   {
     title: 'חישוקים מחוזקים',
     sub: 'פרופיל גבוה 30 מ"מ',
-    body: 'גלגלים בעלי פרופיל גבוה – לא רק למראה אורבני מוקפד, אלא גם להבטחת עמידות גבוהה מול בורות, שפות מדרכה ובלאי עירוני.',
+    body: 'גלגלים בעלי פרופיל גבוה שנותנים מראה אורבני מוקפד, ובעיקר עמידות מול בורות, שפות מדרכה ובלאי עירוני.',
   },
   {
     title: 'התאמה בשנייה',
     sub: 'Quick Release',
-    body: 'מנגנון שחרור מהיר למושב המאפשר כוונון גובה מיידי ללא צורך בכלים – מושלם לאופניים משפחתיים או לכמה רוכבים.',
+    body: 'מנגנון שחרור מהיר למושב המאפשר כוונון גובה מיידי ללא צורך בכלים. מושלם לאופניים משפחתיים או לכמה רוכבים.',
   },
   {
     title: 'בטיחות ללא פשרות',
@@ -65,17 +65,17 @@ const en: SpecText[] = [
   {
     title: 'Smart material pairing',
     sub: 'Aluminum + steel',
-    body: 'A light aluminum frame paired with a steel front fork that absorbs road buzz — a noticeably smoother, more comfortable ride.',
+    body: 'A light aluminum frame paired with a steel front fork that absorbs road buzz, for a noticeably smoother, more comfortable ride.',
   },
   {
     title: 'Reinforced rims',
     sub: '30 mm deep profile',
-    body: 'Deep-profile wheels aren’t just for the sharp urban look — they stand up to potholes, curbs and everyday city wear.',
+    body: 'Deep-profile wheels aren’t only about the sharp urban look. They stand up to potholes, curbs and everyday city wear.',
   },
   {
     title: 'Adjust it in seconds',
     sub: 'Quick release',
-    body: 'A quick-release seat clamp lets you change saddle height instantly, no tools needed — ideal for a family bike or several riders.',
+    body: 'A quick-release seat clamp lets you change saddle height instantly, no tools needed. Ideal for a family bike or several riders.',
   },
   {
     title: 'Safety, no compromises',
@@ -85,7 +85,7 @@ const en: SpecText[] = [
   {
     title: 'Wide upgraded pedals',
     sub: 'Rock-solid footing',
-    body: 'Wide, clean-looking pedals in rigid composite give you more surface area for a secure grip — no slipping, comfortable pedaling in any shoe.',
+    body: 'Wide, clean-looking pedals in rigid composite give you more surface area for a secure grip. No slipping, comfortable pedaling in any shoe.',
   },
 ];
 

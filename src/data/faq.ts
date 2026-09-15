@@ -9,7 +9,7 @@ const he: FaqItem[] = [
   },
   {
     q: 'האופניים מגיעים מורכבים?',
-    a: 'כן, כ-85% מורכבים. מה שנשאר הוא חיבור ההגה, פדלים והתאמת המושב – פחות מ-20 דקות עם הסרטון שמגיע בקופסה.',
+    a: 'כן, כ-85% מורכבים. מה שנשאר הוא חיבור ההגה, פדלים והתאמת המושב, פחות מ-20 דקות עם הסרטון שמגיע בקופסה.',
   },
   {
     q: 'יש אפשרות לאיסוף עצמי?',
@@ -21,7 +21,7 @@ const he: FaqItem[] = [
   },
   {
     q: 'לאיזה גובה מתאים כל דגם?',
-    a: 'שלדה 54 מתאימה לגובה 160–175 ס"מ. שלדה 57 מתאימה לגובה 175–190 ס"מ. במקרי ספק – עדיף שלדה קטנה יותר.',
+    a: 'שלדה 54 מתאימה לגובה 160–175 ס"מ. שלדה 57 מתאימה לגובה 175–190 ס"מ. במקרי ספק עדיף לבחור שלדה קטנה יותר.',
   },
   {
     q: 'כל הצבעים זמינים בכל המידות?',
@@ -37,7 +37,7 @@ const he: FaqItem[] = [
   },
   {
     q: 'האופניים מתאימים לגברים ולנשים?',
-    a: 'כן. שתי מידות השלדה מתאימות לכולם – הגיאומטריה של האופניים אוניברסלית וניתן להתאים את גובה המושב וההגה.',
+    a: 'כן. שתי מידות השלדה מתאימות לכולם. הגיאומטריה של האופניים אוניברסלית וניתן להתאים את גובה המושב וההגה.',
   },
 ];
 
@@ -48,7 +48,7 @@ const en: FaqItem[] = [
   },
   {
     q: 'Does the bike arrive assembled?',
-    a: 'Yes — about 85% assembled. All that’s left is attaching the handlebars and pedals and setting the saddle height: under 20 minutes with the video that comes in the box.',
+    a: 'Yes, about 85% assembled. All that’s left is attaching the handlebars and pedals and setting the saddle height: under 20 minutes with the video that comes in the box.',
   },
   {
     q: 'Can I pick the bike up myself?',
@@ -64,7 +64,7 @@ const en: FaqItem[] = [
   },
   {
     q: 'Are all colors available in both sizes?',
-    a: 'Yes — every color in the collection is available in both frame sizes, with no restrictions.',
+    a: 'Yes, every color in the collection is available in both frame sizes, with no restrictions.',
   },
   {
     q: 'What does the warranty cover?',
@@ -76,7 +76,7 @@ const en: FaqItem[] = [
   },
   {
     q: 'Is the bike suitable for both men and women?',
-    a: 'Yes. Both frame sizes work for everyone — the geometry is universal, and the saddle and handlebar height are fully adjustable.',
+    a: 'Yes. Both frame sizes work for everyone. The geometry is universal, and the saddle and handlebar height are fully adjustable.',
   },
 ];
 

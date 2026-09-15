@@ -13,10 +13,10 @@ const COMPANY_LINE = `${CO.legalNameEn} (${CO.legalNameHe}), company no. ${CO.co
 export const privacySectionsEn = [
   { title: null, text: `${COMPANY_LINE} is committed to protecting your privacy and to full transparency in how we use the information you share with us.` },
   { title: 'Information we collect', text: 'When you use the site, fill in a form or make a purchase, we may collect personal details such as your name, email address, phone number and shipping address, along with technical information about your visit (browser, device and pages viewed).' },
-  { title: 'How we use the information', text: 'Information is collected in order to process orders, provide customer service, improve the user experience, and — with your consent — send updates and offers. We do not sell your information to third parties.' },
+  { title: 'How we use the information', text: 'Information is collected in order to process orders, provide customer service, improve the user experience, and, with your consent, send updates and offers. We do not sell your information to third parties.' },
   { title: 'Sharing with third parties', text: 'We share information with third parties only as needed to operate the service (such as the shipping company and the payment processor), and only to the extent required for that purpose.' },
   { title: 'Data retention', text: 'Information is retained for as long as needed for the purpose it was collected for, or as required by law.' },
-  { title: 'Your rights', text: 'You have the right to access your information, correct it, delete it, restrict its processing or object to it — by contacting us at the address below.' },
+  { title: 'Your rights', text: 'You have the right to access your information, correct it, delete it, restrict its processing or object to it, by contacting us at the address below.' },
   { title: 'Contact', text: `To exercise your rights or for any privacy question: ${CO.email}` },
   { title: 'Cookies', text: 'We use cookies in accordance with your consent. You can manage your preferences at any time through your browser settings.' },
   { title: 'Company details', text: `The site is operated by ${COMPANY_LINE}. Email: ${CO.email} · Phone: ${CO.phone}.` },

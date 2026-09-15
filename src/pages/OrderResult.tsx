@@ -25,7 +25,7 @@ const COPY = {
     waiting: 'מאשרים את התשלום…',
     waitingSub: 'רגע אחד, מוודאים מול חברת הסליקה.',
     paid: 'ההזמנה התקבלה!',
-    paidSub: (n: string) => `שילמת ${n}. נשלח אליך עדכון כשהאופניים יוצאים לדרך.`,
+    paidSub: (n: string) => `שילמת ${n}. נשלח אליך עדכון כשהמשלוח יוצא אליך.`,
     failed: 'התשלום לא הושלם',
     failedSub: 'לא חויבת. אפשר לנסות שוב, או לכתוב לנו ונסדר את זה.',
     expired: 'פג תוקף ההזמנה',
@@ -124,7 +124,10 @@ export default function OrderResult({ outcome }: { outcome: 'success' | 'failed'
       case 'paid':
         return { icon: <CheckCircle size={52} style={{ color: GOLD }} />,
                  title: c.paid,
-                 sub: c.paidSub(total ? `₪${total.toLocaleString('he-IL')}` : '') };
+                 // בידוד דו-כיווני: סכום בתוך משפט עברי נקרא על ידי הדפדפן
+                 // כרצף ניטרלי, והסימן ₪ קפץ לצד השני של המספר. התווים
+                 // האלה מקבעים אותו כיחידה אחת משמאל לימין.
+                 sub: c.paidSub(total ? `\u2066₪${total.toLocaleString('he-IL')}\u2069` : '') };
       case 'expired':
         return { icon: <Clock size={52} style={{ color: MUTED }} />, title: c.expired, sub: c.expiredSub };
       case 'overbooked':

@@ -304,3 +304,143 @@ export async function confirmOrderOnce(db: Db, sessionId: string, lang: Lang = '
   }
   return err;
 }
+
+/* ========================================================================
+ *  מייל ביטול הזמנה
+ *
+ *  טרנזילה שולחת מסמך זיכוי, אבל נוסח המייל שלה זהה לכל סוגי המסמכים
+ *  ונפתח ב"תודה על רכישתך". לקוח שביטל מקבל הודעה שנראית כמו רכישה
+ *  נוספת, ובלי שום מידע על מתי הכסף חוזר.
+ *
+ *  ההודעה האנושית מגיעה מכאן. המסמך החשבונאי נשאר שלהם.
+ * ===================================================================== */
+
+export type CancelEmail = {
+  to: string;
+  name: string;
+  productName?: string | null;
+  color?: string | null;
+  size?: string | null;
+  quantity?: number | null;
+  total: number;
+  last4?: string | null;
+  reference: string;
+  lang?: Lang;
+};
+
+const CANCEL = {
+  he: {
+    subject: (r: string) => `ההזמנה שלך ב-SPINZ בוטלה (${r})`,
+    title: (n: string) => `${n}, ההזמנה בוטלה`,
+    intro: 'ביטלנו את ההזמנה, ואנחנו מחזירים לך את מלוא הסכום.',
+    refundTitle: 'מתי הכסף חוזר',
+    refundBody: (amount: string, card: string) =>
+      `סכום של ${amount} יוחזר ${card}. ההחזר מבוצע מיד מצדנו, אבל חברות האשראי `
+      + 'מציגות אותו בדרך כלל בתוך 3 עד 10 ימי עסקים, ולעיתים רק בחיוב החודשי הבא. '
+      + 'זה תקין, והכסף בדרך.',
+    toCard: (l: string) => `לכרטיס המסתיים ב-${l}`,
+    toSame: 'לאמצעי התשלום שבו שילמת',
+    docNote: 'בנפרד תקבל גם מסמך זיכוי מחברת הסליקה. זו אסמכתא חשבונאית בלבד, ולא חיוב נוסף.',
+    reference: 'מספר אסמכתה',
+    question: 'שאלה? השב למייל הזה ונחזור אליך.',
+    company: COMPANY, dir: 'rtl' as const,
+    units: 'יח׳', size: 'מידה',
+  },
+  en: {
+    subject: (r: string) => `Your SPINZ order was cancelled (${r})`,
+    title: (n: string) => `${n}, your order was cancelled`,
+    intro: 'We have cancelled the order and are refunding the full amount.',
+    refundTitle: 'When the money comes back',
+    refundBody: (amount: string, card: string) =>
+      `${amount} will be refunded ${card}. We issue the refund immediately, but card `
+      + 'issuers usually show it within 3 to 10 business days, and sometimes only on your '
+      + 'next monthly statement. That is normal, and the money is on its way.',
+    toCard: (l: string) => `to the card ending in ${l}`,
+    toSame: 'to the payment method you used',
+    docNote: 'You will also receive a separate credit note from our payment provider. '
+      + 'It is an accounting record only, not another charge.',
+    reference: 'Reference number',
+    question: 'Questions? Just reply to this email.',
+    company: COMPANY_EN, dir: 'ltr' as const,
+    units: 'pcs', size: 'Size',
+  },
+};
+
+function cancelHtml(o: CancelEmail): string {
+  const c = CANCEL[o.lang === 'en' ? 'en' : 'he'];
+  const colors = c.dir === 'rtl' ? COLORS : COLORS_EN;
+  const amount = ils(o.total);
+  const card = o.last4 ? c.toCard(o.last4) : c.toSame;
+  const variant = [o.color ? (colors[o.color] ?? o.color) : '', o.size ? `${c.size} ${o.size}` : '']
+    .filter(Boolean).join(', ');
+
+  return `<div dir="${c.dir}" style="font-family:Arial,Helvetica,sans-serif;background:#F5F2EC;padding:32px 16px;">
+  <div style="max-width:560px;margin:0 auto;background:#fff;border:1px solid #E0DCD4;border-radius:10px;overflow:hidden;">
+
+    <div style="background:#1C1C1C;padding:26px 28px;text-align:center;">
+      <div style="color:#C9A870;font-size:22px;font-weight:800;letter-spacing:.18em;">SPINZ</div>
+    </div>
+
+    <div style="padding:28px;">
+      <h1 style="margin:0 0 6px;font-size:21px;color:#1C1C1C;">${esc(c.title(o.name))}</h1>
+      <p style="margin:0 0 22px;font-size:14px;color:#4A4845;line-height:1.7;">${c.intro}</p>
+
+      ${o.productName ? `
+      <div style="border-top:1px solid #E0DCD4;border-bottom:1px solid #E0DCD4;padding:14px 0;margin-bottom:20px;font-size:14px;">
+        <div style="font-weight:700;color:#1C1C1C;">${esc(baseName(o.productName))}</div>
+        <div style="font-size:13px;color:#6A6862;">${esc(variant)}${
+          (o.quantity ?? 1) > 1 ? `, ${o.quantity} ${c.units}` : ''}</div>
+      </div>` : ''}
+
+      <h2 style="font-size:15px;color:#1C1C1C;margin:0 0 8px;">${c.refundTitle}</h2>
+      <p style="margin:0 0 18px;font-size:13px;color:#4A4845;line-height:1.8;">
+        ${c.refundBody(`<strong>${amount}</strong>`, card)}
+      </p>
+
+      <div style="background:#F5F2EC;border-radius:8px;padding:14px 16px;font-size:13px;color:#4A4845;line-height:1.9;">
+        <div><strong>${c.reference}:</strong> <span style="direction:ltr;display:inline-block;">${esc(o.reference)}</span></div>
+      </div>
+
+      <p style="margin:18px 0 0;font-size:12.5px;color:#6A6862;line-height:1.8;">${c.docNote}</p>
+
+      <p style="margin:22px 0 0;font-size:13px;color:#4A4845;line-height:1.8;">${c.question}</p>
+    </div>
+
+    <div style="background:#F5F2EC;padding:16px 28px;font-size:11px;color:#9A9690;line-height:1.7;border-top:1px solid #E0DCD4;">
+      ${esc(c.company)}
+    </div>
+  </div>
+</div>`;
+}
+
+function cancelText(o: CancelEmail): string {
+  const c = CANCEL[o.lang === 'en' ? 'en' : 'he'];
+  const card = o.last4 ? c.toCard(o.last4) : c.toSame;
+  return [
+    c.title(o.name) + '.', '', c.intro, '',
+    c.refundTitle + ': ' + c.refundBody(ils(o.total), card), '',
+    `${c.reference}: ${o.reference}`, '',
+    c.docNote, '', c.company,
+  ].filter(Boolean).join('\n');
+}
+
+export async function sendCancellationEmail(o: CancelEmail): Promise<string | null> {
+  if (!RESEND_KEY) return 'RESEND_API_KEY חסר';
+  if (!o.to) return 'ללקוח אין כתובת מייל';
+
+  const c = CANCEL[o.lang === 'en' ? 'en' : 'he'];
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: FROM, to: [o.to], bcc: BCC ? [BCC] : undefined, reply_to: SUPPORT,
+        subject: c.subject(o.reference), html: cancelHtml(o), text: cancelText(o),
+      }),
+    });
+    if (!res.ok) return `resend_${res.status}: ${(await res.text()).slice(0, 200)}`;
+    return null;
+  } catch (e) {
+    return `resend_exception: ${e}`;
+  }
+}

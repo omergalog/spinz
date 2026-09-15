@@ -13,7 +13,7 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 const SITE = 'https://spinzbikes.com';
 const EN = {
   title: 'Spinz Bikes | The quiet revolution of riding in the city',
-  description: 'Spinz — urban single-speed city bikes. Built for the street, designed to stand out.',
+  description: 'Spinz. Urban single-speed city bikes, built for the street and designed to stand out.',
   ogDescription: 'Everyone will ask where it is from. Meet the single-speed brand that changes the way you ride the city.',
 };
 

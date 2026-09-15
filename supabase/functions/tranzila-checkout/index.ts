@@ -177,7 +177,7 @@ Deno.serve(async (req) => {
     country: 'Israel',
     zip: '',
 
-    pdesc: 'SPINZ — אופני עיר',
+    pdesc: 'SPINZ אופני עיר',
     // שפת החשבונית שנשלחת ללקוח
     Ilang: lang === 'en' ? 'ENG' : 'HEB',
 

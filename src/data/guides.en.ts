@@ -94,7 +94,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
   sizing: {
     title: 'Sizing guide: choosing your frame size',
     summary: 'Two frame sizes cover most riders. Your height is the simplest and most accurate way to choose.',
-    metaTitle: 'How to choose the right bike size — size chart | SPINZ',
+    metaTitle: 'How to choose the right bike size: size chart | SPINZ',
     metaDescription: 'A sizing guide for single-speed bikes: a height chart, the difference between the 54 and 57 frames, the overlap test, and setting saddle height for a comfortable, safe ride.',
     readTime: '4 min read',
     facts: [

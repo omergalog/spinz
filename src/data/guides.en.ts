@@ -58,7 +58,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
               'Carefully lift the bike out of the box and remove all protective material: foam, tape and cable ties.',
               'Attach the handlebars to the stem: slide the stem into the steerer tube, line it up square to the front wheel, and tighten the Allen bolts gently and evenly (a little on each bolt, in rotation).',
               'If the front wheel came separately, fit it into the fork, close the quick release, and make sure the wheel sits centered between the fork legs.',
-              'Thread in the pedals, this is the step you least want to get wrong. The right pedal (R) threads clockwise; the left pedal (L) threads counter-clockwise. Start each one by hand so you don’t cross-thread it.',
+              'Thread in the pedals. This is the step you least want to get wrong. The right pedal (R) threads clockwise; the left pedal (L) threads counter-clockwise. Start each one by hand so you don’t cross-thread it.',
               'Set the saddle height with the quick release and close it firmly. Check that the saddle is straight and centered front to back.',
               'Check tire pressure (60–80 PSI is recommended, and it’s printed on the tire wall), then squeeze both brake levers to confirm they bite properly.',
             ],
@@ -73,7 +73,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
           {
             type: 'list',
             items: [
-              'Lift the front wheel and spin it, it should run free and true, without rubbing the brake.',
+              'Lift the front wheel and spin it. It should run free and true, without rubbing the brake.',
               'Hold the front wheel and try to twist the handlebars against it, they shouldn’t move. If they do, tighten the stem bolts.',
               'Squeeze each brake in turn and try to push the bike, the matching wheel should lock.',
               'Check that both pedals are threaded all the way in and don’t wobble.',
@@ -255,7 +255,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
               'Make sure both pads meet the rim at the same time and flat against it. If one side sits closer, even it out with the centering screws.',
             ],
           },
-          { type: 'tip', text: 'A pad that touches the tire instead of the rim is dangerous, it can wear through the sidewall. Always check the pad sits fully on the metal braking surface.' },
+          { type: 'tip', text: 'A pad that touches the tire instead of the rim is dangerous. It can wear through the sidewall. Always check the pad sits fully on the metal braking surface.' },
         ],
       },
       {

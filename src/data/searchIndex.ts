@@ -31,7 +31,7 @@ const HEIGHTS = heightRange(155, 195);
 const pagesHe: SearchDoc[] = [
   {
     id: 'page-home', type: 'page', title: 'דף הבית', to: '/',
-    summary: 'אופני עיר סינגל-ספיד בעיצוב נקי, נבנו בתל אביב.',
+    summary: 'אופני עיר סינגל ספיד בעיצוב נקי, נבנו בתל אביב.',
     body: 'SPINZ ספינז אופני עיר סינגל ספיד fixie אורבני מחיר השקה פרי סייל',
     keywords: ['בית', 'ראשי', 'home', 'spinz'],
   },

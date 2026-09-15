@@ -161,7 +161,20 @@ Deno.serve(async (req) => {
     Math.floor(total / minPart),
   ));
 
-  const invoiceLines = buildInvoiceLines(session?.items ?? [], total);
+  /**
+   * פירוט שורות החשבונית מכובה כברירת מחדל.
+   *
+   * שליחת json_purchase_data מפילה את תהליך התשלום בביט: הלחיצה על
+   * הכפתור מחזירה "System Error" מטרנזילה. בודד בבדיקה שהריצה את אותה
+   * עסקה עם כל 25 השדות ובלעדיו בלבד — בלעדיו PayMe נטען כרגיל, ואיתו
+   * הוא נופל, גם עם שם מוצר באנגלית בלבד.
+   *
+   * אמצעי תשלום פעיל שווה יותר מפירוט שורות בחשבונית, שממילא מתוארת
+   * ב-pdesc. להדלקה מחדש כשטרנזילה יתקנו: INVOICE_LINES=1.
+   */
+  const invoiceLines = Deno.env.get('INVOICE_LINES') === '1'
+    ? buildInvoiceLines(session?.items ?? [], total)
+    : '';
 
   const fields: Record<string, string> = {
     sum: total.toFixed(2),

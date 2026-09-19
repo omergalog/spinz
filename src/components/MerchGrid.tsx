@@ -77,7 +77,7 @@ function MerchCard({ product, rows }: { product: MerchProduct; rows: Record<stri
       overflow: 'hidden', display: 'flex', flexDirection: 'column',
     }}>
       <div style={{
-        aspectRatio: '1 / 1', maxWidth: '100%', backgroundColor: '#F5F2EC',
+        aspectRatio: '4 / 5', maxWidth: '100%', backgroundColor: '#F5F2EC',
         display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
       }}>
         <img
@@ -108,7 +108,8 @@ function MerchCard({ product, rows }: { product: MerchProduct; rows: Record<stri
           )}
         </div>
 
-        {/* צבע */}
+        {/* צבע — מוסתר כשיש צבע אחד, שאין בו מה לבחור */}
+        {product.colors.length > 1 && (
         <div>
           <span style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: MUTED, marginBottom: '6px' }}>
             {t.merch.color}
@@ -130,6 +131,7 @@ function MerchCard({ product, rows }: { product: MerchProduct; rows: Record<stri
             ))}
           </div>
         </div>
+        )}
 
         {/* מידה */}
         <div>

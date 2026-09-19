@@ -4,8 +4,6 @@
  * ה-slug שנבנה כאן חייב להיות זהה לשורה בטבלת products, כי הוא מה
  * שהשרת מתמחר לפיו: `${slugBase}-${color.id}-${size.id}`. שינוי מזהה
  * של צבע או מידה מנתק את המוצר מהמחיר והמלאי שלו.
- *
- * התמונות כאן הן מצייני מקום עד שיגיעו הצילומים.
  */
 
 export interface MerchColor {
@@ -42,16 +40,30 @@ export const merchSizes: MerchSize[] = [
 
 export const merchProducts: MerchProduct[] = [
   {
-    id: 'tee',
-    slugBase: 'merch-tee',
-    name: 'חולצת SPINZ',
-    nameEn: 'SPINZ Tee',
-    tagline: 'כותנה סרוקה, גזרה רגילה',
-    taglineEn: 'Combed cotton, regular fit',
+    id: 'bauhaus',
+    slugBase: 'merch-bauhaus',
+    name: 'חולצת באוהאוס',
+    nameEn: 'Bauhaus Tee',
+    tagline: 'הדפס קווי של בניין תל אביבי. גזרה אוברסייז',
+    taglineEn: 'A line print of a Tel Aviv building. Oversized fit',
     price: 149,
     colors: [
-      { id: 'black', label: 'שחור', labelEn: 'Black', hex: '#1A1A1A', image: '/assets/merch-tee-black.jpg' },
-      { id: 'white', label: 'לבן',  labelEn: 'White', hex: '#F2F0EB', image: '/assets/merch-tee-white.jpg' },
+      { id: 'white', label: 'לבן', labelEn: 'White', hex: '#F2F0EB',
+        image: '/assets/merch-tee-bauhaus-white.jpg' },
+    ],
+    sizes: merchSizes,
+  },
+  {
+    id: 'blueprint',
+    slugBase: 'merch-blueprint',
+    name: 'חולצת שרטוט',
+    nameEn: 'Blueprint Tee',
+    tagline: 'שרטוט הנדסי של SPINZ. גזרה אוברסייז',
+    taglineEn: 'The SPINZ engineering drawing. Oversized fit',
+    price: 149,
+    colors: [
+      { id: 'black', label: 'שחור', labelEn: 'Black', hex: '#1A1A1A',
+        image: '/assets/merch-tee-blueprint-black.webp' },
     ],
     sizes: merchSizes,
   },

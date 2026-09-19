@@ -158,6 +158,7 @@ export default function CartDrawer() {
           size: i.size,
           quantity: i.quantity,
           colorSkuCode: i.colorSkuCode,
+          slug: i.slug,
         })),
         name: form.name,
         phone: form.phone,

@@ -23,6 +23,7 @@ const buildMenus = (t: Dict): Menu[] => [
     label: t.nav.groups.bikes,
     items: [
       { label: t.nav.links.models, to: '/bikes' },
+      { label: t.nav.links.merch, to: '/merch' },
       { label: t.nav.links.specs, to: '/specs' },
       { label: t.nav.links.sizes, to: '/sizes' },
     ],

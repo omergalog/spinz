@@ -9,11 +9,25 @@ export interface CartItem {
   colorLabel: string;
   colorSkuCode: string;
   size: string;
+  /**
+   * שורת המוצר שהפריט מתומחר לפיה. אופניים שנשמרו בעגלה לפני
+   * שנוסף המרצ'נדייז אינם נושאים אותו, ולכן הוא אופציונלי והנוסחה
+   * הישנה משמשת כברירת מחדל.
+   */
+  slug?: string;
+  kind?: 'bike' | 'merch';
 }
+
+/** ה-slug שהשרת מתמחר לפיו. חייב להיות זהה לשורה בטבלת products. */
+export const itemSlug = (i: Pick<CartItem, 'slug' | 'colorId' | 'size'>) =>
+  i.slug ?? `spinz-${i.colorId}-${i.size}`;
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (model: BikeModel, colorId: string, colorLabel: string, colorSkuCode: string, size: string) => void;
+  addItem: (
+    model: BikeModel, colorId: string, colorLabel: string, colorSkuCode: string, size: string,
+    opts?: { slug?: string; kind?: 'bike' | 'merch' },
+  ) => void;
   removeItem: (id: string) => void;
   updateQuantity: (id: string, quantity: number) => void;
   clearCart: () => void;
@@ -83,10 +97,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
       // מחיר ההשקה תקף רק כל עוד נשארה מכסה לאותו וריאנט, והשרת בודק
       // זאת. בלי התנאי הזה עגלה שנשמרה בדפדפן הייתה מציגה ₪1,090
       // בעוד שבעמוד התשלום נגבה המחיר המלא.
-      const priceFor = (colorId: string, size: string): number | null => {
-        const row = (products ?? []).find(p => p.slug === `spinz-${colorId}-${size}`);
+      const priceFor = (item: CartItem): number | null => {
+        const row = (products ?? []).find(p => p.slug === itemSlug(item));
         if (!row) return null;
-        if (settings?.presale_active && (row.presale_qty ?? 0) > 0) {
+        // מחיר ההשקה שייך לאופניים בלבד, בדיוק כמו בשרת
+        if (item.kind !== 'merch' && settings?.presale_active && (row.presale_qty ?? 0) > 0) {
           return settings.presale_price ?? null;
         }
         return row.sale_price ?? row.price ?? null;
@@ -95,7 +110,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setItems(prev => {
         let changed = false;
         const next = prev.map(i => {
-          const current = priceFor(i.colorId, i.size);
+          const current = priceFor(i);
           if (current == null || current === i.model.price) return i;
           changed = true;
           return { ...i, model: { ...i.model, price: current } };
@@ -106,13 +121,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
     return () => { alive = false; };
   }, []);
 
-  const addItem = (model: BikeModel, colorId: string, colorLabel: string, colorSkuCode: string, size: string) => {
+  const addItem = (
+    model: BikeModel, colorId: string, colorLabel: string, colorSkuCode: string, size: string,
+    opts?: { slug?: string; kind?: 'bike' | 'merch' },
+  ) => {
     setItems(prev => {
       const existing = prev.find(i => i.model.id === model.id);
       if (existing) {
         return prev.map(i => i.model.id === model.id ? { ...i, quantity: i.quantity + 1 } : i);
       }
-      return [...prev, { model, quantity: 1, colorId, colorLabel, colorSkuCode, size }];
+      return [...prev, {
+        model, quantity: 1, colorId, colorLabel, colorSkuCode, size,
+        slug: opts?.slug, kind: opts?.kind ?? 'bike',
+      }];
     });
   };
 

@@ -100,6 +100,9 @@ Deno.serve(async (req) => {
     size: String(i.size ?? ''),
     quantity: Number(i.quantity ?? 0),
     colorSkuCode: String(i.colorSkuCode ?? ''),
+    // ה-slug אינו נסמך עליו למחיר — השרת מתמחר מטבלת המוצרים לפיו.
+    // הוא רק בוחר את השורה, ולכן מוגבל לתווים שמהם slug בנוי.
+    slug: String(i.slug ?? '').slice(0, 64).replace(/[^a-z0-9-]/g, ''),
   }));
 
   // כל סל פתוח משריין מלאי ל-25 דקות. מכסת שלושת הסלים נמדדת לפי

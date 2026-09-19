@@ -8,6 +8,7 @@ import Story from './pages/Story';
 import Terms from './pages/Terms';
 import Accessibility from './pages/Accessibility';
 import Bikes from './pages/Bikes';
+import Merch from './pages/Merch';
 import SpecsPage from './pages/SpecsPage';
 import SizesColors from './pages/SizesColors';
 import FAQPage from './pages/FAQPage';
@@ -69,6 +70,7 @@ function Root() {
                   <Route key={prefix ?? 'he'} path={prefix ?? '/'}>
                       <Route index element={<Index />} />
                       <Route path="bikes" element={<Bikes />} />
+                      <Route path="merch" element={<Merch />} />
                       <Route path="specs" element={<SpecsPage />} />
                       <Route path="sizes" element={<SizesColors />} />
                       <Route path="faq" element={<FAQPage />} />

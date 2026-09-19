@@ -15,6 +15,8 @@ export type CheckoutItem = {
   size: string;
   quantity: number;
   colorSkuCode: string;
+  /** שורת המוצר שהשרת מתמחר לפיה. אופניים ללא slug מתומחרים לפי צבע ומידה. */
+  slug?: string;
 };
 
 export type CheckoutSession = {

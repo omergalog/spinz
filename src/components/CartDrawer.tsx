@@ -41,6 +41,8 @@ export default function CartDrawer() {
   } as const;
 
   const total = items.reduce((sum, i) => sum + i.model.price * i.quantity, 0);
+  // תקרת היחידות של הקופון נמדדת מול המספר הזה, ולא מול מספר השורות.
+  const units = items.reduce((sum, i) => sum + i.quantity, 0);
 
   /**
    * המחיר לפני הנחת ההשקה.
@@ -95,14 +97,14 @@ export default function CartDrawer() {
   useEffect(() => {
     if (!isOpen || !savedCoupon || total <= 0) return;
     let alive = true;
-    checkCoupon(savedCoupon, total).then(r => {
+    checkCoupon(savedCoupon, total, units).then(r => {
       if (!alive) return;
       setCoupon(savedCoupon);
       setDiscount(r.valid ? r.discount : 0);
       setCouponState(r.valid ? 'ok' : 'bad');
     });
     return () => { alive = false; };
-  }, [isOpen, savedCoupon, total]);
+  }, [isOpen, savedCoupon, total, units]);
 
   // סגירת המגירה מאפסת את התהליך. בלי זה, פתיחה חוזרת הייתה מציגה
   // מסגרת תשלום ישנה ששייכת לסל שכבר פג.
@@ -119,7 +121,7 @@ export default function CartDrawer() {
     setCouponState('checking');
     // ההנחה מחושבת בשרת. כאן רק מציגים את התוצאה, כדי שהסכום שמוצג
     // יהיה בדיוק זה שייגבה.
-    const r = await checkCoupon(coupon.trim(), total);
+    const r = await checkCoupon(coupon.trim(), total, units);
     setDiscount(r.valid ? r.discount : 0);
     setCouponState(r.valid ? 'ok' : 'bad');
     saveCoupon(r.valid ? coupon.trim() : '');

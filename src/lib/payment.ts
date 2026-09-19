@@ -34,15 +34,17 @@ export type CouponResult = {
 /**
  * בדיקת קוד קופון לתצוגה בעגלה.
  *
- * אותה פונקציה בדיוק מחשבת גם את המחיר שנשלח לתשלום, ולכן אין מצב
- * שהעגלה מציגה סכום אחד והחיוב יוצא אחר.
+ * הכמות נשלחת יחד עם הסכום. בלעדיה השרת אינו יכול לאכוף תקרת יחידות,
+ * והעגלה הציגה הנחה שהתשלום דחה.
  */
-export async function checkCoupon(code: string, subtotal: number): Promise<CouponResult> {
+export async function checkCoupon(
+  code: string, subtotal: number, quantity: number,
+): Promise<CouponResult> {
   try {
     const res = await fetch(`${FUNCTIONS}/tranzila-coupon`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code, subtotal }),
+      body: JSON.stringify({ code, subtotal, quantity }),
     });
     if (!res.ok) return { valid: false, total: subtotal, discount: 0 };
     return await res.json() as CouponResult;

@@ -219,7 +219,7 @@ export default function Models() {
   useEffect(() => {
     if (!coupon) { setCouponPrice(null); return; }
     let alive = true;
-    checkCoupon(coupon, shownPrice).then(r => {
+    checkCoupon(coupon, shownPrice, 1).then(r => {
       if (!alive) return;
       setCouponPrice(r.valid ? r.total : null);
       setCouponState(r.valid ? 'ok' : 'bad');
@@ -231,7 +231,7 @@ export default function Models() {
     const code = couponInput.trim();
     if (!code) { setCoupon(''); setCouponState('idle'); setCouponPrice(null); return; }
     setCouponState('checking');
-    const r = await checkCoupon(code, shownPrice);
+    const r = await checkCoupon(code, shownPrice, 1);
     if (r.valid) { setCoupon(code); setCouponPrice(r.total); setCouponState('ok'); }
     else { setCoupon(''); setCouponPrice(null); setCouponState('bad'); }
   };

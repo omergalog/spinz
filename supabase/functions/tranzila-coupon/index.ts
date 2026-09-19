@@ -5,8 +5,10 @@
  * ניחושים: אלפי בקשות בשנייה, וכל תשובה חיובית חושפת קוד הנחה עובד.
  * היא נסגרה, והבדיקה עוברת עכשיו דרך כאן — עם תקרה לפי כתובת.
  *
- * זו תצוגה בלבד. ההחלטה האמיתית מתקבלת ביצירת הסל, שם ידועים גם
- * הלקוח וגם גודל העגלה.
+ * התצוגה קוראת לאותה פונקציה שמחליטה ביצירת הסל, ומקבלת את אותם
+ * נתונים חוץ מזהות הלקוח. קודם היא קראה ל-apply_coupon, שרואה רק
+ * סכום: קוד שהוגבל ליחידה אחת נראה תקף גם על עגלה של שלוש, והלקוח
+ * גילה זאת רק כשהתשלום נדחה.
  */
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders } from '../_shared/cors.ts';
@@ -24,7 +26,7 @@ Deno.serve(async (req) => {
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
   );
 
-  let body: { code?: string; subtotal?: number };
+  let body: { code?: string; subtotal?: number; quantity?: number };
   try { body = await req.json(); } catch { return reply({ valid: false }, 400); }
 
   const code = String(body.code ?? '').trim();
@@ -34,6 +36,12 @@ Deno.serve(async (req) => {
   const raw = Number(body.subtotal);
   const subtotal = Number.isFinite(raw) ? Math.min(Math.max(Math.round(raw), 0), 1_000_000) : 0;
   if (!code || subtotal <= 0) return reply({ valid: false, total: subtotal, discount: 0 });
+
+  // הכמות היא מה שמפריד בין קופון תקף לקופון שנותן יחידות חינם.
+  // בהיעדרה מניחים יחידה אחת — ההנחה המקלה ביותר עם הצרכן, ובכל
+  // מקרה החיוב נבדק שוב מול הכמות האמיתית ביצירת הסל.
+  const qRaw = Number(body.quantity);
+  const quantity = Number.isFinite(qRaw) ? Math.min(Math.max(Math.round(qRaw), 1), 100) : 1;
 
   // 20 ניסיונות לעשר דקות לכתובת. מספיק בשופע ללקוח שמקליד קוד,
   // וחונק ניחוש שיטתי.
@@ -47,7 +55,9 @@ Deno.serve(async (req) => {
     return reply({ valid: false, total: subtotal, discount: 0 });
   }
 
-  const { data, error } = await db.rpc('apply_coupon', { p_code: code, p_subtotal: subtotal });
+  const { data, error } = await db.rpc('validate_coupon', {
+    p_code: code, p_subtotal: subtotal, p_quantity: quantity, p_phone: null,
+  });
   if (error) return reply({ valid: false, total: subtotal, discount: 0 });
 
   return reply(data);

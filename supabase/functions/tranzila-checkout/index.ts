@@ -100,10 +100,17 @@ Deno.serve(async (req) => {
     size: String(i.size ?? ''),
     quantity: Number(i.quantity ?? 0),
     colorSkuCode: String(i.colorSkuCode ?? ''),
-    // ה-slug אינו נסמך עליו למחיר — השרת מתמחר מטבלת המוצרים לפיו.
-    // הוא רק בוחר את השורה, ולכן מוגבל לתווים שמהם slug בנוי.
-    slug: String(i.slug ?? '').slice(0, 64).replace(/[^a-z0-9-]/g, ''),
+    slug: String(i.slug ?? ''),
   }));
+
+  // ה-slug בוחר את שורת המוצר שממנה נגזרים המחיר, השם והמלאי.
+  // ניקוי שקט של תווים זרים היה הופך slug פגום ל-slug תקף אחר:
+  // '../../spinz-mat-54' נעשה 'spinz-mat-54', והלקוח היה מקבל סל
+  // למוצר שלא ביקש. slug שאינו תקין נדחה, ולא מתוקן.
+  const SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  if (clean.some(i => i.slug !== '' && (i.slug.length > 64 || !SLUG.test(i.slug)))) {
+    return json({ error: 'INVALID_ITEM' }, 400, req);
+  }
 
   // כל סל פתוח משריין מלאי ל-25 דקות. מכסת שלושת הסלים נמדדת לפי
   // מספר טלפון, ומספר טלפון עולה כלום להחליף — כלומר אפשר היה לרוקן
@@ -142,6 +149,12 @@ Deno.serve(async (req) => {
     }
     if (msg.includes('TOO_MANY_OPEN_CARTS')) {
       return json({ error: 'TOO_MANY_OPEN_CARTS' }, 429, req);
+    }
+    // מוצר שאינו קיים הוא בקשה שגויה, לא תקלת שרת. הוא הוחזר כ-500
+    // ונרשם ביומן השגיאות יחד עם תקלות אמיתיות.
+    if (msg.includes('PRODUCT_NOT_FOUND') || msg.includes('INVALID_QUANTITY')
+        || msg.includes('TOO_MANY_LINES')) {
+      return json({ error: 'INVALID_ITEM' }, 400, req);
     }
     console.error('create_checkout_session', msg);
     return json({ error: 'SERVER' }, 500, req);

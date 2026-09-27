@@ -7,7 +7,7 @@ import { useCart } from '../context/CartContext';
 import { supabase } from '../lib/supabase';
 import { fetchApprovedReviews } from '../lib/reviews';
 import { useLang, useT, useDir, localizePath } from '../i18n/LanguageContext';
-import { usePresale } from '../config/presale';
+import { arrivalLabelIn, usePresale } from '../config/presale';
 import { checkCoupon } from '../lib/payment';
 
 const DARK   = '#1C1C1C';
@@ -684,7 +684,7 @@ export default function Models() {
                 <Calendar size={15} style={{ color: GOLD, flexShrink: 0, marginTop: '2px' }} />
                 <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: MUTED, lineHeight: 1.65, margin: 0 }}>
                   {t.product.presaleNote1}{' '}
-                  <b style={{ color: DARK }}>{presaleCfg.arrivalLabel}</b>.{' '}
+                  <b style={{ color: DARK }}>{arrivalLabelIn(presaleCfg.arrivalLabel, lang)}</b>.{' '}
                   {t.product.presaleNote2}{' '}
                   <Link to={L("/presale-terms")} style={{ color: '#8A6D3B', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
                     {t.product.presaleTermsLink}

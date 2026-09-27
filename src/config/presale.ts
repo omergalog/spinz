@@ -26,11 +26,32 @@ export const PRESALE_DEFAULTS: PresaleSettings = {
   regularPrice: 1299,
   presalePrice: 1090,
   presaleUnits: 100,
-  arrivalLabel: 'ספטמבר 2026',
+  arrivalLabel: 'אוקטובר 2026',
   deadline: new Date('2026-09-30T23:59:59'),
   installments: 12,
   minInstallment: 100,
 };
+
+/**
+ * מועד האספקה באנגלית.
+ *
+ * הערך נשמר בעברית בלבד ב-site_settings, והעמודים האנגליים הציגו
+ * אותו כפי שהוא: "Estimated delivery: אוקטובר 2026". התרגום נעשה
+ * כאן ולא בטבלה, כדי שיישאר מקור אמת אחד שמעדכנים ממנו.
+ */
+const MONTHS_EN: Record<string, string> = {
+  'ינואר': 'January', 'פברואר': 'February', 'מרץ': 'March', 'אפריל': 'April',
+  'מאי': 'May', 'יוני': 'June', 'יולי': 'July', 'אוגוסט': 'August',
+  'ספטמבר': 'September', 'אוקטובר': 'October', 'נובמבר': 'November', 'דצמבר': 'December',
+};
+
+/** תווית האספקה בשפת העמוד. תווית שאינה חודש מוכר מוחזרת כמות שהיא. */
+export function arrivalLabelIn(label: string, lang: string): string {
+  if (lang !== 'en') return label;
+  const [month, ...rest] = label.trim().split(/\s+/);
+  const en = MONTHS_EN[month];
+  return en ? [en, ...rest].join(' ') : label;
+}
 
 /** טקסטים קבועים (לא נשלטים מהאדמין) */
 export const PRESALE_COPY = {

@@ -1,6 +1,6 @@
 import PageShell from '../components/PageShell';
 import LegalNotice from '../components/LegalNotice';
-import { usePresale } from '../config/presale';
+import { arrivalLabelIn, usePresale } from '../config/presale';
 import { COMPANY as CO } from '../config/company';
 
 const DARK = '#1C1C1C';
@@ -55,7 +55,7 @@ export default function PresaleTermsEn() {
             </h2>
             <ul style={{ margin: 0, paddingInlineStart: '18px', fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: MUTED, lineHeight: 1.9 }}>
               <li>These bikes are a pre-order and are <b>not yet in stock</b>.</li>
-              <li>Estimated delivery: <b>{presale.arrivalLabel}</b>.</li>
+              <li>Estimated delivery: <b>{arrivalLabelIn(presale.arrivalLabel, 'en')}</b>.</li>
               <li>You can cancel and receive a <b>full refund</b> at any stage before delivery.</li>
               <li>Even after receiving the bike you have 14 days to cancel, and <b>we charge no cancellation fee</b>.</li>
               <li>If we run past the estimated date, we will tell you in advance and you can cancel at no cost.</li>
@@ -73,7 +73,7 @@ export default function PresaleTermsEn() {
 
           <Section title="2. Delivery date">
             <p style={{ margin: '0 0 8px' }}>
-              The estimated delivery date is <b>{presale.arrivalLabel}</b>. This date is based on manufacturing and
+              The estimated delivery date is <b>{arrivalLabelIn(presale.arrivalLabel, 'en')}</b>. This date is based on manufacturing and
               sea-freight schedules and may change due to factors outside our control (production delays, shipping,
               customs or force majeure).
             </p>

@@ -69,6 +69,14 @@ function buildInvoiceLines(items: Array<Record<string, unknown>>, total: number)
   return JSON.stringify(lines);
 }
 
+/** תיאור קצר של תוכן ההזמנה, לחשבונית. */
+function describeOrder(items: Array<Record<string, unknown>>): string {
+  const cats = new Set(items.map(i => String(i.category ?? 'bike')));
+  if (cats.size === 1 && cats.has('merch')) return 'SPINZ מרצ׳נדייז';
+  if (cats.size > 1) return 'SPINZ הזמנה';
+  return 'SPINZ אופני עיר';
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders(req) });
   if (req.method !== 'POST') return json({ error: 'method' }, 405, req);
@@ -206,7 +214,9 @@ Deno.serve(async (req) => {
     country: 'Israel',
     zip: '',
 
-    pdesc: 'SPINZ אופני עיר',
+    // תיאור העסקה בחשבונית שהלקוח מקבל. הזמנה של חולצה בלבד תוארה
+    // עד כה כ"אופני עיר".
+    pdesc: describeOrder(session?.items ?? []),
     // שפת החשבונית שנשלחת ללקוח
     Ilang: lang === 'en' ? 'ENG' : 'HEB',
 

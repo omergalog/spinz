@@ -52,10 +52,17 @@ export default function CartDrawer() {
    * ההשוואה למחיר המלא ולא לדגל הפרי-סייל בלבד מונעת "הנחה" שלילית
    * ביום שמחיר ההשקה יעודכן כלפי מעלה.
    */
-  const listUnit = (m: { price: number }) =>
-    presale.active && m.price < presale.regularPrice ? presale.regularPrice : m.price;
+  // מחיר המחירון של פריט, לצורך הקו החוצה ושורת "הנחת השקה".
+  //
+  // מחיר ההשקה שייך לאופניים בלבד. חולצה ב-₪149 היא "זולה ממחיר
+  // האופניים המלא", ולכן הנוסחה הישנה סימנה אותה כאילו הוזלה מ-₪1,299
+  // והמציאה הנחה של ₪1,150 שמעולם לא ניתנה.
+  const listUnit = (i: { model: { price: number }; kind?: string }) =>
+    i.kind !== 'merch' && presale.active && i.model.price < presale.regularPrice
+      ? presale.regularPrice
+      : i.model.price;
 
-  const listTotal  = items.reduce((sum, i) => sum + listUnit(i.model) * i.quantity, 0);
+  const listTotal  = items.reduce((sum, i) => sum + listUnit(i) * i.quantity, 0);
   const presaleOff = Math.max(0, listTotal - total);
   const [ordering, setOrdering] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
@@ -302,9 +309,9 @@ export default function CartDrawer() {
                             <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 700, color: GOLD }}>
                               {formatPrice(item.model.price * item.quantity)}
                             </span>
-                            {listUnit(item.model) > item.model.price && (
+                            {listUnit(item) > item.model.price && (
                               <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#9A9690', textDecoration: 'line-through' }}>
-                                {formatPrice(listUnit(item.model) * item.quantity)}
+                                {formatPrice(listUnit(item) * item.quantity)}
                               </span>
                             )}
                           </span>

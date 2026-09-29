@@ -444,3 +444,130 @@ export async function sendCancellationEmail(o: CancelEmail): Promise<string | nu
     return `resend_exception: ${e}`;
   }
 }
+
+
+/* ==========================================================================
+ *  היחידה מוכנה למסירה
+ *
+ *  בין "שילמת" ל"קיבלת" עוברים חודשיים של שקט. המייל הזה ממלא את
+ *  הפער, ובאותה הזדמנות מספר ללקוח מה שממילא תיעדנו: מי הרכיב, מי
+ *  בדק, וכמה בדיקות עברו.
+ *
+ *  אין כאן הבטחה שיווקית אלא נתון. השמות והמספרים נקראים מהתיק.
+ * ========================================================================== */
+
+export type ReadyEmail = {
+  to: string;
+  name: string;
+  productName?: string | null;
+  size?: string | null;
+  reference: string;
+  assembler?: string | null;
+  checker?: string | null;
+  checksPassed: number;
+  photoCount: number;
+  lang?: Lang;
+};
+
+const READY = {
+  he: {
+    subject: (r: string) => `האופניים שלך מוכנים (${r})`,
+    title: (n: string) => `${n}, האופניים שלך מוכנים`,
+    intro: 'סיימנו להרכיב ולבדוק. ניצור איתך קשר לתיאום מועד המסירה.',
+    builtTitle: 'מי טיפל באופניים שלך',
+    assembler: 'הרכבה',
+    checker: 'בדיקה',
+    checks: (n: number) => `${n} בדיקות איכות, כולן עברו`,
+    photos: (n: number) => `${n} תמונות תועדו לפני האריזה`,
+    separate: 'הבודק אינו מי שהרכיב. זו דרישה קבועה אצלנו, ולא מקרה.',
+    question: 'שאלה? השב למייל הזה.',
+    dir: 'rtl', path: '',
+  },
+  en: {
+    subject: (r: string) => `Your bike is ready (${r})`,
+    title: (n: string) => `${n}, your bike is ready`,
+    intro: 'Assembly and checks are done. We will contact you to arrange delivery.',
+    builtTitle: 'Who worked on your bike',
+    assembler: 'Assembly',
+    checker: 'Inspection',
+    checks: (n: number) => `${n} quality checks, all passed`,
+    photos: (n: number) => `${n} photos recorded before packing`,
+    separate: 'The person who inspects is never the person who assembled. That is a standing rule here, not a coincidence.',
+    question: 'Questions? Just reply to this email.',
+    dir: 'ltr', path: '/en',
+  },
+} as const;
+
+function readyHtml(o: ReadyEmail): string {
+  const c = READY[o.lang === 'en' ? 'en' : 'he'];
+  const line = (k: string, v: string) => v
+    ? `<tr><td style="padding:7px 0;color:#6A6862;font-size:14px;">${esc(k)}</td>
+         <td style="padding:7px 0;text-align:${c.dir === 'rtl' ? 'left' : 'right'};color:#1C1C1C;font-weight:600;font-size:14px;">${esc(v)}</td></tr>`
+    : '';
+
+  return `<!doctype html><html dir="${c.dir}"><body style="margin:0;background:#F5F2EC;font-family:Arial,Helvetica,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F5F2EC;padding:28px 12px;">
+    <tr><td align="center">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+             style="max-width:560px;background:#FFFFFF;border:1px solid #E0DCD4;border-radius:12px;padding:28px;">
+        <tr><td>
+          <h1 style="margin:0 0 6px;font-size:21px;color:#1C1C1C;">${esc(c.title(baseName(o.name)))}</h1>
+          <p style="margin:0 0 20px;font-size:15px;color:#4A4845;line-height:1.6;">${esc(c.intro)}</p>
+
+          <div style="border:1px solid #E0DCD4;border-radius:10px;padding:16px 18px;">
+            <div style="font-size:13px;font-weight:700;color:#1C1C1C;margin-bottom:8px;">${esc(c.builtTitle)}</div>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+              ${line(c.assembler, o.assembler ?? '')}
+              ${line(c.checker, o.checker ?? '')}
+            </table>
+            <div style="margin-top:12px;padding-top:12px;border-top:1px solid #E0DCD4;font-size:14px;color:#4A4845;line-height:1.7;">
+              ${o.checksPassed > 0 ? esc(c.checks(o.checksPassed)) + '<br>' : ''}
+              ${o.photoCount > 0 ? esc(c.photos(o.photoCount)) : ''}
+            </div>
+          </div>
+
+          <p style="margin:16px 0 0;font-size:13px;color:#6A6862;line-height:1.6;">${esc(c.separate)}</p>
+
+          <p style="margin:22px 0 0;font-size:13px;color:#6A6862;">${esc(c.question)}</p>
+          <p style="margin:18px 0 0;font-size:11.5px;color:#9A9690;line-height:1.6;">
+            ${esc(o.lang === 'en' ? COMPANY_EN : COMPANY)}
+          </p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table></body></html>`;
+}
+
+function readyText(o: ReadyEmail): string {
+  const c = READY[o.lang === 'en' ? 'en' : 'he'];
+  return [
+    c.title(baseName(o.name)), '', c.intro, '',
+    c.builtTitle + ':',
+    o.assembler ? `${c.assembler}: ${o.assembler}` : '',
+    o.checker ? `${c.checker}: ${o.checker}` : '',
+    o.checksPassed > 0 ? c.checks(o.checksPassed) : '',
+    o.photoCount > 0 ? c.photos(o.photoCount) : '',
+    '', c.separate, '', c.question,
+  ].filter(Boolean).join('\n');
+}
+
+export async function sendReadyEmail(o: ReadyEmail): Promise<string | null> {
+  if (!RESEND_KEY) return 'RESEND_API_KEY חסר';
+  if (!o.to) return 'ללקוח אין כתובת מייל';
+
+  const c = READY[o.lang === 'en' ? 'en' : 'he'];
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: FROM, to: [o.to], bcc: BCC ? [BCC] : undefined, reply_to: SUPPORT,
+        subject: c.subject(o.reference), html: readyHtml(o), text: readyText(o),
+      }),
+    });
+    if (!res.ok) return `resend_${res.status}: ${(await res.text()).slice(0, 200)}`;
+    return null;
+  } catch (e) {
+    return `resend_exception: ${e}`;
+  }
+}

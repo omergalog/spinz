@@ -139,7 +139,7 @@ export default function PresaleTermsEn() {
           <Section title="7. Warranty">
             <p style={{ margin: 0 }}>
               The aluminum frame carries a 5-year warranty from the date of delivery. The warranty does not cover
-              wear items (tires, inner tubes, chain, brake pads, grips), reasonable wear, or damage caused by an
+              wear items (tires, inner tubes, chain, brake pads, grips), reasonable wear, or damage caused by improper use, an
               accident, by modifications made to the product, or by <b>assembly not carried out in accordance with
               the assembly instructions supplied</b>. The bike arrives mostly assembled; completing the assembly
               according to the instructions and the included video does not affect the warranty.

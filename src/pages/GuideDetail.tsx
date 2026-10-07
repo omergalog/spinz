@@ -81,17 +81,23 @@ export default function GuideDetail() {
   // reset the scroll to the top of the new guide whenever the slug changes.
   useEffect(() => { window.scrollTo(0, 0); }, [slug]);
 
+  // בלי שחזור בניקוי: המסלול הבא כותב את שלו לפני שהניקוי של הקודם
+  // רץ, ואז השחזור מחזיר את התיאור של המדריך הקודם. כל עמוד כותב את
+  // שלו — וזה מספיק.
   useEffect(() => {
     if (!guide) return;
-    const prevTitle = document.title;
     document.title = guide.metaTitle;
-    const meta = document.querySelector('meta[name="description"]');
-    const prevDesc = meta?.getAttribute('content') ?? null;
-    if (meta) meta.setAttribute('content', guide.metaDescription);
-    return () => {
-      document.title = prevTitle;
-      if (meta && prevDesc !== null) meta.setAttribute('content', prevDesc);
+    const set = (sel: string, attr: string, name: string) => {
+      let el = document.head.querySelector<HTMLMetaElement>(sel);
+      if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute(attr, name);
+        document.head.appendChild(el);
+      }
+      el.setAttribute('content', guide.metaDescription);
     };
+    set('meta[name="description"]', 'name', 'description');
+    set('meta[property="og:description"]', 'property', 'og:description');
   }, [guide]);
 
   if (!guide) return <Navigate to={L("/guides")} replace />;

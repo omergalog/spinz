@@ -20,6 +20,11 @@ export type PresaleSettings = {
   installments: number;
   /** רצפת הסכום לתשלום בודד, כפי שהיא נשלחת לטרנזילה. */
   minInstallment: number;
+  /**
+   * האם ההגדרות כבר חזרו מהשרת. עד אז המוצג הוא ברירת המחדל, ולכן
+   * אין להציג ספירה לאחור — היא "קפצה" בשעתיים ברגע שהנתון האמיתי הגיע.
+   */
+  ready: boolean;
 };
 
 /** ברירת מחדל – מוצגת מיד עד שה-DB עונה (מונע הבהוב) */
@@ -33,9 +38,13 @@ export const PRESALE_DEFAULTS: PresaleSettings = {
   // "עד 10 תשלומים ₪109" ו"אוקטובר 2026" לפני שהמספר האמיתי נטען.
   arrivalLabel: 'נובמבר 2026',
   discountLabel: 'מחיר השקה',
-  deadline: new Date('2026-10-31T23:59:59'),
+  // ההיסט מפורש בכוונה. בלעדיו הדפדפן קורא את המועד בשעון המקומי,
+  // בעוד שבטבלה הוא נשמר כ-timestamptz — וזה הפער של שעתיים שנראה
+  // בספירה לאחור ברגע שהנתון מהשרת החליף את ברירת המחדל.
+  deadline: new Date('2026-10-31T23:59:59+02:00'),
   installments: 12,
   minInstallment: 1,
+  ready: false,
 };
 
 /**
@@ -82,7 +91,10 @@ export function usePresale(): PresaleSettings {
       .eq('id', 1)
       .single()
       .then(({ data }) => {
-        if (!alive || !data) return;
+        if (!alive) return;
+        // גם כשהשרת לא עונה צריך לסמן "נטען", אחרת הספירה לאחור
+        // לא תוצג כלל ולא רק תידחה.
+        if (!data) { setSettings({ ...PRESALE_DEFAULTS, ready: true }); return; }
         setSettings({
           active: data.presale_active ?? PRESALE_DEFAULTS.active,
           regularPrice: data.regular_price ?? PRESALE_DEFAULTS.regularPrice,
@@ -95,6 +107,7 @@ export function usePresale(): PresaleSettings {
           // קודם הוא היה כתוב קשיח בקוד, והבטיח 13 בעוד שנגבה תשלום אחד.
           installments: data.max_installments ?? PRESALE_DEFAULTS.installments,
           minInstallment: data.min_installment_amount ?? PRESALE_DEFAULTS.minInstallment,
+          ready: true,
         });
       });
     return () => { alive = false; };

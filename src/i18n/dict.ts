@@ -77,6 +77,9 @@ export const dict = {
       controls: { contrast: 'ניגודיות גבוהה', links: 'הדגש קישורים', motion: 'עצור אנימציות', cursor: 'סמן גדול', text: 'גודל טקסט' },
     },
     meta: { description: 'Spinz. אופני עיר סינגל ספיד, בנויים לרחובות ומעוצבים לבלוט.',
+            // תיאור השיתוף של דף הבית. בלעדיו עמוד הבית נשאר עם
+            // תיאור השיתוף של העמוד שממנו חזרו אליו.
+            og: 'כולם ישאלו אותך מאיפה. תכירו את מותג הסינגל-ספיד שישנה לכם את העיר. לחצו כאן כדי לגלות את הקולקציה.',
             homeTitle: 'SPINZ | אופני עיר סינגל ספיד' },
     search: {
       placeholder: 'חיפוש באתר: דגמים, מדריכים, אחריות',
@@ -353,6 +356,11 @@ export const dict = {
       couponOk: 'הקוד הוחל',
       discount: 'הנחה',
       presaleDiscount: 'הנחת השקה',
+      // כמה יחידות בשורה נמחרו במחיר ההשקה וכמה במחיר המלא. בלי
+      // הפירוט הזה העגלה הציגה סכום והנחה, והלקוח לא יכול היה לדעת
+      // מאיפה הם נובעים כשהמכסה נגמרת באמצע השורה.
+      priceSplit: (n: number, p: string, m: number, q: string) =>
+        `${n} × ${p} במחיר השקה · ${m} × ${q} במחיר מלא`,
     },
     faq: { eyebrow: 'שאלות נפוצות', title: 'כל מה שרצית לדעת.' },
     specs: {
@@ -431,6 +439,7 @@ export const dict = {
       controls: { contrast: 'High contrast', links: 'Underline links', motion: 'Pause animations', cursor: 'Large cursor', text: 'Text size' },
     },
     meta: { description: 'Spinz. Urban single-speed city bikes, built for the street and designed to stand out.',
+            og: 'Everyone will ask you where it is from. Meet the single-speed brand about to change your city. Tap to see the collection.',
             homeTitle: 'SPINZ | Single Speed Urban Bikes' },
     search: {
       placeholder: 'Search the site: models, guides, warranty',
@@ -577,7 +586,7 @@ export const dict = {
         ],
         s3t: '3. Limited warranty',
         s3: [
-          ['Frame:', ' A limited warranty of 5 years (60 months) from the date of purchase against manufacturing defects, cracked welds or structural failure.'],
+          ['Frame:', ' A limited warranty of 5 years (60 months) from the date of delivery against manufacturing defects, cracked welds or structural failure.'],
           ['Components:', ' The fork and rigid non-wear components (handlebars, seat post, crank arms) carry a 12-month warranty.'],
           ['Wear items:', ' Tires, inner tubes, brake pads, chain and cogs are not covered by the warranty, other than a clear manufacturing defect discovered within 30 days of delivery and before use.'],
           ['Finish and color:', ' The finish (matte paint / powder coating) may show slight variation in shade between units and between the on-screen display and the actual product. Such variation is not considered a defect. The warranty does not cover scratches, scuffs, fading or color change resulting from exposure to sun, weather or chemicals, from improper care, or from reasonable wear. A clear manufacturing defect in the finish (such as peeling or bubbling originating at the factory and not caused by use) will be handled provided it is reported BEFORE assembly and use, within 7 days of receiving the product, and accompanied by photographic documentation.'],
@@ -729,6 +738,8 @@ export const dict = {
       couponOk: 'Code applied',
       discount: 'Discount',
       presaleDiscount: 'Launch discount',
+      priceSplit: (n: number, p: string, m: number, q: string) =>
+        `${n} × ${p} at launch price · ${m} × ${q} at full price`,
     },
     faq: { eyebrow: 'FAQ', title: 'Everything you wanted to know.' },
     specs: {

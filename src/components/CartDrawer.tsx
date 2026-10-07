@@ -5,14 +5,22 @@ import { X, ShoppingCart, Plus, Minus, ArrowRight, ArrowLeft, CalendarClock } fr
 import { MAX_PER_LINE, useCart } from '../context/CartContext';
 import { CouponRejectedError, OutOfStockError, TooManyCartsError, checkCoupon, loadApplePay, openCheckout, submitToIframe }
   from '../lib/payment';
-import { useT, useDir, useLang } from '../i18n/LanguageContext';
+import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
 import { arrivalLabelIn, usePresale } from '../config/presale';
 
 const DARK    = '#1C1C1C';   // text on gold buttons
 const GOLD    = '#C9A870';
-// זהב על לבן נותן 2.25, מתחת לרף. המחירים עוברים לגוון כהה (4.96),
+// זהב על לבן נותן 2.25, מתחת לרף. המחירים עוברים לגוון כהה,
 // הכפתורים והעיטורים נשארים בזהב המותג.
-const GOLD_TEXT = '#8A6B32';
+// הגוון הקודם (#8A6B32) נתן 4.96 על לבן אך 4.44 על רקע הקרם של
+// המגירה — מתחת ל-4.5. הגוון הזה: 5.79 על לבן, 5.18 על קרם.
+const GOLD_TEXT = '#7E6129';
+// אפור המחיר המחוק והטקסט הקטן. הקודם (#9A9690) נתן 2.94 על לבן
+// ו-2.63 על קרם. זה: 5.37 ו-4.81.
+const MUTED_TEXT = '#6E6A64';
+// אדום השגיאה. הקודם (#FF6B6B) נתן 2.78 על לבן — הודעת שגיאה
+// שאי אפשר לקרוא. זה: 6.54 על לבן, 5.85 על קרם.
+const ERROR_TEXT = '#B3261E';
 const TEXT    = '#1C1C1C';   // main text (light cart)
 const SURFACE = '#F5F2EC';   // drawer background (cream)
 const SUBTLE  = '#FFFFFF';   // inputs / item tiles (white, so the white-bg
@@ -57,6 +65,19 @@ export default function CartDrawer() {
       return i.model.price * i.quantity;
     }
     return i.model.price * atPresale + full * (i.quantity - atPresale);
+  };
+
+  /**
+   * חלוקת היחידות בשורה בין מחיר ההשקה למחיר המלא.
+   *
+   * null כשכל השורה באותו מחיר. כשהמכסה נגמרת באמצע השורה, העגלה
+   * הציגה סכום והנחה בלי לומר כמה יחידות בכל מחיר.
+   */
+  const priceSplit = (i: typeof items[number]) => {
+    const full = i.fullPrice ?? i.model.price;
+    const atPresale = Math.min(i.quantity, Math.max(0, i.presaleLeft ?? i.quantity));
+    if (i.kind === 'merch' || !presale.active || atPresale >= i.quantity || atPresale <= 0) return null;
+    return { atPresale, atFull: i.quantity - atPresale, presaleUnit: i.model.price, fullUnit: full };
   };
 
   const total = items.reduce((sum, i) => sum + lineTotal(i), 0);
@@ -148,9 +169,14 @@ export default function CartDrawer() {
    */
   const panelRef = useRef<HTMLDivElement>(null);
 
+  const openerRef = useRef<HTMLElement | null>(null);
+
   useEffect(() => {
     if (!isOpen) return;
     const panel = panelRef.current;
+    // הפקד שפתח את המגירה. בסגירה הפוקוס חזר ל-BODY, ומי שמנווט
+    // במקלדת נזרק לתחילת העמוד במקום לכפתור שממנו יצא.
+    openerRef.current = document.activeElement as HTMLElement | null;
     panel?.focus();
 
     const onKey = (e: KeyboardEvent) => {
@@ -169,7 +195,16 @@ export default function CartDrawer() {
     };
 
     document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      const opener = openerRef.current;
+      openerRef.current = null;
+      // רק אם הפוקוס עוד בתוך המגירה — שלא לגנוב אותו ממשהו אחר.
+      if (opener?.isConnected && (!document.activeElement || document.activeElement === document.body
+          || panel?.contains(document.activeElement))) {
+        opener.focus();
+      }
+    };
   }, [isOpen, closeCart]);
 
   // הכפתורים הצפים יושבים ב-zIndex 9999 והמגירה ב-999, ולכן כפתור
@@ -390,11 +425,24 @@ export default function CartDrawer() {
                               {formatPrice(lineTotal(item))}
                             </span>
                             {listUnit(item) * item.quantity > lineTotal(item) && (
-                              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#9A9690', textDecoration: 'line-through' }}>
+                              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: MUTED_TEXT, textDecoration: 'line-through' }}>
                                 {formatPrice(listUnit(item) * item.quantity)}
                               </span>
                             )}
                           </span>
+                          {(() => {
+                            const sp = priceSplit(item);
+                            if (!sp) return null;
+                            return (
+                              <span style={{
+                                display: 'block', marginTop: '5px',
+                                fontFamily: "'Heebo', sans-serif", fontSize: '11.5px',
+                                color: MUTED_TEXT, lineHeight: 1.5,
+                              }}>
+                                {t.cart.priceSplit(sp.atPresale, formatPrice(sp.presaleUnit), sp.atFull, formatPrice(sp.fullUnit))}
+                              </span>
+                            );
+                          })()}
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
                           <button
@@ -497,7 +545,7 @@ export default function CartDrawer() {
                       <div key={key}>
                         {/* התווית הייתה נראית אך לא מקושרת לשדה, ולכן
                             קורא מסך לא הקריא אותה ולחיצה עליה לא מיקדה. */}
-                        <label htmlFor={`cart-${key}`} style={{ display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: formErrors[key] ? '#FF6B6B' : "#6A6862", letterSpacing: '0.1em', marginBottom: '6px', textTransform: 'uppercase' }}>
+                        <label htmlFor={`cart-${key}`} style={{ display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: formErrors[key] ? ERROR_TEXT : "#6A6862", letterSpacing: '0.1em', marginBottom: '6px', textTransform: 'uppercase' }}>
                           {label}
                         </label>
                         <input
@@ -515,7 +563,7 @@ export default function CartDrawer() {
                           style={{
                             width: '100%', padding: '11px 14px',
                             backgroundColor: SUBTLE,
-                            border: `1px solid ${formErrors[key] ? '#FF6B6B' : BORDER}`,
+                            border: `1px solid ${formErrors[key] ? ERROR_TEXT : BORDER}`,
                             borderRadius: '8px', color: TEXT,
                             fontFamily: "'Heebo', sans-serif", fontSize: '14px',
                             outline: 'none', direction: key === 'email' || key === 'phone' ? 'ltr' : 'rtl',
@@ -523,11 +571,11 @@ export default function CartDrawer() {
                           }}
                         />
                         {key === 'email' && !formErrors[key] && (
-                          <p style={{ color: '#9A9690', fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>
+                          <p style={{ color: MUTED_TEXT, fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>
                             {t.cart.emailWhy}
                           </p>
                         )}
-                        {formErrors[key] && <p role="alert" style={{ color: '#FF6B6B', fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>
+                        {formErrors[key] && <p role="alert" style={{ color: ERROR_TEXT, fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>
                           {key === 'email' && form.email.trim() ? t.cart.badEmail : t.cart.required}
                         </p>}
                       </div>
@@ -540,7 +588,7 @@ export default function CartDrawer() {
                       </label>
                       <div style={{
                         display: 'flex', alignItems: 'stretch', backgroundColor: SUBTLE,
-                        border: `1px solid ${couponState === 'bad' ? '#FF6B6B'
+                        border: `1px solid ${couponState === 'bad' ? ERROR_TEXT
                                   : couponState === 'ok' ? '#3B6B33' : BORDER}`,
                         borderRadius: '8px', overflow: 'hidden',
                       }}>
@@ -573,7 +621,7 @@ export default function CartDrawer() {
                         </button>
                       </div>
                       {couponState === 'bad' && (
-                        <p style={{ color: '#FF6B6B', fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>{t.cart.couponBad}</p>
+                        <p style={{ color: ERROR_TEXT, fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>{t.cart.couponBad}</p>
                       )}
                       {couponState === 'ok' && (
                         <p style={{ color: '#3B6B33', fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>{t.cart.couponOk}</p>
@@ -590,9 +638,9 @@ export default function CartDrawer() {
                       )}
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
                         <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: "#6A6862" }}>{t.cart.orderTotal}</span>
-                        <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 700, color: GOLD }}>{formatPrice(total - discount)}</span>
+                        <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 700, color: GOLD_TEXT }}>{formatPrice(total - discount)}</span>
                       </div>
-                      <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: "#9A9690", margin: 0 }}>{t.cart.inclVat}</p>
+                      <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: MUTED_TEXT, margin: 0 }}>{t.cart.inclVat}</p>
                     </div>
                   </div>
 
@@ -617,11 +665,11 @@ export default function CartDrawer() {
                       lineHeight: 1.6, margin: '10px 0 0', textAlign: 'center',
                     }}>
                       {t.cart.agree1}{' '}
-                      <a href="/presale-terms" target="_blank" rel="noopener noreferrer" style={{ color: '#8A6D3B', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+                      <a href={localizePath('/presale-terms', lang)} target="_blank" rel="noopener noreferrer" style={{ color: GOLD_TEXT, textDecoration: 'underline', textUnderlineOffset: '2px' }}>
                         {t.cart.agreePresale}
                       </a>{' '}
                       {t.cart.agreeAnd}{' '}
-                      <a href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#8A6D3B', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+                      <a href={localizePath('/terms', lang)} target="_blank" rel="noopener noreferrer" style={{ color: GOLD_TEXT, textDecoration: 'underline', textUnderlineOffset: '2px' }}>
                         {t.cart.agreeTerms}
                       </a>.
                     </p>
@@ -713,7 +761,7 @@ export default function CartDrawer() {
                   <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: "#6A6862" }}>{t.cart.total}</span>
                   <span style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
                     {listTotal > total - discount && (
-                      <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', color: '#9A9690', textDecoration: 'line-through' }}>
+                      <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', color: MUTED_TEXT, textDecoration: 'line-through' }}>
                         {formatPrice(listTotal)}
                       </span>
                     )}

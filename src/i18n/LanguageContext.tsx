@@ -41,9 +41,15 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const html = document.documentElement;
     html.lang = lang;
     html.dir = lang === 'he' ? 'rtl' : 'ltr';
-    // תיאור ה-SEO של האתר מתחלף עם השפה (עמודי מדריך דורסים אותו בעצמם)
-    document.querySelector('meta[name="description"]')
-      ?.setAttribute('content', getDict(lang).meta.description);
+    // תיאור ה-SEO הכללי שייך לדף הבית בלבד.
+    // האפקט הזה רץ בכל החלפת מסלול, ובקומפוננטה ההורה — כלומר אחרי
+    // האפקט של העמוד עצמו. כשהוא כתב בכל מסלול, הוא דרס את התיאור
+    // הייחודי שכל עמוד בדיוק כתב, וכל 44 העמודים נראו זהים בחיפוש.
+    if (stripLangPrefix(pathname) === '/') {
+      const m = getDict(lang).meta;
+      document.querySelector('meta[name="description"]')?.setAttribute('content', m.description);
+      document.querySelector('meta[property="og:description"]')?.setAttribute('content', m.og);
+    }
 
     // hreflang: אומר לגוגל ששני הנתיבים הם אותו עמוד בשתי שפות, ולא תוכן כפול.
     // x-default מפנה לעברית — קהל היעד העיקרי.

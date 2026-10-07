@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useT, useDir } from '../i18n/LanguageContext';
+import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
 import { usePresale } from '../config/presale';
 
 const DARK = '#1C1C1C';
@@ -40,16 +40,19 @@ export default function AnnouncementBar() {
   const t = useT();
   const navigate = useNavigate();
   const location = useLocation();
+  const lang = useLang();
   const presale = usePresale();
   const { d, h, m, s, done } = useCountdown(presale.deadline);
 
   if (!presale.active || done) return null;
 
   const goModels = () => {
-    if (location.pathname === '/') {
+    // הבית של אותה שפה. בלי localizePath הפס באנגלית הקפיץ לבית העברי.
+    const home = localizePath('/', lang);
+    if (location.pathname === home) {
       document.getElementById('models')?.scrollIntoView({ behavior: 'smooth' });
     } else {
-      navigate('/#models');
+      navigate(`${home}#models`);
     }
   };
 
@@ -95,8 +98,10 @@ export default function AnnouncementBar() {
         </span>
 
         {/* Countdown – hidden on the narrowest screens to avoid crowding */}
+        {/* עד שההגדרות חוזרות מהשרת מוצגת ברירת המחדל, ואז המועד
+            האמיתי החליף אותה והספירה "קפצה". לכן אין להציג אותה לפני כן. */}
         <span
-          className="presale-countdown"
+          className={presale.ready ? 'presale-countdown' : undefined}
           style={{
             display: 'none', alignItems: 'center', gap: '7px',
             paddingInlineStart: '10px', marginInlineStart: '4px',

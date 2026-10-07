@@ -22,16 +22,44 @@ const photos = Array.from({ length: TOTAL }, (_, i) => {
 function Lightbox({ index, onClose, onNav }: { index: number; onClose: () => void; onNav: (dir: 1 | -1) => void }) {
   const t = useT();
   const touchX = useRef<number | null>(null);
+  const boxRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
 
+  // הפוקוס נשאר בתמונה שמאחורי החלון, ו-Tab המשיך לגלול בין 64
+  // התמונות שמתחת. הוא נכנס לחלון, נלכד בו, וחוזר לתמונה שפתחה אותו.
   useEffect(() => {
+    const opener = document.activeElement as HTMLElement | null;
+    closeRef.current?.focus();
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-      else if (e.key === 'ArrowLeft') onNav(1);   // RTL: left advances forward
-      else if (e.key === 'ArrowRight') onNav(-1);
+      if (e.key === 'Escape') { onClose(); return; }
+      if (e.key === 'ArrowLeft') { onNav(1); return; }   // RTL: left advances forward
+      if (e.key === 'ArrowRight') { onNav(-1); return; }
+      if (e.key !== 'Tab') return;
+
+      const items = Array.from(
+        boxRef.current?.querySelectorAll<HTMLElement>('button, [href], [tabindex]:not([tabindex="-1"])') ?? [],
+      );
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      if (e.shiftKey && (active === first || !boxRef.current?.contains(active))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
     };
+
     window.addEventListener('keydown', onKey);
     document.body.style.overflow = 'hidden';
-    return () => { window.removeEventListener('keydown', onKey); document.body.style.overflow = ''; };
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+      opener?.focus?.();
+    };
   }, [onClose, onNav]);
 
   // Preload the next and previous full images so navigation is instant
@@ -57,6 +85,10 @@ function Lightbox({ index, onClose, onNav }: { index: number; onClose: () => voi
       exit={{ opacity: 0 }}
       transition={{ duration: 0.25 }}
       onClick={onClose}
+      ref={boxRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label={t.gallery.title}
       style={{
         position: 'fixed', inset: 0, zIndex: 1000,
         backgroundColor: 'rgba(12,11,10,0.94)',
@@ -73,6 +105,7 @@ function Lightbox({ index, onClose, onNav }: { index: number; onClose: () => voi
     >
       {/* Close */}
       <button
+        ref={closeRef}
         onClick={onClose}
         aria-label={t.gallery.close}
         style={{
@@ -83,9 +116,14 @@ function Lightbox({ index, onClose, onNav }: { index: number; onClose: () => voi
         }}
       >×</button>
 
-      {/* Counter */}
-      <div style={{
-        position: 'absolute', top: '28px', insetInlineEnd: '24px', zIndex: 3,
+      {/* Counter.
+          היה למעלה עם insetInlineEnd, אבל direction: 'ltr' על אותו
+          אלמנט הפך את ה-inline-end שלו לימין — בדיוק הצד שבו יושב
+          כפתור הסגירה ב-RTL. ברוחב 360 המונה שכב על ה-X ותפס את
+          הלחיצה במרכזו. עכשיו הוא למטה במרכז, ושקוף ללחיצות. */}
+      <div aria-hidden style={{
+        position: 'absolute', bottom: '18px', left: 0, right: 0, zIndex: 3,
+        textAlign: 'center', pointerEvents: 'none',
         fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: 'rgba(255,255,255,0.7)',
         direction: 'ltr',
       }}>

@@ -13,6 +13,8 @@ export type PresaleSettings = {
   presalePrice: number;
   presaleUnits: number;
   arrivalLabel: string;
+  /** סיבת ההנחה, כפי שהיא מוצגת ליד המחיר. נשלטת מהדשבורד. */
+  discountLabel: string;
   deadline: Date;
   /** מספר התשלומים שהמסוף מאושר אליו. אותו ערך שקובע מה נגבה בפועל. */
   installments: number;
@@ -30,6 +32,7 @@ export const PRESALE_DEFAULTS: PresaleSettings = {
   // חייבים להיות מה שבטבלה. ברירת מחדל ישנה הציגה ללקוח
   // "עד 10 תשלומים ₪109" ו"אוקטובר 2026" לפני שהמספר האמיתי נטען.
   arrivalLabel: 'נובמבר 2026',
+  discountLabel: 'מחיר השקה',
   deadline: new Date('2026-10-31T23:59:59'),
   installments: 12,
   minInstallment: 1,
@@ -75,7 +78,7 @@ export function usePresale(): PresaleSettings {
     let alive = true;
     supabase
       .from('site_settings')
-      .select('presale_active, regular_price, presale_price, presale_units, arrival_label, deadline, max_installments, min_installment_amount')
+      .select('presale_active, regular_price, presale_price, presale_units, arrival_label, discount_label, deadline, max_installments, min_installment_amount')
       .eq('id', 1)
       .single()
       .then(({ data }) => {
@@ -86,6 +89,7 @@ export function usePresale(): PresaleSettings {
           presalePrice: data.presale_price ?? PRESALE_DEFAULTS.presalePrice,
           presaleUnits: data.presale_units ?? PRESALE_DEFAULTS.presaleUnits,
           arrivalLabel: data.arrival_label ?? PRESALE_DEFAULTS.arrivalLabel,
+          discountLabel: data.discount_label ?? PRESALE_DEFAULTS.discountLabel,
           deadline: data.deadline ? new Date(data.deadline) : PRESALE_DEFAULTS.deadline,
           // המספר שמוצג ללקוח והמספר שנשלח לטרנזילה חייבים להיות אחד.
           // קודם הוא היה כתוב קשיח בקוד, והבטיח 13 בעוד שנגבה תשלום אחד.

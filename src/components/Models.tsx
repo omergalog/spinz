@@ -343,9 +343,22 @@ export default function Models() {
             ₪{shownPrice.toLocaleString('he-IL')}
           </span>
         ) : presale ? (
-          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', color: '#6A6862', textDecoration: 'line-through', textDecorationColor: '#C17A56' }}>
-            ₪{presaleCfg.regularPrice.toLocaleString('he-IL')}
-          </span>
+          <>
+            <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', color: '#6A6862', textDecoration: 'line-through', textDecorationColor: '#C17A56' }}>
+              ₪{presaleCfg.regularPrice.toLocaleString('he-IL')}
+            </span>
+            {/* המחיר המחוק הוצג בלי לומר למה. הסיבה מגיעה מהדשבורד,
+                כדי שמבצע אחר לא ידרוש שינוי בקוד. */}
+            {presaleCfg.discountLabel && (
+              <span style={{
+                fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 800,
+                color: '#3B6B33', backgroundColor: '#F2F7F1', border: '1px solid #CFE0CB',
+                borderRadius: '999px', padding: '3px 10px',
+              }}>
+                {presaleCfg.discountLabel}
+              </span>
+            )}
+          </>
         ) : salePrice ? (
           <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', color: '#6A6862', textDecoration: 'line-through', textDecorationColor: '#FF4444' }}>
             ₪{price.toLocaleString('he-IL')}

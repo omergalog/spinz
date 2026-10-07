@@ -26,10 +26,13 @@ export const PRESALE_DEFAULTS: PresaleSettings = {
   regularPrice: 1299,
   presalePrice: 1090,
   presaleUnits: 100,
-  arrivalLabel: 'אוקטובר 2026',
-  deadline: new Date('2026-09-30T23:59:59'),
+  // הערכים כאן מוצגים בשבריר השנייה שלפני שהטבלה עונה, ולכן הם
+  // חייבים להיות מה שבטבלה. ברירת מחדל ישנה הציגה ללקוח
+  // "עד 10 תשלומים ₪109" ו"אוקטובר 2026" לפני שהמספר האמיתי נטען.
+  arrivalLabel: 'נובמבר 2026',
+  deadline: new Date('2026-10-31T23:59:59'),
   installments: 12,
-  minInstallment: 100,
+  minInstallment: 1,
 };
 
 /**

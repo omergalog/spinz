@@ -61,7 +61,7 @@ function BrandBlock({ className, textLight }: { className?: string; textLight: s
         {t.lead.cityLine1}<br />{t.lead.cityLine2}
       </p>
       <div style={{ display: 'flex', gap: '26px', alignItems: 'center' }}>
-        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" style={{ color: textLight, padding: '11px', margin: '-11px', display: 'inline-flex' }}>
+        <a href="https://instagram.com/spinz.bikes" target="_blank" rel="noopener noreferrer" style={{ color: textLight, padding: '11px', margin: '-11px', display: 'inline-flex' }}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
         </a>
         <a href="https://wa.me/972527565262?text=%D7%94%D7%99%D7%99%20Spinz%20%F0%9F%91%8B%20%D7%94%D7%92%D7%A2%D7%AA%D7%99%20%D7%9E%D7%94%D7%90%D7%AA%D7%A8%20%D7%95%D7%90%D7%A0%D7%99%20%D7%9E%D7%AA%D7%A2%D7%A0%D7%99%D7%99%D7%9F%20%D7%91%D7%90%D7%95%D7%A4%D7%A0%D7%99%D7%99%D7%9D.%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A9%D7%9E%D7%95%D7%A2%20%D7%A2%D7%9C%20%D7%94%D7%93%D7%92%D7%9E%D7%99%D7%9D%20%D7%95%D7%94%D7%9E%D7%97%D7%99%D7%A8%D7%99%D7%9D%20%D7%A9%D7%9C%D7%9B%D7%9D%21" target="_blank" rel="noopener noreferrer" style={{ color: '#25D366', padding: '11px', margin: '-11px', display: 'inline-flex' }}>

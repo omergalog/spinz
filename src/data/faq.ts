@@ -5,7 +5,7 @@ export type FaqItem = { q: string; a: string };
 const he: FaqItem[] = [
   {
     q: 'כמה זמן לוקח המשלוח?',
-    a: 'אנחנו שולחים עד 5 ימי עסקים מרגע ההזמנה. תקבלו SMS עם מספר מעקב ברגע שהחבילה יוצאת אלינו.',
+    a: 'אנחנו שולחים עד 5 ימי עסקים מרגע ההזמנה. תקבלו SMS עם מספר מעקב ברגע שהחבילה יוצאת מאיתנו.',
   },
   {
     q: 'האופניים מגיעים מורכבים?',
@@ -17,7 +17,7 @@ const he: FaqItem[] = [
   },
   {
     q: 'אפשר לשלם בתשלומים?',
-    a: 'בהחלט. ניתן לפרוס לעד 13 תשלומים החל מ-₪100 בחודש. מקבלים אשראי, ביט, Apple Pay ו-Google Pay.',
+    a: 'בהחלט. ניתן לפרוס לעד 12 תשלומים החל מ-₪100 בחודש. מקבלים אשראי, ביט, Apple Pay ו-Google Pay.',
   },
   {
     q: 'לאיזה גובה מתאים כל דגם?',
@@ -56,7 +56,7 @@ const en: FaqItem[] = [
   },
   {
     q: 'Can I pay in installments?',
-    a: 'Absolutely. You can split the payment into up to 13 installments, starting at ₪100 a month. We accept credit cards, Bit, Apple Pay and Google Pay.',
+    a: 'Absolutely. You can split the payment into up to 12 installments, starting at ₪100 a month. We accept credit cards, Bit, Apple Pay and Google Pay.',
   },
   {
     q: 'Which frame size suits my height?',

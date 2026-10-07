@@ -213,7 +213,7 @@ export default function Footer() {
             </p>
             <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
               <button
-                onClick={() => navigate('/regulations')}
+                onClick={() => navigate(L('/regulations'))}
                 style={{
                   fontFamily: "'Heebo', sans-serif", fontSize: '12px',
                   color: '#888', background: 'none', border: 'none',
@@ -227,7 +227,7 @@ export default function Footer() {
                 {t.footer.links.regulations}
               </button>
               <button
-                onClick={() => navigate('/terms')}
+                onClick={() => navigate(L('/terms'))}
                 style={{
                   fontFamily: "'Heebo', sans-serif", fontSize: '12px',
                   color: '#888', background: 'none', border: 'none',
@@ -241,7 +241,7 @@ export default function Footer() {
                 {t.footer.links.terms}
               </button>
               <Link
-                to="/accessibility"
+                to={L("/accessibility")}
                 style={{
                   fontFamily: "'Heebo', sans-serif", fontSize: '12px',
                   color: '#888', textDecoration: 'underline',

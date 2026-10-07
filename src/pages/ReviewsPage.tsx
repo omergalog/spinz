@@ -129,8 +129,9 @@ function ReviewModal({ onClose }: { onClose: () => void }) {
 
 export default function ReviewsPage() {
   const t = useT();
-  const seed: Review[] = t.reviews.seed.map(r => ({ ...r, stars: 5 }));
-  const [reviews, setReviews] = useState<Review[]>(seed);
+  // המלצות הדגמה הוצגו כברירת מחדל עם "לקוחות אמיתיים" מעליהן.
+  // עד שתהיה ביקורת אמיתית, העמוד מזמין להשאיר אחת במקום להמציא.
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
@@ -152,9 +153,9 @@ export default function ReviewsPage() {
           {/* CTA bar */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'center', justifyContent: 'space-between', marginBottom: '40px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <Stars n={5} size={20} />
+              {reviews.length > 0 && <Stars n={5} size={20} />}
               <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 600, color: DARK }}>
-                {t.reviews.countLabel(reviews.length)}
+                {reviews.length > 0 ? t.reviews.countLabel(reviews.length) : t.reviews.none}
               </span>
             </div>
             <button

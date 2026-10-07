@@ -10,6 +10,9 @@ import { arrivalLabelIn, usePresale } from '../config/presale';
 
 const DARK    = '#1C1C1C';   // text on gold buttons
 const GOLD    = '#C9A870';
+// זהב על לבן נותן 2.25, מתחת לרף. המחירים עוברים לגוון כהה (4.96),
+// הכפתורים והעיטורים נשארים בזהב המותג.
+const GOLD_TEXT = '#8A6B32';
 const TEXT    = '#1C1C1C';   // main text (light cart)
 const SURFACE = '#F5F2EC';   // drawer background (cream)
 const SUBTLE  = '#FFFFFF';   // inputs / item tiles (white, so the white-bg
@@ -309,7 +312,8 @@ export default function CartDrawer() {
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
                 <img src="/assets/logo.png" alt="SPINZ" style={{ height: '36px', width: 'auto', objectFit: 'contain', opacity: 0.9 }} />
                 <button onClick={closeCart} aria-label={t.cart.close}
-                  style={{ color: TEXT, background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
+                  style={{ color: TEXT, background: 'none', border: 'none', cursor: 'pointer',
+                           width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <X size={22} />
                 </button>
               </div>
@@ -375,7 +379,7 @@ export default function CartDrawer() {
                             {item.model.name}
                           </h3>
                           <span style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
-                            <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 700, color: GOLD }}>
+                            <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 700, color: GOLD_TEXT }}>
                               {formatPrice(lineTotal(item))}
                             </span>
                             {listUnit(item) * item.quantity > lineTotal(item) && (
@@ -390,7 +394,7 @@ export default function CartDrawer() {
                             onClick={() => updateQuantity(item.model.id, item.quantity + 1)}
                             aria-label={t.cart.more}
                             disabled={item.quantity >= MAX_PER_LINE}
-                            style={{ width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.06)', border: 'none', borderRadius: '4px', color: TEXT, cursor: 'pointer' }}
+                            style={{ width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.06)', border: 'none', borderRadius: '8px', color: TEXT, cursor: 'pointer' }}
                           >
                             <Plus size={14} />
                           </button>
@@ -400,7 +404,7 @@ export default function CartDrawer() {
                           <button
                             onClick={() => updateQuantity(item.model.id, item.quantity - 1)}
                             aria-label={t.cart.less}
-                            style={{ width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.06)', border: 'none', borderRadius: '4px', color: item.quantity === 1 ? '#CC4400' : TEXT, cursor: 'pointer' }}
+                            style={{ width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.06)', border: 'none', borderRadius: '8px', color: item.quantity === 1 ? '#CC4400' : TEXT, cursor: 'pointer' }}
                           >
                             <Minus size={14} />
                           </button>
@@ -667,7 +671,7 @@ export default function CartDrawer() {
                         {formatPrice(listTotal)}
                       </span>
                     )}
-                    <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '22px', fontWeight: 800, color: GOLD }}>
+                    <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '22px', fontWeight: 800, color: GOLD_TEXT }}>
                       {formatPrice(total - discount)}
                     </span>
                   </span>

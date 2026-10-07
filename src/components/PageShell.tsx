@@ -45,27 +45,21 @@ export default function PageShell({ children, eyebrow, title, subtitle, heroImag
     const text = (subtitle ?? '').trim();
     if (!text) return;
 
+    // בלי שחזור בניקוי. מעבר בין שני עמודים מריץ את הניקוי של הישן
+    // אחרי שהחדש כבר כתב את שלו, ואז התיאור חוזר לזה של העמוד הקודם.
+    // כל עמוד כותב את שלו, וזה מספיק.
     const set = (sel: string, attr: string, name: string) => {
       let el = document.head.querySelector<HTMLMetaElement>(sel);
-      const had = !!el;
       if (!el) {
         el = document.createElement('meta');
         el.setAttribute(attr, name);
         document.head.appendChild(el);
       }
-      const before = el.getAttribute('content');
       el.setAttribute('content', text);
-      return () => {
-        if (!had) el!.remove();
-        else if (before != null) el!.setAttribute('content', before);
-      };
     };
 
-    const undo = [
-      set('meta[name="description"]', 'name', 'description'),
-      set('meta[property="og:description"]', 'property', 'og:description'),
-    ];
-    return () => undo.forEach(f => f());
+    set('meta[name="description"]', 'name', 'description');
+    set('meta[property="og:description"]', 'property', 'og:description');
   }, [subtitle]);
 
   return (

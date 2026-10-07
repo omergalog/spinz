@@ -152,7 +152,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems(prev => {
       const existing = prev.find(i => i.model.id === model.id);
       if (existing) {
-        return prev.map(i => i.model.id === model.id ? { ...i, quantity: i.quantity + 1 } : i);
+        // התקרה נאכפה רק בכפתור הפלוס שבעגלה. לחיצות חוזרות על
+        // "הוסיפו לעגלה" עקפו אותה והגיעו לשש יחידות בשורה אחת.
+        return prev.map(i => i.model.id === model.id
+          ? { ...i, quantity: Math.min(i.quantity + 1, MAX_PER_LINE) } : i);
       }
       return [...prev, {
         model, quantity: 1, colorId, colorLabel, colorSkuCode, size,

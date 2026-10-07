@@ -95,6 +95,7 @@ export const dict = {
       countLabel: (n: number) => `${n} המלצות מלקוחות`,
       leaveOne: 'השאירו המלצה',
       pageSub: 'לקוחות אמיתיים, חוויות אמיתיות. רוצים להוסיף את שלכם?',
+      none: 'עוד אין המלצות. תהיו הראשונים.',
       shareTitle: 'שתפו אותנו בחוויה שלכם',
       shareSubHome: 'קניתם? נשמח לשמוע.',
       shareSubPage: 'קניתם Spinz? נשמח לשמוע מה דעתכם.',
@@ -373,6 +374,7 @@ export const dict = {
       },
       links: {
         models:  'The Models',
+        merch:   'Merch',
         specs:   'Specs',
         sizes:   'Sizes & Colors',
         faq:     'FAQ',
@@ -442,6 +444,7 @@ export const dict = {
       countLabel: (n: number) => `${n} customer reviews`,
       leaveOne: 'Leave a review',
       pageSub: 'Real customers, real experiences. Want to add yours?',
+      none: 'No reviews yet. Be the first.',
       shareTitle: 'Tell us about your experience',
       shareSubHome: 'Bought one? We’d love to hear.',
       shareSubPage: 'Got a Spinz? We’d love to hear what you think.',

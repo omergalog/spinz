@@ -538,8 +538,10 @@ export default function Models() {
                 ))}
               </div>
 
-              {/* Presale quota for this exact variant */}
-              {presaleCfg.active && (
+              {/* Presale quota for this exact variant.
+                  presaleReady חוסם את ההצגה עד שהמספר נטען. בלעדיו
+                  הלקוח ראה "נשארו רק 0" לרגע, ואז 2. */}
+              {presaleCfg.active && presaleReady && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: '7px', marginTop: '14px' }}>
                   <span style={{
                     width: '7px', height: '7px', borderRadius: '50%', flexShrink: 0,

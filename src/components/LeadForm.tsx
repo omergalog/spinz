@@ -259,6 +259,7 @@ export default function LeadForm() {
                   {/* Name field */}
                   <div className="lead-form-field" style={{ borderTop: `1px solid ${BORDER_DARK}`, paddingTop: '18px', paddingBottom: '18px' }}>
                     <label
+                      htmlFor="lead-name"
                       style={{
                         display: 'block',
                         fontFamily: "'Heebo', sans-serif",
@@ -272,6 +273,7 @@ export default function LeadForm() {
                       {t.lead.name}
                     </label>
                     <input
+                      id="lead-name"
                       type="text"
                       autoComplete="name"
                       placeholder={t.lead.namePh}
@@ -299,6 +301,7 @@ export default function LeadForm() {
                   {/* Email field */}
                   <div className="lead-form-field" style={{ borderTop: `1px solid ${BORDER_DARK}`, paddingTop: '18px', paddingBottom: '18px' }}>
                     <label
+                      htmlFor="lead-email"
                       style={{
                         display: 'block',
                         fontFamily: "'Heebo', sans-serif",
@@ -312,6 +315,7 @@ export default function LeadForm() {
                       {t.lead.email}
                     </label>
                     <input
+                      id="lead-email"
                       type="email"
                       autoComplete="email"
                       dir="ltr"
@@ -343,6 +347,7 @@ export default function LeadForm() {
                   {/* WhatsApp field */}
                   <div className="lead-form-field" style={{ borderTop: `1px solid ${BORDER_DARK}`, paddingTop: '18px', paddingBottom: '18px' }}>
                     <label
+                      htmlFor="lead-phone"
                       style={{
                         display: 'block',
                         fontFamily: "'Heebo', sans-serif",
@@ -356,6 +361,7 @@ export default function LeadForm() {
                       {t.lead.phone}
                     </label>
                     <input
+                      id="lead-phone"
                       type="tel"
                       autoComplete="tel"
                       inputMode="numeric"

@@ -5,7 +5,7 @@ export type FaqItem = { q: string; a: string };
 const he: FaqItem[] = [
   {
     q: 'כמה זמן לוקח המשלוח?',
-    a: 'אנחנו שולחים עד 5 ימי עסקים מרגע ההזמנה. תקבלו SMS עם מספר מעקב ברגע שהחבילה יוצאת מאיתנו.',
+    a: 'בהזמנה רגילה ממלאי אנחנו שולחים עד 5 ימי עסקים מרגע ההזמנה. בהזמנה מוקדמת האופניים טרם הגיעו, והמשלוח יוצא אחרי שהם נקלטים במחסן — מועד האספקה המשוער מופיע בעמוד המוצר ובעגלה. בכל מקרה תקבלו SMS עם מספר מעקב ברגע שהחבילה יוצאת מאיתנו.',
   },
   {
     q: 'האופניים מגיעים מורכבים?',
@@ -17,7 +17,7 @@ const he: FaqItem[] = [
   },
   {
     q: 'אפשר לשלם בתשלומים?',
-    a: 'בהחלט. ניתן לפרוס לעד 12 תשלומים החל מ-₪100 בחודש. מקבלים אשראי, ביט, Apple Pay ו-Google Pay.',
+    a: 'בהחלט. ניתן לפרוס לעד 12 תשלומים, כ-₪91 לחודש במחיר ההשקה. מקבלים אשראי, ביט, Apple Pay ו-Google Pay.',
   },
   {
     q: 'לאיזה גובה מתאים כל דגם?',
@@ -44,7 +44,7 @@ const he: FaqItem[] = [
 const en: FaqItem[] = [
   {
     q: 'How long does delivery take?',
-    a: 'We ship within 5 business days of your order. You’ll get an SMS with a tracking number the moment the package leaves us.',
+    a: 'For a regular order from stock we ship within 5 business days. For a pre-order the bikes have not arrived yet, and shipping starts once they reach our warehouse — the estimated delivery date is shown on the product page and in the cart. Either way you’ll get an SMS with a tracking number the moment the package leaves us.',
   },
   {
     q: 'Does the bike arrive assembled?',
@@ -56,7 +56,7 @@ const en: FaqItem[] = [
   },
   {
     q: 'Can I pay in installments?',
-    a: 'Absolutely. You can split the payment into up to 12 installments, starting at ₪100 a month. We accept credit cards, Bit, Apple Pay and Google Pay.',
+    a: 'Absolutely. You can split the payment into up to 12 installments, about ₪91 a month at the launch price. We accept credit cards, Bit, Apple Pay and Google Pay.',
   },
   {
     q: 'Which frame size suits my height?',

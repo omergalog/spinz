@@ -86,7 +86,7 @@ export default function Regulations() {
           <Section title="3. אחריות מוגבלת">
             <ul style={{ margin: 0, paddingInlineStart: '18px' }}>
               <li style={{ marginBottom: '8px' }}>
-                <b>שלדה:</b> אחריות מוגבלת ל־5 שנים (60 חודשים) ממועד הרכישה כנגד פגמי ייצור,
+                <b>שלדה:</b> אחריות מוגבלת ל־5 שנים (60 חודשים) ממועד המסירה כנגד פגמי ייצור,
                 סדקים בריתוכים או כשל מבני.
               </li>
               <li style={{ marginBottom: '8px' }}>

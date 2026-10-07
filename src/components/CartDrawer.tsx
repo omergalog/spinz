@@ -92,6 +92,13 @@ export default function CartDrawer() {
   const [discount, setDiscount] = useState(0);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [form, setForm] = useState({ name: '', email: '', phone: '', address: '' });
+  /**
+   * אופן המסירה.
+   *
+   * האתר מבטיח איסוף עצמי חינם מכפר ויתקין, ובטופס לא הייתה דרך
+   * לבחור בו — הכתובת הייתה שדה חובה והלקוח נאלץ להמציא אחת.
+   */
+  const [delivery, setDelivery] = useState<'ship' | 'pickup'>('ship');
   const [formErrors, setFormErrors] = useState<Record<string, boolean>>({});
 
   // עמוד התשלום חי בתוך מסגרת, ולכן סיום התשלום אינו יכול פשוט להפנות
@@ -200,7 +207,7 @@ export default function CartDrawer() {
     const errors: Record<string, boolean> = {};
     if (!form.name.trim()) errors.name = true;
     if (!form.phone.trim()) errors.phone = true;
-    if (!form.address.trim()) errors.address = true;
+    if (delivery === 'ship' && !form.address.trim()) errors.address = true;
     // אישור ההזמנה והחשבונית מגיעים במייל בלבד. בלי כתובת הלקוח
     // משלם ולא מקבל דבר, ואין לו אסמכתה לביטול.
     if (!form.email.trim() || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email.trim())) {
@@ -236,7 +243,7 @@ export default function CartDrawer() {
         name: form.name,
         phone: form.phone,
         email: form.email || undefined,
-        address: form.address,
+        address: delivery === 'pickup' ? t.cart.pickupAddress : form.address,
         // רק קוד שהוחל בפועל. מה שמופיע על המסך הוא מה שנגבה.
         coupon: couponState === 'ok' ? coupon.trim() : undefined,
         lang,
@@ -439,6 +446,43 @@ export default function CartDrawer() {
 
                   {/* Form */}
                   <div style={{ flex: 1, overflowY: 'auto', padding: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }} onWheel={e => e.stopPropagation()} onTouchMove={e => e.stopPropagation()}>
+
+                    {/* אופן מסירה */}
+                    <div role="radiogroup" aria-label={t.cart.deliveryLabel}>
+                      <span style={{ display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '11px',
+                                     color: '#6A6862', letterSpacing: '0.1em', marginBottom: '6px',
+                                     textTransform: 'uppercase' }}>
+                        {t.cart.deliveryLabel}
+                      </span>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        {([['ship', t.cart.deliveryShip], ['pickup', t.cart.deliveryPickup]] as const).map(([k, label]) => (
+                          <button
+                            key={k}
+                            type="button"
+                            role="radio"
+                            aria-checked={delivery === k}
+                            onClick={() => { setDelivery(k); setFormErrors(f => ({ ...f, address: false })); }}
+                            style={{
+                              flex: 1, minHeight: '48px', padding: '10px 12px', borderRadius: '8px',
+                              cursor: 'pointer', fontFamily: "'Heebo', sans-serif", fontSize: '13.5px',
+                              fontWeight: 700,
+                              border: `1px solid ${delivery === k ? GOLD : BORDER}`,
+                              backgroundColor: delivery === k ? GOLD : SUBTLE,
+                              color: delivery === k ? DARK : TEXT,
+                            }}
+                          >
+                            {label}
+                          </button>
+                        ))}
+                      </div>
+                      {delivery === 'pickup' && (
+                        <p style={{ margin: '8px 0 0', fontFamily: "'Heebo', sans-serif", fontSize: '12px',
+                                    color: '#6A6862', lineHeight: 1.6 }}>
+                          {t.cart.pickupNote}
+                        </p>
+                      )}
+                    </div>
+
                     {[
                       // autoComplete הוא מה שמאפשר לדפדפן להשלים את השדה.
                       // בלעדיו הוא זיהה רק את שדה המייל, לפי type, ושאר
@@ -446,7 +490,9 @@ export default function CartDrawer() {
                       { key: 'name', label: t.cart.nameLabel, placeholder: t.cart.namePlaceholder, type: 'text', auto: 'name' },
                       { key: 'phone', label: t.cart.phoneLabel, placeholder: '050-0000000', type: 'tel', auto: 'tel' },
                       { key: 'email', label: t.cart.emailLabel, placeholder: 'israel@example.com', type: 'email', auto: 'email' },
-                      { key: 'address', label: t.cart.addressLabel, placeholder: t.cart.addressPlaceholder, type: 'text', auto: 'street-address' },
+                      ...(delivery === 'ship'
+                        ? [{ key: 'address', label: t.cart.addressLabel, placeholder: t.cart.addressPlaceholder, type: 'text', auto: 'street-address' }]
+                        : []),
                     ].map(({ key, label, placeholder, type, auto }) => (
                       <div key={key}>
                         {/* התווית הייתה נראית אך לא מקושרת לשדה, ולכן

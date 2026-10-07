@@ -106,7 +106,9 @@ export default function Models() {
   const [outOfStock, setOutOfStock] = useState(false);
   const [price, setPrice] = useState(BASE_PRICE);
   const [salePrice, setSalePrice] = useState<number | null>(null);
-  const [reviewStats, setReviewStats] = useState<{ avg: number; count: number }>({ avg: 5, count: 0 });
+  // דירוג נפתח רק כשיש ממה לחשב אותו. ברירת המחדל הייתה avg: 5,
+  // ולכן האתר הציג חמישה כוכבים מלאים גם כשלא הייתה אף ביקורת.
+  const [reviewStats, setReviewStats] = useState<{ avg: number; count: number } | null>(null);
   const [presaleQty, setPresaleQty] = useState<Record<string, number>>({});
   // עד שהמכסות נטענות אי אפשר לדעת אם הווריאנט עדיין במחיר השקה.
   // בלי הדגל הזה הרינדור הראשון הניח שהמכסה אזלה והציג לרגע את מחיר
@@ -276,8 +278,8 @@ export default function Models() {
         {t.product.subtitle}
       </motion.p>
 
-      {/* Rating row */}
-      <motion.div
+      {/* Rating row — מוצג רק כשיש ביקורות אמיתיות */}
+      {reviewStats && <motion.div
         initial={{ opacity: 0 }}
         animate={isInView ? { opacity: 1 } : {}}
         transition={{ duration: 0.6, delay: 0.22 }}
@@ -308,7 +310,7 @@ export default function Models() {
             {reviewStats.count >= 5 ? t.product.reviewCount(reviewStats.count) : t.product.reviewsLabel}
           </span>
         </Link>
-      </motion.div>
+      </motion.div>}
     </>
   );
 

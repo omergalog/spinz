@@ -9,7 +9,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { corsHeaders } from '../_shared/cors.ts';
 
-const MAX = { name: 120, email: 160, phone: 40 };
+const MAX = { name: 120, email: 160, phone: 40, message: 1200 };
 const clip = (v: unknown, n: number) => String(v ?? '').trim().slice(0, n);
 
 Deno.serve(async (req) => {
@@ -28,6 +28,7 @@ Deno.serve(async (req) => {
   const name  = clip(body.name, MAX.name);
   const email = clip(body.email, MAX.email);
   const phone = clip(body.phone, MAX.phone);
+  const message = clip(body.message, MAX.message);
 
   if (!name && !email && !phone) return json({ error: 'empty' }, 400);
   if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json({ error: 'bad_email' }, 400);
@@ -49,6 +50,7 @@ Deno.serve(async (req) => {
 
   const { error } = await db.from('leads').insert({
     name: name || null, email: email || null, phone: phone || null,
+    message: message || null,
   });
   if (error) { console.error('lead insert', error.message); return json({ error: 'server' }, 500); }
 

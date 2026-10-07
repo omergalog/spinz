@@ -12,7 +12,7 @@ const TEXT_LIGHT = '#EDEBE6';
 const BORDER_DARK = '#2A2A2A';
 
 
-type FormData = { name: string; email: string; whatsapp?: string };
+type FormData = { name: string; email: string; whatsapp?: string; message?: string };
 type Status   = 'idle' | 'loading' | 'success' | 'error';
 
 function Toast({ show }: { show: boolean }) {
@@ -108,6 +108,7 @@ export default function LeadForm() {
         name: data.name,
         email: data.email,
         phone: data.whatsapp || undefined,
+        message: data.message?.trim() || undefined,
       });
       setStatus('success');
       reset();
@@ -376,6 +377,44 @@ export default function LeadForm() {
                       {...register('whatsapp', {
                         pattern: /^[+\d\s\-()]{7,20}$/,
                       })}
+                    />
+                  </div>
+
+                  {/* שדה ההודעה. בלעדיו הטופס אסף פרטים ולא ידע מה נשאל,
+                      וכל פנייה הצריכה שיחת טלפון כדי להבין מה רצו. */}
+                  <div className="lead-form-field" style={{ borderTop: `1px solid ${BORDER_DARK}`, paddingTop: '18px', paddingBottom: '18px' }}>
+                    <label
+                      htmlFor="lead-message"
+                      style={{
+                        display: 'block',
+                        fontFamily: "'Heebo', sans-serif",
+                        fontSize: '14px',
+                        letterSpacing: '0.15em',
+                        textTransform: 'uppercase',
+                        color: '#FFFFFF',
+                        marginBottom: '10px',
+                      }}
+                    >
+                      {t.lead.message}
+                    </label>
+                    <textarea
+                      id="lead-message"
+                      rows={3}
+                      placeholder={t.lead.messagePh}
+                      style={{
+                        width: '100%',
+                        background: 'none',
+                        border: 'none',
+                        borderBottom: `1px solid ${BORDER_DARK}`,
+                        outline: 'none',
+                        color: TEXT_LIGHT,
+                        fontFamily: "'Heebo', sans-serif",
+                        fontSize: '16px',
+                        padding: '8px 0',
+                        boxSizing: 'border-box',
+                        resize: 'vertical',
+                      }}
+                      {...register('message', { maxLength: 1200 })}
                     />
                   </div>
 

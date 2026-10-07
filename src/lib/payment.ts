@@ -196,7 +196,9 @@ export function loadApplePay(): Promise<void> {
  * עוברת דרך פונקציית שרת ולא ישירות לטבלה: הכתיבה הישירה הייתה
  * פתוחה לכל אחד, בלי מכסה ובלי גבולות אורך.
  */
-export async function submitLead(lead: { name?: string; email?: string; phone?: string }) {
+export async function submitLead(
+  lead: { name?: string; email?: string; phone?: string; message?: string },
+) {
   const res = await fetch(`${FUNCTIONS}/lead-submit`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

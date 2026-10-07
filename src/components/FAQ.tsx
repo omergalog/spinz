@@ -23,8 +23,12 @@ function FAQItem({ item, index }: { item: FaqItem; index: number }) {
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: index * 0.06 }}
       style={{ borderBottom: `1px solid ${BORDER}` }}
     >
+      {/* השאלה ניתנת למיקוד ולהפעלה במקלדת, אבל בלי aria-expanded
+          קורא מסך אינו יודע אם התשובה פתוחה או סגורה. */}
       <button
         onClick={() => setOpen(o => !o)}
+        aria-expanded={open}
+        aria-controls={`faq-answer-${index}`}
         style={{
           width: '100%',
           display: 'flex',
@@ -79,6 +83,8 @@ function FAQItem({ item, index }: { item: FaqItem; index: number }) {
         {open && (
           <motion.div
             key="answer"
+            id={`faq-answer-${index}`}
+            role="region"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}

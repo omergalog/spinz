@@ -129,6 +129,39 @@ export default function CartDrawer() {
     return () => { alive = false; };
   }, [isOpen, savedCoupon, total, units]);
 
+  /**
+   * המגירה היא חלון מודאלי.
+   *
+   * Escape לא סגר אותה, לא היה לה role, ומדידה בדפדפן הראתה 41
+   * אלמנטים מחוץ לה שעדיין נגישים ב-Tab — כלומר מי שמנווט במקלדת
+   * יצא ממנה בלי לדעת ואיבד את ההקשר.
+   */
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const panel = panelRef.current;
+    panel?.focus();
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { closeCart(); return; }
+      if (e.key !== 'Tab' || !panel) return;
+
+      const f = [...panel.querySelectorAll<HTMLElement>(
+        'a[href],button:not([disabled]),input:not([disabled]),select,textarea,[tabindex]:not([tabindex="-1"])',
+      )].filter(el => el.offsetParent !== null);
+      if (f.length === 0) { e.preventDefault(); return; }
+
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      else if (!panel.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+    };
+
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [isOpen, closeCart]);
+
   // הכפתורים הצפים יושבים ב-zIndex 9999 והמגירה ב-999, ולכן כפתור
   // הנגישות כיסה את שורת אישור תנאי המכירה המוקדמת שמתחת לכפתור
   // ההזמנה. כל עוד המגירה פתוחה הם מוסתרים — הם ממילא אינם שמישים
@@ -247,6 +280,11 @@ export default function CartDrawer() {
 
           {/* Drawer */}
           <motion.div
+            ref={panelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={t.cart.title}
+            tabIndex={-1}
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}

@@ -45,7 +45,9 @@ function MerchCard({ product, rows }: { product: MerchProduct; rows: Record<stri
   };
 
   const everySizeGone = product.sizes.every(s => soldOut(s.id));
-  const canAdd = !!sizeId && !soldOut(sizeId);
+  // מוצר שטרם נפתח למכירה אינו "אזל". אזל אומר שהיה ונגמר.
+  const soon = product.comingSoon === true;
+  const canAdd = !soon && !!sizeId && !soldOut(sizeId);
 
   const add = () => {
     if (!canAdd) return;
@@ -147,14 +149,14 @@ function MerchCard({ product, rows }: { product: MerchProduct; rows: Record<stri
                   key={s.id}
                   onClick={() => !gone && setSizeId(s.id)}
                   disabled={gone}
-                  title={gone ? t.merch.soldOut : undefined}
+                  title={soon ? t.merch.soon : gone ? t.merch.soldOut : undefined}
                   style={{
-                    minWidth: '44px', padding: '8px 10px', borderRadius: '6px', fontSize: '13px',
+                    minWidth: '44px', minHeight: '44px', padding: '8px 10px', borderRadius: '6px', fontSize: '13px',
                     fontWeight: 700, cursor: gone ? 'not-allowed' : 'pointer',
                     border: `1px solid ${on ? GOLD : BORDER}`,
                     backgroundColor: on ? GOLD : '#fff',
                     color: gone ? '#B6B2AC' : DARK,
-                    textDecoration: gone ? 'line-through' : 'none',
+                    textDecoration: gone && !soon ? 'line-through' : 'none',
                   }}
                 >
                   {s.label}
@@ -177,7 +179,7 @@ function MerchCard({ product, rows }: { product: MerchProduct; rows: Record<stri
         >
           {added
             ? <><Check size={16} /> {t.merch.added}</>
-            : <><ShoppingBag size={16} /> {everySizeGone ? t.merch.soldOut : sizeId ? t.merch.add : t.merch.pickSize}</>}
+            : <><ShoppingBag size={16} /> {soon ? t.merch.soon : everySizeGone ? t.merch.soldOut : sizeId ? t.merch.add : t.merch.pickSize}</>}
         </button>
       </div>
     </article>

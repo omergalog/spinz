@@ -51,7 +51,7 @@ export default function Regulations() {
             fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', color: '#9A9690',
             margin: '0 0 30px',
           }}>
-            גרסה 1.0 · עודכן במאי 2026
+            גרסה 1.1 · עודכן באוקטובר 2026
           </p>
 
           <Section title="1. מבוא והגדרות">

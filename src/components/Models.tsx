@@ -518,13 +518,16 @@ export default function Models() {
                     onClick={() => setSelectedColor(i)}
                     title={t.product.colors[c.id as keyof typeof t.product.colors]}
                     style={{
-                      width: '38px',
-                      height: '38px',
+                      // 38 פיקסל הוא מתחת למינימום המומלץ למגע. העיגול
+                      // הצבעוני נשאר 38, והשטח הלחיץ גדל סביבו.
+                      width: '44px',
+                      height: '44px',
+                      padding: '3px',
                       borderRadius: '50%',
                       backgroundColor: c.hex,
                       border: selectedColor === i ? `3px solid ${c.hex}` : '3px solid transparent',
                       cursor: 'pointer',
-                      padding: 0,
+                      backgroundClip: 'content-box',
                       transition: 'all 0.2s',
                       boxShadow: selectedColor === i ? `0 0 0 2px #FFFFFF, 0 0 0 4px ${c.hex}` : 'none',
                     }}
@@ -570,7 +573,7 @@ export default function Models() {
                 <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: DARK, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                   {t.product.size}
                 </span>
-                <Link to="/sizes" style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 600, color: GOLD, textDecoration: 'underline', textUnderlineOffset: '3px' }}>
+                <Link to="/sizes" style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 600, color: GOLD, textDecoration: 'underline', textUnderlineOffset: '3px', display: 'inline-flex', alignItems: 'center', minHeight: '44px', paddingInlineStart: '8px' }}>
                   {t.product.sizeHelp}
                 </Link>
               </div>

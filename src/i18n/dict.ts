@@ -165,6 +165,7 @@ export const dict = {
       added:    'נוסף לעגלה',
       pickSize: 'בחרו מידה',
       soldOut:  'אזל',
+      soon:     'בקרוב',
       loading:  'טוען מלאי…',
     },
     pages: {
@@ -212,7 +213,7 @@ export const dict = {
         eyebrow: 'Terms',
         title: 'תקנון ותנאי שימוש',
         sub: 'ההסכם המשפטי המלא בין SPINZ ללקוחותיה: הרכבה ובטיחות, אחריות, ביטול עסקה וסמכות שיפוט.',
-        version: 'גרסה 1.0 · עודכן במאי 2026',
+        version: 'גרסה 1.1 · עודכן באוקטובר 2026',
         s1t: '1. מבוא והגדרות',
         s1: (co: string) => `תקנון זה מהווה הסכם משפטי מחייב בין ${co} (להלן: "החברה") לבין לקוחותיה (להלן: "הלקוח"). האתר משמש כחנות מקוונת למכירת אופניים ואביזרים. גלישה באתר או רכישת מוצר מהווים הסכמה לכל תנאי התקנון.`,
         s2t: '2. הרכבת המוצר וחבות',
@@ -509,6 +510,7 @@ export const dict = {
       added:    'Added',
       pickSize: 'Pick a size',
       soldOut:  'Sold out',
+      soon:     'Coming soon',
       loading:  'Loading stock…',
     },
     pages: {
@@ -553,7 +555,7 @@ export const dict = {
         eyebrow: 'Terms',
         title: 'Terms & Conditions',
         sub: 'The full legal agreement between SPINZ and its customers: assembly and safety, warranty, cancellation and jurisdiction.',
-        version: 'Version 1.0 · Updated May 2026',
+        version: 'Version 1.1 · Updated October 2026',
         s1t: '1. Introduction and definitions',
         s1: (co: string) => `These terms constitute a binding legal agreement between ${co} (the "Company") and its customers (the "Customer"). The site operates as an online store selling bicycles and accessories. Browsing the site or purchasing a product constitutes acceptance of all of these terms.`,
         s2t: '2. Product assembly and liability',

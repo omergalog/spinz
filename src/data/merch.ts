@@ -21,6 +21,8 @@ export interface MerchSize {
 
 export interface MerchProduct {
   id: string;
+  /** מוצר שטרם נפתח למכירה. "אזל" אומר שהיה ונגמר, וזה לא המצב. */
+  comingSoon?: boolean;
   slugBase: string;
   name: string;
   nameEn: string;
@@ -41,6 +43,7 @@ export const merchSizes: MerchSize[] = [
 export const merchProducts: MerchProduct[] = [
   {
     id: 'bauhaus',
+    comingSoon: true,
     slugBase: 'merch-bauhaus',
     name: 'חולצת באוהאוס',
     nameEn: 'Bauhaus Tee',
@@ -55,6 +58,7 @@ export const merchProducts: MerchProduct[] = [
   },
   {
     id: 'blueprint',
+    comingSoon: true,
     slugBase: 'merch-blueprint',
     name: 'חולצת שרטוט',
     nameEn: 'Blueprint Tee',

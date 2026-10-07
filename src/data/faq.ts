@@ -13,7 +13,7 @@ const he: FaqItem[] = [
   },
   {
     q: 'יש אפשרות לאיסוף עצמי?',
-    a: 'כן, ניתן לאסוף מתל אביב ללא עלות משלוח. תיאום מועד האיסוף מתבצע לאחר ההזמנה.',
+    a: 'כן, ניתן לאסוף מכפר ויתקין ללא עלות משלוח. בוחרים איסוף עצמי בטופס ההזמנה, ואנחנו מתאמים איתכם מועד.',
   },
   {
     q: 'אפשר לשלם בתשלומים?',
@@ -52,7 +52,7 @@ const en: FaqItem[] = [
   },
   {
     q: 'Can I pick the bike up myself?',
-    a: 'Yes. Pickup is available in Tel Aviv with no shipping charge. We’ll arrange a time with you after the order.',
+    a: 'Yes. Pickup is available in Kfar Vitkin with no shipping charge. Choose self-pickup in the order form and we’ll arrange a time with you.',
   },
   {
     q: 'Can I pay in installments?',

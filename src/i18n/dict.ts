@@ -118,7 +118,7 @@ export const dict = {
       { t: 'משלוח מהיר', s: 'עד 5 ימי עסקים לכל הארץ',
         tPresale: 'הזמנה מוקדמת', sPresale: (m: string) => `אספקה משוערת ${m}` },
       { t: 'עד 12 תשלומים', s: 'אשראי, ביט, Apple Pay' },
-      { t: 'איסוף עצמי חינם', s: 'מתל אביב, בתיאום מראש' },
+      { t: 'איסוף עצמי חינם', s: 'מכפר ויתקין, בתיאום מראש' },
     ],
     story: { body: 'Spinz התחילה ברחובות של תל אביב. האמנו שאופניים טובים בעיר לא צריכים לעלות הון או להסתבך בהילוכים וכבלים שנתקעים, אלא פשוט להיות יפים, אמינים וכיף לרכוב עליהם.', l1: 'שלושה חברים.', l2: 'עיר אחת.', l3: 'רק לרכוב.', cta: 'לסיפור המלא' },
     explore: {
@@ -467,7 +467,7 @@ export const dict = {
       { t: 'Fast shipping', s: 'within 5 business days, nationwide',
         tPresale: 'Pre-order', sPresale: (m: string) => `Estimated delivery ${m}` },
       { t: 'Up to 12 installments', s: 'Credit card, Bit, Apple Pay' },
-      { t: 'Free local pickup', s: 'From Tel Aviv, by appointment' },
+      { t: 'Free local pickup', s: 'From Kfar Vitkin, by appointment' },
     ],
     story: { body: 'Spinz began on the streets of Tel Aviv. We believed a good city bike shouldn’t cost a fortune or come tangled in gears and cables that seize up. It should simply be beautiful, dependable and fun to ride.', l1: 'Three friends.', l2: 'One city.', l3: 'Just ride.', cta: 'Read the full story' },
     explore: {

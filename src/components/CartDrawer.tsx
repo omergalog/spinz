@@ -149,6 +149,11 @@ export default function CartDrawer() {
     if (!form.name.trim()) errors.name = true;
     if (!form.phone.trim()) errors.phone = true;
     if (!form.address.trim()) errors.address = true;
+    // אישור ההזמנה והחשבונית מגיעים במייל בלבד. בלי כתובת הלקוח
+    // משלם ולא מקבל דבר, ואין לו אסמכתה לביטול.
+    if (!form.email.trim() || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email.trim())) {
+      errors.email = true;
+    }
     setFormErrors(errors);
     if (Object.keys(errors).length > 0) return;
 
@@ -385,12 +390,16 @@ export default function CartDrawer() {
                       { key: 'address', label: t.cart.addressLabel, placeholder: t.cart.addressPlaceholder, type: 'text', auto: 'street-address' },
                     ].map(({ key, label, placeholder, type, auto }) => (
                       <div key={key}>
-                        <label style={{ display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: formErrors[key] ? '#FF6B6B' : "#6A6862", letterSpacing: '0.1em', marginBottom: '6px', textTransform: 'uppercase' }}>
+                        {/* התווית הייתה נראית אך לא מקושרת לשדה, ולכן
+                            קורא מסך לא הקריא אותה ולחיצה עליה לא מיקדה. */}
+                        <label htmlFor={`cart-${key}`} style={{ display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: formErrors[key] ? '#FF6B6B' : "#6A6862", letterSpacing: '0.1em', marginBottom: '6px', textTransform: 'uppercase' }}>
                           {label}
                         </label>
                         <input
+                          id={`cart-${key}`}
                           type={type}
                           name={key}
+                          aria-invalid={formErrors[key] || undefined}
                           autoComplete={auto}
                           // Email/phone hold Latin characters – force LTR so the
                           // caret and separators don't jump inside an RTL form
@@ -408,7 +417,14 @@ export default function CartDrawer() {
                             boxSizing: 'border-box',
                           }}
                         />
-                        {formErrors[key] && <p style={{ color: '#FF6B6B', fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>{t.cart.required}</p>}
+                        {key === 'email' && !formErrors[key] && (
+                          <p style={{ color: '#9A9690', fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>
+                            {t.cart.emailWhy}
+                          </p>
+                        )}
+                        {formErrors[key] && <p role="alert" style={{ color: '#FF6B6B', fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>
+                          {key === 'email' && form.email.trim() ? t.cart.badEmail : t.cart.required}
+                        </p>}
                       </div>
                     ))}
 

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Plus, Minus, ArrowRight, ArrowLeft, CalendarClock } from 'lucide-react';
-import { useCart } from '../context/CartContext';
+import { MAX_PER_LINE, useCart } from '../context/CartContext';
 import { CouponRejectedError, OutOfStockError, TooManyCartsError, checkCoupon, loadApplePay, openCheckout, submitToIframe }
   from '../lib/payment';
 import { useT, useDir, useLang } from '../i18n/LanguageContext';
@@ -40,7 +40,23 @@ export default function CartDrawer() {
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   } as const;
 
-  const total = items.reduce((sum, i) => sum + i.model.price * i.quantity, 0);
+  /**
+   * סכום שורה, מפוצל בדיוק כמו בשרת.
+   *
+   * העגלה הכפילה את מחיר ההשקה בכל הכמות, בעוד השרת מתמחר במחיר
+   * ההשקה רק את מה שנכנס למכסה שנשארה. בהזמנה של ארבע יחידות
+   * כששתיים במכסה, המסך הראה 4,360 והחיוב היה 4,778.
+   */
+  const lineTotal = (i: typeof items[number]) => {
+    const full = i.fullPrice ?? i.model.price;
+    const atPresale = Math.min(i.quantity, Math.max(0, i.presaleLeft ?? i.quantity));
+    if (i.kind === 'merch' || !presale.active || atPresale >= i.quantity) {
+      return i.model.price * i.quantity;
+    }
+    return i.model.price * atPresale + full * (i.quantity - atPresale);
+  };
+
+  const total = items.reduce((sum, i) => sum + lineTotal(i), 0);
   // תקרת היחידות של הקופון נמדדת מול המספר הזה, ולא מול מספר השורות.
   const units = items.reduce((sum, i) => sum + i.quantity, 0);
 
@@ -322,9 +338,9 @@ export default function CartDrawer() {
                           </h3>
                           <span style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
                             <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 700, color: GOLD }}>
-                              {formatPrice(item.model.price * item.quantity)}
+                              {formatPrice(lineTotal(item))}
                             </span>
-                            {listUnit(item) > item.model.price && (
+                            {listUnit(item) * item.quantity > lineTotal(item) && (
                               <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#9A9690', textDecoration: 'line-through' }}>
                                 {formatPrice(listUnit(item) * item.quantity)}
                               </span>
@@ -335,6 +351,7 @@ export default function CartDrawer() {
                           <button
                             onClick={() => updateQuantity(item.model.id, item.quantity + 1)}
                             aria-label={t.cart.more}
+                            disabled={item.quantity >= MAX_PER_LINE}
                             style={{ width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.06)', border: 'none', borderRadius: '4px', color: TEXT, cursor: 'pointer' }}
                           >
                             <Plus size={14} />
@@ -586,7 +603,7 @@ export default function CartDrawer() {
                 {presaleOff > 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                     <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#3B6B33' }}>
-                      {items.every(i => i.model.price === presale.presalePrice)
+                      {items.every(i => i.model.price === presale.presalePrice && (i.presaleLeft ?? 0) >= i.quantity)
                         ? t.cart.presaleDiscount : t.cart.discount}
                     </span>
                     <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, color: '#3B6B33' }}>

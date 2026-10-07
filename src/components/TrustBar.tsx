@@ -1,4 +1,5 @@
-import { useT, useDir } from '../i18n/LanguageContext';
+import { useT, useDir, useLang } from '../i18n/LanguageContext';
+import { arrivalLabelIn, usePresale } from '../config/presale';
 import { motion } from 'framer-motion';
 import { ShieldCheck, Truck, CreditCard, MapPin } from 'lucide-react';
 
@@ -17,7 +18,19 @@ const icons = [
 export default function TrustBar() {
   const dir = useDir();
   const t = useT();
-  const items = icons.map((it, i) => ({ ...it, title: t.trust[i].t, sub: t.trust[i].s }));
+  const presale = usePresale();
+  const lang = useLang();
+
+  // "משלוח מהיר, עד 5 ימי עסקים" נכון להזמנה רגילה ממלאי. בזמן
+  // מכירה מוקדמת האופניים כלל אינם בארץ, והתיבה הבטיחה מועד שאינו
+  // קיים. במצב הזה מוצג מועד האספקה המשוער במקומו.
+  const items = icons.map((it, i) => ({
+    ...it,
+    title: i === 1 && presale.active ? t.trust[i].tPresale ?? t.trust[i].t : t.trust[i].t,
+    sub:   i === 1 && presale.active
+      ? (t.trust[i].sPresale ?? ((m: string) => m))(arrivalLabelIn(presale.arrivalLabel, lang))
+      : t.trust[i].s,
+  }));
   return (
     <section dir={dir} style={{ backgroundColor: '#EAE7E1', borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>
       <div className="mx-auto max-w-7xl px-6 lg:px-16 py-5 lg:py-10">

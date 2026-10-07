@@ -480,9 +480,14 @@ export default function Models() {
             </AnimatePresence>
           </div>
 
-          {/* BUY BOX – scrolls; on mobile it slides up BELOW the fixed image (lower z-index) so the bike stays visible.
-              scroll-snap stops a fast scroll here so users notice the colour/size options (mobile only via the html media query). */}
-          <div ref={buyBoxRef} className="order-3 lg:order-1 lg:w-[440px] flex flex-col justify-start p-5 pt-6 lg:p-14 relative z-[1] bg-white lg:border-l lg:border-[#E2DED8]">
+          {/* BUY BOX – scrolls.
+              במובייל הוא גלל מתחת לתמונה הדביקה, כדי שהאופניים יישארו
+              גלויים. נמדד ב-360: בורר המידה נעלם מאחורי התמונה בגלילה
+              715 עד 849, וכפתור ההוספה לעגלה בגלילה 1131 ומעלה - כלומר
+              פקדי הקנייה עצמם הוסתרו.
+              עכשיו התוכן גולל מעל התמונה: האופניים נשארים גלויים עד
+              שהפרטים מגיעים, ואז הפרטים מנצחים. */}
+          <div ref={buyBoxRef} className="order-3 lg:order-1 lg:w-[440px] flex flex-col justify-start p-5 pt-6 lg:p-14 relative z-[3] bg-white lg:border-l lg:border-[#E2DED8]">
 
             {/* Header — desktop only (on mobile the header is above the image) */}
             <div className="hidden lg:block">

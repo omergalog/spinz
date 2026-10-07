@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShoppingCart, Plus, Minus, ArrowRight, ArrowLeft } from 'lucide-react';
+import { X, ShoppingCart, Plus, Minus, ArrowRight, ArrowLeft, CalendarClock } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { CouponRejectedError, OutOfStockError, TooManyCartsError, checkCoupon, loadApplePay, openCheckout, submitToIframe }
   from '../lib/payment';
 import { useT, useDir, useLang } from '../i18n/LanguageContext';
-import { usePresale } from '../config/presale';
+import { arrivalLabelIn, usePresale } from '../config/presale';
 
 const DARK    = '#1C1C1C';   // text on gold buttons
 const GOLD    = '#C9A870';
@@ -112,6 +112,15 @@ export default function CartDrawer() {
     });
     return () => { alive = false; };
   }, [isOpen, savedCoupon, total, units]);
+
+  // הכפתורים הצפים יושבים ב-zIndex 9999 והמגירה ב-999, ולכן כפתור
+  // הנגישות כיסה את שורת אישור תנאי המכירה המוקדמת שמתחת לכפתור
+  // ההזמנה. כל עוד המגירה פתוחה הם מוסתרים — הם ממילא אינם שמישים
+  // מאחורי שכבת ההחשכה.
+  useEffect(() => {
+    document.documentElement.style.setProperty('--fab-vis', isOpen ? 'hidden' : 'visible');
+    return () => { document.documentElement.style.setProperty('--fab-vis', 'visible'); };
+  }, [isOpen]);
 
   // סגירת המגירה מאפסת את התהליך. בלי זה, פתיחה חוזרת הייתה מציגה
   // מסגרת תשלום ישנה ששייכת לסל שכבר פג.
@@ -240,7 +249,8 @@ export default function CartDrawer() {
             <div style={{ padding: '20px 24px', borderBottom: `1px solid ${BORDER}` }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
                 <img src="/assets/logo.png" alt="SPINZ" style={{ height: '36px', width: 'auto', objectFit: 'contain', opacity: 0.9 }} />
-                <button onClick={closeCart} style={{ color: TEXT, background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
+                <button onClick={closeCart} aria-label={t.cart.close}
+                  style={{ color: TEXT, background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
                   <X size={22} />
                 </button>
               </div>
@@ -319,6 +329,7 @@ export default function CartDrawer() {
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
                           <button
                             onClick={() => updateQuantity(item.model.id, item.quantity + 1)}
+                            aria-label={t.cart.more}
                             style={{ width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.06)', border: 'none', borderRadius: '4px', color: TEXT, cursor: 'pointer' }}
                           >
                             <Plus size={14} />
@@ -328,6 +339,7 @@ export default function CartDrawer() {
                           </span>
                           <button
                             onClick={() => updateQuantity(item.model.id, item.quantity - 1)}
+                            aria-label={t.cart.less}
                             style={{ width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.06)', border: 'none', borderRadius: '4px', color: item.quantity === 1 ? '#CC4400' : TEXT, cursor: 'pointer' }}
                           >
                             <Minus size={14} />
@@ -589,6 +601,22 @@ export default function CartDrawer() {
                     </span>
                   </span>
                 </div>
+                {/* העגלה וטופס הפרטים לא אמרו שמדובר בהזמנה מוקדמת,
+                    בעוד עמוד המוצר כן. הלקוח הגיע לתשלום בלי לדעת
+                    שהמוצר טרם במלאי. */}
+                {presale.active && items.some(i => i.kind !== 'merch') && (
+                  <div style={{
+                    display: 'flex', gap: '8px', alignItems: 'flex-start',
+                    backgroundColor: '#F5F2EC', border: `1px solid ${BORDER}`,
+                    borderRadius: '8px', padding: '11px 13px', marginBottom: '16px',
+                  }}>
+                    <CalendarClock size={15} style={{ color: GOLD, flexShrink: 0, marginTop: '2px' }} />
+                    <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px',
+                                   color: '#4A4845', lineHeight: 1.6 }}>
+                      {t.cart.presaleNote(arrivalLabelIn(presale.arrivalLabel, lang))}
+                    </span>
+                  </div>
+                )}
                 <button
                   onClick={() => setStep('details')}
                   disabled={ordering}

@@ -34,6 +34,40 @@ export default function PageShell({ children, eyebrow, title, subtitle, heroImag
     return () => { document.title = 'SPINZ'; };
   }, [title]);
 
+  /**
+   * תיאור ה-meta.
+   *
+   * כל 16 העמודים נשאו את אותו תיאור, ולכן נראו זהים בתוצאות החיפוש
+   * ובשיתוף. לכל עמוד כבר יש כותרת משנה ייחודית, והיא בדיוק מה
+   * שהתיאור אמור לומר.
+   */
+  useEffect(() => {
+    const text = (subtitle ?? '').trim();
+    if (!text) return;
+
+    const set = (sel: string, attr: string, name: string) => {
+      let el = document.head.querySelector<HTMLMetaElement>(sel);
+      const had = !!el;
+      if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute(attr, name);
+        document.head.appendChild(el);
+      }
+      const before = el.getAttribute('content');
+      el.setAttribute('content', text);
+      return () => {
+        if (!had) el!.remove();
+        else if (before != null) el!.setAttribute('content', before);
+      };
+    };
+
+    const undo = [
+      set('meta[name="description"]', 'name', 'description'),
+      set('meta[property="og:description"]', 'property', 'og:description'),
+    ];
+    return () => undo.forEach(f => f());
+  }, [subtitle]);
+
   return (
     <CartProvider>
       <CartDrawer />

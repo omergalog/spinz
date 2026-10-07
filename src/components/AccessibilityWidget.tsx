@@ -165,7 +165,8 @@ export default function AccessibilityWidget() {
   };
 
   return (
-    <div ref={panelRef} style={{ position: 'fixed', bottom: 'calc(24px + var(--fab-lift, 0px))', right: '24px', zIndex: 9999, transition: 'bottom 0.35s ease' }}>
+    <div ref={panelRef} style={{ position: 'fixed', bottom: 'calc(24px + var(--fab-lift, 0px))', right: '24px', zIndex: 9999, transition: 'bottom 0.35s ease',
+                                visibility: 'var(--fab-vis, visible)' as React.CSSProperties['visibility'] }}>
 
       {/* Panel */}
       {open && (

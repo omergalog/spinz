@@ -275,6 +275,7 @@ export default function Navbar() {
             {/* Cart */}
             <button
               onClick={openCart}
+              aria-label={t.nav.cart}
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 position: 'relative', backgroundColor: 'transparent',

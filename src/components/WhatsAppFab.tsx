@@ -24,6 +24,7 @@ export default function WhatsAppFab() {
         // Mirrors the accessibility toggle exactly: same 48px circle, same
         // 24px inset from the bottom, so both FABs sit on one line.
         position: 'fixed', bottom: 'calc(24px + var(--fab-lift, 0px))', left: '24px', zIndex: 9999,
+        visibility: 'var(--fab-vis, visible)' as React.CSSProperties['visibility'],
         transition: 'bottom 0.35s ease',
         width: '48px', height: '48px',
         borderRadius: '50%',

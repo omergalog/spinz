@@ -15,6 +15,9 @@ const BEIGE  = '#FFFFFF';
 const BORDER = '#E2DED8';
 const MUTED  = '#6A6862';
 const GOLD   = '#C9A870';
+// זהב על לבן נותן יחס ניגודיות 2.25, מתחת לדרישה של 4.5 לטקסט רגיל.
+// הגוון הזה נותן 4.96, ומשמש לטקסט בלבד — העיטורים נשארים בזהב.
+const GOLD_TEXT = '#8A6B32';
 
 const BASE_PRICE = 1299;
 
@@ -336,15 +339,15 @@ export default function Models() {
           ₪{(couponPrice ?? shownPrice).toLocaleString('he-IL')}
         </span>
         {couponPrice != null ? (
-          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', color: '#999', textDecoration: 'line-through', textDecorationColor: '#3B6B33' }}>
+          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', color: '#6A6862', textDecoration: 'line-through', textDecorationColor: '#3B6B33' }}>
             ₪{shownPrice.toLocaleString('he-IL')}
           </span>
         ) : presale ? (
-          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', color: '#999', textDecoration: 'line-through', textDecorationColor: '#C17A56' }}>
+          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', color: '#6A6862', textDecoration: 'line-through', textDecorationColor: '#C17A56' }}>
             ₪{presaleCfg.regularPrice.toLocaleString('he-IL')}
           </span>
         ) : salePrice ? (
-          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', color: '#999', textDecoration: 'line-through', textDecorationColor: '#FF4444' }}>
+          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', color: '#6A6862', textDecoration: 'line-through', textDecorationColor: '#FF4444' }}>
             ₪{price.toLocaleString('he-IL')}
           </span>
         ) : null}
@@ -395,7 +398,7 @@ export default function Models() {
             style={{
               padding: '0 18px', backgroundColor: '#F5F2EC',
               border: 'none', borderInlineStart: '1px solid #E0DCD4',
-              color: couponInput.trim() ? DARK : '#B5B1AA',
+              color: couponInput.trim() ? DARK : '#6A6862',
               fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 700,
               cursor: couponInput.trim() ? 'pointer' : 'default',
               whiteSpace: 'nowrap', transition: 'color 0.2s',
@@ -573,7 +576,7 @@ export default function Models() {
                 <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: DARK, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                   {t.product.size}
                 </span>
-                <Link to="/sizes" style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 600, color: GOLD, textDecoration: 'underline', textUnderlineOffset: '3px', display: 'inline-flex', alignItems: 'center', minHeight: '44px', paddingInlineStart: '8px' }}>
+                <Link to="/sizes" style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 600, color: GOLD_TEXT, textDecoration: 'underline', textUnderlineOffset: '3px', display: 'inline-flex', alignItems: 'center', minHeight: '44px', paddingInlineStart: '8px' }}>
                   {t.product.sizeHelp}
                 </Link>
               </div>

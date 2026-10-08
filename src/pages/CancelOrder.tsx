@@ -4,7 +4,7 @@ import LegalNotice from '../components/LegalNotice';
 import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
 import { supabase } from '../lib/supabase';
 import { submitLead } from '../lib/payment';
-import { COMPANY } from '../config/company';
+import { COMPANY, COMPANY_LINE, COMPANY_LINE_EN } from '../config/company';
 
 const DARK = '#1C1C1C';
 const MUTED = '#4A4845';
@@ -198,6 +198,15 @@ export default function CancelOrder() {
               </form>
             </>
           )}
+
+          {/* זהות העוסק. טופס ביטול הוא מסמך מול חברה מזוהה, וכאן
+              הופיעו רק מייל וטלפון — בלי שם, ח.פ. וכתובת. */}
+          <p style={{
+            marginTop: '28px', paddingTop: '16px', borderTop: `1px solid ${BORDER}`,
+            fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: '#6A6862', lineHeight: 1.75,
+          }}>
+            {lang === 'en' ? COMPANY_LINE_EN : COMPANY_LINE}
+          </p>
 
         </div>
       </div>

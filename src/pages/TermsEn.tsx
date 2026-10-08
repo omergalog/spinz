@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import PageShell from '../components/PageShell';
 import LegalNotice from '../components/LegalNotice';
-import { COMPANY as CO } from '../config/company';
+import { COMPANY as CO, COMPANY_LINE_EN } from '../config/company';
 
 const DARK = '#1C1C1C';
 const MUTED = '#4A4845';
@@ -19,7 +19,7 @@ export const privacySectionsEn = [
   { title: 'Your rights', text: 'You have the right to access your information, correct it, delete it, restrict its processing or object to it, by contacting us at the address below.' },
   { title: 'Contact', text: `To exercise your rights or for any privacy question: ${CO.email}` },
   { title: 'Cookies', text: 'We use cookies in accordance with your consent. You can manage your preferences at any time through your browser settings.' },
-  { title: 'Company details', text: `The site is operated by ${COMPANY_LINE}. Email: ${CO.email} · Phone: ${CO.phone}.` },
+  { title: 'Company details', text: `The site is operated by ${COMPANY_LINE_EN}. Email: ${CO.email} · Phone: ${CO.phone}.` },
 ];
 
 export const termsSectionsEn = [

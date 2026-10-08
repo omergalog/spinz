@@ -583,7 +583,7 @@ export default function CartDrawer() {
 
                     {/* Coupon */}
                     <div>
-                      <label style={{ display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#6A6862', letterSpacing: '0.1em', marginBottom: '6px', textTransform: 'uppercase' }}>
+                      <label htmlFor="cart-coupon" style={{ display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#6A6862', letterSpacing: '0.1em', marginBottom: '6px', textTransform: 'uppercase' }}>
                         {t.cart.couponHint}
                       </label>
                       <div style={{
@@ -593,6 +593,7 @@ export default function CartDrawer() {
                         borderRadius: '8px', overflow: 'hidden',
                       }}>
                         <input
+                          id="cart-coupon"
                           type="text"
                           dir="ltr"
                           placeholder={t.cart.couponPlaceholder}

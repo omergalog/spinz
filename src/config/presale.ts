@@ -68,6 +68,27 @@ export function arrivalLabelIn(label: string, lang: string): string {
   return en ? [en, ...rest].join(' ') : label;
 }
 
+/**
+ * סיבת ההנחה בשפת העמוד.
+ *
+ * הערך נשמר בעברית בלבד ב-site_settings, בדיוק כמו חודש ההגעה,
+ * והעמודים האנגליים הציגו תווית בעברית ליד מחיר באנגלית. תווית
+ * שאינה מוכרת מוחזרת כמות שהיא — עדיף טקסט בעברית מאשר תווית ריקה.
+ */
+const DISCOUNT_LABELS_EN: Record<string, string> = {
+  'מחיר השקה': 'Launch price',
+  'מחיר השקה ל-100 הראשונים': 'Launch price for the first 100',
+  'מבצע השקה': 'Launch offer',
+  'הנחת השקה': 'Launch discount',
+  'מכירה מוקדמת': 'Pre-sale',
+  'מחיר מוקדם': 'Early price',
+};
+
+export function discountLabelIn(label: string, lang: string): string {
+  if (lang !== 'en') return label;
+  return DISCOUNT_LABELS_EN[label.trim()] ?? label;
+}
+
 /** טקסטים קבועים (לא נשלטים מהאדמין) */
 export const PRESALE_COPY = {
   barCta: 'להבטחת מקום',

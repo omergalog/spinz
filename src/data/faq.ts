@@ -64,7 +64,7 @@ const en: FaqItem[] = [
   },
   {
     q: 'Are all colors available in both sizes?',
-    a: 'Yes, every color in the collection is available in both frame sizes, with no restrictions.',
+    a: 'Yes, every color in the collection is available in both frame sizes, subject to availability in stock.',
   },
   {
     q: 'What does the warranty cover?',

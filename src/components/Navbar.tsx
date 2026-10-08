@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, ChevronDown, Search } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
@@ -63,6 +63,29 @@ export default function Navbar() {
   /** Keeps every nav link inside the current language. */
   const L = (to: string) => localizePath(to, lang);
 
+  /**
+   * גובה ההדר הקבוע, כמשתנה CSS.
+   *
+   * ההדר גבוה 104 כשפס ההשקה פעיל ו-64 בלעדיו, ואלמנטים דביקים
+   * נצמדו למספר קבוע (80) — כלומר נכנסו 24 פיקסל מתחת להדר ונחתכו.
+   * המדידה היא המקור, ולא מספר שצריך לזכור לעדכן בשני מקומות.
+   */
+  const headerRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    // offsetHeight ולא getBoundingClientRect: הוא כולל גבול, מעוגל,
+    // ואינו מושפע מהגדלה/הקטנה של התצוגה.
+    const apply = () => document.documentElement.style.setProperty(
+      '--header-h', `${el.offsetHeight}px`);
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(el, { box: 'border-box' });
+    // טעינת הגופן משנה את גובה הפס אחרי המדידה הראשונה.
+    document.fonts?.ready.then(apply).catch(() => {});
+    return () => ro.disconnect();
+  }, []);
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -118,6 +141,7 @@ export default function Navbar() {
   return (
     <>
       <header
+        ref={headerRef}
         className="fixed top-0 left-0 right-0 z-50"
         style={{
           backgroundColor: LIGHT,
@@ -133,6 +157,9 @@ export default function Navbar() {
         dir={dir}
       >
         <AnnouncementBar />
+        {/* התפריט המלא נפתח ב-lg ולא ב-md: ב-768 הוא עדיין נכנס,
+            אבל בעברית כפתורי החיפוש והעגלה נדחפו אל מחוץ למסך ולא
+            היו נגישים כלל. עד 1024 מוצג תפריט ההמבורגר. */}
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-9">
           {/* Logo — in an equal-weight side so the nav stays truly centered */}
           <div className="flex shrink-0 justify-start lg:flex-1 lg:basis-0">
@@ -142,7 +169,7 @@ export default function Navbar() {
           </div>
 
           {/* Desktop nav with dropdowns */}
-          <nav className="hidden md:flex items-center gap-7">
+          <nav className="hidden lg:flex items-center gap-7">
             {/* Home link */}
             <Link
               to={L("/")}
@@ -240,7 +267,7 @@ export default function Navbar() {
           <div className="flex items-center gap-2 md:gap-3 lg:flex-1 lg:basis-0 lg:justify-end">
             <button
               onClick={goContact}
-              className="hidden md:inline-block font-bold uppercase tracking-widest text-xs py-[6px] px-[10px]"
+              className="hidden lg:inline-block font-bold uppercase tracking-widest text-xs py-[6px] px-[10px]"
               style={{
                 backgroundColor: GOLD, color: DARK,
                 fontFamily: "'Heebo', sans-serif", borderRadius: '4px',
@@ -253,7 +280,7 @@ export default function Navbar() {
               {t.nav.cta}
             </button>
 
-            <div className="hidden md:block"><LangSwitch /></div>
+            <div className="hidden lg:block"><LangSwitch /></div>
 
             {/* Search – icon only, identical box to the cart button */}
             <button
@@ -302,7 +329,7 @@ export default function Navbar() {
 
             {/* Hamburger */}
             <button
-              className="md:hidden flex flex-col justify-center items-center gap-[5px]"
+              className="lg:hidden flex flex-col justify-center items-center gap-[5px]"
               onClick={() => setMenuOpen(v => !v)}
               aria-label={t.nav.menu}
               style={{ width: '44px', height: '44px', backgroundColor: 'transparent', border: `1px solid ${DARK}`, borderRadius: '4px', cursor: 'pointer', flexShrink: 0 }}
@@ -324,7 +351,7 @@ export default function Navbar() {
             animate={{ opacity: 1, clipPath: 'inset(0 0 0% 0)' }}
             exit={{ opacity: 0, clipPath: 'inset(0 0 100% 0)' }}
             transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
-            className="fixed inset-0 z-40 flex flex-col md:hidden overflow-y-auto"
+            className="fixed inset-0 z-40 flex flex-col lg:hidden overflow-y-auto"
             style={{ backgroundColor: DARK, paddingTop: presale.active ? '112px' : '72px' }}
             dir={dir}
           >

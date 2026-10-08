@@ -7,7 +7,7 @@ import { useCart } from '../context/CartContext';
 import { supabase } from '../lib/supabase';
 import { fetchApprovedReviews } from '../lib/reviews';
 import { useLang, useT, useDir, localizePath } from '../i18n/LanguageContext';
-import { arrivalLabelIn, usePresale } from '../config/presale';
+import { arrivalLabelIn, discountLabelIn, usePresale } from '../config/presale';
 import { checkCoupon } from '../lib/payment';
 
 const DARK   = '#1C1C1C';
@@ -289,7 +289,7 @@ export default function Models() {
         style={{ marginTop: '-18px', marginBottom: '28px' }}
       >
         <Link
-          to="/reviews"
+          to={L("/reviews")}
           style={{
             display: 'inline-flex', alignItems: 'center', gap: '8px',
             textDecoration: 'none', padding: '8px 0', cursor: 'pointer',
@@ -355,7 +355,7 @@ export default function Models() {
                 color: '#3B6B33', backgroundColor: '#F2F7F1', border: '1px solid #CFE0CB',
                 borderRadius: '999px', padding: '3px 10px',
               }}>
-                {presaleCfg.discountLabel}
+                {discountLabelIn(presaleCfg.discountLabel, lang)}
               </span>
             )}
           </>
@@ -376,7 +376,9 @@ export default function Models() {
           יושב מעליו ולא בתוכו — עברית בשדה LTR מוצגת עם הסימנים בצד
           הלא נכון. הכפתור צמוד לשדה כדי שייקראו כיחידה אחת. */}
       <div style={{ marginTop: '16px', maxWidth: '320px' }}>
-        <label style={{
+        {/* htmlFor/id: בלעדיהם התווית נראית קשורה לשדה אבל אינה
+            קשורה אליו, וקורא מסך מכריז על שדה בלי שם. */}
+        <label htmlFor="product-coupon" style={{
           display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '12px',
           color: MUTED, marginBottom: '7px',
         }}>
@@ -390,6 +392,7 @@ export default function Models() {
           transition: 'border-color 0.2s',
         }}>
           <input
+            id="product-coupon"
             type="text"
             dir="ltr"
             value={couponInput}
@@ -453,7 +456,7 @@ export default function Models() {
           </div>
 
           {/* Image – sticky; on mobile a compact fixed top band that always stays visible above the scrolling details */}
-          <div ref={imageColRef} className="relative order-2 lg:order-2 lg:flex-1 flex items-center justify-center bg-white px-5 py-1 lg:p-12 h-[33vh] lg:h-auto lg:min-h-0 sticky top-[80px] lg:top-[96px] lg:self-start shadow-[0_12px_20px_-10px_rgba(0,0,0,0.15)] lg:shadow-none" style={{ zIndex: 2 }}>
+          <div ref={imageColRef} className="relative order-2 lg:order-2 lg:flex-1 flex items-center justify-center bg-white px-5 py-1 lg:p-12 h-[33vh] lg:h-auto lg:min-h-0 sticky lg:self-start shadow-[0_12px_20px_-10px_rgba(0,0,0,0.15)] lg:shadow-none" style={{ zIndex: 2, top: 'var(--header-h, 104px)' }}>
             {/* 3D viewer for beige disabled for now – .glb loads too slowly; restore when optimized */}
             <AnimatePresence mode="wait">
               <motion.img
@@ -591,7 +594,7 @@ export default function Models() {
                 <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: DARK, letterSpacing: '0.1em', textTransform: 'uppercase' }}>
                   {t.product.size}
                 </span>
-                <Link to="/sizes" style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 600, color: GOLD_TEXT, textDecoration: 'underline', textUnderlineOffset: '3px', display: 'inline-flex', alignItems: 'center', minHeight: '44px', paddingInlineStart: '8px' }}>
+                <Link to={L("/sizes")} style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 600, color: GOLD_TEXT, textDecoration: 'underline', textUnderlineOffset: '3px', display: 'inline-flex', alignItems: 'center', minHeight: '44px', paddingInlineStart: '8px' }}>
                   {t.product.sizeHelp}
                 </Link>
               </div>

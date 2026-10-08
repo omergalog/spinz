@@ -60,7 +60,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
               'If the front wheel came separately, fit it into the fork, close the quick release, and make sure the wheel sits centered between the fork legs.',
               'Thread in the pedals. This is the step you least want to get wrong. The right pedal (R) threads clockwise; the left pedal (L) threads counter-clockwise. Start each one by hand so you don’t cross-thread it.',
               'Set the saddle height with the quick release and close it firmly. Check that the saddle is straight and centered front to back.',
-              'Check tire pressure (60–80 PSI is recommended, and it’s printed on the tire wall), then squeeze both brake levers to confirm they bite properly.',
+              'Check tire pressure and inflate to the range printed on the tire wall, then squeeze both brake levers to confirm they bite properly.',
             ],
           },
           { type: 'image', src: '/assets/photo-beige-bike.jpg', alt: 'A fully assembled SPINZ Urban, ready to ride' },
@@ -175,7 +175,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
           {
             type: 'list',
             items: [
-              'Check tire pressure and inflate as needed (60–80 PSI). Correct pressure saves energy and prevents punctures.',
+              'Check tire pressure and inflate to the range printed on the tire wall. Correct pressure saves energy and prevents punctures.',
               'Glance at the chain, if it looks dry or sounds squeaky, it’s time to lube it.',
               'Confirm the brakes bite properly and the levers don’t pull all the way to the bar.',
             ],

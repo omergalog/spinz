@@ -10,6 +10,8 @@ export const COMPANY = {
   legalNameEn: 'SPINZ BIKES LTD',
   companyNumber: '517343661',
   address: 'התמר 137, בית חרות',
+  /** אותה כתובת בתעתיק, לעמודים האנגליים. הכתובת הרשומה נשארת העברית. */
+  addressEn: '137 HaTamar St., Beit Herut',
 
   /** כתובת יצירת קשר רשמית */
   email: 'info@spinzbikes.com',
@@ -23,4 +25,4 @@ export const COMPANY_LINE =
 
 /** אותה מחרוזת באנגלית — השם הרשום בעברית נשאר בסוגריים, כנדרש במסמך משפטי. */
 export const COMPANY_LINE_EN =
-  `${COMPANY.legalNameEn} (${COMPANY.legalNameHe}), company no. ${COMPANY.companyNumber}, ${COMPANY.address}`;
+  `${COMPANY.legalNameEn} (${COMPANY.legalNameHe}), company no. ${COMPANY.companyNumber}, ${COMPANY.addressEn}`;

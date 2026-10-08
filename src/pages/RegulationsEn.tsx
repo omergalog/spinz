@@ -97,7 +97,7 @@ export default function RegulationsEn() {
           <Section title={r.s6t}>
             <p style={{ margin: 0 }}>
               {companyName} · Company no. {CO.companyNumber}<br />
-              {CO.address}<br />
+              {CO.addressEn}<br />
               {r.emailLabel}: <a href={`mailto:${CO.email}`} style={{ color: GOLD }}>{CO.email}</a> ·
               {' '}{r.phoneLabel}: <a href={`tel:${CO.phone}`} style={{ color: GOLD }}>{CO.phone}</a>
             </p>

@@ -149,7 +149,7 @@ export default function PresaleTermsEn() {
           <Section title="8. Business details">
             <p style={{ margin: 0 }}>
               {CO.legalNameEn} ({CO.legalNameHe}) · Company no. {CO.companyNumber}<br />
-              {CO.address}<br />
+              {CO.addressEn}<br />
               Email: <a href={`mailto:${CO.email}`} style={{ color: GOLD }}>{CO.email}</a> ·
               {' '}Phone: <a href={`tel:${CO.phone}`} style={{ color: GOLD }}>{CO.phone}</a>
             </p>

@@ -455,8 +455,10 @@ export default function Models() {
             {renderHeader(headingRefMobile, headingInViewMobile)}
           </div>
 
-          {/* Image – sticky; on mobile a compact fixed top band that always stays visible above the scrolling details */}
-          <div ref={imageColRef} className="relative order-2 lg:order-2 lg:flex-1 flex items-center justify-center bg-white px-5 py-1 lg:p-12 h-[33vh] lg:h-auto lg:min-h-0 sticky lg:self-start shadow-[0_12px_20px_-10px_rgba(0,0,0,0.15)] lg:shadow-none" style={{ zIndex: 2, top: 'var(--header-h, 104px)' }}>
+          {/* Image – sticky; on mobile a compact fixed top band that always stays visible above the scrolling details.
+              z-[4] במובייל: כרטיס הקנייה (z-3) כיסה את הפס ומהתמונה
+              נותרו קצה אוכף והגה. מ-lg השניים זה לצד זה ואין חפיפה. */}
+          <div ref={imageColRef} className="relative order-2 lg:order-2 lg:flex-1 flex items-center justify-center bg-white px-5 py-1 lg:p-12 h-[33vh] lg:h-auto lg:min-h-0 sticky lg:self-start shadow-[0_12px_20px_-10px_rgba(0,0,0,0.15)] lg:shadow-none z-[4] lg:z-[2]" style={{ top: 'var(--header-h, 104px)' }}>
             {/* 3D viewer for beige disabled for now – .glb loads too slowly; restore when optimized */}
             <AnimatePresence mode="wait">
               <motion.img

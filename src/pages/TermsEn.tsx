@@ -8,10 +8,8 @@ const MUTED = '#4A4845';
 const GOLD = '#C9A870';
 const BORDER = '#E0DCD4';
 
-const COMPANY_LINE = `${CO.legalNameEn} (${CO.legalNameHe}), company no. ${CO.companyNumber}`;
-
 export const privacySectionsEn = [
-  { title: null, text: `${COMPANY_LINE} is committed to protecting your privacy and to full transparency in how we use the information you share with us.` },
+  { title: null, text: `${COMPANY_LINE_EN} is committed to protecting your privacy and to full transparency in how we use the information you share with us.` },
   { title: 'Information we collect', text: 'When you use the site, fill in a form or make a purchase, we may collect personal details such as your name, email address, phone number and shipping address, along with technical information about your visit (browser, device and pages viewed).' },
   { title: 'How we use the information', text: 'Information is collected in order to process orders, provide customer service, improve the user experience, and, with your consent, send updates and offers. We do not sell your information to third parties.' },
   { title: 'Sharing with third parties', text: 'We share information with third parties only as needed to operate the service (such as the shipping company and the payment processor), and only to the extent required for that purpose.' },
@@ -23,7 +21,7 @@ export const privacySectionsEn = [
 ];
 
 export const termsSectionsEn = [
-  { title: 'General', text: `The site is operated by ${COMPANY_LINE}, which sells bicycles. Use of the site and its services constitutes acceptance of these terms.` },
+  { title: 'General', text: `The site is operated by ${COMPANY_LINE_EN}, which sells bicycles. Use of the site and its services constitutes acceptance of these terms.` },
   { title: 'The products', text: `${CO.legalNameEn} sells urban single-speed bicycles. The bikes are designed in Tel Aviv and built from standard components available worldwide.` },
   { title: 'Technical specification', text: 'Frame: aluminum, urban geometry | Fork: steel | Wheels: 700c double-wall | Tires: Kenda 32 mm, puncture-resistant | Drivetrain: single speed, 46T chainring | Brakes: front and rear caliper.' },
   { title: 'What’s in the box', text: 'The bike arrives about 85% assembled. Final assembly involves attaching the handlebars, fitting the pedals and setting the saddle height. Assembly instructions and an instructional video are included.' },

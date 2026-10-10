@@ -75,3 +75,28 @@ export const merchProducts: MerchProduct[] = [
 
 export const merchSlug = (slugBase: string, colorId: string, sizeId: string) =>
   `${slugBase}-${colorId}-${sizeId}`;
+
+/**
+ * שם התצוגה של פריט מרצ'נדייז, בשפה הנוכחית.
+ *
+ * העגלה שמרה את השם כפי שהיה ברגע ההוספה, ולכן מעבר לאנגלית הותיר
+ * שם בעברית בתוך עגלה אנגלית. מכאן הוא נבנה מחדש בכל רינדור לפי
+ * ה-slug, שהוא ממילא מה שמזהה את השורה גם בשרת.
+ * מחזיר null ל-slug שאינו בקטלוג, והקורא נופל לשם השמור.
+ */
+export function merchLabel(slug: string, lang: string): string | null {
+  for (const p of merchProducts) {
+    if (!slug.startsWith(`${p.slugBase}-`)) continue;
+    const rest = slug.slice(p.slugBase.length + 1);
+    for (const c of p.colors) {
+      if (!rest.startsWith(`${c.id}-`)) continue;
+      const sizeId = rest.slice(c.id.length + 1);
+      const s = p.sizes.find(x => x.id === sizeId);
+      if (!s) continue;
+      const name  = lang === 'en' ? p.nameEn : p.name;
+      const color = lang === 'en' ? c.labelEn : c.label;
+      return `${name} — ${color} ${s.label}`;
+    }
+  }
+  return null;
+}

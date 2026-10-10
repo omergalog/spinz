@@ -7,6 +7,7 @@ import { CouponRejectedError, OutOfStockError, TooManyCartsError, checkCoupon, l
   from '../lib/payment';
 import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
 import { arrivalLabelIn, usePresale } from '../config/presale';
+import { merchLabel } from '../data/merch';
 
 const DARK    = '#1C1C1C';   // text on gold buttons
 const GOLD    = '#C9A870';
@@ -78,6 +79,19 @@ export default function CartDrawer() {
     const atPresale = Math.min(i.quantity, Math.max(0, i.presaleLeft ?? i.quantity));
     if (i.kind === 'merch' || !presale.active || atPresale >= i.quantity || atPresale <= 0) return null;
     return { atPresale, atFull: i.quantity - atPresale, presaleUnit: i.model.price, fullUnit: full };
+  };
+
+  /**
+   * שם הפריט בשפת העמוד.
+   *
+   * השם נשמר בעגלה כפי שהיה ברגע ההוספה, ולכן הוספה בעברית ומעבר
+   * לאנגלית הותירו "SPINZ 54 – שחור מט" בתוך עגלה אנגלית. הוא נבנה
+   * מחדש מהמזהים שהעגלה כבר שומרת — צבע, מידה ו-slug.
+   */
+  const displayName = (i: typeof items[number]) => {
+    if (i.kind === 'merch') return (i.slug && merchLabel(i.slug, lang)) || i.model.name;
+    const color = t.product.colors[i.colorId as keyof typeof t.product.colors];
+    return color ? `SPINZ ${i.size} – ${color}` : i.model.name;
   };
 
   const total = items.reduce((sum, i) => sum + lineTotal(i), 0);
@@ -412,13 +426,13 @@ export default function CartDrawer() {
                       >
                         <img
                           src={item.model.image.replace('.png', '.jpg')}
-                          alt={item.model.name}
+                          alt={displayName(item)}
                           onError={e => { (e.currentTarget as HTMLImageElement).src = item.model.image; }}
                           style={{ width: '80px', height: '60px', objectFit: 'contain', flexShrink: 0 }}
                         />
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '16px', color: TEXT, margin: '0 0 4px' }}>
-                            {item.model.name}
+                            {displayName(item)}
                           </h3>
                           <span style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
                             <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 700, color: GOLD_TEXT }}>

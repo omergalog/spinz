@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Plus, Minus, ArrowRight, ArrowLeft, CalendarClock } from 'lucide-react';
-import { MAX_PER_LINE, useCart } from '../context/CartContext';
-import { CouponRejectedError, OutOfStockError, TooManyCartsError, checkCoupon, loadApplePay, openCheckout, submitToIframe }
+import { COMPANY } from '../config/company';
+import { MAX_BIKES_PER_ORDER, MAX_PER_LINE, useCart } from '../context/CartContext';
+import { CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, TooManyCartsError, checkCoupon, loadApplePay, openCheckout, submitToIframe }
   from '../lib/payment';
 import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
 import { arrivalLabelIn, usePresale } from '../config/presale';
@@ -120,6 +121,11 @@ export default function CartDrawer() {
   const presaleOff = Math.max(0, listTotal - total);
   const [ordering, setOrdering] = useState(false);
   const [orderError, setOrderError] = useState<string | null>(null);
+  // שגיאות שהפתרון שלהן הוא לדבר איתנו מקבלות קישור לוואטסאפ.
+  const [orderErrorContact, setOrderErrorContact] = useState(false);
+  const bikeUnits = items.reduce((n, i) => n + (i.kind === 'merch' ? 0 : i.quantity), 0);
+  const tooManyBikes = bikeUnits > MAX_BIKES_PER_ORDER;
+  const waLink = `https://wa.me/${COMPANY.phoneE164}`;
   const [step, setStep] = useState<'cart' | 'details' | 'payment'>('cart');
   const [payFrameReady, setPayFrameReady] = useState(false);
   const [coupon, setCoupon] = useState(savedCoupon);
@@ -278,6 +284,7 @@ export default function CartDrawer() {
   const handleCheckout = async () => {
     setOrdering(true);
     setOrderError(null);
+    setOrderErrorContact(false);
     try {
       // השרת מתמחר, שומר את הסל ומחזיר טופס מוכן. שום סכום לא נשלח
       // מכאן — אחרת אפשר היה לשנות אותו בכלי הפיתוח של הדפדפן.
@@ -311,6 +318,12 @@ export default function CartDrawer() {
         setOrderError(t.cart.errCouponRejected);
       } else if (e instanceof TooManyCartsError) {
         setOrderError(t.cart.errTooManyCarts);
+      } else if (e instanceof OrderTooLargeError) {
+        setOrderError(t.cart.errOrderTooLarge(MAX_BIKES_PER_ORDER));
+        setOrderErrorContact(true);
+      } else if (e instanceof HoldLimitError) {
+        setOrderError(t.cart.errHoldLimit(MAX_BIKES_PER_ORDER));
+        setOrderErrorContact(true);
       } else if (e instanceof OutOfStockError) {
         setOrderError(e.left > 0 ? t.cart.errQty(e.left) : t.cart.errOutOfStock);
       } else {
@@ -669,6 +682,15 @@ export default function CartDrawer() {
                         color: '#A3462B', lineHeight: 1.5,
                       }}>
                         {orderError}
+                        {orderErrorContact && (
+                          <>
+                            {' '}
+                            <a href={waLink} target="_blank" rel="noopener noreferrer"
+                               style={{ color: '#A3462B', fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+                              {t.cart.talkToUs}
+                            </a>
+                          </>
+                        )}
                       </div>
                     )}
                     <button onClick={validateAndCheckout} disabled={ordering}
@@ -801,9 +823,25 @@ export default function CartDrawer() {
                     </span>
                   </div>
                 )}
+                {/* מוצג כבר כאן, ולא רק אחרי "לתשלום": לקוח לא צריך
+                    למלא פרטים על הזמנה שהשרת ידחה. */}
+                {tooManyBikes && (
+                  <div role="alert" style={{
+                    backgroundColor: '#FBEEE9', border: '1px solid #E0B9A6',
+                    borderRadius: '8px', padding: '11px 14px', marginBottom: '12px',
+                    fontFamily: "'Heebo', sans-serif", fontSize: '13px',
+                    color: '#A3462B', lineHeight: 1.5,
+                  }}>
+                    {t.cart.errOrderTooLarge(MAX_BIKES_PER_ORDER)}{' '}
+                    <a href={waLink} target="_blank" rel="noopener noreferrer"
+                       style={{ color: '#A3462B', fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+                      {t.cart.talkToUs}
+                    </a>
+                  </div>
+                )}
                 <button
                   onClick={() => setStep('details')}
-                  disabled={ordering}
+                  disabled={ordering || tooManyBikes}
                   style={{
                     width: '100%',
                     backgroundColor: GOLD, color: DARK,
@@ -812,8 +850,8 @@ export default function CartDrawer() {
                     fontFamily: "'Heebo', sans-serif",
                     fontSize: '14px', fontWeight: 700,
                     letterSpacing: '0.15em', textTransform: 'uppercase',
-                    cursor: ordering ? 'not-allowed' : 'pointer',
-                    opacity: ordering ? 0.7 : 1,
+                    cursor: ordering || tooManyBikes ? 'not-allowed' : 'pointer',
+                    opacity: ordering || tooManyBikes ? 0.5 : 1,
                     transition: 'background-color 0.25s',
                   }}
                   onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = '#B8933A'; }}

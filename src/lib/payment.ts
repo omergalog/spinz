@@ -63,6 +63,16 @@ export class TooManyCartsError extends Error {
   constructor() { super('TOO_MANY_OPEN_CARTS'); }
 }
 
+/** יותר זוגות אופניים ממה שאפשר להזמין באתר בהזמנה אחת. */
+export class OrderTooLargeError extends Error {
+  constructor() { super('ORDER_TOO_LARGE'); }
+}
+
+/** מהחיבור הזה כבר שמורים אופניים בסל פתוח אחר. */
+export class HoldLimitError extends Error {
+  constructor() { super('IP_HOLD_LIMIT'); }
+}
+
 export class OutOfStockError extends Error {
   constructor(public left: number) { super('OUT_OF_STOCK'); }
 }
@@ -97,6 +107,8 @@ export async function openCheckout(input: {
     if (body?.error === 'OUT_OF_STOCK') throw new OutOfStockError(Number(body.left ?? 0));
     if (body?.error === 'TOO_MANY_OPEN_CARTS') throw new TooManyCartsError();
     if (body?.error === 'COUPON_REJECTED') throw new CouponRejectedError();
+    if (body?.error === 'ORDER_TOO_LARGE') throw new OrderTooLargeError();
+    if (body?.error === 'IP_HOLD_LIMIT') throw new HoldLimitError();
     throw new Error(body?.error ?? 'SERVER');
   }
   return body as CheckoutSession;

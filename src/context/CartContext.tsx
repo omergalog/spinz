@@ -48,6 +48,13 @@ interface CartContextType {
 /** תקרת היחידות לשורה, כפי שהשרת אוכף אותה. */
 export const MAX_PER_LINE = 5;
 
+/**
+ * מספר זוגות האופניים שאפשר להזמין באתר בהזמנה אחת. אותו מספר נאכף
+ * בשרת (create_checkout_session_guarded), והעגלה מציגה אותו מראש כדי
+ * שלקוח לא ימלא פרטים על הזמנה שתידחה. מרצ'נדייז לא נספר.
+ */
+export const MAX_BIKES_PER_ORDER = 6;
+
 const CartContext = createContext<CartContextType | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {

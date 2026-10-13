@@ -9,6 +9,7 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { IFRAME_URL } from '../_shared/tranzila.ts';
 import { corsHeaders } from '../_shared/cors.ts';
+import { clientIp } from '../_shared/client.ts';
 
 const SITE = Deno.env.get('SITE_URL') ?? 'https://spinzbikes.com';
 const FUNCTIONS = `${Deno.env.get('SUPABASE_URL')}/functions/v1`;
@@ -123,7 +124,7 @@ Deno.serve(async (req) => {
   // כל סל פתוח משריין מלאי ל-25 דקות. מכסת שלושת הסלים נמדדת לפי
   // מספר טלפון, ומספר טלפון עולה כלום להחליף — כלומר אפשר היה לרוקן
   // את המלאי המוצג בלי לשלם שקל. מכסה לכתובת חוסמת את זה.
-  const ip = (req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim();
+  const ip = clientIp(req);
   if (ip) {
     const { data: allowed } = await db.rpc('take_rate_token', {
       p_bucket: 'checkout', p_client: ip, p_limit: 12,
@@ -131,7 +132,7 @@ Deno.serve(async (req) => {
     if (allowed === false) return json({ error: 'TOO_MANY_OPEN_CARTS' }, 429, req);
   }
 
-  const { data, error } = await db.rpc('create_checkout_session', {
+  const args = {
     p_items: clean,
     p_name: name,
     p_phone: phone,
@@ -139,7 +140,20 @@ Deno.serve(async (req) => {
     p_notes: address ?? null,
     // קוד בלבד. ההנחה מחושבת בשרת, כמו המחיר עצמו.
     p_coupon: coupon ?? null,
-  });
+  };
+
+  // 12 סלים לכתובת עדיין מאפשרים לשריין הרבה יותר מכל המלאי, כי סל
+  // אחד מחזיק עד 30 יחידות. הפונקציה העוטפת מגבילה את מספר האופניים
+  // שכתובת אחת מחזיקה משוריינים בו-זמנית, ובודקת את זה באותה טרנזקציה
+  // שיוצרת את הסל.
+  let { data, error } = await db.rpc('create_checkout_session_guarded', { p_ip: ip, ...args });
+
+  // הפונקציה העוטפת עוד לא הותקנה בבסיס הנתונים: ממשיכים בדרך הישנה,
+  // כדי שהעלאת הקוד לפני ה-SQL לא תשבית את התשלום.
+  if (error && (error.code === 'PGRST202' || error.code === '42883')) {
+    console.error('create_checkout_session_guarded missing — hold cap is OFF');
+    ({ data, error } = await db.rpc('create_checkout_session', args));
+  }
 
   if (error) {
     const msg = String(error.message ?? '');
@@ -154,6 +168,14 @@ Deno.serve(async (req) => {
     // מחיר מוזל על המסך, ושתיקה כאן פירושה חיוב בסכום אחר.
     if (msg.includes('COUPON_REJECTED')) {
       return json({ error: 'COUPON_REJECTED' }, 409, req);
+    }
+    // שתי התקרות על שריון מלאי. הלקוח צריך לדעת איזו מהן עצרה אותו:
+    // הזמנה גדולה מדי מפנה אותו אלינו, ושריון קיים מבקש ממנו להמתין.
+    if (msg.includes('ORDER_TOO_LARGE')) {
+      return json({ error: 'ORDER_TOO_LARGE', max: 6 }, 409, req);
+    }
+    if (msg.includes('IP_HOLD_LIMIT')) {
+      return json({ error: 'IP_HOLD_LIMIT', max: 6 }, 429, req);
     }
     if (msg.includes('TOO_MANY_OPEN_CARTS')) {
       return json({ error: 'TOO_MANY_OPEN_CARTS' }, 429, req);

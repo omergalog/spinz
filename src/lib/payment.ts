@@ -224,3 +224,19 @@ export async function submitReview(
   });
   if (!res.ok) throw new Error('review_failed');
 }
+
+
+/**
+ * הרשמה לניוזלטר.
+ *
+ * כמו הפניות וההמלצות: דרך פונקציית שרת ולא ישירות לטבלה.
+ */
+export async function submitNewsletter(email: string) {
+  const res = await fetch(`${FUNCTIONS}/newsletter-submit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+  if (!res.ok) throw new Error('newsletter_failed');
+}
+

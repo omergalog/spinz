@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
-import { submitLead } from '../lib/payment';
+import { submitNewsletter } from '../lib/payment';
 import { useLang, useT, useDir, localizePath } from '../i18n/LanguageContext';
 
 const BG = '#1C1C1C';
@@ -12,20 +11,22 @@ const WHATSAPP_NUMBER = '+972527565262';
 function NewsletterForm() {
   const t = useT();
   const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'done' | 'error' | 'failed'>('idle');
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const clean = email.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean)) { setStatus('error'); return; }
     setStatus('loading');
-    const { error } = await supabase.from('newsletter').insert({ email: clean });
-    if (error) {
-      // Table may not exist yet – keep the address in leads so nothing is lost
-      await submitLead({ name: t.footer.newsletterAria, email: clean });
+    try {
+      await submitNewsletter(clean);
+      setStatus('done');
+      setEmail('');
+    } catch {
+      // קודם הוצגה כאן הצלחה גם כשהכתיבה נכשלה. מי שנרשם ולא נקלט
+      // צריך לדעת, אחרת הוא מחכה למייל שלא יגיע.
+      setStatus('failed');
     }
-    setStatus('done');
-    setEmail('');
   };
 
   if (status === 'done') {
@@ -46,7 +47,7 @@ function NewsletterForm() {
         type="email"
         dir="ltr"
         value={email}
-        onChange={e => { setEmail(e.target.value); if (status === 'error') setStatus('idle'); }}
+        onChange={e => { setEmail(e.target.value); if (status === 'error' || status === 'failed') setStatus('idle'); }}
         placeholder="your@email.com"
         style={{
           flex: '1 1 200px',
@@ -83,9 +84,9 @@ function NewsletterForm() {
       >
         {status === 'loading' ? t.footer.sending : t.footer.subscribe}
       </button>
-      {status === 'error' && (
-        <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: '#C17A56', margin: 0, width: '100%' }}>
-          {t.footer.badEmail}
+      {(status === 'error' || status === 'failed') && (
+        <p role="alert" style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: '#C17A56', margin: 0, width: '100%' }}>
+          {status === 'failed' ? t.reviews.failed : t.footer.badEmail}
         </p>
       )}
     </form>

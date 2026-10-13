@@ -39,14 +39,24 @@ Deno.serve(async (req) => {
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
   );
 
-  const ip = clientIp(req);
-  if (ip) {
-    const { data: allowed } = await db.rpc('take_rate_token', {
-      p_bucket: 'lead', p_client: ip, p_limit: 6,
+  // שלוש מכסות: קצרה לכתובת, יומית לכתובת, ויומית לכל האתר. בלי
+  // השתיים האחרונות כתובת אחת יכלה להכניס 864 פניות ביום, ומי
+  // שמחליף כתובות לא היה מוגבל בכלל.
+  // מי שנחסם מקבל את אותה תשובה כמו מי שנקלט. אין סיבה ללמד בוט
+  // מתי הוא הגיע לתקרה.
+  const ip = clientIp(req) || 'unknown';
+  const take = async (bucket: string, client: string, limit: number, window: string) => {
+    const { data, error } = await db.rpc('take_rate_token', {
+      p_bucket: bucket, p_client: client, p_limit: limit, p_window: window,
     });
-    // מי שנחסם מקבל את אותה תשובה כמו מי שנקלט. אין סיבה ללמד בוט
-    // מתי הוא הגיע לתקרה.
-    if (allowed === false) return json({ ok: true });
+    if (error) { console.error('rate', bucket, error.message); return true; }
+    return data !== false;
+  };
+  if (!(await take('lead', ip, 6, '10 minutes'))) return json({ ok: true });
+  if (!(await take('lead-day', ip, 20, '1 day')))  return json({ ok: true });
+  if (!(await take('lead-all', 'all', 600, '1 day'))) {
+    console.error('lead-submit: daily site-wide ceiling reached');
+    return json({ ok: true });
   }
 
   const { error } = await db.from('leads').insert({

@@ -206,3 +206,21 @@ export async function submitLead(
   });
   if (!res.ok) throw new Error('lead_failed');
 }
+
+
+/**
+ * שליחת המלצה מהאתר.
+ *
+ * כמו הפניות: דרך פונקציית שרת ולא ישירות לטבלה. ההמלצה נכנסת לתור
+ * האישור באדמין, ומוצגת באתר רק אחרי שאושרה.
+ */
+export async function submitReview(
+  review: { name: string; city?: string; quote: string; stars: number },
+) {
+  const res = await fetch(`${FUNCTIONS}/review-submit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(review),
+  });
+  if (!res.ok) throw new Error('review_failed');
+}

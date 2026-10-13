@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Star, X, Plus } from 'lucide-react';
 import PageShell from '../components/PageShell';
-import { supabase } from '../lib/supabase';
+import { submitReview } from '../lib/payment';
 import { fetchApprovedReviews } from '../lib/reviews';
 
 const GOLD = '#C9A870';
@@ -56,12 +56,13 @@ function ReviewModal({ onClose }: { onClose: () => void }) {
     if (!form.name.trim() || !form.quote.trim()) return;
     setStatus('sending');
     const review = { name: form.name.trim(), city: form.city.trim(), quote: form.quote.trim(), stars: form.stars };
-    const { error } = await supabase.from('reviews').insert([review]);
-    if (error) { setStatus('error'); }
-    else {
+    try {
+      await submitReview(review);
       // Not added to the visible list: it only appears once it is approved.
       setStatus('done');
       setTimeout(onClose, 2200);
+    } catch {
+      setStatus('error');
     }
   };
 
@@ -102,16 +103,16 @@ function ReviewModal({ onClose }: { onClose: () => void }) {
               </div>
               <div>
                 <label style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: MUTED, display: 'block', marginBottom: '6px' }}>{t.reviews.yourRec}</label>
-                <textarea required rows={3} value={form.quote} onChange={e => setForm(f => ({ ...f, quote: e.target.value }))} placeholder={t.reviews.reviewPh} style={{ ...inputStyle, resize: 'none' }} />
+                <textarea required rows={3} value={form.quote} maxLength={1200} onChange={e => setForm(f => ({ ...f, quote: e.target.value }))} placeholder={t.reviews.reviewPh} style={{ ...inputStyle, resize: 'none' }} />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px' }}>
                 <div>
                   <label style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: MUTED, display: 'block', marginBottom: '6px' }}>{t.reviews.nameReq}</label>
-                  <input required type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder={t.reviews.namePh} style={inputStyle} />
+                  <input required type="text" value={form.name} maxLength={80} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder={t.reviews.namePh} style={inputStyle} />
                 </div>
                 <div>
                   <label style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: MUTED, display: 'block', marginBottom: '6px' }}>{t.reviews.city}</label>
-                  <input type="text" value={form.city} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder={t.reviews.cityPh} style={inputStyle} />
+                  <input type="text" value={form.city} maxLength={60} onChange={e => setForm(f => ({ ...f, city: e.target.value }))} placeholder={t.reviews.cityPh} style={inputStyle} />
                 </div>
               </div>
               {status === 'error' && <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#c0392b', margin: 0 }}>{t.reviews.failed}</p>}

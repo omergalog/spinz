@@ -1,7 +1,7 @@
 import { useT, useDir } from '../i18n/LanguageContext';
 import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
-import { supabase } from '../lib/supabase';
+import { submitReview } from '../lib/payment';
 
 const DARK   = '#1C1C1C';
 const GOLD   = '#C9A870';
@@ -48,17 +48,17 @@ export default function Reviews() {
     e.preventDefault();
     if (!form.name.trim() || !form.quote.trim()) return;
     setStatus('sending');
-    const { error } = await supabase.from('reviews').insert([{
-      name: form.name.trim(),
-      city: form.city.trim(),
-      quote: form.quote.trim(),
-      stars: form.stars,
-    }]);
-    if (error) {
-      setStatus('error');
-    } else {
+    try {
+      await submitReview({
+        name: form.name.trim(),
+        city: form.city.trim(),
+        quote: form.quote.trim(),
+        stars: form.stars,
+      });
       setStatus('done');
       setForm({ name: '', city: '', quote: '', stars: 5 });
+    } catch {
+      setStatus('error');
     }
   };
 
@@ -186,7 +186,7 @@ export default function Reviews() {
                 <textarea
                   required
                   rows={3}
-                  value={form.quote}
+                  value={form.quote} maxLength={1200}
                   onChange={e => setForm(f => ({ ...f, quote: e.target.value }))}
                   placeholder={t.reviews.reviewPh}
                   style={{ ...inputStyle, resize: 'none' }}
@@ -202,7 +202,7 @@ export default function Reviews() {
                   <input
                     required
                     type="text"
-                    value={form.name}
+                    value={form.name} maxLength={80}
                     onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                     placeholder={t.reviews.namePh}
                     style={inputStyle}
@@ -214,7 +214,7 @@ export default function Reviews() {
                   </label>
                   <input
                     type="text"
-                    value={form.city}
+                    value={form.city} maxLength={60}
                     onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
                     placeholder={t.reviews.cityPh}
                     style={inputStyle}

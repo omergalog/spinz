@@ -8,6 +8,7 @@
  */
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { corsHeaders } from '../_shared/cors.ts';
+import { clientIp } from '../_shared/client.ts';
 
 const MAX = { name: 120, email: 160, phone: 40, message: 1200 };
 const clip = (v: unknown, n: number) => String(v ?? '').trim().slice(0, n);
@@ -38,7 +39,7 @@ Deno.serve(async (req) => {
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
   );
 
-  const ip = (req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim();
+  const ip = clientIp(req);
   if (ip) {
     const { data: allowed } = await db.rpc('take_rate_token', {
       p_bucket: 'lead', p_client: ip, p_limit: 6,

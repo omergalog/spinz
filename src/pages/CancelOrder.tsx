@@ -2,8 +2,7 @@ import { useState } from 'react';
 import PageShell from '../components/PageShell';
 import LegalNotice from '../components/LegalNotice';
 import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
-import { supabase } from '../lib/supabase';
-import { submitLead } from '../lib/payment';
+import { submitCancellation } from '../lib/payment';
 import { COMPANY, COMPANY_LINE, COMPANY_LINE_EN } from '../config/company';
 
 const DARK = '#1C1C1C';
@@ -41,33 +40,31 @@ export default function CancelOrder() {
     e.preventDefault();
     const errs: Record<string, boolean> = {};
     if (!form.name.trim()) errs.name = true;
-    if (!form.phone.trim()) errs.phone = true;
+    // אותו סף כמו בשרת, כדי שטלפון קצר ייעצר כאן ולא יחזור כשגיאה.
+    if (form.phone.replace(/\D/g, '').length < 7) errs.phone = true;
     setErrors(errs);
     if (Object.keys(errs).length) return;
 
     setStatus('sending');
 
-    // הפונקציה מקשרת את הבקשה לתשלום עצמו לפי מספר האסמכתה מהמייל,
+    // השרת מקשר את הבקשה לתשלום עצמו לפי מספר האסמכתה מהמייל,
     // ובגיבוי לפי הטלפון. בלי הקישור הזה, זיכוי הלקוח מחייב חיפוש
     // ידני בממשק טרנזילה לפי שם וסכום.
-    const { error } = await supabase.rpc('request_cancellation', {
-      p_name: form.name.trim(),
-      p_phone: form.phone.trim(),
-      p_email: form.email.trim() || null,
-      p_reference: form.orderRef.trim() || null,
-      p_reason: form.reason,
-      p_details: form.details.trim() || null,
-    });
-
-    if (error) {
-      // Never lose a cancellation request – fall back to the leads table
-      await submitLead({
-        name: `[ביטול עסקה] ${form.name.trim()}`,
-        email: form.email.trim() || undefined,
+    try {
+      await submitCancellation({
+        name: form.name.trim(),
         phone: form.phone.trim(),
+        email: form.email.trim() || undefined,
+        reference: form.orderRef.trim() || undefined,
+        reason: form.reason,
+        details: form.details.trim() || undefined,
       });
+      setStatus('sent');
+    } catch {
+      // קודם הוצג כאן "נקלט" גם כשהשמירה נכשלה. בהודעת ביטול זה
+      // הדבר האחד שאסור: הלקוח חייב לדעת שעליו לפנות בדרך אחרת.
+      setStatus('error');
     }
-    setStatus('sent');
   };
 
   const field = (
@@ -176,6 +173,22 @@ export default function CancelOrder() {
                     }}
                   />
                 </label>
+
+                {status === 'error' && (
+                  <div role="alert" style={{
+                    backgroundColor: '#FDF1EF', border: '1px solid #E5B4AE', borderRadius: '10px',
+                    padding: '14px 16px', fontFamily: "'Heebo', sans-serif", fontSize: '14px',
+                    color: '#8C1D18', lineHeight: 1.75,
+                  }}>
+                    <strong>{c.failedTitle}</strong><br />
+                    {c.failedBody}{' '}
+                    <a href={`tel:${COMPANY.phone}`} style={{ color: '#8C1D18', fontWeight: 700 }}>{COMPANY.phone}</a>
+                    {' · '}
+                    <a href={`mailto:${COMPANY.email}`} style={{ color: '#8C1D18', fontWeight: 700 }}>{COMPANY.email}</a>
+                    {' · '}
+                    <a href={`https://wa.me/${COMPANY.phoneE164}`} target="_blank" rel="noopener noreferrer" style={{ color: '#8C1D18', fontWeight: 700 }}>WhatsApp</a>
+                  </div>
+                )}
 
                 <button
                   type="submit"

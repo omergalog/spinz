@@ -240,3 +240,22 @@ export async function submitNewsletter(email: string) {
   if (!res.ok) throw new Error('newsletter_failed');
 }
 
+
+/**
+ * שליחת הודעת ביטול עסקה.
+ *
+ * זורק אם ההודעה לא נרשמה — כולל חסימת מכסה. הטופס חייב לדעת, כי
+ * אסור להציג ללקוח "נקלט" על הודעת ביטול שלא נקלטה.
+ */
+export async function submitCancellation(c: {
+  name: string; phone: string; email?: string;
+  reference?: string; reason?: string; details?: string;
+}) {
+  const res = await fetch(`${FUNCTIONS}/cancel-submit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(c),
+  });
+  if (!res.ok) throw new Error('cancel_failed');
+}
+

@@ -120,7 +120,7 @@ const pagesHe: SearchDoc[] = [
     keywords: ['ביטול', 'החזר', 'להחזיר', 'cancel', 'refund'],
   },
   {
-    id: 'page-terms', type: 'page', title: 'מדיניות פרטיות ותנאי שימוש', to: '/terms',
+    id: 'page-terms', type: 'page', title: 'מדיניות פרטיות', to: '/terms',
     summary: 'איזה מידע נאסף, איך הוא נשמר ומה הזכויות שלך.',
     body: 'מדיניות פרטיות תנאי שימוש מידע אישי עוגיות cookies אבטחה זכויות',
     keywords: ['פרטיות', 'עוגיות', 'privacy', 'cookies'],
@@ -151,7 +151,7 @@ const pagesEn: SearchDoc[] = [
   { id: 'page-regulations', type: 'page', title: 'Terms & Conditions', to: '/regulations', summary: 'The full legal agreement: warranty, cancellation and jurisdiction.', body: 'terms conditions limited warranty cancellation refund jurisdiction assembly liability finish colour', keywords: ['terms', 'warranty', 'cancel', 'refund', 'legal'] },
   { id: 'page-presale-terms', type: 'page', title: 'Pre-Sale Terms', to: '/presale-terms', summary: 'Pre-sale terms: launch price, delivery dates and cancellation.', body: 'pre-sale presale launch price first 100 delivery pre-order', keywords: ['presale', 'pre-order', 'launch price'] },
   { id: 'page-cancel', type: 'page', title: 'Cancel an Order', to: '/cancel-order', summary: 'Cancellation form and a full refund, with no cancellation fee.', body: 'cancel order cancellation refund return product fee form', keywords: ['cancel', 'refund', 'return'] },
-  { id: 'page-terms', type: 'page', title: 'Privacy Policy & Terms of Use', to: '/terms', summary: 'What data we collect, how it is stored and what your rights are.', body: 'privacy policy terms of use personal data cookies security rights', keywords: ['privacy', 'cookies', 'data'] },
+  { id: 'page-terms', type: 'page', title: 'Privacy Policy', to: '/terms', summary: 'What data we collect, how it is stored and what your rights are.', body: 'privacy policy terms of use personal data cookies security rights', keywords: ['privacy', 'cookies', 'data'] },
   { id: 'page-accessibility', type: 'page', title: 'Accessibility Statement', to: '/accessibility', summary: 'The accessibility level of the site and how to report an issue.', body: 'accessibility statement accessible WCAG standard contrast screen reader', keywords: ['accessibility', 'wcag'] },
 ];
 

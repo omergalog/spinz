@@ -44,7 +44,11 @@ Sitemap: ${SITE}/sitemap.xml
 `;
 
 const index = await readFile('dist/index.html', 'utf8');
-const notFound = index.replace('</head>', '    <meta name="robots" content="noindex" />\n  </head>');
+// בלי og:url: ב-index.html הוא מצביע על דף הבית, וכתובת שלא קיימת
+// לא צריכה להתחזות אליו.
+const notFound = index
+  .replace(/\s*<meta property="og:url"[^>]*>/, '')
+  .replace('</head>', '    <meta name="robots" content="noindex" />\n  </head>');
 if (notFound === index) { console.error('build-seo: לא נמצא </head> ב-index.html'); process.exit(1); }
 
 await writeFile('dist/sitemap.xml', sitemap);

@@ -552,12 +552,12 @@ export default function CartDrawer() {
                           </button>
                         ))}
                       </div>
-                      {delivery === 'pickup' && (
-                        <p style={{ margin: '8px 0 0', fontFamily: "'Heebo', sans-serif", fontSize: '12px',
-                                    color: '#6A6862', lineHeight: 1.6 }}>
-                          {t.cart.pickupNote}
-                        </p>
-                      )}
+                      {/* שני האפשרויות מקבלות הסבר, כך שגם "משלוח עד הבית" לא
+                          מבטיח יותר ממה שכתוב בשאר האתר (לרוב אזורי הארץ). */}
+                      <p style={{ margin: '8px 0 0', fontFamily: "'Heebo', sans-serif", fontSize: '12px',
+                                  color: '#6A6862', lineHeight: 1.6 }}>
+                        {delivery === 'pickup' ? t.cart.pickupNote : t.cart.shipNote}
+                      </p>
                     </div>
 
                     {[
@@ -708,7 +708,7 @@ export default function CartDrawer() {
                         {t.cart.agreePresale}
                       </a>{' '}
                       {t.cart.agreeAnd}{' '}
-                      <a href={localizePath('/terms', lang)} target="_blank" rel="noopener noreferrer" style={{ color: GOLD_TEXT, textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+                      <a href={localizePath('/regulations', lang)} target="_blank" rel="noopener noreferrer" style={{ color: GOLD_TEXT, textDecoration: 'underline', textUnderlineOffset: '2px' }}>
                         {t.cart.agreeTerms}
                       </a>.
                     </p>

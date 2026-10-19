@@ -5,7 +5,7 @@ export type FaqItem = { q: string; a: string };
 const he: FaqItem[] = [
   {
     q: 'כמה זמן לוקח המשלוח?',
-    a: 'בהזמנה רגילה ממלאי אנחנו שולחים עד 5 ימי עסקים מרגע ההזמנה. בהזמנה מוקדמת האופניים טרם הגיעו, והמשלוח יוצא אחרי שהם נקלטים במחסן — מועד האספקה המשוער מופיע בעמוד המוצר ובעגלה. בכל מקרה תקבלו SMS עם מספר מעקב ברגע שהחבילה יוצאת מאיתנו.',
+    a: 'בהזמנה מוקדמת האופניים עוד לא הגיעו ארצה. מועד האספקה המשוער מופיע בעמוד המוצר ובעגלה. כשהם מגיעים, אנחנו מרכיבים ובודקים אותם בסדנה ויוצרים איתכם קשר לתיאום המשלוח או האיסוף. המשלוח עד הבית לרוב אזורי הארץ, וכלול במחיר.',
   },
   {
     q: 'האופניים מגיעים מורכבים?',
@@ -44,7 +44,7 @@ const he: FaqItem[] = [
 const en: FaqItem[] = [
   {
     q: 'How long does delivery take?',
-    a: 'For a regular order from stock we ship within 5 business days. For a pre-order the bikes have not arrived yet, and shipping starts once they reach our warehouse — the estimated delivery date is shown on the product page and in the cart. Either way you’ll get an SMS with a tracking number the moment the package leaves us.',
+    a: 'For a pre-order the bikes have not reached Israel yet. The estimated delivery date is shown on the product page and in the cart. When they arrive we assemble and check them in our workshop, then contact you to arrange delivery or pickup. Home delivery covers most of Israel and is included in the price.',
   },
   {
     q: 'Does the bike arrive assembled?',

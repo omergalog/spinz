@@ -56,16 +56,8 @@ export default function Accessibility() {
       <div style={{ backgroundColor: '#F5F2EC', padding: 'clamp(32px, 6vw, 72px) clamp(20px, 6vw, 64px)' }} dir={dir}>
         <div style={{ maxWidth: '760px', margin: '0 auto' }}>
 
-          <div style={{ marginBottom: '30px' }}>
-            <span style={{
-              display: 'inline-block', padding: '7px 16px', borderRadius: '20px',
-              border: `1px solid ${GOLD}55`, backgroundColor: `${GOLD}18`,
-              fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', fontWeight: 700,
-              color: '#8A6D2F', letterSpacing: '0.04em',
-            }}>
-              {a.badge}
-            </span>
-          </div>
+          {/* היה כאן תג "תקן ישראלי 5568 · WCAG 2.1 AA". בלי בדיקה של מורשה
+              נגישות הוא נקרא כהצהרת עמידה, והוסר (19.10.2026). */}
 
           {sections.map((s, i) => (
             <Section key={i} title={s.title}>{s.text}</Section>

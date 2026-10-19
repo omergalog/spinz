@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import PrivacyModal from './PrivacyModal';
 import { useLocation } from 'react-router-dom';
 import { useT, useDir, stripLangPrefix } from '../i18n/LanguageContext';
+import { PIXEL_ENABLED } from '../lib/pixel';
 import { COOKIE_SETTINGS_EVENT, LOADER_DONE_EVENT, getConsent, setConsent } from '../lib/consent';
 
 const DARK = '#1C1C1C';
@@ -122,7 +123,7 @@ export default function CookieBanner() {
               margin: 0,
             }}
           >
-            {t.cookies.body1}<span style={{ color: GOLD, fontWeight: 600 }}>{t.cookies.body2}</span>{t.cookies.body3}
+            {t.cookies.body1}<span style={{ color: GOLD, fontWeight: 600 }}>{t.cookies.body2}</span>{t.cookies.body3(PIXEL_ENABLED)}
           </p>
 
           {/* Buttons */}

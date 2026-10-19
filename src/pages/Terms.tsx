@@ -1,96 +1,14 @@
-import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import PageShell from '../components/PageShell';
-import TermsEn from './TermsEn';
-import { useLang } from '../i18n/LanguageContext';
-import { COMPANY, COMPANY_LINE } from '../config/company';
+import LegalNotice from '../components/LegalNotice';
+import { useLang, localizePath } from '../i18n/LanguageContext';
+import { getPrivacySections, PRIVACY_UPDATED } from '../data/privacy';
 
 const DARK = '#1C1C1C';
 const MUTED = '#4A4845';
 const GOLD = '#C9A870';
+const LINK = '#7E6129';
 const BORDER = '#E0DCD4';
-
-const privacySections = [
-  {
-    title: null,
-    text: `${COMPANY_LINE} מחויבת להגן על פרטיותך ולשמור על שקיפות מלאה בשימוש במידע האישי שלך.`,
-  },
-  {
-    title: 'מידע שאנו אוספים',
-    text: 'כאשר אתה משתמש באתר, ממלא טופס או מבצע רכישה, אנו עשויים לאסוף מידע אישי כגון שם, מספר טלפון, כתובת דוא״ל וכתובת למשלוח.',
-  },
-  {
-    title: 'מטרות השימוש במידע',
-    text: 'המידע נאסף לצורך עיבוד הזמנות, מתן שירות לקוחות, שיפור חוויית המשתמש ושליחת עדכונים רלוונטיים, הכל בהתאם להסכמתך.',
-  },
-  {
-    title: 'שיתוף עם צדדים שלישיים',
-    text: 'אנו מעבירים מידע לצדדים שלישיים רק לצורך תפעול השירות (כגון חברת שליחויות), כאשר הם מחויבים לשמור על אבטחת המידע.',
-  },
-  {
-    title: 'שמירת מידע',
-    text: 'המידע נשמר למשך הזמן הנדרש לצורך המטרה שלשמה נאסף, או כפי שמחייב החוק.',
-  },
-  {
-    title: 'זכויותיך',
-    text: 'הזכות לעיין במידע, לתקנו, למחוק אותו, להגביל את עיבודו או להתנגד לו, בכל עת ובפנייה אלינו.',
-  },
-  {
-    title: 'יצירת קשר',
-    text: `למימוש זכויותיך או לשאלות בנוגע לפרטיות: ${COMPANY.email}`,
-  },
-  {
-    title: 'Cookies',
-    text: 'עוגיות למדידה (Google Analytics) ולפרסום (Meta) נטענות רק אחרי אישור בבאנר העוגיות. בלי אישור הן לא נטענות. אפשר לשנות את הבחירה בכל עת בקישור "הגדרות עוגיות" בתחתית כל עמוד.',
-  },
-  {
-    title: 'פרטי החברה',
-    text: `האתר מופעל על ידי ${COMPANY_LINE}. דוא״ל: ${COMPANY.email} · טלפון: ${COMPANY.phone}. החברה מחויבת לעמוד בדרישות חוק הגנת הפרטיות, תיקון 13.`,
-  },
-];
-
-const termsSections = [
-  {
-    title: 'כללי',
-    text: `האתר מופעל על ידי ${COMPANY_LINE}, העוסקת במכירת אופניים. השימוש באתר ובשירותיו מהווה הסכמה לתנאים אלו.`,
-  },
-  {
-    title: 'המוצרים',
-    text: `${COMPANY.legalNameHe} מוכרת אופניים סינגל ספיד אורבניים. האופניים מעוצבים בתל אביב ומיוצרים בחו״ל. המחירים המוצגים באתר כוללים מע״מ.`,
-  },
-  {
-    title: 'מפרט טכני',
-    text: 'שלדה: אלומיניום, גיאומטריה עירונית | מזלג: פלדה | גלגלים: 700c דופן כפולה, עומק 30 מ״מ | צמיגים: Kenda 700×32c עמידים לפנצ\'ר, רצועה פנימית 5 מ״מ | מנגנון: סינגל ספיד 46T/16T | בלמים: Dual-Pivot קדמי ואחורי | משקל: כ-9.5 ק״ג | מידות שלדה: 54 (גובה 160–175 ס״מ), 57 (גובה 175–190 ס״מ)',
-  },
-  {
-    title: 'מה מגיע בקופסה',
-    text: 'האופניים מגיעים כ-85% מורכבים. הרכבה סופית כוללת: חיבור ההגה, הרכבת הפדלים והתאמת גובה המושב. מצורפים כלי הרכבה וסרטון הדרכה.',
-  },
-  {
-    title: 'משלוח',
-    text: 'בהזמנה רגילה ממלאי המשלוח מתבצע עד 5 ימי עסקים מרגע אישור ההזמנה לכל רחבי הארץ. בהזמנה מוקדמת המשלוח יוצא לאחר קליטת הסחורה במחסן, במועד האספקה המשוער שהוצג בעת ההזמנה. ניתן לאסוף את האופניים ממחסן החברה בכפר ויתקין בתיאום מראש, ללא עלות משלוח.',
-  },
-  {
-    title: 'אחריות',
-    text: 'על שלדת האלומיניום ניתנת אחריות ל־5 שנים מיום המסירה. האחריות אינה חלה על חלקים מתכלים (צמיגים, פנימיות, שרשרת, רפידות בלמים, גריפים), על בלאי סביר, ועל נזק שנגרם משימוש לא נכון, תאונה, שינויים שבוצעו במוצר, או הרכבה שלא בוצעה בהתאם להוראות ההרכבה המצורפות.',
-  },
-  {
-    title: 'ביטול עסקה והחזרות',
-    text: 'בהתאם לחוק הגנת הצרכן, ניתן לבטל עסקה תוך 14 יום ממועד קבלת המוצר. פירוט מלא של מדיניות הביטול, ההחזרים ודמי הביטול (שאנחנו לא גובים) מופיע בתקנון ותנאי השימוש ובתנאי המכירה המוקדמת.',
-  },
-  {
-    title: 'אחריות מוגבלת',
-    text: `בכפוף להוראות כל דין, ${COMPANY.legalNameHe} לא תישא באחריות לנזקים עקיפים, אובדן הכנסה או נזק תוצאתי הנובעים מהשימוש במוצרים או באתר. אין באמור כדי לגרוע מאחריות החברה לפי חוק האחריות למוצרים פגומים, התש״ם־1980.`,
-  },
-  {
-    title: 'שינויים בתנאים',
-    text: `${COMPANY.legalNameHe} שומרת לעצמה את הזכות לעדכן תנאים אלו בכל עת. המשך השימוש באתר לאחר עדכון מהווה הסכמה לתנאים החדשים.`,
-  },
-  {
-    title: 'יצירת קשר',
-    text: `לכל שאלה: ${COMPANY.email} · ${COMPANY.phone}`,
-  },
-];
 
 function Section({ title, children }: { title: string | null; children: React.ReactNode }) {
   return (
@@ -111,64 +29,47 @@ function Section({ title, children }: { title: string | null; children: React.Re
   );
 }
 
+/**
+ * מדיניות הפרטיות (/terms).
+ *
+ * העמוד הכיל גם לשונית "תנאי שימוש" ישנה, שסתרה את התקנון: ביטול רק
+ * אם האופניים לא הורכבו, "עד 5 ימי עסקים לכל הארץ", "עמידים לפנצ'ר".
+ * היא הוסרה (19.10.2026). תנאי השימוש המחייבים הם התקנון ב-/regulations.
+ * הכתובת נשארה /terms כדי שקישורים קיימים ימשיכו לעבוד.
+ */
 export default function Terms() {
-  // ?tab=privacy פותח ישר את מדיניות הפרטיות. הקישור "מדיניות פרטיות"
-  // בפוטר ובהודעות שליד הטפסים נחת על לשונית התנאים, והפרטיות הייתה
-  // לחיצה נוספת שאף אחד לא ידע שצריך.
-  const { search } = useLocation();
-  const [tab, setTab] = useState<'terms' | 'privacy'>(
-    () => new URLSearchParams(search).get('tab') === 'privacy' ? 'privacy' : 'terms');
-  // הנוסח העברי הוא המחייב — נשאר כפי שהוא, בלי שכבת תרגום.
-  if (useLang() === 'en') return <TermsEn />;
-  const sections = tab === 'privacy' ? privacySections : termsSections;
+  const lang = useLang();
+  const en = lang === 'en';
+  const L = (to: string) => localizePath(to, lang);
 
   return (
     <PageShell
-      eyebrow="Legal"
-      title="תנאי שימוש ומדיניות פרטיות"
-      subtitle="הכללים לשימוש באתר, פרטי המוצרים, ואיך אנחנו שומרים על המידע האישי שלך."
+      eyebrow={en ? 'Legal' : 'פרטיות'}
+      title={en ? 'Privacy Policy' : 'מדיניות פרטיות'}
+      subtitle={en
+        ? 'What information we collect, why, where it is kept and for how long.'
+        : 'איזה מידע אנחנו אוספים, למה, אצל מי הוא נשמר ולכמה זמן.'}
       heroImage="/assets/lifestyle-hero.jpg"
       heroPosition="center 45%"
     >
-      <div style={{ backgroundColor: '#F5F2EC', padding: 'clamp(32px, 6vw, 72px) clamp(20px, 6vw, 64px)' }} dir="rtl">
+      <div style={{ backgroundColor: '#F5F2EC', padding: 'clamp(32px, 6vw, 72px) clamp(20px, 6vw, 64px)' }} dir={en ? 'ltr' : 'rtl'}>
         <div style={{ maxWidth: '760px', margin: '0 auto' }}>
+          {en && <LegalNotice />}
 
-          {/* Tabs */}
-          <div style={{ display: 'flex', gap: 0, borderBottom: `1px solid ${BORDER}`, marginBottom: '34px' }}>
-            {[
-              { id: 'terms', label: 'תנאי שימוש' },
-              { id: 'privacy', label: 'מדיניות פרטיות' },
-            ].map(t => (
-              <button
-                key={t.id}
-                onClick={() => setTab(t.id as 'terms' | 'privacy')}
-                style={{
-                  padding: '12px 22px', background: 'none', border: 'none',
-                  borderBottom: tab === t.id ? `2px solid ${GOLD}` : '2px solid transparent',
-                  marginBottom: '-1px',
-                  color: tab === t.id ? DARK : '#9A9690',
-                  fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700,
-                  cursor: 'pointer', transition: 'color 0.2s', letterSpacing: '0.03em',
-                }}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
-
-          {sections.map((s, i) => (
-            <Section key={`${tab}-${i}`} title={s.title}>{s.text}</Section>
+          {getPrivacySections(lang).map((s, i) => (
+            <Section key={i} title={s.title}>{s.text}</Section>
           ))}
 
           <p style={{
-            fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', color: '#9A9690',
+            fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', color: '#6E6A64',
             lineHeight: 1.7, marginTop: '14px', paddingTop: '18px', borderTop: `1px solid ${BORDER}`,
           }}>
-            תאריך עדכון אחרון: יולי 2026. מסמך זה משלים את
-            <a href="/regulations" style={{ color: GOLD }}> התקנון ותנאי השימוש</a> ואת
-            <a href="/presale-terms" style={{ color: GOLD }}> תנאי המכירה המוקדמת</a>.
+            {en ? <>Last updated: {PRIVACY_UPDATED.en}. Terms of use are set out in the{' '}</>
+                : <>תאריך עדכון אחרון: {PRIVACY_UPDATED.he}. תנאי השימוש מפורטים ב</>}
+            <Link to={L('/regulations')} style={{ color: LINK }}>{en ? 'Terms & Conditions' : 'תקנון'}</Link>
+            {en ? ' and the ' : ' ובתנאי '}
+            <Link to={L('/presale-terms')} style={{ color: LINK }}>{en ? 'Pre-Sale Terms' : 'המכירה המוקדמת'}</Link>.
           </p>
-
         </div>
       </div>
     </PageShell>

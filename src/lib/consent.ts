@@ -29,9 +29,27 @@ export function setConsent(v: 'granted' | 'denied') {
   const before = getConsent();
   try { localStorage.setItem(KEY, v); } catch { /* ignore */ }
   if (v === 'granted') { loadTracking(); return; }
+  clearTrackingCookies();
   // סקריפט שכבר נטען לא נפרק. מי שחוזר בו מהסכמה מקבל טעינה מחדש,
   // והעמוד עולה בלי המדידה.
   if (before === 'granted') window.location.reload();
+}
+
+/**
+ * מחיקת עוגיות המדידה והפרסום. בלי זה, מי שדחה אחרי שאישר נשאר עם
+ * עוגיות _ga ו-_fbp בדפדפן, גם אם הסקריפטים כבר לא נטענים.
+ * העוגיות נכתבות על הדומיין הראשי (.spinzbikes.com), ולכן נמחקות גם שם.
+ */
+function clearTrackingCookies() {
+  const names = document.cookie.split(';').map(c => c.split('=')[0].trim())
+    .filter(n => n === '_ga' || n.startsWith('_ga_') || n === '_gid' || n === '_gat' || n === '_fbp' || n === '_fbc');
+  const host = window.location.hostname;
+  const domains = ['', host, `.${host}`, `.${host.replace(/^www\./, '')}`];
+  for (const n of names) {
+    for (const d of domains) {
+      document.cookie = `${n}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/${d ? `; domain=${d}` : ''}`;
+    }
+  }
 }
 
 let gaLoaded = false;

@@ -1,9 +1,7 @@
-import { useState } from 'react';
 import { useLang, useDir } from '../i18n/LanguageContext';
-import { privacySectionsEn, termsSectionsEn } from '../pages/TermsEn';
+import { getPrivacySections, PRIVACY_UPDATED } from '../data/privacy';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-import { COMPANY, COMPANY_LINE } from '../config/company';
 
 const DARK   = '#1C1C1C';
 const GOLD   = '#C9A870';
@@ -14,94 +12,12 @@ interface Props {
   onClose: () => void;
 }
 
-const privacySections = [
-  {
-    title: null,
-    text: `${COMPANY_LINE} מחויבת להגן על פרטיותך ולשמור על שקיפות מלאה בשימוש במידע האישי שלך.`,
-  },
-  {
-    title: 'מידע שאנו אוספים',
-    text: 'כאשר אתה משתמש באתר, ממלא טופס או מבצע רכישה, אנו עשויים לאסוף מידע אישי כגון שם, מספר טלפון, כתובת דוא״ל וכתובת למשלוח.',
-  },
-  {
-    title: 'מטרות השימוש במידע',
-    text: 'המידע נאסף לצורך עיבוד הזמנות, מתן שירות לקוחות, שיפור חוויית המשתמש ושליחת עדכונים רלוונטיים, הכל בהתאם להסכמתך.',
-  },
-  {
-    title: 'שיתוף עם צדדים שלישיים',
-    text: 'אנו מעבירים מידע לצדדים שלישיים רק לצורך תפעול השירות (כגון חברת שליחויות), כאשר הם מחויבים לשמור על אבטחת המידע.',
-  },
-  {
-    title: 'שמירת מידע',
-    text: 'המידע נשמר למשך הזמן הנדרש לצורך המטרה שלשמה נאסף, או כפי שמחייב החוק.',
-  },
-  {
-    title: 'זכויותיך',
-    text: 'הזכות לעיין במידע, לתקנו, למחוק אותו, להגביל את עיבודו או להתנגד לו, בכל עת ובפנייה אלינו.',
-  },
-  {
-    title: 'יצירת קשר',
-    text: `למימוש זכויותיך או לשאלות בנוגע לפרטיות: ${COMPANY.email}`,
-  },
-  {
-    title: 'Cookies',
-    text: 'עוגיות למדידה (Google Analytics) ולפרסום (Meta) נטענות רק אחרי אישור בבאנר העוגיות. בלי אישור הן לא נטענות. אפשר לשנות את הבחירה בכל עת בקישור "הגדרות עוגיות" בתחתית כל עמוד.',
-  },
-  {
-    title: 'פרטי החברה',
-    text: `האתר מופעל על ידי ${COMPANY_LINE}. דוא״ל: ${COMPANY.email} · טלפון: ${COMPANY.phone}. החברה מחויבת לעמוד בדרישות חוק הגנת הפרטיות, תיקון 13.`,
-  },
-];
-
-const termsSections = [
-  {
-    title: 'כללי',
-    text: `האתר מופעל על ידי ${COMPANY_LINE}, העוסקת במכירת אופניים. השימוש באתר ובשירותיו מהווה הסכמה לתנאים אלו.`,
-  },
-  {
-    title: 'המוצרים',
-    text: `${COMPANY.legalNameHe} מוכרת אופניים סינגל ספיד אורבניים. האופניים מעוצבים בתל אביב ומיוצרים בחו״ל. המחירים המוצגים באתר כוללים מע״מ.`,
-  },
-  {
-    title: 'מפרט טכני',
-    text: 'שלדה: אלומיניום, גיאומטריה עירונית | מזלג: פלדה | גלגלים: 700c דופן כפולה, עומק 30 מ״מ | צמיגים: Kenda 700×32c עמידים לפנצ\'ר, רצועה פנימית 5 מ״מ | מנגנון: סינגל ספיד 46T/16T | בלמים: Dual-Pivot קדמי ואחורי | משקל: כ-9.5 ק״ג | מידות שלדה: 54 (גובה 160–175 ס״מ), 57 (גובה 175–190 ס״מ)',
-  },
-  {
-    title: 'מה מגיע בקופסה',
-    text: 'האופניים מגיעים כ-85% מורכבים. הרכבה סופית כוללת: חיבור ההגה, הרכבת הפדלים והתאמת גובה המושב. מצורפים כלי הרכבה וסרטון הדרכה.',
-  },
-  {
-    title: 'משלוח',
-    text: 'המשלוח מתבצע עד 5 ימי עסקים מרגע אישור ההזמנה לכל רחבי הארץ. ניתן לאסוף את האופניים ממחסן החברה בתיאום מראש.',
-  },
-  {
-    title: 'אחריות',
-    text: 'על שלדת האלומיניום ניתנת אחריות ל־5 שנים מיום המסירה. האחריות אינה חלה על חלקים מתכלים (צמיגים, פנימיות, שרשרת, רפידות בלמים, גריפים), על בלאי סביר, ועל נזק שנגרם משימוש לא נכון, תאונה, שינויים שבוצעו במוצר, או הרכבה שלא בוצעה בהתאם להוראות ההרכבה המצורפות.',
-  },
-  {
-    title: 'ביטול עסקה והחזרות',
-    text: 'בהתאם לחוק הגנת הצרכן, ניתן לבטל עסקה תוך 14 יום ממועד קבלת המוצר, בתנאי שהאופניים לא הורכבו. במקרה של ביטול ישא הצרכן בעלות המשלוח חזרה. לאחר הרכבה, ניתן לבטל רק בהסכמת החברה.',
-  },
-  {
-    title: 'אחריות מוגבלת',
-    text: `בכפוף להוראות כל דין, ${COMPANY.legalNameHe} לא תישא באחריות לנזקים עקיפים, אובדן הכנסה או נזק תוצאתי הנובעים מהשימוש במוצרים או באתר. אין באמור כדי לגרוע מאחריות החברה לפי חוק האחריות למוצרים פגומים, התש״ם־1980.`,
-  },
-  {
-    title: 'שינויים בתנאים',
-    text: `${COMPANY.legalNameHe} שומרת לעצמה את הזכות לעדכן תנאים אלו בכל עת. המשך השימוש באתר לאחר עדכון מהווה הסכמה לתנאים החדשים.`,
-  },
-  {
-    title: 'יצירת קשר',
-    text: `לכל שאלה: ${COMPANY.email} · ${COMPANY.phone}`,
-  },
-];
-
 export default function PrivacyModal({ isOpen, onClose }: Props) {
   const lang = useLang();
   const dir = useDir();
-  // באנגלית מוצג אותו תוכן שבעמוד /en/terms — מקור אחד לשני המקומות.
+  // אותו תוכן שבעמוד /terms, מ-src/data/privacy.ts. היו כאן גם "תנאי
+  // שימוש" ישנים, שסתרו את התקנון (ביטול רק לפני הרכבה, 5 ימי עסקים).
   const en = lang === 'en';
-  const [tab, setTab] = useState<'privacy' | 'terms'>('terms');
 
   return (
     <AnimatePresence>
@@ -141,40 +57,12 @@ export default function PrivacyModal({ isOpen, onClose }: Props) {
                 </button>
               </div>
 
-              {/* Tabs */}
-              <div style={{ display: 'flex', borderBottom: `1px solid ${BORDER}`, flexShrink: 0 }}>
-                {[
-                  { id: 'terms', label: en ? 'Terms of Use' : 'תנאי שימוש' },
-                  { id: 'privacy', label: en ? 'Privacy Policy' : 'מדיניות פרטיות' },
-                ].map(t => (
-                  <button
-                    key={t.id}
-                    onClick={() => setTab(t.id as 'privacy' | 'terms')}
-                    style={{
-                      flex: 1,
-                      padding: '14px',
-                      background: 'none',
-                      border: 'none',
-                      borderBottom: tab === t.id ? `2px solid ${GOLD}` : '2px solid transparent',
-                      color: tab === t.id ? GOLD : '#666',
-                      fontFamily: "'Heebo', sans-serif",
-                      fontSize: '14px',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      transition: 'color 0.2s',
-                    }}
-                  >
-                    {t.label}
-                  </button>
-                ))}
-              </div>
-
               {/* Content */}
               <div
                 style={{ overflowY: 'auto', padding: '28px', display: 'flex', flexDirection: 'column', gap: '20px' }}
                 onWheel={e => e.stopPropagation()}
               >
-                {(en ? (tab === 'privacy' ? privacySectionsEn : termsSectionsEn) : (tab === 'privacy' ? privacySections : termsSections)).map(({ title, text }, i) => (
+                {getPrivacySections(lang).map(({ title, text }, i) => (
                   <div key={i}>
                     {title && (
                       <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '14px', color: GOLD, margin: '0 0 6px', letterSpacing: '0.05em' }}>
@@ -189,7 +77,7 @@ export default function PrivacyModal({ isOpen, onClose }: Props) {
 
                 <div style={{ borderTop: `1px solid ${BORDER}`, paddingTop: '16px', marginTop: '4px' }}>
                   <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: '#666', margin: 0 }}>
-                    {en ? 'Last updated: April 2026' : 'תאריך עדכון אחרון: אפריל 2026'}
+                    {en ? `Last updated: ${PRIVACY_UPDATED.en}. Terms of use are in the ` : `תאריך עדכון אחרון: ${PRIVACY_UPDATED.he}. תנאי השימוש נמצאים ב`}<a href={en ? '/en/regulations' : '/regulations'} style={{ color: GOLD }}>{en ? 'Terms & Conditions' : 'תקנון'}</a>.
                   </p>
                 </div>
               </div>

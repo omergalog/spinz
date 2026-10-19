@@ -21,7 +21,7 @@ const he: StorySection[] = [
   },
   {
     title: 'למה אנחנו לא ברוטשילד? (ולמה זה טוב לכם)',
-    text: 'חשבנו על זה הרבה. יכולנו לפתוח חנות נוצצת ברוטשילד או בדיזנגוף, אבל אז היינו צריכים לגלגל את השכירות המטורפת הזאת עליכם, וזה מה שלא רצינו.\n\nהחלטנו לעשות את זה אחרת: בלי חנויות יוקרה במרכז תל אביב ובלי מתווכים שגוזרים קופון בדרך. בחרנו להשקיע את כל הכסף במוצר עצמו: בשלדות הכי חזקות, בצבעים הכי עמידים ובחלקים שיחזיקו לכם שנים על האספלט. כך אתם מקבלים אופני פרימיום במחיר הגיוני לגמרי, בלי לקרוע את הכיס.',
+    text: 'חשבנו על זה הרבה. יכולנו לפתוח חנות נוצצת ברוטשילד או בדיזנגוף, אבל אז היינו צריכים לגלגל את השכירות המטורפת הזאת עליכם, וזה מה שלא רצינו.\n\nהחלטנו לעשות את זה אחרת: בלי חנויות יוקרה במרכז תל אביב ובלי מתווכים שגוזרים קופון בדרך. בחרנו להשקיע את כל הכסף במוצר עצמו: בשלדה, בצבע ובחלקים שבחרנו בקפידה. כך אתם מקבלים אופני פרימיום במחיר הגיוני לגמרי, בלי לקרוע את הכיס.',
   },
   {
     title: 'בשורה התחתונה',
@@ -48,7 +48,7 @@ const en: StorySection[] = [
   },
   {
     title: 'Why we’re not on Rothschild (and why that’s good for you)',
-    text: 'We thought about it a lot. We could have opened a glossy storefront on Rothschild or Dizengoff, but then we’d have had to pass that insane rent on to you, and that was exactly what we didn’t want.\n\nSo we did it differently: no flagship store in central Tel Aviv, no middlemen taking a cut along the way. We put every shekel into the product itself: the strongest frames, the most durable finishes, and parts that will last you years on the asphalt. That is how you get a premium bike at a genuinely sensible price, without emptying your pockets.',
+    text: 'We thought about it a lot. We could have opened a glossy storefront on Rothschild or Dizengoff, but then we’d have had to pass that insane rent on to you, and that was exactly what we didn’t want.\n\nSo we did it differently: no flagship store in central Tel Aviv, no middlemen taking a cut along the way. We put every shekel into the product itself: the frame, the finish and carefully chosen parts. That is how you get a premium bike at a genuinely sensible price, without emptying your pockets.',
   },
   {
     title: 'The bottom line',

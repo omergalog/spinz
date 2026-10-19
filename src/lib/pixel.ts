@@ -11,6 +11,9 @@
  */
 const PIXEL_ID = import.meta.env.VITE_META_PIXEL_ID as string | undefined;
 
+/** יש פיקסל מוגדר. הבאנר ומדיניות הפרטיות מזכירים את מטא רק אם כן. */
+export const PIXEL_ENABLED = !!PIXEL_ID;
+
 type Fbq = ((...args: unknown[]) => void) & { queue?: unknown[]; loaded?: boolean };
 declare global { interface Window { fbq?: Fbq; _fbq?: Fbq } }
 

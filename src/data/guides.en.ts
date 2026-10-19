@@ -30,7 +30,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
       { label: 'Tools', value: 'Included in the box' },
     ],
     intro:
-      'Every SPINZ leaves our warehouse mostly assembled: the frame, wheels, drivetrain and brakes are already fitted and tuned. What’s left for you is attaching a few final parts and tightening them properly: fifteen to thirty minutes of work that needs no prior experience. This guide walks you through it step by step, points out what to watch for, and finishes with a short safety check before your first ride.',
+      'Every SPINZ leaves our warehouse mostly assembled: the frame, wheels, drivetrain and brakes are already fitted. What’s left for you is attaching a few final parts and tightening them properly: fifteen to thirty minutes of work that needs no prior experience. This guide walks you through it step by step, points out what to watch for, and finishes with a short safety check before your first ride.',
     sections: [
       {
         heading: 'What’s in the box',
@@ -43,7 +43,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
               'The front wheel (sometimes fitted, sometimes packed separately).',
               'The handlebars and the stem.',
               'Two pedals, marked L (left) and R (right).',
-              'A small tool kit: Allen keys, plus a QR code to the assembly video.',
+              'Allen keys, plus a QR code to the assembly video. A 15 mm wrench or pedal spanner for the pedals is not included.',
             ],
           },
           { type: 'tip', text: 'Keep the box and packing materials until you’ve confirmed everything is in order, they’re useful if you ever need to return or ship the bike.' },
@@ -86,7 +86,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
     ],
     faq: [
       { q: 'How long does assembly take?', a: '15 to 20 minutes for most people, even with no prior experience. With the included video it’s simpler still.' },
-      { q: 'Do I need a mechanic?', a: 'No. Assembly is designed to be done at home and kept simple. That said, if you want complete peace of mind, a quick check at a bike shop afterwards is never a bad idea.' },
+      { q: 'Do I need a mechanic?', a: 'Assembly can be done at home. Before your first ride we strongly recommend a check by a bike mechanic, as our terms also say.' },
       { q: 'What tools do I need?', a: 'The Allen keys you need come in the box. Final pedal tightening needs a 15 mm wrench or a pedal spanner. Everything else is tightened following the instructions in the box, and if anything is unclear, at a bike mechanic.' },
     ],
   },
@@ -220,7 +220,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
     faq: [
       { q: 'How often should I lube the chain?', a: 'Every 2–4 weeks with normal use, and always straight after riding in the rain. If the chain squeaks, that’s your cue.' },
       { q: 'Can I hose the bike down?', a: 'Better not at high pressure. A damp cloth and a little mild soap are plenty, and they won’t put your bearings at risk.' },
-      { q: 'I got a puncture, what now?', a: 'Our tires are puncture-resistant with an internal protection strip, but flats are still possible. Replacing an inner tube is a simple job that any bike shop does in a few minutes.' },
+      { q: 'I got a puncture, what now?', a: 'Any tire can get a flat. Replacing an inner tube is a simple job that any bike shop does in a few minutes.' },
     ],
   },
 

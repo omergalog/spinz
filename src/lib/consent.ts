@@ -28,7 +28,16 @@ export function getConsent(): Consent {
 export function setConsent(v: 'granted' | 'denied') {
   const before = getConsent();
   try { localStorage.setItem(KEY, v); } catch { /* ignore */ }
-  if (v === 'granted') { loadTracking(); return; }
+  if (v === 'granted') {
+    // מי שדחה ואז אישר באותו עמוד: דגל הכיבוי מהדחייה עדיין דולק, ובלי
+    // לכבות אותו gtag נטען אבל לא שולח ולא כותב עוגיות עד טעינה חדשה.
+    const w = window as unknown as Record<string, unknown> & { gtag?: (...a: unknown[]) => void };
+    w[`ga-disable-${GA_ID}`] = false;
+    w.gtag?.('consent', 'update', { analytics_storage: 'granted', ad_storage: 'granted' });
+    if (gaLoaded) w.gtag?.('config', GA_ID);
+    loadTracking();
+    return;
+  }
   // gtag שכבר רץ בעמוד כותב את _ga_<ID> מחדש באירוע הבא (גם ביציאה
   // מהעמוד), ולכן קודם מכבים אותו ורק אחר כך מוחקים.
   const w = window as unknown as Record<string, unknown> & { gtag?: (...a: unknown[]) => void };

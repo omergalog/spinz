@@ -62,7 +62,7 @@ export const dict = {
         accessibility: 'הצהרת נגישות',
       },
       cookieSettings: 'הגדרות עוגיות',
-      cancelHow1: 'אפשר לבטל בטופס, בטלפון', cancelHowMail: 'במייל', cancelHow2: 'או ב-', cancelHow3: 'מומלץ לציין שם מלא ומספר הזמנה.',
+      cancelHow1: 'אפשר לבטל בטופס, בטלפון', cancelHowMail: 'במייל', cancelHow2: 'או ב-', cancelByMail: 'אפשר גם בדואר רשום או במסירה אישית בכתובת', cancelHow3: 'מומלץ לציין שם מלא ומספר הזמנה.',
     },
     privacyNote: {
       request: 'הפרטים ישמשו לטיפול בפנייה בלבד, כמפורט ב',
@@ -440,7 +440,7 @@ export const dict = {
         accessibility: 'Accessibility Statement',
       },
       cookieSettings: 'Cookie settings',
-      cancelHow1: 'use the form, call', cancelHowMail: 'email', cancelHow2: 'or message us on ', cancelHow3: 'We recommend including your full name and order number.',
+      cancelHow1: 'use the form, call', cancelHowMail: 'email', cancelHow2: 'or message us on ', cancelByMail: 'You can also use registered mail or hand delivery to', cancelHow3: 'We recommend including your full name and order number.',
     },
     privacyNote: {
       request: 'Your details will be used only to handle your request, as set out in our',

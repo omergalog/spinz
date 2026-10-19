@@ -100,6 +100,7 @@ function FAQItem({ item, index }: { item: FaqItem; index: number }) {
               paddingLeft: 'clamp(0px, 3vw, 44px)',
             }}>
               {item.a}
+              {item.link && <>{' '}<a href={item.link.href} style={{ color: '#7E6129', fontWeight: 700 }}>{item.link.text}</a>.</>}
             </p>
           </motion.div>
         )}

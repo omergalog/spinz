@@ -201,8 +201,8 @@ const buildFaqs = (lang: Lang): SearchDoc[] => getFaqs(lang).map((f, i) => ({
   id: `faq-${i}`,
   type: 'faq',
   title: f.q,
-  summary: f.a,
-  body: f.a,
+  summary: f.link ? `${f.a} ${f.link.text}.` : f.a,
+  body: f.link ? `${f.a} ${f.link.text}.` : f.a,
   to: '/faq',
 }));
 

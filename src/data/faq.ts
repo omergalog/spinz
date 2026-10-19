@@ -1,6 +1,7 @@
 import type { Lang } from '../i18n/LanguageContext';
 
-export type FaqItem = { q: string; a: string };
+/** link: קישור שמוצג בסוף התשובה (למשל לסעיף בתקנון). */
+export type FaqItem = { q: string; a: string; link?: { text: string; href: string } };
 
 const he: FaqItem[] = [
   {
@@ -29,7 +30,8 @@ const he: FaqItem[] = [
   },
   {
     q: 'מה כוללת האחריות?',
-    a: '5 שנים על שלדת האלומיניום, 12 חודשים על המזלג ועל הרכיבים הקשיחים (כידון, מוט מושב, זרועות דיווש). חלקים מתכלים כמו צמיגים, פנימיות, רפידות בלם ושרשרת אינם מכוסים, למעט פגם ייצור שהתגלה בתוך 30 ימים מהמסירה. הנוסח המלא בתקנון, סעיף 3.',
+    a: '5 שנים על שלדת האלומיניום, 12 חודשים על המזלג ועל הרכיבים הקשיחים (כידון, מוט מושב, זרועות דיווש). חלקים מתכלים כמו צמיגים, פנימיות, רפידות בלם ושרשרת אינם מכוסים, למעט פגם ייצור שהתגלה בתוך 30 ימים מהמסירה. הנוסח המלא:',
+    link: { text: 'סעיף 3 בתקנון', href: '/regulations#warranty' },
   },
   {
     q: 'איפה אפשר לתקן את האופניים?',
@@ -68,7 +70,8 @@ const en: FaqItem[] = [
   },
   {
     q: 'What does the warranty cover?',
-    a: '5 years on the aluminum frame, and 12 months on the fork and rigid components (handlebars, seat post, crank arms). Wear items such as tires, inner tubes, brake pads and chain aren’t covered, other than a manufacturing defect discovered within 30 days of delivery. The full wording is in section 3 of the Terms & Conditions.',
+    a: '5 years on the aluminum frame, and 12 months on the fork and rigid components (handlebars, seat post, crank arms). Wear items such as tires, inner tubes, brake pads and chain aren’t covered, other than a manufacturing defect discovered within 30 days of delivery. The full wording:',
+    link: { text: 'section 3 of the Terms & Conditions', href: '/en/regulations#warranty' },
   },
   {
     q: 'Where can I get the bike serviced?',

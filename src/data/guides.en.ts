@@ -20,17 +20,17 @@ export type GuideTextEn = {
 export const guidesEn: Record<string, GuideTextEn> = {
   assembly: {
     title: 'Assembling your SPINZ at home',
-    summary: 'The bike arrives about 85% assembled. Final assembly takes under 20 minutes, with no prior experience.',
+    summary: 'The bike arrives about 85% assembled. Final assembly usually takes 15–20 minutes, with no prior experience.',
     metaTitle: 'How to assemble a bike at home: step by step | SPINZ',
-    metaDescription: 'A complete assembly guide for the SPINZ single speed: what’s in the box, attaching the handlebars, fitting the pedals, setting saddle height and a safety check, in under 20 minutes.',
+    metaDescription: 'A complete assembly guide for the SPINZ single speed: what’s in the box, attaching the handlebars, fitting the pedals, setting saddle height and a safety check, usually in 15–20 minutes.',
     readTime: '6 min read',
     facts: [
       { label: 'Time', value: '15–20 minutes' },
       { label: 'Difficulty', value: 'Easy' },
-      { label: 'Tools', value: 'Included in the box' },
+      { label: 'Tools', value: 'Allen keys in the box; 15 mm pedal wrench not included' },
     ],
     intro:
-      'Every SPINZ leaves our warehouse mostly assembled: the frame, wheels, drivetrain and brakes are already fitted. What’s left for you is attaching a few final parts and tightening them properly: fifteen to thirty minutes of work that needs no prior experience. This guide walks you through it step by step, points out what to watch for, and finishes with a short safety check before your first ride.',
+      'Every SPINZ leaves our warehouse mostly assembled: the frame, wheels, drivetrain and brakes are already fitted. What’s left for you is attaching a few final parts and tightening them properly: usually 15–20 minutes of work that needs no prior experience. This guide walks you through it step by step, points out what to watch for, and finishes with a short safety check before your first ride.',
     sections: [
       {
         heading: 'What’s in the box',
@@ -151,7 +151,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
     ],
     faq: [
       { q: 'What if I’m exactly between two sizes?', a: 'Take the smaller one. It’s more nimble in the city, and the adjustable saddle height easily makes up the difference.' },
-      { q: 'Does the same size work for men and women?', a: 'Yes. The geometry is universal, and the fit is dialed in through saddle and handlebar height. Both sizes suit all genders.' },
+      { q: 'Does the same size work for men and women?', a: 'Yes. The geometry is universal, and the fit is dialed in mainly through saddle height. Both sizes suit all genders.' },
       { q: 'I’m under 160 cm or over 190 cm. What now?', a: 'Drop us a message and we’ll gladly advise you personally based on your build before you order.' },
     ],
   },
@@ -175,7 +175,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
           {
             type: 'list',
             items: [
-              'Check tire pressure and inflate to the range printed on the tire wall. Correct pressure saves energy and prevents punctures.',
+              'Check tire pressure and inflate to the range printed on the tire wall. Correct pressure saves energy and reduces the chance of punctures.',
               'Glance at the chain, if it looks dry or sounds squeaky, it’s time to lube it.',
               'Confirm the brakes bite properly and the levers don’t pull all the way to the bar.',
             ],

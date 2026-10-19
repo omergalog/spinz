@@ -29,6 +29,11 @@ export function setConsent(v: 'granted' | 'denied') {
   const before = getConsent();
   try { localStorage.setItem(KEY, v); } catch { /* ignore */ }
   if (v === 'granted') { loadTracking(); return; }
+  // gtag שכבר רץ בעמוד כותב את _ga_<ID> מחדש באירוע הבא (גם ביציאה
+  // מהעמוד), ולכן קודם מכבים אותו ורק אחר כך מוחקים.
+  const w = window as unknown as Record<string, unknown> & { gtag?: (...a: unknown[]) => void };
+  w[`ga-disable-${GA_ID}`] = true;
+  w.gtag?.('consent', 'update', { analytics_storage: 'denied', ad_storage: 'denied' });
   clearTrackingCookies();
   // סקריפט שכבר נטען לא נפרק. מי שחוזר בו מהסכמה מקבל טעינה מחדש,
   // והעמוד עולה בלי המדידה.
@@ -42,12 +47,13 @@ export function setConsent(v: 'granted' | 'denied') {
  */
 function clearTrackingCookies() {
   const names = document.cookie.split(';').map(c => c.split('=')[0].trim())
-    .filter(n => n === '_ga' || n.startsWith('_ga_') || n === '_gid' || n === '_gat' || n === '_fbp' || n === '_fbc');
+    .filter(n => n === '_ga' || n.startsWith('_ga_') || n === '_gid' || n.startsWith('_gat') || n === '_fbp' || n === '_fbc');
   const host = window.location.hostname;
-  const domains = ['', host, `.${host}`, `.${host.replace(/^www\./, '')}`];
+  const bare = host.replace(/^www\./, '');
+  const domains = ['', host, `.${host}`, bare, `.${bare}`];
   for (const n of names) {
     for (const d of domains) {
-      document.cookie = `${n}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/${d ? `; domain=${d}` : ''}`;
+      document.cookie = `${n}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0; path=/${d ? `; domain=${d}` : ''}`;
     }
   }
 }
@@ -69,7 +75,9 @@ function loadAnalytics() {
 
 /** טוען את המדידה — רק כשיש הסכמה. */
 export function loadTracking() {
-  if (getConsent() !== 'granted') return;
+  // בכל טעינה בלי הסכמה מנקים שוב: עוגייה שנכתבה ברגע הדחייה, לפני
+  // הרענון, לא תישאר.
+  if (getConsent() !== 'granted') { clearTrackingCookies(); return; }
   loadAnalytics();
   initPixel();
 }

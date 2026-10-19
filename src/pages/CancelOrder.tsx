@@ -134,6 +134,7 @@ export default function CancelOrder() {
                 {/* הקישורים היו בזהב #C9A870 על רקע שמנת — 2.2:1, מתחת לסף הקריאות. */}
                 {c.alsoBy1} <a href={`tel:${COMPANY.phone}`} style={{ color: LINK }}>{COMPANY.phone}</a>,{' '}
                 {c.alsoBy2} <a href={`mailto:${COMPANY.email}`} style={{ color: LINK }}>{COMPANY.email}</a> {c.alsoBy3}<a href={`https://wa.me/${COMPANY.phoneE164}`} target="_blank" rel="noopener noreferrer" style={{ color: LINK }}>WhatsApp</a>.{' '}
+                {c.byMail} {lang === 'en' ? COMPANY.addressEn : COMPANY.address}.{' '}
                 <strong>{c.include}</strong>{' '}
                 {c.seeTerms1} <a href={L('/presale-terms')} style={{ color: LINK }}>{c.seeTerms2}</a>.
               </div>

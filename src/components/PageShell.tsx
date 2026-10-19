@@ -21,7 +21,13 @@ type Props = {
 export default function PageShell({ children, eyebrow, title, subtitle, heroImage, heroPosition }: Props) {
   const dir = useDir();
   const presale = usePresale();
-  useEffect(() => { window.scrollTo(0, 0); }, []);
+  // קישור עם עוגן (למשל /regulations#warranty) גולל לסעיף; אחרת לראש העמוד.
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    const el = id ? document.getElementById(id) : null;
+    if (el) requestAnimationFrame(() => el.scrollIntoView());
+    else window.scrollTo(0, 0);
+  }, []);
 
   // כותרת הלשונית ותוצאת החיפוש בגוגל. עד כה כל 16 העמודים נשאו את
   // המילה "Spinz" בלבד, בשתי השפות — לשוניות שאי אפשר להבחין ביניהן,

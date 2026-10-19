@@ -12,11 +12,11 @@ const BORDER = '#E0DCD4';
 const CARD = '#FFFFFF';
 
 const WHATSAPP = '+972527565262';
-const whatsappHref = `https://wa.me/${WHATSAPP.replace(/\D/g, '')}?text=${encodeURIComponent('Hi, I am interested in a Spinz bike')}`;
 
 
 export default function Contact() {
   const t = useT();
+  const whatsappHref = `https://wa.me/${WHATSAPP.replace(/\D/g, '')}?text=${encodeURIComponent(t.footer.whatsappText)}`;
   const channels = [
     { icon: MessageCircle, label: 'WhatsApp', value: t.pages.contact.whatsappValue, href: whatsappHref },
     { icon: Mail, label: t.pages.contact.email, value: COMPANY.email, href: `mailto:${COMPANY.email}` },

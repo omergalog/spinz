@@ -48,10 +48,11 @@ function NewsletterForm() {
       <input
         id="newsletter-email"
         type="email"
-        dir="ltr"
+        // שדה ריק מקבל את כיוון העמוד, כדי שהפלייסהולדר בעברית ייושר לימין.
+        dir={email ? 'ltr' : undefined}
         value={email}
         onChange={e => { setEmail(e.target.value); if (status === 'error' || status === 'failed') setStatus('idle'); }}
-        placeholder="your@email.com"
+        placeholder={t.footer.emailPlaceholder}
         style={{
           flex: '1 1 200px',
           minWidth: 0,

@@ -81,6 +81,11 @@ export default function PresaleTermsEn() {
               In the event of a material change to the date, we will notify you in advance, and you may choose to
               wait or <b>cancel and receive a full refund</b>.
             </p>
+            <p style={{ margin: '8px 0 0' }}>
+              Home delivery is included in the price and available to most areas of Israel. If it is not possible to
+              deliver to the address you provided, we will contact you before handing over the order and offer self
+              pickup or cancellation of the order with a full refund.
+            </p>
           </Section>
 
           <Section title="3. Launch price">
@@ -88,7 +93,7 @@ export default function PresaleTermsEn() {
               The launch price (₪{fmt(presale.presalePrice)} instead of ₪{fmt(presale.regularPrice)}) applies to a
               limited number of units in each color and size, as shown live on the site. Once the allocation for a
               given model is exhausted, it will be sold at its regular price. The operative price is the one
-              displayed at the time your order was confirmed.
+              displayed when you placed and paid for the order.
             </p>
           </Section>
 
@@ -105,9 +110,9 @@ export default function PresaleTermsEn() {
               </li>
             </ul>
             <p style={{ margin: 0 }}>
-              For a cancellation after receiving the product, it must be returned in a resalable condition, in its
-              original packaging where possible. Damage, depreciation or wear caused to the product after delivery
-              may give rise to liability for compensation in the amount of the loss in value, in accordance with law.
+              We ask that the product be returned in its original packaging where possible; this is not a condition
+              for cancelling. We will not deduct any amount from the refund automatically. Only if the product's value
+              has been significantly impaired as a result of its use will we handle the matter in accordance with the law.
             </p>
           </Section>
 
@@ -120,8 +125,9 @@ export default function PresaleTermsEn() {
             <p style={{ margin: 0 }}>
               As for return shipping: for a voluntary cancellation, returning the product to us is the customer's
               responsibility and at their expense.
-              <b> If the product arrived damaged or faulty, or delivery was delayed beyond the date given, collection
-              is at our expense</b> and we will arrange it with you.
+              <b> If the product arrived damaged or faulty, if it does not match the order (for example the wrong model,
+              size or color), if delivery was delayed beyond the date given, or in any other breach on our part,
+              collection is at our expense</b> and we will arrange it with you.
             </p>
           </Section>
 
@@ -130,7 +136,8 @@ export default function PresaleTermsEn() {
               You can give notice of cancellation using the{' '}
               <a href="/en/cancel-order" style={{ color: GOLD, fontWeight: 700 }}>cancellation form</a>,
               by email at <a href={`mailto:${CO.email}`} style={{ color: GOLD }}>{CO.email}</a>,
-              by phone at <a href={`tel:${CO.phone}`} style={{ color: GOLD }}>{CO.phone}</a>, or on WhatsApp.
+              by phone at <a href={`tel:${CO.phone}`} style={{ color: GOLD }}>{CO.phone}</a>, on WhatsApp,
+              by registered mail, or by hand delivery to {CO.addressEn}.
               The refund will be issued to the payment method used for the transaction, within 14 days of our
               receiving the cancellation notice.
             </p>
@@ -138,11 +145,10 @@ export default function PresaleTermsEn() {
 
           <Section title="7. Warranty">
             <p style={{ margin: 0 }}>
-              The aluminum frame carries a 5-year warranty from the date of delivery. The warranty does not cover
-              wear items (tires, inner tubes, chain, brake pads, grips), reasonable wear, or damage caused by improper use, an
-              accident, by modifications made to the product, or by <b>assembly not carried out in accordance with
-              the assembly instructions supplied</b>. The bike arrives mostly assembled; completing the assembly
-              according to the instructions and the included video does not affect the warranty.
+              The full warranty terms are in <a href="/en/regulations#warranty" style={{ color: GOLD, fontWeight: 700 }}>section 3 of the Terms &amp; Conditions</a>.
+              In short: 5 years on the frame, 12 months on the fork and rigid components, and wear items are not
+              covered, other than a manufacturing defect discovered within 30 days of delivery. Completing the
+              assembly according to the instructions and the included video does not affect the warranty.
             </p>
           </Section>
 
@@ -162,7 +168,8 @@ export default function PresaleTermsEn() {
             Nothing herein derogates from consumer rights under the Israeli Consumer Protection Law, 5741-1981, and
             the regulations enacted thereunder. In any conflict between this document and the provisions of law, the
             provisions of law prevail. These terms supplement the{' '}
-            <a href="/en/terms" style={{ color: GOLD }}>Terms of Use and Privacy Policy</a>.
+            <a href="/en/regulations" style={{ color: GOLD }}>Terms &amp; Conditions</a> and the{' '}
+            <a href="/en/terms" style={{ color: GOLD }}>Privacy Policy</a>.
           </p>
 
         </div>

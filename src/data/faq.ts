@@ -9,7 +9,7 @@ const he: FaqItem[] = [
   },
   {
     q: 'האופניים מגיעים מורכבים?',
-    a: 'כן, כ-85% מורכבים. מה שנשאר הוא חיבור ההגה, פדלים והתאמת המושב, פחות מ-20 דקות עם הסרטון שמגיע בקופסה.',
+    a: 'כן, כ-85% מורכבים. מה שנשאר הוא חיבור ההגה, פדלים והתאמת המושב, 15–20 דקות עם הסרטון שמגיע בקופסה.',
   },
   {
     q: 'יש אפשרות לאיסוף עצמי?',
@@ -29,7 +29,7 @@ const he: FaqItem[] = [
   },
   {
     q: 'מה כוללת האחריות?',
-    a: 'האופניים מגיעים עם אחריות של 5 שנים על שלדת האלומיניום. חלפים מתכלים כגון צמיגים, שרשרת ופדלים אינם כלולים באחריות.',
+    a: '5 שנים על שלדת האלומיניום, 12 חודשים על המזלג ועל הרכיבים הקשיחים (כידון, מוט מושב, זרועות דיווש). חלקים מתכלים כמו צמיגים, פנימיות, רפידות בלם ושרשרת אינם מכוסים, למעט פגם ייצור שהתגלה בתוך 30 ימים מהמסירה. הנוסח המלא בתקנון, סעיף 3.',
   },
   {
     q: 'איפה אפשר לתקן את האופניים?',
@@ -37,7 +37,7 @@ const he: FaqItem[] = [
   },
   {
     q: 'האופניים מתאימים לגברים ולנשים?',
-    a: 'כן. שתי מידות השלדה מתאימות לכולם. הגיאומטריה של האופניים אוניברסלית וניתן להתאים את גובה המושב וההגה.',
+    a: 'כן. שתי מידות השלדה מתאימות לכולם. הגיאומטריה של האופניים אוניברסלית, וההתאמה נעשית בעיקר דרך גובה המושב.',
   },
 ];
 
@@ -48,7 +48,7 @@ const en: FaqItem[] = [
   },
   {
     q: 'Does the bike arrive assembled?',
-    a: 'Yes, about 85% assembled. All that’s left is attaching the handlebars and pedals and setting the saddle height: under 20 minutes with the video that comes in the box.',
+    a: 'Yes, about 85% assembled. All that’s left is attaching the handlebars and pedals and setting the saddle height: 15–20 minutes with the video that comes in the box.',
   },
   {
     q: 'Can I pick the bike up myself?',
@@ -68,7 +68,7 @@ const en: FaqItem[] = [
   },
   {
     q: 'What does the warranty cover?',
-    a: 'Every bike comes with a 5-year warranty on the aluminum frame. Wear items such as tires, chain and pedals aren’t covered.',
+    a: '5 years on the aluminum frame, and 12 months on the fork and rigid components (handlebars, seat post, crank arms). Wear items such as tires, inner tubes, brake pads and chain aren’t covered, other than a manufacturing defect discovered within 30 days of delivery. The full wording is in section 3 of the Terms & Conditions.',
   },
   {
     q: 'Where can I get the bike serviced?',
@@ -76,7 +76,7 @@ const en: FaqItem[] = [
   },
   {
     q: 'Is the bike suitable for both men and women?',
-    a: 'Yes. Both frame sizes work for everyone. The geometry is universal, and the saddle and handlebar height are fully adjustable.',
+    a: 'Yes. Both frame sizes work for everyone. The geometry is universal, and the fit is set mainly through saddle height.',
   },
 ];
 

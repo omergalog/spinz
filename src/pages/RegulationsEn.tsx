@@ -8,9 +8,9 @@ const MUTED = '#4A4845';
 const GOLD = '#C9A870';
 const BORDER = '#E0DCD4';
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ id, title, children }: { id?: string; title: string; children: React.ReactNode }) {
   return (
-    <section style={{ marginBottom: '30px' }}>
+    <section id={id} style={{ marginBottom: '30px', scrollMarginTop: '90px' }}>
       <h2 style={{
         fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(17px, 2.2vw, 21px)',
         color: DARK, margin: '0 0 10px', paddingInlineStart: '11px',
@@ -63,7 +63,7 @@ export default function RegulationsEn() {
             </ul>
           </Section>
 
-          <Section title={r.s3t}>
+          <Section id="warranty" title={r.s3t}>
             <ul style={{ margin: 0, paddingInlineStart: '18px' }}>
               {(r.s3 as readonly (readonly [string | null, string])[]).map(([label, text], i) => (
                 <li key={i} style={{ marginBottom: i === r.s3.length - 1 ? 0 : '8px' }}>
@@ -83,11 +83,17 @@ export default function RegulationsEn() {
             <p style={{ margin: '0 0 8px' }}>
               <b>{r.s4bodyA}</b>{r.s4bodyB}
             </p>
+            <p style={{ margin: '0 0 8px' }}>{r.s4pack}</p>
+            <p style={{ margin: '0 0 8px' }}>{r.s4return}</p>
             <p style={{ margin: 0 }}>
               {r.s4bodyC}
               <a href="/en/cancel-order" style={{ color: GOLD, fontWeight: 700 }}>{r.s4form}</a>
               {r.s4bodyD}
             </p>
+          </Section>
+
+          <Section title={r.shipT}>
+            <p style={{ margin: 0 }}>{r.ship}</p>
           </Section>
 
           <Section title={r.s5t}>

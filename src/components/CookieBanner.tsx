@@ -69,6 +69,10 @@ export default function CookieBanner() {
           exit={{ y: 80, opacity: 0, transition: { duration: 0.2, ease: 'easeIn' } }}
           style={{
             position: 'fixed',
+            // כשהעגלה פתוחה הבאנר מוסתר (המשתנה נקבע ב-CartDrawer). במובייל
+            // הוא כיסה את טופס הקופה עד שסגרו אותו. ההחלטה לא נרשמת, והבאנר
+            // חוזר כשהעגלה נסגרת.
+            visibility: 'var(--fab-vis, visible)' as never,
             bottom: '24px',
             left: '16px',
             right: '16px',

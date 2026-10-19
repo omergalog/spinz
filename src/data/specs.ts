@@ -13,7 +13,7 @@ const he: SpecText[] = [
     // "עמידים לפנצ'ר" הוסר: אין מסמך יצרן שמאשר הגנה מפני פנצ'ר בדגם הזה.
     title: 'צמיגים רחבים לעיר',
     sub: 'Kenda 32 מ״מ',
-    body: 'צמיגים אורבניים ברוחב 32 מ״מ, שנותנים אחיזה ונוחות על אספלט, מהמורות ופסי הרכבת הקלה.',
+    body: 'צמיגים אורבניים ברוחב 32 מ״מ, שנותנים אחיזה ונוחות על אספלט ועל מהמורות.',
   },
   {
     title: 'יחס העברה חכם לעיר',
@@ -33,14 +33,14 @@ const he: SpecText[] = [
   {
     title: 'התאמה בשנייה',
     sub: 'Quick Release',
-    body: 'מנגנון שחרור מהיר למושב המאפשר כוונון גובה מיידי ללא צורך בכלים. מושלם לאופניים משפחתיים או לכמה רוכבים.',
+    body: 'מנגנון שחרור מהיר למושב המאפשר כוונון גובה מיידי ללא צורך בכלים. נוח כשכמה רוכבים חולקים את אותם אופניים.',
   },
   {
     // היה כאן "נבנו בהתאם לתקני בטיחות בינלאומיים". אין עדיין דוח בדיקה
     // או תעודה לאופניים, ועד שיש מסמך האתר לא טוען לעמידה בתקן.
-    title: 'שליטה מלאה בעצירה',
+    title: 'בלם לכל גלגל',
     sub: 'בלם קדמי ובלם אחורי',
-    body: 'שני בלמי יד נפרדים, אחד לכל גלגל, לשליטה מלאה בעצירה בתנועה העירונית.',
+    body: 'שני בלמי יד נפרדים, אחד לכל גלגל, לבלימה מדורגת בתנועה העירונית.',
   },
   {
     title: 'פדלים רחבים משודרגים',
@@ -58,7 +58,7 @@ const en: SpecText[] = [
   {
     title: 'Wide city tires',
     sub: 'Kenda 32 mm',
-    body: '32 mm urban tires that give grip and comfort on asphalt, potholes and tram tracks.',
+    body: '32 mm urban tires that give grip and comfort on asphalt and over potholes.',
   },
   {
     title: 'Gearing tuned for the city',
@@ -78,12 +78,12 @@ const en: SpecText[] = [
   {
     title: 'Adjust it in seconds',
     sub: 'Quick release',
-    body: 'A quick-release seat clamp lets you change saddle height instantly, no tools needed. Ideal for a family bike or several riders.',
+    body: 'A quick-release seat clamp lets you change saddle height instantly, no tools needed. Handy when several riders share the same bike.',
   },
   {
-    title: 'Full stopping control',
+    title: 'A brake for each wheel',
     sub: 'Front and rear brakes',
-    body: 'Two separate hand brakes, one for each wheel, for full stopping control in city traffic.',
+    body: 'Two separate hand brakes, one for each wheel, for progressive braking in city traffic.',
   },
   {
     title: 'Wide upgraded pedals',

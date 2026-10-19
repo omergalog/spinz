@@ -16,9 +16,9 @@ const COMPANY = {
   phone: CO.phone,
 };
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ id, title, children }: { id?: string; title: string; children: React.ReactNode }) {
   return (
-    <section style={{ marginBottom: '30px' }}>
+    <section id={id} style={{ marginBottom: '30px', scrollMarginTop: '90px' }}>
       <h2 style={{
         fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(17px, 2.2vw, 21px)',
         color: DARK, margin: '0 0 10px', paddingInlineStart: '11px',
@@ -40,7 +40,7 @@ export default function Regulations() {
     <PageShell
       eyebrow="Terms"
       title="תקנון ותנאי שימוש"
-      subtitle="ההסכם המשפטי המלא בין SPINZ ללקוחותיה: הרכבה ובטיחות, אחריות, ביטול עסקה וסמכות שיפוט."
+      subtitle="ההסכם המשפטי המלא בין SPINZ ללקוחותיה: הרכבה ובטיחות, אחריות, ביטול עסקה, משלוח וסמכות שיפוט."
       heroImage="/assets/photo-black-detail.jpg"
       heroPosition="center 55%"
     >
@@ -51,7 +51,7 @@ export default function Regulations() {
             fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', color: '#9A9690',
             margin: '0 0 30px',
           }}>
-            גרסה 1.2 · עודכן באוקטובר 2026
+            גרסה 1.3 · עודכן באוקטובר 2026
           </p>
 
           <Section title="1. מבוא והגדרות">
@@ -84,7 +84,7 @@ export default function Regulations() {
             </ul>
           </Section>
 
-          <Section title="3. אחריות מוגבלת">
+          <Section id="warranty" title="3. אחריות מוגבלת">
             <ul style={{ margin: 0, paddingInlineStart: '18px' }}>
               <li style={{ marginBottom: '8px' }}>
                 <b>שלדה:</b> אחריות מוגבלת ל־5 שנים (60 חודשים) ממועד המסירה כנגד פגמי ייצור,
@@ -131,16 +131,34 @@ export default function Regulations() {
               (לפי הנמוך), ואנו מוותרים על כך. בכל ביטול יינתן החזר כספי מלא לאמצעי התשלום שבו
               בוצעה העסקה, בתוך 14 ימים ממועד קבלת הודעת הביטול.
             </p>
+            <p style={{ margin: '0 0 8px' }}>
+              {/* היה כאן "יש להחזירו במצב המאפשר מכירה חוזרת", שנקרא כתנאי
+                  לביטול. הבקשה לאריזה נשארת, בלי להתנות בה את הביטול (19.10.2026). */}
+              נבקש להחזיר את המוצר באריזתו המקורית ככל האפשר; אין בכך תנאי לביטול העסקה. לא ננכה
+              סכום מההחזר באופן אוטומטי. רק אם נגרמה למוצר פגיעה משמעותית בערכו עקב שימוש בו,
+              נפעל בעניין לפי הוראות הדין.
+            </p>
+            <p style={{ margin: '0 0 8px' }}>
+              בביטול מרצון החזרת המוצר היא באחריות הלקוח ועל חשבונו. אם המוצר הגיע פגום או לא תקין,
+              אם אינו תואם את ההזמנה (למשל דגם, מידה או צבע שגויים), אם האספקה התעכבה מעבר למועד
+              שנמסר, או בכל הפרה אחרת של החברה, האיסוף על חשבון החברה.
+            </p>
             <p style={{ margin: 0 }}>
-              בביטול לאחר קבלת המוצר יש להחזירו במצב המאפשר מכירה חוזרת, ככל הניתן באריזתו המקורית.
-              בביטול מרצון החזרת המוצר היא באחריות הלקוח ועל חשבונו; אם המוצר הגיע פגום, לא תקין,
-              או שהאספקה התעכבה מעבר למועד שנמסר, האיסוף על חשבון החברה. ביטול ניתן לבצע דרך
+              ביטול ניתן לבצע דרך
               <a href="/cancel-order" style={{ color: GOLD, fontWeight: 700 }}> טופס ביטול עסקה</a> שבאתר,
-              בדוא״ל או בטלפון.
+              בדוא״ל, בטלפון, בוואטסאפ, בדואר רשום או במסירה אישית בכתובת החברה (סעיף 7).
             </p>
           </Section>
 
-          <Section title="5. סמכות שיפוט">
+          <Section title="5. משלוח ואספקה">
+            <p style={{ margin: 0 }}>
+              המשלוח עד הבית כלול במחיר וזמין לרוב אזורי הארץ, ומועד המסירה מתואם מול הלקוח. ניתן
+              לבחור גם באיסוף עצמי מכפר ויתקין, בתיאום מראש. אם לא ניתן לספק לכתובת שמסר הלקוח,
+              החברה תיצור עמו קשר לפני מסירת ההזמנה ותציע איסוף עצמי או ביטול ההזמנה בהחזר כספי מלא.
+            </p>
+          </Section>
+
+          <Section title="6. סמכות שיפוט">
             <p style={{ margin: 0 }}>
               {/* היה כאן "סמכות שיפוט בלעדית במחוז תל אביב־יפו בלבד". מול צרכן
                   תנאי כזה עלול להיחשב מקפח, והוסר (19.10.2026). */}
@@ -148,7 +166,7 @@ export default function Regulations() {
             </p>
           </Section>
 
-          <Section title="6. פרטי העוסק">
+          <Section title="7. פרטי העוסק">
             <p style={{ margin: 0 }}>
               {COMPANY.name} · {COMPANY.companyId}<br />
               {COMPANY.address}<br />
@@ -163,7 +181,7 @@ export default function Regulations() {
           }}>
             אין באמור כדי לגרוע מזכויות הצרכן על פי חוק הגנת הצרכן, התשמ״א־1981 והתקנות מכוחו.
             בכל סתירה בין מסמך זה להוראות הדין, הוראות הדין גוברות. תקנון זה משלים את
-            <a href="/terms" style={{ color: GOLD }}> מדיניות הפרטיות ותנאי השימוש</a> ואת
+            <a href="/terms" style={{ color: GOLD }}> מדיניות הפרטיות</a> ואת
             <a href="/presale-terms" style={{ color: GOLD }}> תנאי המכירה המוקדמת</a>.
           </p>
 

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import PageShell from '../components/PageShell';
 import TermsEn from './TermsEn';
 import { useLang } from '../i18n/LanguageContext';
@@ -40,7 +41,7 @@ const privacySections = [
   },
   {
     title: 'Cookies',
-    text: 'אנו משתמשים בקובצי Cookies בהתאם להסכמתך. תוכל לנהל את ההעדפות שלך בכל עת דרך הגדרות הדפדפן.',
+    text: 'עוגיות למדידה (Google Analytics) ולפרסום (Meta) נטענות רק אחרי אישור בבאנר העוגיות. בלי אישור הן לא נטענות. אפשר לשנות את הבחירה בכל עת בקישור "הגדרות עוגיות" בתחתית כל עמוד.',
   },
   {
     title: 'פרטי החברה',
@@ -79,7 +80,7 @@ const termsSections = [
   },
   {
     title: 'אחריות מוגבלת',
-    text: `${COMPANY.legalNameHe} לא תישא באחריות לנזקים עקיפים, אובדן הכנסה או כל נזק תוצאתי הנובע מהשימוש במוצרים.`,
+    text: `בכפוף להוראות כל דין, ${COMPANY.legalNameHe} לא תישא באחריות לנזקים עקיפים, אובדן הכנסה או נזק תוצאתי הנובעים מהשימוש במוצרים או באתר. אין באמור כדי לגרוע מאחריות החברה לפי חוק האחריות למוצרים פגומים, התש״ם־1980.`,
   },
   {
     title: 'שינויים בתנאים',
@@ -111,9 +112,14 @@ function Section({ title, children }: { title: string | null; children: React.Re
 }
 
 export default function Terms() {
+  // ?tab=privacy פותח ישר את מדיניות הפרטיות. הקישור "מדיניות פרטיות"
+  // בפוטר ובהודעות שליד הטפסים נחת על לשונית התנאים, והפרטיות הייתה
+  // לחיצה נוספת שאף אחד לא ידע שצריך.
+  const { search } = useLocation();
+  const [tab, setTab] = useState<'terms' | 'privacy'>(
+    () => new URLSearchParams(search).get('tab') === 'privacy' ? 'privacy' : 'terms');
   // הנוסח העברי הוא המחייב — נשאר כפי שהוא, בלי שכבת תרגום.
   if (useLang() === 'en') return <TermsEn />;
-  const [tab, setTab] = useState<'terms' | 'privacy'>('terms');
   const sections = tab === 'privacy' ? privacySections : termsSections;
 
   return (

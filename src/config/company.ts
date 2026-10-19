@@ -17,6 +17,10 @@ export const COMPANY = {
   email: 'info@spinzbikes.com',
   phone: '052-756-5262',
   phoneE164: '972527565262',
+
+  /** רכז הנגישות. מוצג בהצהרת הנגישות, עם הטלפון והמייל שלמעלה. */
+  accessibilityCoordinator: 'עומר גל',
+  accessibilityCoordinatorEn: 'Omer Gal',
 } as const;
 
 /** מחרוזת מלאה לשימוש בסעיפי "פרטי החברה" */

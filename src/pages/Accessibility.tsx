@@ -42,7 +42,8 @@ export default function Accessibility() {
     { title: a.s3t, text: a.s3 },
     { title: a.s4t, text: a.s4 },
     { title: a.s5t, text: `${a.emailLabel}: ${COMPANY.email}\n${a.phoneLabel}: ${COMPANY.phone}\n${a.viaWhatsapp}` },
-    { title: a.s6t, text: `${a.coordinator(lang === 'en' ? COMPANY.legalNameEn : COMPANY.legalNameHe)} ${COMPANY.email}` },
+    { title: a.s7t, text: a.s7 },
+    { title: a.s6t, text: `${a.coordinator(lang === 'en' ? COMPANY.legalNameEn : COMPANY.legalNameHe)}\n${lang === 'en' ? COMPANY.accessibilityCoordinatorEn : COMPANY.accessibilityCoordinator}\n${a.phoneLabel}: ${COMPANY.phone}\n${a.emailLabel}: ${COMPANY.email}` },
   ];
   return (
     <PageShell

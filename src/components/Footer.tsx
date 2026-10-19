@@ -1,7 +1,10 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { submitNewsletter } from '../lib/payment';
+import { openCookieSettings } from '../lib/consent';
+import { COMPANY } from '../config/company';
 import { useLang, useT, useDir, localizePath } from '../i18n/LanguageContext';
+import PrivacyNote from './PrivacyNote';
 
 const BG = '#1C1C1C';
 const BORDER = '#2A2A2A';
@@ -89,12 +92,12 @@ function NewsletterForm() {
           {status === 'failed' ? t.reviews.failed : t.footer.badEmail}
         </p>
       )}
+      <PrivacyNote kind="newsletter" tone="dark" />
     </form>
   );
 }
 
 export default function Footer() {
-  const navigate = useNavigate();
   const lang = useLang();
   const dir = useDir();
   const t = useT();
@@ -207,39 +210,60 @@ export default function Footer() {
             ))}
           </div>
 
+          {/* איך מבטלים. מופיע בכל עמוד, ולא רק בעמוד הביטול: הודעת ביטול
+              תקפה גם בטלפון, במייל ובוואטסאפ, והלקוח צריך לדעת את זה בלי לחפש. */}
+          <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', color: '#B5B2AC', lineHeight: 1.7, margin: '0 0 18px' }}>
+            <Link to={L('/cancel-order')} style={{ color: '#EDEBE6', textDecoration: 'underline', textUnderlineOffset: '2px' }}>{t.footer.links.cancelOrder}</Link>
+            {': '}{t.footer.cancelHow1}{' '}
+            <a href={`tel:${COMPANY.phone}`} style={{ color: '#EDEBE6' }}>{COMPANY.phone}</a>,{' '}
+            {t.footer.cancelHowMail}{' '}
+            <a href={`mailto:${COMPANY.email}`} style={{ color: '#EDEBE6' }}>{COMPANY.email}</a>{' '}
+            {t.footer.cancelHow2}<a href={`https://wa.me/${COMPANY.phoneE164}`} target="_blank" rel="noopener noreferrer" style={{ color: '#EDEBE6' }}>WhatsApp</a>.{' '}
+            {t.footer.cancelHow3}
+          </p>
+
           {/* Bottom bar */}
           <div className="flex flex-col items-center justify-between gap-2 py-6 md:flex-row" style={{ borderTop: `1px solid ${BORDER}` }}>
             <p className="text-xs" style={{ color: '#FFFFFF', fontFamily: "'Heebo', sans-serif" }}>
               {t.footer.rights}
             </p>
             <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-              <button
-                onClick={() => navigate(L('/regulations'))}
+              <Link
+                to={L('/regulations')}
                 style={{
                   fontFamily: "'Heebo', sans-serif", fontSize: '12px',
-                  color: '#888', background: 'none', border: 'none',
-                  cursor: 'pointer', textDecoration: 'underline',
+                  color: '#888', textDecoration: 'underline',
                   textUnderlineOffset: '3px', transition: 'color 0.2s',
-                  padding: '10px 0',
+                  display: 'inline-block', padding: '10px 0',
                 }}
-                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = '#C9A870'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = '#888'; }}
+                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#C9A870'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#888'; }}
               >
                 {t.footer.links.regulations}
-              </button>
-              <button
-                onClick={() => navigate(L('/terms'))}
+              </Link>
+              <Link
+                to={`${L('/terms')}?tab=privacy`}
                 style={{
                   fontFamily: "'Heebo', sans-serif", fontSize: '12px',
-                  color: '#888', background: 'none', border: 'none',
-                  cursor: 'pointer', textDecoration: 'underline',
+                  color: '#888', textDecoration: 'underline',
                   textUnderlineOffset: '3px', transition: 'color 0.2s',
-                  padding: '10px 0',
+                  display: 'inline-block', padding: '10px 0',
                 }}
-                onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.color = '#C9A870'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.color = '#888'; }}
+                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#C9A870'; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#888'; }}
               >
                 {t.footer.links.terms}
+              </Link>
+              <button
+                type="button"
+                onClick={openCookieSettings}
+                style={{
+                  fontFamily: "'Heebo', sans-serif", fontSize: '12px',
+                  color: '#888', background: 'none', border: 'none', cursor: 'pointer',
+                  textDecoration: 'underline', textUnderlineOffset: '3px', padding: '10px 0',
+                }}
+              >
+                {t.footer.cookieSettings}
               </button>
               <Link
                 to={L("/accessibility")}

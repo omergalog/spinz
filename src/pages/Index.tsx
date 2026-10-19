@@ -9,7 +9,7 @@ import LeadForm from '../components/LeadForm';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
 import CartDrawer from '../components/CartDrawer';
-import CookieBanner from '../components/CookieBanner';
+import { LOADER_DONE_EVENT } from '../lib/consent';
 import { CartProvider } from '../context/CartContext';
 import { useLenis } from '../hooks/useLenis';
 import { useT } from '../i18n/LanguageContext';
@@ -26,13 +26,12 @@ const Index = () => {
   useEffect(() => { document.title = t.meta.homeTitle; }, [t]);
 
   const [showLoader, setShowLoader] = useState(() => !hasLoaded());
-  const [loaderDone, setLoaderDone] = useState(hasLoaded);
   useLenis();
 
   const handleLoaderDone = useCallback(() => {
     sessionStorage.setItem('spinz-loaded', '1');
     setShowLoader(false);
-    setLoaderDone(true);
+    window.dispatchEvent(new Event(LOADER_DONE_EVENT));
   }, []);
 
   // Scroll to hash target when arriving from another page (e.g. /#lead-form, /#models)
@@ -51,7 +50,6 @@ const Index = () => {
     <CartProvider>
       {showLoader && <Loader onDone={handleLoaderDone} />}
       <CartDrawer />
-      <CookieBanner loaderDone={loaderDone} />
       <main style={{ backgroundColor: '#F5F2EC', minHeight: '100vh' }}>
         <Navbar />
         <VideoSection />

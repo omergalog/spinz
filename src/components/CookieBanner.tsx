@@ -1,13 +1,24 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PrivacyModal from './PrivacyModal';
-import { useT, useDir } from '../i18n/LanguageContext';
+import { useLocation } from 'react-router-dom';
+import { useT, useDir, stripLangPrefix } from '../i18n/LanguageContext';
+import { COOKIE_SETTINGS_EVENT, LOADER_DONE_EVENT, getConsent, setConsent } from '../lib/consent';
 
 const DARK = '#1C1C1C';
 const GOLD = '#C9A870';
 const LIGHT = '#F5F2EC';
 
-export default function CookieBanner({ loaderDone }: { loaderDone: boolean }) {
+export default function CookieBanner() {
+  const { pathname } = useLocation();
+  // בדף הבית מחכים לסוף מסך הפתיחה, כדי שהבאנר לא יופיע מעליו.
+  const [loaderDone, setLoaderDone] = useState(() =>
+    stripLangPrefix(pathname) !== '/' || sessionStorage.getItem('spinz-loaded') === '1');
+  useEffect(() => {
+    const done = () => setLoaderDone(true);
+    window.addEventListener(LOADER_DONE_EVENT, done);
+    return () => window.removeEventListener(LOADER_DONE_EVENT, done);
+  }, []);
   const [visible, setVisible] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
   const barRef = useRef<HTMLDivElement>(null);
@@ -31,15 +42,19 @@ export default function CookieBanner({ loaderDone }: { loaderDone: boolean }) {
 
   useEffect(() => {
     if (!loaderDone) return;
-    try { if (localStorage.getItem('spinz-cookies') === '1') return; } catch {}
+    if (getConsent() !== null) return;
     const t = setTimeout(() => { setVisible(true); }, 2600);
     return () => clearTimeout(t);
   }, [loaderDone]);
 
-  const accept = () => {
-    try { localStorage.setItem('spinz-cookies', '1'); } catch {}
-    setVisible(false);
-  };
+  // "הגדרות עוגיות" בפוטר פותח את הבאנר שוב, גם למי שכבר בחר.
+  useEffect(() => {
+    const open = () => setVisible(true);
+    window.addEventListener(COOKIE_SETTINGS_EVENT, open);
+    return () => window.removeEventListener(COOKIE_SETTINGS_EVENT, open);
+  }, []);
+  const accept = () => { setConsent('granted'); setVisible(false); };
+  const decline = () => { setConsent('denied'); setVisible(false); };
 
   return (
     <>
@@ -133,11 +148,34 @@ export default function CookieBanner({ loaderDone }: { loaderDone: boolean }) {
             >
               {t.cookies.accept}
             </motion.button>
+            {/* דחייה באותו משקל כמו אישור: לחיצה אחת, בלי להסתתר מאחורי
+                "הגדרות". אחרי דחייה לא נטענים Analytics והפיקסל. */}
+            <motion.button
+              whileHover={{ opacity: 0.85 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={decline}
+              style={{
+                flex: 1,
+                backgroundColor: 'transparent',
+                color: LIGHT,
+                border: `1px solid #6A6862`,
+                borderRadius: '6px',
+                padding: '10px 20px',
+                fontFamily: "'Heebo', sans-serif",
+                fontWeight: 700,
+                fontSize: '13px',
+                letterSpacing: '0.08em',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {t.cookies.decline}
+            </motion.button>
 
             <motion.button
               whileHover={{ opacity: 0.7 }}
               whileTap={{ scale: 0.97 }}
-              onClick={() => { accept(); setPrivacyOpen(true); }}
+              onClick={() => setPrivacyOpen(true)}
               style={{
                 backgroundColor: 'transparent',
                 color: '#888',

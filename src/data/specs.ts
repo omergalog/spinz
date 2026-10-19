@@ -10,24 +10,25 @@ const he: SpecText[] = [
     body: 'שלדת אלומיניום המעניקה תחושת קלילות יוצאת דופן. מאפשרת זינוק זריז בכל רמזור ונוחה לנשיאה אל תוך הדירה או המשרד במאמץ מינימלי.',
   },
   {
-    title: 'צמיגים עמידים לפנצ\'ר',
+    // "עמידים לפנצ'ר" הוסר: אין מסמך יצרן שמאשר הגנה מפני פנצ'ר בדגם הזה.
+    title: 'צמיגים רחבים לעיר',
     sub: 'Kenda 32 מ״מ',
-    body: 'אחיזה בטוחה וראש שקט. צמיגים אורבניים רחבים שבולעים את מהמורות העיר, פסי הרכבת הקלה והאספלט, בלי לעכב אותך.',
+    body: 'צמיגים אורבניים ברוחב 32 מ״מ, שנותנים אחיזה ונוחות על אספלט, מהמורות ופסי הרכבת הקלה.',
   },
   {
     title: 'יחס העברה חכם לעיר',
     sub: 'גלגל שיניים 46T',
-    body: 'האיזון המושלם בין מהירות לשיוט קל. מנגנון הסינגל ספיד מכויל בדיוק לעליות המתונות ולמישורים של הרחובות, כדי שתגיע מהר ובמאמץ מינימלי.',
+    body: 'יחס העברה שנבחר לרכיבה עירונית: מתאים למישורים ולעליות מתונות, בלי הילוכים לתחזק.',
   },
   {
     title: 'הנדסת חומרים חכמה',
     sub: 'אלומיניום + פלדה',
-    body: 'שילוב מדויק של שלדת אלומיניום קלה עם מזלג פלדה קדמי, שסופג את הרעידות מהכביש ומעניק חוויית רכיבה חלקה ונוחה יותר.',
+    body: 'שלדת אלומיניום קלה עם מזלג פלדה קדמי. הפלדה עוזרת לרכך רעידות מהכביש.',
   },
   {
-    title: 'חישוקים מחוזקים',
-    sub: 'פרופיל גבוה 30 מ״מ',
-    body: 'גלגלים בעלי פרופיל גבוה שנותנים מראה אורבני מוקפד, ובעיקר עמידות מול בורות, שפות מדרכה ובלאי עירוני.',
+    title: 'חישוקים בפרופיל גבוה',
+    sub: 'עומק 30 מ״מ, דופן כפולה',
+    body: 'חישוקים בעומק 30 מ״מ עם דופן כפולה, למראה אורבני מוקפד ולרכיבה עירונית יומיומית.',
   },
   {
     title: 'התאמה בשנייה',
@@ -43,8 +44,8 @@ const he: SpecText[] = [
   },
   {
     title: 'פדלים רחבים משודרגים',
-    sub: 'יציבות מלאה',
-    body: 'פדלים רחבים מפלסטיק קשיח בעיצוב נקי, המעניקים שטח פנים גדול יותר לאחיזה בטוחה, מניעת החלקות ודיווש נוח בכל נעל.',
+    sub: 'שטח דריכה רחב',
+    body: 'פדלים רחבים מפלסטיק קשיח בעיצוב נקי, עם שטח דריכה גדול יותר לדיווש נוח בכל נעל.',
   },
 ];
 
@@ -55,24 +56,24 @@ const en: SpecText[] = [
     body: 'An aluminum frame that feels remarkably light. Quick off the line at every traffic light, and easy to carry up to your apartment or office without breaking a sweat.',
   },
   {
-    title: 'Puncture-resistant tires',
+    title: 'Wide city tires',
     sub: 'Kenda 32 mm',
-    body: 'Sure grip and peace of mind. Wide urban tires that soak up potholes, tram tracks and rough asphalt without slowing you down.',
+    body: '32 mm urban tires that give grip and comfort on asphalt, potholes and tram tracks.',
   },
   {
     title: 'Gearing tuned for the city',
     sub: '46T chainring',
-    body: 'The sweet spot between speed and easy cruising. The single-speed drivetrain is geared for the gentle climbs and flats of city streets, so you get there fast without working for it.',
+    body: 'A ratio chosen for city riding: suited to flats and gentle climbs, with no gears to maintain.',
   },
   {
     title: 'Smart material pairing',
     sub: 'Aluminum + steel',
-    body: 'A light aluminum frame paired with a steel front fork that absorbs road buzz, for a noticeably smoother, more comfortable ride.',
+    body: 'A light aluminum frame with a steel front fork. The steel helps soften road vibration.',
   },
   {
-    title: 'Reinforced rims',
-    sub: '30 mm deep profile',
-    body: 'Deep-profile wheels aren’t only about the sharp urban look. They stand up to potholes, curbs and everyday city wear.',
+    title: 'Deep-profile rims',
+    sub: '30 mm deep, double wall',
+    body: '30 mm deep double-wall rims, for a sharp urban look and everyday city riding.',
   },
   {
     title: 'Adjust it in seconds',
@@ -86,8 +87,8 @@ const en: SpecText[] = [
   },
   {
     title: 'Wide upgraded pedals',
-    sub: 'Rock-solid footing',
-    body: 'Wide, clean-looking pedals in rigid composite give you more surface area for a secure grip. No slipping, comfortable pedaling in any shoe.',
+    sub: 'Wide platform',
+    body: 'Wide, clean-looking pedals in rigid composite, with a larger platform for comfortable pedaling in any shoe.',
   },
 ];
 

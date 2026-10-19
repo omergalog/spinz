@@ -77,6 +77,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       document.head.appendChild(canonical);
     }
     canonical.href = origin + localizePath(bare, lang);
+
+    // og:url תואם ל-canonical. ב-index.html הוא קבוע לדף הבית, ולכן כל
+    // עמוד שנסרק אחרי הרצת JavaScript דיווח על עצמו ככתובת דף הבית.
+    document.querySelector('meta[property="og:url"]')?.setAttribute('content', canonical.href);
   }, [lang, pathname]);
 
   return <LanguageContext.Provider value={lang}>{children}</LanguageContext.Provider>;

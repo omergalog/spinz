@@ -58,7 +58,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
               'Carefully lift the bike out of the box and remove all protective material: foam, tape and cable ties.',
               'Attach the handlebars to the stem: slide the stem into the steerer tube, line it up square to the front wheel, and tighten the Allen bolts gently and evenly (a little on each bolt, in rotation).',
               'If the front wheel came separately, fit it into the fork, close the quick release, and make sure the wheel sits centered between the fork legs.',
-              'Thread in the pedals. This is the step you least want to get wrong. The right pedal (R) threads clockwise; the left pedal (L) threads counter-clockwise. Start each one by hand so you don’t cross-thread it.',
+              'Thread in the pedals. This is the step you least want to get wrong. The right pedal (R) threads clockwise; the left pedal (L) threads counter-clockwise. Start each one by hand so you don’t cross-thread it, then tighten firmly with a 15 mm wrench or a pedal spanner. Hand-tight is not enough, and a loose pedal can work free while riding.',
               'Set the saddle height with the quick release and close it firmly. Check that the saddle is straight and centered front to back.',
               'Check tire pressure and inflate to the range printed on the tire wall, then squeeze both brake levers to confirm they bite properly.',
             ],
@@ -87,7 +87,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
     faq: [
       { q: 'How long does assembly take?', a: '15 to 20 minutes for most people, even with no prior experience. With the included video it’s simpler still.' },
       { q: 'Do I need a mechanic?', a: 'No. Assembly is designed to be done at home and kept simple. That said, if you want complete peace of mind, a quick check at a bike shop afterwards is never a bad idea.' },
-      { q: 'What tools do I need?', a: 'The Allen keys you need come in the box. For final pedal tightening you may want a 15 mm wrench or a pedal spanner, if they don’t go all the way in by hand.' },
+      { q: 'What tools do I need?', a: 'The Allen keys you need come in the box. Final pedal tightening needs a 15 mm wrench or a pedal spanner. Everything else is tightened following the instructions in the box, and if anything is unclear, at a bike mechanic.' },
     ],
   },
 

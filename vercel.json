@@ -9,11 +9,31 @@
       "destination": "/en/index.html"
     },
     {
-      "source": "/en/(.*)",
+      "source": "/en/(bikes|merch|specs|sizes|faq|guides|story|gallery|community|reviews|contact|terms|regulations|presale-terms|cancel-order|accessibility)",
       "destination": "/en/index.html"
     },
     {
-      "source": "/(.*)",
+      "source": "/en/guides/:slug",
+      "destination": "/en/index.html"
+    },
+    {
+      "source": "/en/order/(success|failed)",
+      "destination": "/en/index.html"
+    },
+    {
+      "source": "/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/(bikes|merch|specs|sizes|faq|guides|story|gallery|community|reviews|contact|terms|regulations|presale-terms|cancel-order|accessibility)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/guides/:slug",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/order/(success|failed)",
       "destination": "/index.html"
     }
   ],

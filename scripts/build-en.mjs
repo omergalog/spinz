@@ -10,7 +10,7 @@
  */
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 
-const SITE = 'https://spinzbikes.com';
+const SITE = 'https://www.spinzbikes.com';
 const EN = {
   title: 'Spinz Bikes | The quiet revolution of riding in the city',
   description: 'Spinz. Urban single-speed city bikes, built for the street and designed to stand out.',

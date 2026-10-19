@@ -9,6 +9,7 @@ import { CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockErro
 import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
 import { arrivalLabelIn, usePresale } from '../config/presale';
 import { merchLabel } from '../data/merch';
+import PrivacyNote from './PrivacyNote';
 
 const DARK    = '#1C1C1C';   // text on gold buttons
 const GOLD    = '#C9A870';
@@ -711,6 +712,7 @@ export default function CartDrawer() {
                         {t.cart.agreeTerms}
                       </a>.
                     </p>
+                    <PrivacyNote kind="order" />
                   </div>
                 </motion.div>
               )}

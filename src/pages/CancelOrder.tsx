@@ -4,10 +4,12 @@ import LegalNotice from '../components/LegalNotice';
 import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
 import { submitCancellation } from '../lib/payment';
 import { COMPANY, COMPANY_LINE, COMPANY_LINE_EN } from '../config/company';
+import PrivacyNote from '../components/PrivacyNote';
 
 const DARK = '#1C1C1C';
 const MUTED = '#4A4845';
 const GOLD = '#C9A870';
+const LINK = '#7E6129';
 const BORDER = '#E0DCD4';
 
 type Status = 'idle' | 'sending' | 'sent' | 'error';
@@ -119,7 +121,7 @@ export default function CancelOrder() {
                 {c.receivedBody1}
                 {c.receivedBody2}
                 <br />
-                {c.questions} <a href={`mailto:${COMPANY.email}`} style={{ color: GOLD }}>{COMPANY.email}</a> · {COMPANY.phone}
+                {c.questions} <a href={`mailto:${COMPANY.email}`} style={{ color: LINK }}>{COMPANY.email}</a> · {COMPANY.phone}
               </p>
             </div>
           ) : (
@@ -129,9 +131,11 @@ export default function CancelOrder() {
                 borderRadius: '10px', padding: '14px 18px', marginBottom: '26px',
                 fontFamily: "'Heebo', sans-serif", fontSize: '13.5px', color: MUTED, lineHeight: 1.75,
               }}>
-                {c.alsoBy1} <a href={`tel:${COMPANY.phone}`} style={{ color: GOLD }}>{COMPANY.phone}</a>,{' '}
-                {c.alsoBy2} <a href={`mailto:${COMPANY.email}`} style={{ color: GOLD }}>{COMPANY.email}</a> {c.alsoBy3}{' '}
-                {c.seeTerms1} <a href={L('/presale-terms')} style={{ color: GOLD }}>{c.seeTerms2}</a>.
+                {/* הקישורים היו בזהב #C9A870 על רקע שמנת — 2.2:1, מתחת לסף הקריאות. */}
+                {c.alsoBy1} <a href={`tel:${COMPANY.phone}`} style={{ color: LINK }}>{COMPANY.phone}</a>,{' '}
+                {c.alsoBy2} <a href={`mailto:${COMPANY.email}`} style={{ color: LINK }}>{COMPANY.email}</a> {c.alsoBy3}<a href={`https://wa.me/${COMPANY.phoneE164}`} target="_blank" rel="noopener noreferrer" style={{ color: LINK }}>WhatsApp</a>.{' '}
+                <strong>{c.include}</strong>{' '}
+                {c.seeTerms1} <a href={L('/presale-terms')} style={{ color: LINK }}>{c.seeTerms2}</a>.
               </div>
 
               <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -203,6 +207,7 @@ export default function CancelOrder() {
                 >
                   {status === 'sending' ? c.sending : c.submit}
                 </button>
+                <PrivacyNote kind="request" />
 
                 <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: '#9A9690', margin: 0, lineHeight: 1.7 }}>
                   {c.legal1}{' '}

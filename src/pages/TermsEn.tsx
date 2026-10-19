@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import PageShell from '../components/PageShell';
 import LegalNotice from '../components/LegalNotice';
 import { COMPANY as CO, COMPANY_LINE_EN } from '../config/company';
@@ -16,7 +17,7 @@ export const privacySectionsEn = [
   { title: 'Data retention', text: 'Information is retained for as long as needed for the purpose it was collected for, or as required by law.' },
   { title: 'Your rights', text: 'You have the right to access your information, correct it, delete it, restrict its processing or object to it, by contacting us at the address below.' },
   { title: 'Contact', text: `To exercise your rights or for any privacy question: ${CO.email}` },
-  { title: 'Cookies', text: 'We use cookies in accordance with your consent. You can manage your preferences at any time through your browser settings.' },
+  { title: 'Cookies', text: 'Measurement (Google Analytics) and advertising (Meta) cookies load only after you accept them in the cookie banner. Without your consent they are not loaded. You can change your choice at any time via the "Cookie settings" link at the bottom of every page.' },
   { title: 'Company details', text: `The site is operated by ${COMPANY_LINE_EN}. Email: ${CO.email} · Phone: ${CO.phone}.` },
 ];
 
@@ -28,7 +29,7 @@ export const termsSectionsEn = [
   { title: 'Shipping', text: 'For a regular order from stock, shipping takes place within 5 business days of order confirmation, anywhere in Israel. For a pre-order, shipping begins once the goods reach our warehouse, around the estimated delivery date shown at the time of ordering. Local pickup from Kfar Vitkin is available by prior arrangement, at no shipping charge.' },
   { title: 'Warranty', text: 'The aluminum frame carries a 5-year warranty from the date of delivery. The warranty does not cover wear items (tires, inner tubes, chain, brake pads, grips), reasonable wear, or damage caused by improper use, an accident, modifications made to the product, or assembly not carried out in accordance with the assembly instructions supplied.' },
   { title: 'Cancellation and returns', text: 'In accordance with the Israeli Consumer Protection Law, a transaction may be cancelled within 14 days of receiving the product. Full details appear in our Terms & Conditions and Pre-Sale Terms.' },
-  { title: 'Limitation of liability', text: `${CO.legalNameEn} shall not be liable for indirect damages, loss of income or any consequential damage arising from use of the product or the site, subject to any applicable law.` },
+  { title: 'Limitation of liability', text: `${CO.legalNameEn} shall not be liable for indirect damages, loss of income or any consequential damage arising from use of the product or the site, subject to any applicable law. Nothing in this clause derogates from the Company’s liability under the Defective Products Liability Law, 5740-1980.` },
   { title: 'Changes to these terms', text: `${CO.legalNameEn} reserves the right to update these terms at any time. Continued use of the site after an update constitutes acceptance of the revised terms.` },
   { title: 'Contact', text: `For any question: ${CO.email} · ${CO.phone}` },
 ];
@@ -57,7 +58,9 @@ function Section({ title, children }: { title: string | null; children: React.Re
  * הנוסח העברי — המחייב — נשאר ב-Terms.tsx ללא שינוי.
  */
 export default function TermsEn() {
-  const [tab, setTab] = useState<'terms' | 'privacy'>('terms');
+  const { search } = useLocation();
+  const [tab, setTab] = useState<'terms' | 'privacy'>(
+    () => new URLSearchParams(search).get('tab') === 'privacy' ? 'privacy' : 'terms');
   const sections = tab === 'privacy' ? privacySectionsEn : termsSectionsEn;
 
   return (

@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { CheckCircle, AlertCircle } from 'lucide-react';
 import { submitLead } from '../lib/payment';
 import { COMPANY } from '../config/company';
+import PrivacyNote from './PrivacyNote';
 
 const DARK       = '#1C1C1C';
 const GOLD       = '#C9A870';
@@ -482,6 +483,7 @@ export default function LeadForm() {
                     >
                       {status === 'loading' ? t.lead.sending : t.lead.send}
                     </button>
+                    <PrivacyNote kind="request" tone="dark" />
                     <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#FFFFFF', margin: '16px 0 0', textAlign: 'center' }}>
                       {t.lead.noSpam}
                     </p>

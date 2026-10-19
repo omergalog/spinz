@@ -5,6 +5,7 @@ import { Star, X, Plus } from 'lucide-react';
 import PageShell from '../components/PageShell';
 import { submitReview } from '../lib/payment';
 import { fetchApprovedReviews } from '../lib/reviews';
+import PrivacyNote from '../components/PrivacyNote';
 
 const GOLD = '#C9A870';
 const DARK = '#1C1C1C';
@@ -27,11 +28,14 @@ function Stars({ n, size = 16 }: { n: number; size?: number }) {
 }
 
 function StarPicker({ value, onChange }: { value: number; onChange: (n: number) => void }) {
+  const t = useT();
   const [hovered, setHovered] = useState(0);
+  // בלי שם, קורא מסך הקריא חמישה "כפתור" זהים, בלי לומר מה נבחר.
   return (
-    <div style={{ display: 'flex', gap: '6px' }}>
+    <div role="radiogroup" aria-label={t.reviews.rating} style={{ display: 'flex', gap: '6px' }}>
       {[1, 2, 3, 4, 5].map(n => (
-        <button key={n} type="button" onClick={() => onChange(n)} onMouseEnter={() => setHovered(n)} onMouseLeave={() => setHovered(0)}
+        <button key={n} type="button" role="radio" aria-checked={value === n} aria-label={t.reviews.starsLabel(n)}
+          onClick={() => onChange(n)} onMouseEnter={() => setHovered(n)} onMouseLeave={() => setHovered(0)}
           style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
           <Star size={26} fill={(hovered || value) >= n ? GOLD : 'none'} stroke={GOLD} strokeWidth={1.5} />
         </button>
@@ -116,6 +120,7 @@ function ReviewModal({ onClose }: { onClose: () => void }) {
                 </div>
               </div>
               {status === 'error' && <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#c0392b', margin: 0 }}>{t.reviews.failed}</p>}
+              <PrivacyNote kind="review" />
               <button type="submit" disabled={status === 'sending'}
                 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '14px', color: DARK, backgroundColor: GOLD, border: 'none', borderRadius: '10px', padding: '13px 28px', cursor: status === 'sending' ? 'wait' : 'pointer', opacity: status === 'sending' ? 0.7 : 1 }}>
                 {status === 'sending' ? t.reviews.sending : t.reviews.submitPage}
@@ -154,7 +159,8 @@ export default function ReviewsPage() {
           {/* CTA bar */}
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'center', justifyContent: 'space-between', marginBottom: '40px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              {reviews.length > 0 && <Stars n={5} size={20} />}
+              {/* היה כאן תמיד 5 כוכבים, בלי קשר לדירוג בפועל. */}
+              {reviews.length > 0 && <Stars n={Math.round(reviews.reduce((a, r) => a + r.stars, 0) / reviews.length)} size={20} />}
               <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 600, color: DARK }}>
                 {reviews.length > 0 ? t.reviews.countLabel(reviews.length) : t.reviews.none}
               </span>
@@ -166,6 +172,10 @@ export default function ReviewsPage() {
               <Plus size={18} /> {t.reviews.leaveOne}
             </button>
           </div>
+
+          <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: MUTED, margin: '-24px 0 28px', lineHeight: 1.7 }}>
+            {t.reviews.howPublished}
+          </p>
 
           {/* Reviews grid */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>

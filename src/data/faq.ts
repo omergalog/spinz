@@ -17,7 +17,7 @@ const he: FaqItem[] = [
   },
   {
     q: 'אפשר לשלם בתשלומים?',
-    a: 'בהחלט. ניתן לפרוס לעד 12 תשלומים, כ-₪91 לחודש במחיר ההשקה. מקבלים אשראי, ביט, Apple Pay ו-Google Pay.',
+    a: 'בהחלט. ניתן לפרוס לעד 12 תשלומים, כ-₪91 לחודש במחיר ההשקה. מקבלים כרטיס אשראי וביט.',
   },
   {
     q: 'לאיזה גובה מתאים כל דגם?',
@@ -33,7 +33,7 @@ const he: FaqItem[] = [
   },
   {
     q: 'איפה אפשר לתקן את האופניים?',
-    a: 'האופניים בנויים על רכיבים סטנדרטיים שניתן למצוא בכל חנות אופניים בישראל. אין צורך בטכנאי מורשה.',
+    a: 'האופניים בנויים על רכיבים סטנדרטיים שניתן למצוא בכל חנות אופניים בישראל, כך שלתיקון ולתחזוקה אין צורך בטכנאי מורשה. לפני הרכיבה הראשונה אנחנו ממליצים בחום על בדיקת תקינות אצל מכונאי אופניים.',
   },
   {
     q: 'האופניים מתאימים לגברים ולנשים?',
@@ -56,7 +56,7 @@ const en: FaqItem[] = [
   },
   {
     q: 'Can I pay in installments?',
-    a: 'Absolutely. You can split the payment into up to 12 installments, about ₪91 a month at the launch price. We accept credit cards, Bit, Apple Pay and Google Pay.',
+    a: 'Absolutely. You can split the payment into up to 12 installments, about ₪91 a month at the launch price. We accept credit cards and Bit.',
   },
   {
     q: 'Which frame size suits my height?',
@@ -72,7 +72,7 @@ const en: FaqItem[] = [
   },
   {
     q: 'Where can I get the bike serviced?',
-    a: 'The bike is built entirely from standard components that any bike shop in Israel carries. No authorized technician required.',
+    a: 'The bike is built entirely from standard components that any bike shop in Israel carries, so repairs and servicing need no authorized technician. Before your first ride we strongly recommend a check by a bike mechanic.',
   },
   {
     q: 'Is the bike suitable for both men and women?',

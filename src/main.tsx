@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { MotionConfig } from 'framer-motion';
 import './styles/globals.css';
 import Index from './pages/Index';
@@ -16,6 +16,7 @@ import Guides from './pages/Guides';
 import GuideDetail from './pages/GuideDetail';
 import GalleryPage from './pages/GalleryPage';
 import Community from './pages/Community';
+import NotFound from './pages/NotFound';
 import ReviewsPage from './pages/ReviewsPage';
 import Contact from './pages/Contact';
 import PresaleTerms from './pages/PresaleTerms';
@@ -25,7 +26,8 @@ import Regulations from './pages/Regulations';
 import AccessibilityWidget from './components/AccessibilityWidget';
 import WhatsAppFab from './components/WhatsAppFab';
 import { getPauseMotion, onPauseMotionChange } from './utils/motionStore';
-import { initPixel } from './lib/pixel';
+import { loadTracking } from './lib/consent';
+import CookieBanner from './components/CookieBanner';
 import PasswordGate from './components/PasswordGate';
 import { LanguageProvider, EN_PREFIX, langFromPath } from './i18n/LanguageContext';
 import { getDict } from './i18n/dict';
@@ -35,8 +37,8 @@ function Root() {
 
   useEffect(() => onPauseMotionChange(setPauseMotionState), []);
 
-  // הפיקסל נטען רק אם הוגדר מזהה. בלעדיו זו פעולה ריקה.
-  useEffect(() => { initPixel(); }, []);
+  // מדידה ופרסום נטענים רק אחרי הסכמה (src/lib/consent.ts).
+  useEffect(() => { loadTracking(); }, []);
 
   return (
     <>
@@ -61,6 +63,10 @@ function Root() {
             >
               {getDict(langFromPath(window.location.pathname)).a11y.skipToContent}
             </a>
+
+            {/* בכל עמוד, ולא רק בדף הבית: מי שנכנס ישר לעמוד מוצר או
+                למדריך מגוגל לא ראה את הבאנר מעולם. */}
+            <CookieBanner />
 
             <main id="main-content">
               <Routes>
@@ -90,7 +96,7 @@ function Root() {
                       <Route path="accessibility" element={<Accessibility />} />
                     {/* קישורים ישנים (למשל ל-waitlist שהוסר) וכתובות שגויות
                         נוחתים בדף הבית של אותה שפה במקום בעמוד ריק. */}
-                    <Route path="*" element={<Navigate to={prefix ?? '/'} replace />} />
+                    <Route path="*" element={<NotFound />} />
                   </Route>
                 ))}
               </Routes>

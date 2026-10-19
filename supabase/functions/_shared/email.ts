@@ -6,6 +6,8 @@
  * מהשרת ולא מהדפדפן — לקוח שסגר את החלון אחרי החיוב עדיין יקבל אותו.
  */
 
+import { arrivalIn, isPickup } from './delivery.ts';
+
 const RESEND_KEY = Deno.env.get('RESEND_API_KEY') ?? '';
 const FROM = Deno.env.get('ORDER_EMAIL_FROM') ?? 'SPINZ <info@spinzbikes.com>';
 const BCC = Deno.env.get('ORDER_EMAIL_BCC') ?? 'info@spinzbikes.com';
@@ -35,7 +37,16 @@ const COPY = {
   he: {
     subject: (r: string) => `ההזמנה שלך ב-SPINZ התקבלה (${r})`,
     thanks: (n: string) => `תודה ${n}, ההזמנה נקלטה`,
-    intro: 'התשלום התקבל. נעדכן אותך במייל כשהמשלוח יוצא אליך.',
+    // הפתיחה תלויה באופן הקבלה ובשאלה אם האופניים כבר בארץ. "נעדכן
+    // כשהמשלוח יוצא" הבטיח משלוח גם למי שבחר איסוף, ומשלוח קרוב גם
+    // למי שקנה בפרי-סייל לפני שהמכולה הגיעה.
+    intro: {
+      ship: 'התשלום התקבל. נעדכן אותך כשההזמנה יוצאת אליך.',
+      pickup: 'התשלום התקבל. ניצור איתך קשר לתיאום מועד האיסוף מכפר ויתקין.',
+      presaleShip: (m: string) => `התשלום התקבל. האופניים מגיעים ארצה ב${m}. כשיגיעו נרכיב ונבדוק אותם, וניצור איתך קשר לתיאום המשלוח.`,
+      presalePickup: (m: string) => `התשלום התקבל. האופניים מגיעים ארצה ב${m}. כשיגיעו נרכיב ונבדוק אותם, וניצור איתך קשר לתיאום מועד האיסוף מכפר ויתקין.`,
+    },
+    pickupLabel: 'אופן קבלה',
     size: 'מידה', units: 'יח׳', discount: 'הנחה', paid: 'סה״כ שולם',
     reference: 'מספר אסמכתה', payment: 'אמצעי תשלום',
     card: (l: string) => `כרטיס המסתיים ב-${l}`,
@@ -52,7 +63,13 @@ const COPY = {
   en: {
     subject: (r: string) => `Your SPINZ order is confirmed (${r})`,
     thanks: (n: string) => `Thank you ${n}, your order is in`,
-    intro: 'Your payment went through. We will email you when your order ships.',
+    intro: {
+      ship: 'Your payment went through. We will let you know when your order ships.',
+      pickup: 'Your payment went through. We will contact you to arrange a pickup time in Kfar Vitkin.',
+      presaleShip: (m: string) => `Your payment went through. Your bike is due to arrive in Israel in ${m}. Once it lands we will assemble and check it, then contact you to arrange delivery.`,
+      presalePickup: (m: string) => `Your payment went through. Your bike is due to arrive in Israel in ${m}. Once it lands we will assemble and check it, then contact you to arrange a pickup time in Kfar Vitkin.`,
+    },
+    pickupLabel: 'Delivery',
     size: 'Size', units: 'pcs', discount: 'Discount', paid: 'Total paid',
     reference: 'Reference number', payment: 'Payment method',
     card: (l: string) => `Card ending in ${l}`,
@@ -87,7 +104,19 @@ export type OrderEmail = {
   discount?: number | null;
   couponCode?: string | null;
   lang?: Lang;
+  /** חודש הגעת האופניים, כשההזמנה בפרי-סייל. בלעדיו — האופניים כבר בארץ. */
+  arrival?: string | null;
 };
+
+function introOf(o: OrderEmail): string {
+  const c = COPY[o.lang === 'en' ? 'en' : 'he'];
+  const pickup = isPickup(o.address);
+  if (o.arrival) {
+    const m = arrivalIn(o.arrival, o.lang ?? 'he');
+    return pickup ? c.intro.presalePickup(m) : c.intro.presaleShip(m);
+  }
+  return pickup ? c.intro.pickup : c.intro.ship;
+}
 
 const ils = (n: number) => `₪${n.toLocaleString('he-IL')}`;
 const esc = (s: string) =>
@@ -151,7 +180,7 @@ function html(o: OrderEmail): string {
     <div style="padding:28px;">
       <h1 style="margin:0 0 6px;font-size:21px;color:#1C1C1C;">${esc(c.thanks(o.name))}</h1>
       <p style="margin:0 0 22px;font-size:14px;color:#4A4845;line-height:1.7;">
-        ${c.intro}
+        ${esc(introOf(o))}
       </p>
 
       <table style="width:100%;border-collapse:collapse;font-size:14px;">
@@ -170,7 +199,7 @@ function html(o: OrderEmail): string {
       <div style="background:#F5F2EC;border-radius:8px;padding:14px 16px;margin:18px 0;font-size:13px;color:#4A4845;line-height:1.9;">
         <div><strong>${c.reference}:</strong> <span style="direction:ltr;display:inline-block;">${esc(o.reference)}</span></div>
         ${o.last4 ? `<div><strong>${c.payment}:</strong> ${esc(c.card(o.last4))}</div>` : ''}
-        ${o.address ? `<div><strong>${c.address}:</strong> ${esc(o.address)}</div>` : ''}
+        ${o.address ? `<div><strong>${isPickup(o.address) ? c.pickupLabel : c.address}:</strong> ${esc(o.address)}</div>` : ''}
       </div>
 
       <h2 style="font-size:15px;color:#1C1C1C;margin:24px 0 8px;">${c.rightsTitle}</h2>
@@ -208,7 +237,7 @@ function text(o: OrderEmail): string {
   return [
     c.thanks(o.name) + '.',
     '',
-    c.intro,
+    introOf(o),
     '',
     ...lines,
     off > 0 ? `${c.discount}${o.couponCode ? ` (${o.couponCode.toUpperCase()})` : ''}: -${ils(off)}` : '',
@@ -216,7 +245,7 @@ function text(o: OrderEmail): string {
     '',
     `${c.reference}: ${o.reference}`,
     o.last4 ? c.card(o.last4) : '',
-    o.address ? `${c.address}: ${o.address}` : '',
+    o.address ? `${isPickup(o.address) ? c.pickupLabel : c.address}: ${o.address}` : '',
     '',
     `${c.rightsTitle}: ${c.rights} ${c.rightsBold}.`,
     c.returnCond,
@@ -285,6 +314,13 @@ export async function confirmOrderOnce(db: Db, sessionId: string, lang: Lang = '
 
   if (!s) return 'הסל לא נמצא';
 
+  // פרי-סייל פעיל והזמנה שיש בה אופניים: האופניים עוד לא בארץ, והמייל
+  // אומר מתי הם מגיעים. מרצ'נדייז לבד לא תלוי במכולה.
+  const hasBikes = (s.items ?? []).some((i: { category?: string }) => (i.category ?? 'bike') !== 'merch');
+  const { data: ps } = await db.from('site_settings')
+    .select('presale_active, arrival_label').eq('id', 1).maybeSingle();
+  const arrival = hasBikes && ps?.presale_active && ps?.arrival_label ? String(ps.arrival_label) : null;
+
   const err = await sendOrderConfirmation({
     to: s.customer_email ?? '',
     name: s.customer_name ?? '',
@@ -296,6 +332,7 @@ export async function confirmOrderOnce(db: Db, sessionId: string, lang: Lang = '
     couponCode: s.coupon_code,
     lang,
     reference: sessionId.slice(0, 8).toUpperCase(),
+    arrival,
   });
 
   if (err) {

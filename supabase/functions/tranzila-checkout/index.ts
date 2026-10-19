@@ -10,6 +10,7 @@ import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { IFRAME_URL } from '../_shared/tranzila.ts';
 import { corsHeaders } from '../_shared/cors.ts';
 import { clientIp } from '../_shared/client.ts';
+import { PICKUP_NOTES } from '../_shared/delivery.ts';
 
 const SITE = Deno.env.get('SITE_URL') ?? 'https://spinzbikes.com';
 const FUNCTIONS = `${Deno.env.get('SUPABASE_URL')}/functions/v1`;
@@ -94,11 +95,16 @@ Deno.serve(async (req) => {
     return json({ error: 'bad_json' }, 400, req);
   }
 
-  const { items, name, phone, email, address, coupon, lang } = body as {
+  const { items, name, phone, email, coupon, lang, delivery } = body as {
     items?: Array<Record<string, unknown>>;
     name?: string; phone?: string; email?: string; address?: string;
-    coupon?: string; lang?: string;
+    coupon?: string; lang?: string; delivery?: string;
   };
+  // באיסוף עצמי הנוסח נקבע בשרת ולא מגיע מהדפדפן, כדי שמייל האישור
+  // יזהה אותו לפי אותו ערך בדיוק (_shared/delivery.ts).
+  const address = delivery === 'pickup'
+    ? PICKUP_NOTES[lang === 'en' ? 'en' : 'he']
+    : (body as { address?: string }).address;
 
   if (!Array.isArray(items) || items.length === 0) return json({ error: 'EMPTY_CART' }, 400, req);
   if (!name?.trim() || !phone?.trim()) return json({ error: 'MISSING_DETAILS' }, 400, req);

@@ -84,6 +84,8 @@ export async function openCheckout(input: {
   email?: string;
   address?: string;
   coupon?: string;
+  /** איסוף עצמי: השרת כותב את נוסח האיסוף בעצמו, והכתובת לא נשלחת. */
+  delivery?: 'ship' | 'pickup';
   /** שפת החשבונית שטרנזילה תשלח ללקוח */
   lang?: string;
 }): Promise<CheckoutSession> {

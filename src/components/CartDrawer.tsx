@@ -299,7 +299,8 @@ export default function CartDrawer() {
         name: form.name,
         phone: form.phone,
         email: form.email || undefined,
-        address: delivery === 'pickup' ? t.cart.pickupAddress : form.address,
+        address: delivery === 'pickup' ? undefined : form.address,
+        delivery,
         // רק קוד שהוחל בפועל. מה שמופיע על המסך הוא מה שנגבה.
         coupon: couponState === 'ok' ? coupon.trim() : undefined,
         lang,

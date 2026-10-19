@@ -13,8 +13,19 @@ const FROM = Deno.env.get('ORDER_EMAIL_FROM') ?? 'SPINZ <info@spinzbikes.com>';
 const BCC = Deno.env.get('ORDER_EMAIL_BCC') ?? 'info@spinzbikes.com';
 const SITE = Deno.env.get('SITE_URL') ?? 'https://spinzbikes.com';
 
-const COMPANY = 'אופני סיבוב בערבון מוגבל בע״מ (SPINZ BIKES LTD), ח.פ. 517343661, התמר 137, בית חרות';
-const COMPANY_EN = 'SPINZ BIKES LTD (אופני סיבוב בערבון מוגבל בע״מ), company no. 517343661, HaTamar 137, Beit Herut, Israel';
+const COMPANY = 'אופני סיבוב בערבון מוגבל בע״מ (SPINZ BIKES LTD), ח.פ. 517343661, התמר 137, בית חרות · טלפון 052-756-5262 · info@spinzbikes.com';
+const COMPANY_EN = 'SPINZ BIKES LTD (אופני סיבוב בערבון מוגבל בע״מ), company no. 517343661, HaTamar 137, Beit Herut, Israel · Tel. +972-52-756-5262 · info@spinzbikes.com';
+
+/**
+ * היצרן, כפי שהוא מופיע בחשבונית, בשטר המטען ובפרופורמה. מייל האישור
+ * משמש גם כמסמך הגילוי שאחרי עסקה מרחוק, ולכן נושא את שם היצרן.
+ *
+ * ארץ הייצור מנוסחת כ"מיוצר בסין" ולא כאישור רשמי: אין מסמך שכותב
+ * זאת במפורש. ואין כאן שום אמירה על בדיקה או עמידה בתקן — אין עדיין
+ * דוח בדיקה או תעודה לאופניים.
+ */
+const MANUFACTURER = 'GUANGZHOU KESPOR BICYCLE CO.LTD';
+const MANUFACTURER_ADDRESS = '2ND FLOOR, BUILDING 2, NO. 11 HUAFU ROAD, TIESHAN VILLAGE, HUASHAN TOWN, HUADU DISTRICT, GUANGZHOU, GUANGDONG, CHINA';
 const SUPPORT = 'info@spinzbikes.com';
 
 const COLORS: Record<string, string> = {
@@ -57,6 +68,16 @@ const COPY = {
     rightsHow: 'ביטול מתבצע', rightsForm: 'בטופס הביטול', rightsOr: 'או במייל',
     returnCond: 'בביטול לאחר קבלת ההזמנה יש להחזיר את המוצרים במצב המאפשר מכירה חוזרת, ככל הניתן באריזה המקורית. החזרה מרצון היא על חשבון הלקוח, ועל ירידת ערך שנגרמה לאחר המסירה ניתן לחייב בהתאם לדין.',
     fullTerms: 'הפירוט המלא ב', termsLink: 'תקנון ומדיניות הביטול',
+    // תקציר מהתקנון (סעיף 3). התנאים המלאים בקישור.
+    productTitle: 'יצרן ואחריות',
+    maker: 'יצרן', origin: 'מיוצר בסין',
+    warranty: [
+      'שלדה: 5 שנים ממועד המסירה, כנגד פגמי ייצור, סדקים בריתוכים או כשל מבני.',
+      'מזלג ורכיבים קשיחים שאינם מתכלים (כידון, מוט מושב, זרועות דיווש): 12 חודשים.',
+      'חלקים מתכלים (צמיגים, פנימיות, רפידות בלם, שרשרת וגלגלי שיניים) אינם מכוסים, למעט פגם ייצור מובהק שהתגלה בתוך 30 ימים מהמסירה, לפני שימוש.',
+      'האחריות מותנית בהצגת החשבונית.',
+    ],
+    warrantyTerms: 'תנאי האחריות המלאים ב',
     question: 'שאלה? השב למייל הזה ונחזור אליך.',
     company: COMPANY, path: '', dir: 'rtl',
   },
@@ -80,6 +101,15 @@ const COPY = {
     rightsHow: 'To cancel, use', rightsForm: 'the cancellation form', rightsOr: 'or email',
     returnCond: 'If you cancel after receiving your order, the items must be returned in resalable condition, in its original packaging where possible. Return shipping for a voluntary cancellation is at your expense, and a drop in value caused after delivery may be charged as permitted by law.',
     fullTerms: 'Full details in our ', termsLink: 'terms and cancellation policy',
+    productTitle: 'Manufacturer and warranty',
+    maker: 'Manufacturer', origin: 'Made in China',
+    warranty: [
+      'Frame: 5 years from delivery, against manufacturing defects, weld cracks or structural failure.',
+      'Fork and non-wearing rigid components (handlebar, seat post, crank arms): 12 months.',
+      'Wear parts (tyres, tubes, brake pads, chain and cogs) are not covered, except for a clear manufacturing defect found within 30 days of delivery, before use.',
+      'The warranty requires the purchase invoice.',
+    ],
+    warrantyTerms: 'Full warranty terms in our ',
     question: 'Questions? Just reply to this email.',
     company: COMPANY_EN, path: '/en', dir: 'ltr',
   },
@@ -106,6 +136,8 @@ export type OrderEmail = {
   lang?: Lang;
   /** חודש הגעת האופניים, כשההזמנה בפרי-סייל. בלעדיו — האופניים כבר בארץ. */
   arrival?: string | null;
+  /** יש בהזמנה אופניים. היצרן ותנאי האחריות שייכים להם, לא לחולצות. */
+  bikes?: boolean;
 };
 
 function introOf(o: OrderEmail): string {
@@ -213,6 +245,18 @@ function html(o: OrderEmail): string {
         ${c.fullTerms}<a href="${SITE}${c.path}/regulations" style="color:#8A6D3B;">${c.termsLink}</a>.
       </p>
 
+      ${o.bikes ? `
+      <h2 style="font-size:15px;color:#1C1C1C;margin:24px 0 8px;">${c.productTitle}</h2>
+      <p style="margin:0 0 8px;font-size:13px;color:#4A4845;line-height:1.8;">
+        <strong>${c.maker}:</strong> <span dir="ltr">${MANUFACTURER}, ${MANUFACTURER_ADDRESS}</span>. ${c.origin}.
+      </p>
+      <ul style="margin:0;padding-inline-start:18px;font-size:13px;color:#4A4845;line-height:1.8;">
+        ${c.warranty.map(w => `<li>${w}</li>`).join('')}
+      </ul>
+      <p style="margin:8px 0 0;font-size:13px;color:#4A4845;line-height:1.8;">
+        ${c.warrantyTerms}<a href="${SITE}${c.path}/regulations" style="color:#8A6D3B;">${c.termsLink}</a>.
+      </p>` : ''}
+
       <p style="margin:24px 0 0;font-size:13px;color:#4A4845;line-height:1.8;">
         ${c.question}
       </p>
@@ -251,6 +295,13 @@ function text(o: OrderEmail): string {
     c.returnCond,
     `${SITE}${c.path}/cancel-order  |  ${SUPPORT}  |  ${SITE}${c.path}/regulations`,
     '',
+    ...(o.bikes ? [
+      `${c.productTitle}:`,
+      `${c.maker}: ${MANUFACTURER}, ${MANUFACTURER_ADDRESS}. ${c.origin}.`,
+      ...c.warranty.map(w => `- ${w}`),
+      `${c.warrantyTerms}${c.termsLink}: ${SITE}${c.path}/regulations`,
+      '',
+    ] : []),
     c.company,
   ].filter(Boolean).join('\n');
 }
@@ -333,6 +384,7 @@ export async function confirmOrderOnce(db: Db, sessionId: string, lang: Lang = '
     lang,
     reference: sessionId.slice(0, 8).toUpperCase(),
     arrival,
+    bikes: hasBikes,
   });
 
   if (err) {
@@ -504,6 +556,8 @@ export type ReadyEmail = {
   checksPassed: number;
   photoCount: number;
   lang?: Lang;
+  /** הזמנת איסוף עצמי — הנוסח מדבר על איסוף מכפר ויתקין ולא על מסירה. */
+  pickup?: boolean;
 };
 
 const READY = {
@@ -511,6 +565,7 @@ const READY = {
     subject: (r: string) => `האופניים שלך מוכנים (${r})`,
     title: (n: string) => `${n}, האופניים שלך מוכנים`,
     intro: 'סיימנו להרכיב ולבדוק. ניצור איתך קשר לתיאום מועד המסירה.',
+    introPickup: 'סיימנו להרכיב ולבדוק. ניצור איתך קשר לתיאום מועד האיסוף מכפר ויתקין.',
     builtTitle: 'מי טיפל באופניים שלך',
     assembler: 'הרכבה',
     checker: 'בדיקה',
@@ -524,6 +579,7 @@ const READY = {
     subject: (r: string) => `Your bike is ready (${r})`,
     title: (n: string) => `${n}, your bike is ready`,
     intro: 'Assembly and checks are done. We will contact you to arrange delivery.',
+    introPickup: 'Assembly and checks are done. We will contact you to arrange a pickup time in Kfar Vitkin.',
     builtTitle: 'Who worked on your bike',
     assembler: 'Assembly',
     checker: 'Inspection',
@@ -549,7 +605,7 @@ function readyHtml(o: ReadyEmail): string {
              style="max-width:560px;background:#FFFFFF;border:1px solid #E0DCD4;border-radius:12px;padding:28px;">
         <tr><td>
           <h1 style="margin:0 0 6px;font-size:21px;color:#1C1C1C;">${esc(c.title(baseName(o.name)))}</h1>
-          <p style="margin:0 0 20px;font-size:15px;color:#4A4845;line-height:1.6;">${esc(c.intro)}</p>
+          <p style="margin:0 0 20px;font-size:15px;color:#4A4845;line-height:1.6;">${esc(o.pickup ? c.introPickup : c.intro)}</p>
 
           <div style="border:1px solid #E0DCD4;border-radius:10px;padding:16px 18px;">
             <div style="font-size:13px;font-weight:700;color:#1C1C1C;margin-bottom:8px;">${esc(c.builtTitle)}</div>
@@ -578,7 +634,7 @@ function readyHtml(o: ReadyEmail): string {
 function readyText(o: ReadyEmail): string {
   const c = READY[o.lang === 'en' ? 'en' : 'he'];
   return [
-    c.title(baseName(o.name)), '', c.intro, '',
+    c.title(baseName(o.name)), '', o.pickup ? c.introPickup : c.intro, '',
     c.builtTitle + ':',
     o.assembler ? `${c.assembler}: ${o.assembler}` : '',
     o.checker ? `${c.checker}: ${o.checker}` : '',

@@ -35,9 +35,11 @@ const he: SpecText[] = [
     body: 'מנגנון שחרור מהיר למושב המאפשר כוונון גובה מיידי ללא צורך בכלים. מושלם לאופניים משפחתיים או לכמה רוכבים.',
   },
   {
-    title: 'בטיחות ללא פשרות',
-    sub: 'תקני בטיחות בינלאומיים',
-    body: 'האופניים תוכננו ונבנו בהתאם לתקני בטיחות בינלאומיים מחמירים. כי על בטיחות לא מתפשרים.',
+    // היה כאן "נבנו בהתאם לתקני בטיחות בינלאומיים". אין עדיין דוח בדיקה
+    // או תעודה לאופניים, ועד שיש מסמך האתר לא טוען לעמידה בתקן.
+    title: 'שליטה מלאה בעצירה',
+    sub: 'בלם קדמי ובלם אחורי',
+    body: 'שני בלמי יד נפרדים, אחד לכל גלגל, לשליטה מלאה בעצירה בתנועה העירונית.',
   },
   {
     title: 'פדלים רחבים משודרגים',
@@ -78,9 +80,9 @@ const en: SpecText[] = [
     body: 'A quick-release seat clamp lets you change saddle height instantly, no tools needed. Ideal for a family bike or several riders.',
   },
   {
-    title: 'Safety, no compromises',
-    sub: 'International safety standards',
-    body: 'The bike is designed and built to strict international safety standards. Safety isn’t something to cut corners on.',
+    title: 'Full stopping control',
+    sub: 'Front and rear brakes',
+    body: 'Two separate hand brakes, one for each wheel, for full stopping control in city traffic.',
   },
   {
     title: 'Wide upgraded pedals',

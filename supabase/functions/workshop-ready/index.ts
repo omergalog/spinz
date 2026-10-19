@@ -13,6 +13,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { corsHeaders } from '../_shared/cors.ts';
 import { sendReadyEmail } from '../_shared/email.ts';
+import { isPickup } from '../_shared/delivery.ts';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders(req) });
@@ -36,7 +37,7 @@ Deno.serve(async (req) => {
   );
 
   const { data: o } = await db.from('orders')
-    .select('id, product_name, size, status, customer_name, customer_email')
+    .select('id, product_name, size, status, customer_name, customer_email, notes')
     .eq('id', id).maybeSingle();
   if (!o) return json({ error: 'not_found' }, 404);
   if (o.status === 'cancelled') return json({ error: 'cancelled' }, 409);
@@ -78,6 +79,7 @@ Deno.serve(async (req) => {
     checksPassed: passed,
     photoCount: (photos ?? []).length,
     lang: body.lang === 'en' ? 'en' : 'he',
+    pickup: isPickup(o.notes),
   });
 
   if (err) { console.error('ready mail', err); return json({ ok: false, error: err }, 502); }

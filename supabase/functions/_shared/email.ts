@@ -569,7 +569,9 @@ const READY = {
     builtTitle: 'מי טיפל באופניים שלך',
     assembler: 'הרכבה',
     checker: 'בדיקה',
-    checks: (n: number) => `${n} בדיקות איכות, כולן עברו`,
+    // "בדיקות איכות, כולן עברו" נקרא כמו אישור תקן, ואין עדיין דוח
+    // בדיקה לאופניים. נכתב רק מה שנעשה בפועל: בדיקות של הסדנה שלנו.
+    checks: (n: number) => `בוצעו ${n} בדיקות סדנה`,
     photos: (n: number) => `${n} תמונות תועדו לפני האריזה`,
     separate: 'הבודק אינו מי שהרכיב. זו דרישה קבועה אצלנו, ולא מקרה.',
     question: 'שאלה? השב למייל הזה.',
@@ -583,7 +585,7 @@ const READY = {
     builtTitle: 'Who worked on your bike',
     assembler: 'Assembly',
     checker: 'Inspection',
-    checks: (n: number) => `${n} quality checks, all passed`,
+    checks: (n: number) => `${n} workshop checks carried out`,
     photos: (n: number) => `${n} photos recorded before packing`,
     separate: 'The person who inspects is never the person who assembled. That is a standing rule here, not a coincidence.',
     question: 'Questions? Just reply to this email.',

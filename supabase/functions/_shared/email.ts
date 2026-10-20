@@ -61,6 +61,7 @@ const COPY = {
     size: 'מידה', units: 'יח׳', discount: 'הנחה', paid: 'סה״כ שולם',
     reference: 'מספר אסמכתה', payment: 'אמצעי תשלום',
     card: (l: string) => `כרטיס המסתיים ב-${l}`,
+    installmentsLabel: 'תשלומים', installments: (n: number) => `${n} תשלומים ללא ריבית`,
     address: 'כתובת למשלוח',
     phone: 'טלפון לתיאום',
     rightsTitle: 'זכות הביטול שלך',
@@ -95,6 +96,7 @@ const COPY = {
     size: 'Size', units: 'pcs', discount: 'Discount', paid: 'Total paid',
     reference: 'Reference number', payment: 'Payment method',
     card: (l: string) => `Card ending in ${l}`,
+    installmentsLabel: 'Installments', installments: (n: number) => `${n} interest-free installments`,
     address: 'Shipping address',
     phone: 'Contact phone',
     rightsTitle: 'Your right to cancel',
@@ -131,6 +133,8 @@ export type OrderEmail = {
   items: OrderItem[];
   total: number;
   last4?: string | null;
+  /** מספר התשלומים הכולל, כשהעסקה נפרסה. 1 או חסר = תשלום אחד. */
+  installments?: number | null;
   reference: string;
   address?: string | null;
   /** הטלפון שהלקוח מסר — כדי שיראה שהוא נכון, כי דרכו מתאמים מסירה. */
@@ -235,6 +239,7 @@ function html(o: OrderEmail): string {
       <div style="background:#F5F2EC;border-radius:8px;padding:14px 16px;margin:18px 0;font-size:13px;color:#4A4845;line-height:1.9;">
         <div><strong>${c.reference}:</strong> <span style="direction:ltr;display:inline-block;">${esc(o.reference)}</span></div>
         ${o.last4 ? `<div><strong>${c.payment}:</strong> ${esc(c.card(o.last4))}</div>` : ''}
+        ${o.installments && o.installments > 1 ? `<div><strong>${c.installmentsLabel}:</strong> ${esc(c.installments(o.installments))}</div>` : ''}
         ${o.address ? `<div><strong>${isPickup(o.address) ? c.pickupLabel : c.address}:</strong> ${esc(o.address)}</div>` : ''}
         ${o.phone ? `<div><strong>${c.phone}:</strong> <span style="direction:ltr;display:inline-block;">${esc(o.phone)}</span></div>` : ''}
       </div>
@@ -294,6 +299,7 @@ function text(o: OrderEmail): string {
     '',
     `${c.reference}: ${o.reference}`,
     o.last4 ? c.card(o.last4) : '',
+    o.installments && o.installments > 1 ? `${c.installmentsLabel}: ${c.installments(o.installments)}` : '',
     o.address ? `${isPickup(o.address) ? c.pickupLabel : c.address}: ${o.address}` : '',
     o.phone ? `${c.phone}: ${o.phone}` : '',
     '',
@@ -378,12 +384,22 @@ export async function confirmOrderOnce(db: Db, sessionId: string, lang: Lang = '
     .select('presale_active, arrival_label').eq('id', 1).maybeSingle();
   const arrival = hasBikes && ps?.presale_active && ps?.arrival_label ? String(ps.arrival_label) : null;
 
+  // מספר התשלומים מגיע רק בהודעת ה-notify של טרנזילה: npay הוא מספר
+  // התשלומים אחרי הראשון (בעסקה של 12 תשלומים נשלח npay=11). נקרא מכאן
+  // ולא מפרמטר, כדי שגם מייל שנשלח מההתאמה הלילית יכלול אותו.
+  const { data: ev } = await db.from('payment_events')
+    .select('payload').eq('session_id', sessionId).eq('source', 'notify')
+    .order('created_at', { ascending: false }).limit(1).maybeSingle();
+  const npay = Number((ev?.payload as Record<string, string> | null)?.npay ?? 0);
+  const installments = Number.isInteger(npay) && npay > 0 && npay < 36 ? npay + 1 : null;
+
   const err = await sendOrderConfirmation({
     to: s.customer_email ?? '',
     name: s.customer_name ?? '',
     items: s.items ?? [],
     total: s.total_price,
     last4: s.card_last4,
+    installments,
     address: s.customer_notes,
     phone: s.customer_phone,
     discount: s.discount,

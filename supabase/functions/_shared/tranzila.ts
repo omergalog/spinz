@@ -224,8 +224,11 @@ export async function listTransactions(
  * סיכון להרצת קוד — הפלט מוברח — אבל אין סיבה לשמור זבל.
  */
 export function safeLast4(v: unknown): string | null {
+  // טרנזילה שולחת את המספר חסוי: 6 ספרות, כוכביות, 4 ספרות. קודם הכוכביות
+  // הוסרו ונשארו 10 ספרות, הבדיקה ל-4 בדיוק נכשלה, ו-4 הספרות לא נשמרו
+  // אף פעם (גם לא במיילים). שומרים רק את ה-4 האחרונות.
   const s = String(v ?? '').replace(/\D/g, '');
-  return /^\d{4}$/.test(s) ? s : null;
+  return s.length >= 4 ? s.slice(-4) : null;
 }
 
 /** האם העסקה הצליחה בפועל */

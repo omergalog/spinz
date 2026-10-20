@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Plus, Minus, ArrowRight, ArrowLeft, CalendarClock } from 'lucide-react';
 import { COMPANY } from '../config/company';
 import { MAX_BIKES_PER_ORDER, MAX_PER_LINE, useCart } from '../context/CartContext';
-import { CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, TooManyCartsError, checkCoupon, loadApplePay, openCheckout, reportBlockedFrame, submitToIframe }
+import { CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, TooManyCartsError, checkCoupon, fetchStatus, loadApplePay, openCheckout, reportBlockedFrame, submitToIframe }
   from '../lib/payment';
 import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
 import { arrivalLabelIn, usePresale } from '../config/presale';
@@ -169,6 +169,35 @@ export default function CartDrawer() {
     window.addEventListener('message', onMessage);
     return () => window.removeEventListener('message', onMessage);
   }, [clearCart, closeCart, navigate, saveCoupon]);
+
+  // ערוץ שני לסיום התשלום, שלא תלוי במה שקורה בתוך המסגרת. בעסקה עם
+  // 3DS חלון טרנזילה נתקע בספינר (directng.tranzila.com/process/from_trapi)
+  // ולא הגיע לדף החזרה, ולכן ההודעה למעלה לא נשלחה — הלקוח חויב ונשאר
+  // מול ספינר. כאן שואלים את השרת אם הסל שולם (ההזמנה נוצרת ב-notify,
+  // בלי קשר למסגרת), ובהצלחה עוברים לעמוד התודה.
+  useEffect(() => {
+    if (step !== 'payment') return;
+    let alive = true;
+    let tries = 0;
+    let timer: ReturnType<typeof setTimeout>;
+    const tick = async () => {
+      const id = sessionIdRef.current;
+      if (!alive || !id) return;
+      const s = await fetchStatus(id).catch(() => null);
+      if (!alive) return;
+      if (s?.status === 'paid') {
+        clearCart(); saveCoupon('');
+        closeCart();
+        setStep('cart');
+        navigate(`/order/success?s=${id}`);
+        return;
+      }
+      // עד 30 דקות: מעבר לזה הסל עצמו פג תוקף.
+      if (++tries < 450) timer = setTimeout(tick, 4000);
+    };
+    timer = setTimeout(tick, 4000);
+    return () => { alive = false; clearTimeout(timer); };
+  }, [step, clearCart, closeCart, navigate, saveCoupon]);
 
   // הקוד שהוזן בעמוד המוצר נבדק כאן מחדש מול סכום העגלה האמיתי.
   // בעמוד המוצר הוא נבדק מול מחיר יחידה אחת, ולכן הסכומים יכולים

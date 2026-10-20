@@ -18,7 +18,7 @@ const he: FaqItem[] = [
   },
   {
     q: 'אפשר לשלם בתשלומים?',
-    a: 'בהחלט. ניתן לפרוס לעד 12 תשלומים, כ-₪91 לחודש במחיר ההשקה. מקבלים כרטיס אשראי וביט.',
+    a: 'בהחלט. בכרטיס אשראי אפשר לפרוס עד 12 תשלומים ללא ריבית. מקבלים כרטיס אשראי וביט.',
   },
   {
     q: 'לאיזה גובה מתאים כל דגם?',
@@ -58,7 +58,7 @@ const en: FaqItem[] = [
   },
   {
     q: 'Can I pay in installments?',
-    a: 'Absolutely. You can split the payment into up to 12 installments, about ₪91 a month at the launch price. We accept credit cards and Bit.',
+    a: 'Absolutely. By credit card you can split the payment into up to 12 interest-free installments. We accept credit cards and Bit.',
   },
   {
     q: 'Which frame size suits my height?',

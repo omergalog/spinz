@@ -194,7 +194,6 @@ export default function Models() {
     presaleCfg.installments,
     Math.floor(shownPrice / Math.max(1, presaleCfg.minInstallment)),
   ));
-  const monthly = Math.round(shownPrice / payments);
 
   const handleAddToCart = () => {
     if (outOfStock) return;
@@ -367,7 +366,9 @@ export default function Models() {
       </div>
       {presale && couponPrice == null && (
         <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13.5px', color: MUTED, margin: '10px 0 0' }}>
-          {t.product.monthlyPre} <b style={{ color: DARK }}>₪{monthly.toLocaleString(lang === 'en' ? 'en-US' : 'he-IL')}</b> {t.product.monthlyPost(payments)}
+          {/* בלי סכום חודשי: החלוקה בפועל נקבעת בטרנזילה (עיגול לתשלום
+              הראשון), וסכום מעוגל כאן עלול לא להתאים לחיוב (20.10.2026). */}
+          {t.product.installments(payments)}
         </p>
       )}
 

@@ -108,6 +108,7 @@ export default function Models() {
   const [added, setAdded] = useState(false);
   const [outOfStock, setOutOfStock] = useState(false);
   const [price, setPrice] = useState(BASE_PRICE);
+  const [priceLoaded, setPriceLoaded] = useState(false);
   const [salePrice, setSalePrice] = useState<number | null>(null);
   // דירוג נפתח רק כשיש ממה לחשב אותו. ברירת המחדל הייתה avg: 5,
   // ולכן האתר הציג חמישה כוכבים מלאים גם כשלא הייתה אף ביקורת.
@@ -166,7 +167,9 @@ export default function Models() {
 
   useEffect(() => {
     const slug = `spinz-${color.id}-${size.id}`;
+    setPriceLoaded(false);
     supabase.from('products').select('stock, price, sale_price').eq('slug', slug).single().then(({ data }) => {
+      setPriceLoaded(true);
       if (!data) return;
       setOutOfStock(data.stock === 0);
       if (data.price) setPrice(data.price);
@@ -182,6 +185,12 @@ export default function Models() {
   const presale = presaleCfg.active && (!presaleReady || quotaLeft > 0);
   const presaleSoldOut = presaleCfg.active && presaleReady && quotaLeft <= 0;
   const shownPrice = presale ? presaleCfg.presalePrice : displayPrice;
+  /**
+   * עד שההגדרות החיות חוזרות, המחיר שבקוד הוא ברירת מחדל ועלול להיות
+   * ישן (₪1,090 הוצג לרגע לפני ₪1,099). לכן הסכומים מוסתרים עד אז, והמקום
+   * שלהם נשמר כדי שהעמוד לא יקפוץ.
+   */
+  const priceReady = presaleCfg.ready && (presale || priceLoaded);
   /**
    * מספר התשלומים שהלקוח באמת יוכל לבחור.
    *
@@ -333,7 +342,7 @@ export default function Models() {
           </span>
         </div>
       )}
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap' }}>
+      <div aria-busy={!priceReady} style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap', visibility: priceReady ? 'visible' : 'hidden' }}>
         <span style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(34px, 5vw, 46px)', color: couponPrice != null ? '#3B6B33' : DARK, letterSpacing: '-0.01em' }}>
           ₪{(couponPrice ?? shownPrice).toLocaleString('he-IL')}
         </span>

@@ -38,7 +38,7 @@ const pagesHe: SearchDoc[] = [
   {
     id: 'page-bikes', type: 'page', title: 'הדגמים', to: '/bikes',
     summary: 'כל הדגמים, הצבעים והמידות, עם המחיר והזמינות.',
-    body: 'דגמים אופניים לקנות רכישה הזמנה מלאי מחיר 1090 1299 עגלה',
+    body: 'דגמים אופניים לקנות רכישה הזמנה מלאי מחיר עגלה',
     keywords: ['לקנות', 'קנייה', 'חנות', 'מחיר', 'bikes', 'shop'],
   },
   {
@@ -137,7 +137,7 @@ const pagesHe: SearchDoc[] = [
 /* ── Static pages, English ────────────────────────────────── */
 const pagesEn: SearchDoc[] = [
   { id: 'page-home', type: 'page', title: 'Home', to: '/', summary: 'Clean-lined single-speed city bikes, built in Tel Aviv.', body: 'SPINZ urban single speed fixie city bike launch price pre-sale', keywords: ['home', 'spinz', 'bike'] },
-  { id: 'page-bikes', type: 'page', title: 'The Models', to: '/bikes', summary: 'Every model, colour and size, with price and availability.', body: 'models buy purchase order stock price 1090 1299 cart', keywords: ['buy', 'shop', 'price', 'order'] },
+  { id: 'page-bikes', type: 'page', title: 'The Models', to: '/bikes', summary: 'Every model, colour and size, with price and availability.', body: 'models buy purchase order stock price cart', keywords: ['buy', 'shop', 'price', 'order'] },
   { id: 'page-specs', type: 'page', title: 'Specs', to: '/specs', summary: 'Frame, wheels, brakes, weight and the full technical data.', body: 'specs technical frame aluminum fork wheels 700c tires brakes weight drivetrain chain gear ratio bearings', keywords: ['specs', 'technical', 'weight', 'aluminum'] },
   { id: 'page-sizes', type: 'page', title: 'Sizes & Colors', to: '/sizes', summary: 'Two frame sizes, three colours, and how to choose.', body: 'sizes colors 54 57 rider height matte black beige olive green', keywords: ['size', 'colour', 'color', 'fit', 'height', ...HEIGHTS] },
   { id: 'page-faq', type: 'page', title: 'FAQ', to: '/faq', summary: 'Shipping, assembly, payments, warranty and returns.', body: 'questions answers help support shipping returns warranty payments', keywords: ['faq', 'help', 'support', 'questions'] },
@@ -161,7 +161,7 @@ const buildProducts = (lang: Lang): SearchDoc[] => colorVariants.flatMap(c =>
     id: `product-${c.id}-${s.id}`,
     type: 'product',
     title: `SPINZ ${s.label}, ${getDict(lang).product.colors[c.id as 'mat' | 'beige' | 'olive']}`,
-    summary: `${getDict(lang).product.heights[s.id as '54' | '57']} · ₪1,090`,
+    summary: getDict(lang).product.heights[s.id as '54' | '57'],
     body: lang === 'en'
       ? `single speed bike ${getDict(lang).product.colors[c.id as 'mat' | 'beige' | 'olive']} size ${s.label} ${c.skuCode} buy order cart`
       : `אופניים סינגל ספיד ${c.label} מידה ${s.label} ${s.range} ${c.skuCode} להזמין לקנות עגלה`,

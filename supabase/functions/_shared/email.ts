@@ -62,6 +62,7 @@ const COPY = {
     reference: 'מספר אסמכתה', payment: 'אמצעי תשלום',
     card: (l: string) => `כרטיס המסתיים ב-${l}`,
     address: 'כתובת למשלוח',
+    phone: 'טלפון לתיאום',
     rightsTitle: 'זכות הביטול שלך',
     rights: 'ניתן לבטל את העסקה בכל עת עד למסירה, או תוך 14 יום מקבלת ההזמנה, ולקבל',
     rightsBold: 'החזר מלא ללא דמי ביטול',
@@ -95,6 +96,7 @@ const COPY = {
     reference: 'Reference number', payment: 'Payment method',
     card: (l: string) => `Card ending in ${l}`,
     address: 'Shipping address',
+    phone: 'Contact phone',
     rightsTitle: 'Your right to cancel',
     rights: 'You may cancel at any time before delivery, or within 14 days of receiving your order, for a',
     rightsBold: 'full refund with no cancellation fee',
@@ -131,6 +133,8 @@ export type OrderEmail = {
   last4?: string | null;
   reference: string;
   address?: string | null;
+  /** הטלפון שהלקוח מסר — כדי שיראה שהוא נכון, כי דרכו מתאמים מסירה. */
+  phone?: string | null;
   discount?: number | null;
   couponCode?: string | null;
   lang?: Lang;
@@ -232,6 +236,7 @@ function html(o: OrderEmail): string {
         <div><strong>${c.reference}:</strong> <span style="direction:ltr;display:inline-block;">${esc(o.reference)}</span></div>
         ${o.last4 ? `<div><strong>${c.payment}:</strong> ${esc(c.card(o.last4))}</div>` : ''}
         ${o.address ? `<div><strong>${isPickup(o.address) ? c.pickupLabel : c.address}:</strong> ${esc(o.address)}</div>` : ''}
+        ${o.phone ? `<div><strong>${c.phone}:</strong> <span style="direction:ltr;display:inline-block;">${esc(o.phone)}</span></div>` : ''}
       </div>
 
       <h2 style="font-size:15px;color:#1C1C1C;margin:24px 0 8px;">${c.rightsTitle}</h2>
@@ -290,6 +295,7 @@ function text(o: OrderEmail): string {
     `${c.reference}: ${o.reference}`,
     o.last4 ? c.card(o.last4) : '',
     o.address ? `${isPickup(o.address) ? c.pickupLabel : c.address}: ${o.address}` : '',
+    o.phone ? `${c.phone}: ${o.phone}` : '',
     '',
     `${c.rightsTitle}: ${c.rights} ${c.rightsBold}.`,
     c.returnCond,
@@ -360,7 +366,7 @@ export async function confirmOrderOnce(db: Db, sessionId: string, lang: Lang = '
   if (!claimed) return null;
 
   const { data: s } = await db.from('checkout_sessions')
-    .select('customer_email, customer_name, customer_notes, items, total_price, card_last4, discount, coupon_code')
+    .select('customer_email, customer_name, customer_phone, customer_notes, items, total_price, card_last4, discount, coupon_code')
     .eq('id', sessionId).maybeSingle();
 
   if (!s) return 'הסל לא נמצא';
@@ -379,6 +385,7 @@ export async function confirmOrderOnce(db: Db, sessionId: string, lang: Lang = '
     total: s.total_price,
     last4: s.card_last4,
     address: s.customer_notes,
+    phone: s.customer_phone,
     discount: s.discount,
     couponCode: s.coupon_code,
     lang,

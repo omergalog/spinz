@@ -10,6 +10,7 @@
  */
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { corsHeaders } from '../_shared/cors.ts';
+import { isPickup } from '../_shared/delivery.ts';
 
 const SITE = Deno.env.get('SITE_URL') ?? 'https://spinzbikes.com';
 Deno.serve(async (req) => {
@@ -30,7 +31,7 @@ Deno.serve(async (req) => {
   );
 
   const { data } = await db.from('checkout_sessions')
-    .select('status, total_price, card_last4, order_ids')
+    .select('status, total_price, card_last4, order_ids, customer_notes')
     .eq('id', id).maybeSingle();
 
   if (!data) return reply({ error: 'not_found' }, 404);
@@ -40,5 +41,8 @@ Deno.serve(async (req) => {
     total: data.total_price,
     last4: data.card_last4,
     orders: (data.order_ids ?? []).length,
+    // רק אם זה איסוף עצמי, לא הכתובת עצמה — כדי שעמוד התודה ידבר על
+    // איסוף ולא על משלוח.
+    pickup: isPickup(data.customer_notes),
   });
 });

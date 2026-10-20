@@ -6,7 +6,7 @@
  * מהשרת ולא מהדפדפן — לקוח שסגר את החלון אחרי החיוב עדיין יקבל אותו.
  */
 
-import { arrivalIn, isPickup } from './delivery.ts';
+import { isPickup } from './delivery.ts';
 
 const RESEND_KEY = Deno.env.get('RESEND_API_KEY') ?? '';
 const FROM = Deno.env.get('ORDER_EMAIL_FROM') ?? 'SPINZ <info@spinzbikes.com>';
@@ -54,8 +54,6 @@ const COPY = {
     intro: {
       ship: 'התשלום התקבל. נעדכן אותך כשההזמנה יוצאת אליך.',
       pickup: 'התשלום התקבל. ניצור איתך קשר לתיאום מועד האיסוף מכפר ויתקין.',
-      presaleShip: (m: string) => `התשלום התקבל. האופניים מגיעים ארצה ב${m}. כשיגיעו נרכיב ונבדוק אותם, וניצור איתך קשר לתיאום המשלוח.`,
-      presalePickup: (m: string) => `התשלום התקבל. האופניים מגיעים ארצה ב${m}. כשיגיעו נרכיב ונבדוק אותם, וניצור איתך קשר לתיאום מועד האיסוף מכפר ויתקין.`,
     },
     pickupLabel: 'אופן קבלה',
     size: 'מידה', units: 'יח׳', discount: 'הנחה', paid: 'סה״כ שולם',
@@ -89,8 +87,6 @@ const COPY = {
     intro: {
       ship: 'Your payment went through. We will let you know when your order ships.',
       pickup: 'Your payment went through. We will contact you to arrange a pickup time in Kfar Vitkin.',
-      presaleShip: (m: string) => `Your payment went through. Your bike is due to arrive in Israel in ${m}. Once it lands we will assemble and check it, then contact you to arrange delivery.`,
-      presalePickup: (m: string) => `Your payment went through. Your bike is due to arrive in Israel in ${m}. Once it lands we will assemble and check it, then contact you to arrange a pickup time in Kfar Vitkin.`,
     },
     pickupLabel: 'Delivery',
     size: 'Size', units: 'pcs', discount: 'Discount', paid: 'Total paid',
@@ -148,14 +144,15 @@ export type OrderEmail = {
   bikes?: boolean;
 };
 
-function introOf(o: OrderEmail): string {
+/**
+ * פסקת הפתיחה. בהזמנה מוקדמת אין פסקה: הנוסח "האופניים מגיעים ארצה ב...
+ * כשיגיעו נרכיב ונבדוק..." הוסר לבקשת עומר (20.10.2026), בלי חלופה עד
+ * שיאשר נוסח אחר.
+ */
+function introOf(o: OrderEmail): string | null {
   const c = COPY[o.lang === 'en' ? 'en' : 'he'];
-  const pickup = isPickup(o.address);
-  if (o.arrival) {
-    const m = arrivalIn(o.arrival, o.lang ?? 'he');
-    return pickup ? c.intro.presalePickup(m) : c.intro.presaleShip(m);
-  }
-  return pickup ? c.intro.pickup : c.intro.ship;
+  if (o.arrival) return null;
+  return isPickup(o.address) ? c.intro.pickup : c.intro.ship;
 }
 
 const ils = (n: number) => `₪${n.toLocaleString('he-IL')}`;
@@ -218,10 +215,10 @@ function html(o: OrderEmail): string {
     </div>
 
     <div style="padding:28px;">
-      <h1 style="margin:0 0 6px;font-size:21px;color:#1C1C1C;">${esc(c.thanks(o.name))}</h1>
-      <p style="margin:0 0 22px;font-size:14px;color:#4A4845;line-height:1.7;">
-        ${esc(introOf(o))}
-      </p>
+      <h1 style="margin:0 0 ${introOf(o) ? '6px' : '22px'};font-size:21px;color:#1C1C1C;">${esc(c.thanks(o.name))}</h1>
+      ${introOf(o) ? `<p style="margin:0 0 22px;font-size:14px;color:#4A4845;line-height:1.7;">
+        ${esc(introOf(o)!)}
+      </p>` : ''}
 
       <table style="width:100%;border-collapse:collapse;font-size:14px;">
         ${rows(o.items, c)}
@@ -291,8 +288,7 @@ function text(o: OrderEmail): string {
   return [
     c.thanks(o.name) + '.',
     '',
-    introOf(o),
-    '',
+    ...(introOf(o) ? [introOf(o)!, ''] : []),
     ...lines,
     off > 0 ? `${c.discount}${o.couponCode ? ` (${o.couponCode.toUpperCase()})` : ''}: -${ils(off)}` : '',
     `${c.paid}: ${ils(o.total)}`,

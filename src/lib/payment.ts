@@ -148,7 +148,7 @@ export type PaymentStatus =
   | 'pending' | 'paid' | 'expired' | 'failed' | 'overbooked';
 
 export async function fetchStatus(sessionId: string): Promise<{
-  status: PaymentStatus; total: number; last4?: string; orders: number;
+  status: PaymentStatus; total: number; last4?: string; orders: number; pickup?: boolean;
 } | null> {
   const res = await fetch(`${FUNCTIONS}/tranzila-status?s=${encodeURIComponent(sessionId)}`);
   if (!res.ok) return null;

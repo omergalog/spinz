@@ -26,6 +26,7 @@ const COPY = {
     waitingSub: 'רגע אחד, מוודאים מול חברת הסליקה.',
     paid: 'ההזמנה התקבלה!',
     paidSub: (n: string) => `שילמת ${n}. נשלח אליך עדכון כשהמשלוח יוצא אליך.`,
+    paidSubPickup: (n: string) => `שילמת ${n}. ניצור איתך קשר לתיאום מועד האיסוף מכפר ויתקין.`,
     failed: 'התשלום לא הושלם',
     failedSub: 'לא חויבת. אפשר לנסות שוב, או לכתוב לנו ונסדר את זה.',
     expired: 'פג תוקף ההזמנה',
@@ -41,6 +42,7 @@ const COPY = {
     waitingSub: 'One moment while we check with the payment processor.',
     paid: 'Order received!',
     paidSub: (n: string) => `You paid ${n}. We'll email you when your bike ships.`,
+    paidSubPickup: (n: string) => `You paid ${n}. We'll contact you to arrange pickup from Kfar Vitkin.`,
     failed: 'Payment did not go through',
     failedSub: 'You were not charged. Try again, or message us and we will sort it out.',
     expired: 'Checkout expired',
@@ -84,6 +86,7 @@ export default function OrderResult({ outcome }: { outcome: 'success' | 'failed'
     outcome === 'failed' ? 'failed' : 'pending',
   );
   const [total, setTotal] = useState<number | null>(null);
+  const [pickup, setPickup] = useState(false);
   const [slow, setSlow] = useState(false);
 
   useEffect(() => {
@@ -98,6 +101,7 @@ export default function OrderResult({ outcome }: { outcome: 'success' | 'failed'
 
       if (s) {
         setTotal(s.total);
+        setPickup(!!s.pickup);
         if (s.status !== 'pending') {
           setStatus(s.status);
           // אותו מזהה אירוע שהשרת שולח, כדי שמטא תאחד ולא תספור פעמיים
@@ -127,7 +131,7 @@ export default function OrderResult({ outcome }: { outcome: 'success' | 'failed'
                  // בידוד דו-כיווני: סכום בתוך משפט עברי נקרא על ידי הדפדפן
                  // כרצף ניטרלי, והסימן ₪ קפץ לצד השני של המספר. התווים
                  // האלה מקבעים אותו כיחידה אחת משמאל לימין.
-                 sub: c.paidSub(total ? `\u2066₪${total.toLocaleString('he-IL')}\u2069` : '') };
+                 sub: (pickup ? c.paidSubPickup : c.paidSub)(total ? `\u2066₪${total.toLocaleString('he-IL')}\u2069` : '') };
       case 'expired':
         return { icon: <Clock size={52} style={{ color: MUTED }} />, title: c.expired, sub: c.expiredSub };
       case 'overbooked':

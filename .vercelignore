@@ -1,0 +1,72 @@
+# קבצים שלא בשימוש באתר ולא עולים ל-Vercel (חסכון ב-Deployment Storage).
+# הם נשארים במאגר ובמחשב. עותק + רשימה מלאה: spinz claude/_archive/site-assets-2026-10-20
+# ו-SPINZ-ארכיון-נכסים.md. להחזרת קובץ לאתר: למחוק את השורה שלו מכאן.
+# שלוש תיקיות טיוטה שלמות:
+/public/assets/צבעים עומר/
+/public/assets/תמונות פיסטוק/
+/public/assets/תמונות אורי/
+/public/assets/צבעים/
+/public/assets/בעיות עמוד נחיתה/
+# קבצים בודדים:
+/public/.DS_Store
+/public/assets/.DS_Store
+/public/assets/atmosphere-1.png
+/public/assets/atmosphere-2.png
+/public/assets/bike-beige-3d.glb
+/public/assets/bike-beige-v2.png
+/public/assets/bike-beige.webp
+/public/assets/bike-black-v2.png
+/public/assets/bike-gray.png
+/public/assets/bike-green.png
+/public/assets/bike-mat-photo-3q-a-alpha.png
+/public/assets/bike-mat-photo-3q-a.png
+/public/assets/bike-mat-photo-3q-a.webp
+/public/assets/bike-mat-photo-3q-b-alpha.png
+/public/assets/bike-mat-photo-3q-b.png
+/public/assets/bike-mat-photo-3q-b.webp
+/public/assets/bike-mat-photo-side-alpha.png
+/public/assets/bike-mat-photo-side.png
+/public/assets/bike-mat-photo-side.webp
+/public/assets/bike-mat.webp
+/public/assets/bike-olive-v2.png
+/public/assets/bike-olive.webp
+/public/assets/bike-rust.png
+/public/assets/brand-bike-orig.jpg
+/public/assets/brand-bike.jpg
+/public/assets/gallery-1.png
+/public/assets/gallery-1.svg
+/public/assets/gallery-2.png
+/public/assets/gallery-2.svg
+/public/assets/gallery-3.png
+/public/assets/gallery-3.svg
+/public/assets/gallery-4.png
+/public/assets/gallery-4.svg
+/public/assets/gallery-5.png
+/public/assets/gallery-5.svg
+/public/assets/gallery-6.png
+/public/assets/gallery-6.svg
+/public/assets/green1.jpg
+/public/assets/hero-bike.jpg
+/public/assets/hero-bike.png
+/public/assets/hero-bike.svg
+/public/assets/model-1-orig.jpg
+/public/assets/model-1.jpg
+/public/assets/model-1.png
+/public/assets/model-1.svg
+/public/assets/model-2-orig.jpg
+/public/assets/model-2.jpg
+/public/assets/model-2.png
+/public/assets/model-2.svg
+/public/assets/model-3-orig.jpg
+/public/assets/model-3.jpg
+/public/assets/model-3.png
+/public/assets/model-3.svg
+/public/assets/og-preview.png
+/public/assets/ירוק זית11.png
+/public/assets/לסקר1.jpeg
+/public/assets/לסקר2.jpeg
+/public/assets/שחור לעמוד נחיתה.jpg
+# קבצים גדולים שלא במאגר (נשארים רק במחשב) — ליתר ביטחון, אם מישהו יפרוס מהמחשב:
+/public/assets/*.mp4
+!/public/assets/spinz-video-compressed.mp4
+!/public/assets/spinz-mobile.mp4

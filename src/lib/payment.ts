@@ -156,6 +156,22 @@ export async function fetchStatus(sessionId: string): Promise<{
 }
 
 /**
+ * מדווח שהדפדפן חסם מסגרת בתוך חלון התשלום (למשל מסך אימות 3DS של
+ * בנק). נשלח רק שם המארח. כישלון כאן לא משנה כלום ללקוח.
+ */
+export function reportBlockedFrame(sessionId: string | null, blockedUri: string, directive: string) {
+  let host = '', scheme = '';
+  try { const u = new URL(blockedUri); host = u.hostname; scheme = u.protocol.replace(':', ''); }
+  catch { host = blockedUri.replace(/[^a-z0-9.-]/gi, '').slice(0, 200); scheme = blockedUri.split(':')[0]; }
+  if (!host) return;
+  fetch(`${FUNCTIONS}/checkout-blocked`, {
+    method: 'POST', keepalive: true,
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ host, scheme, directive, session: sessionId }),
+  }).catch(() => { /* דיווח בלבד */ });
+}
+
+/**
  * טוען את הסקריפט של Apple Pay.
  *
  * apple_pay=1 לבדו אינו מספיק: טרנזילה דורשת שבעמוד שמארח את המסגרת

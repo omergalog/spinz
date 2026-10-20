@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Plus, Minus, ArrowRight, ArrowLeft, CalendarClock } from 'lucide-react';
 import { COMPANY } from '../config/company';
 import { MAX_BIKES_PER_ORDER, MAX_PER_LINE, useCart } from '../context/CartContext';
-import { CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, TooManyCartsError, checkCoupon, loadApplePay, openCheckout, submitToIframe }
+import { CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, TooManyCartsError, checkCoupon, loadApplePay, openCheckout, reportBlockedFrame, submitToIframe }
   from '../lib/payment';
 import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
 import { arrivalLabelIn, usePresale } from '../config/presale';
@@ -129,6 +129,10 @@ export default function CartDrawer() {
   const waLink = `https://wa.me/${COMPANY.phoneE164}`;
   const [step, setStep] = useState<'cart' | 'details' | 'payment'>('cart');
   const [payFrameReady, setPayFrameReady] = useState(false);
+  // הדפדפן חסם מסגרת בתוך חלון התשלום (למשל מסך 3DS של בנק). בלי זה
+  // הלקוח ראה מסך אפור ריק ולא ידע מה לעשות.
+  const [payBlocked, setPayBlocked] = useState(false);
+  const sessionIdRef = useRef<string | null>(null);
   const [coupon, setCoupon] = useState(savedCoupon);
   const [couponState, setCouponState] = useState<'idle' | 'checking' | 'ok' | 'bad'>('idle');
   const [discount, setDiscount] = useState(0);
@@ -228,6 +232,21 @@ export default function CartDrawer() {
     };
   }, [isOpen, closeCart]);
 
+  // מסגרת שה-CSP שלנו חסם (frame-src) מדווחת כאן ולא בתוך המסגרת:
+  // מבחוץ אי אפשר לראות מה קורה בחלון של טרנזילה, אבל חסימה של הדף
+  // שלנו כן מגיעה לכאן, עם הכתובת שנחסמה.
+  useEffect(() => {
+    if (step !== 'payment') return;
+    const onViolation = (e: SecurityPolicyViolationEvent) => {
+      const d = e.effectiveDirective || e.violatedDirective || '';
+      if (!d.startsWith('frame-src') && !d.startsWith('child-src')) return;
+      setPayBlocked(true);
+      reportBlockedFrame(sessionIdRef.current, e.blockedURI, d);
+    };
+    document.addEventListener('securitypolicyviolation', onViolation);
+    return () => document.removeEventListener('securitypolicyviolation', onViolation);
+  }, [step]);
+
   // הכפתורים הצפים יושבים ב-zIndex 9999 והמגירה ב-999, ולכן כפתור
   // הנגישות כיסה את שורת אישור תנאי המכירה המוקדמת שמתחת לכפתור
   // ההזמנה. כל עוד המגירה פתוחה הם מוסתרים — הם ממילא אינם שמישים
@@ -308,6 +327,8 @@ export default function CartDrawer() {
       });
 
       setPayFrameReady(false);
+      setPayBlocked(false);
+      sessionIdRef.current = session.session_id ?? null;
       setStep('payment');
       loadApplePay();
       // ה-iframe נוצר ברינדור הבא, ולכן ההגשה מחכה לו.
@@ -760,6 +781,34 @@ export default function CartDrawer() {
                       allowpaymentrequest="true"
                       style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
                     />
+                    {payBlocked && (
+                      <div role="alert" style={{
+                        position: 'absolute', inset: 0, backgroundColor: SURFACE, display: 'flex',
+                        flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                        gap: '14px', padding: '28px', textAlign: 'center',
+                      }}>
+                        <h4 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '17px', color: TEXT, margin: 0 }}>
+                          {t.cart.payBlockedTitle}
+                        </h4>
+                        <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: '#4A4845', lineHeight: 1.7, margin: 0, maxWidth: '360px' }}>
+                          {t.cart.payBlockedBody}
+                        </p>
+                        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                          <button
+                            onClick={() => { setPayBlocked(false); setStep('details'); }}
+                            style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '14px', padding: '11px 20px', borderRadius: '8px', border: 'none', backgroundColor: '#C9A870', color: '#1C1C1C', cursor: 'pointer' }}
+                          >
+                            {t.cart.payBlockedRetry}
+                          </button>
+                          <a
+                            href={waLink} target="_blank" rel="noopener noreferrer"
+                            style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '14px', padding: '10px 20px', borderRadius: '8px', border: '1px solid #1C1C1C', color: '#1C1C1C', textDecoration: 'none' }}
+                          >
+                            WhatsApp
+                          </a>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div style={{ padding: '14px 24px', borderTop: `1px solid ${BORDER}` }}>

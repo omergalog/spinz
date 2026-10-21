@@ -29,37 +29,87 @@ const MATCH_WINDOW_MS = 8 * 60 * 60 * 1000;
 
 const ymd = (d: Date) => d.toISOString().slice(0, 10);
 
-Deno.serve(async (req) => {
-  // הכתובת הייתה פתוחה לכל אחד. היא אינה יכולה להמציא תשלומים —
-  // היא פועלת רק על עסקאות שקיימות באמת בטרנזילה — אבל כל קריאה
-  // מושכת דוחות ומשכתבת שורות, וזה מספיק כדי להעמיס בחינם.
-  const secret = Deno.env.get('RECONCILE_SECRET') ?? '';
-  if (secret) {
-    const given = req.headers.get('x-reconcile-secret')
-      ?? new URL(req.url).searchParams.get('key') ?? '';
-    if (given !== secret) return new Response('forbidden', { status: 403 });
-  }
+/** כמה ימים אחורה נבדק כל דוח, ומה המקסימום לריצה אחת (התאוששות אחרי השבתה). */
+const OVERLAP_DAYS = 1;
+const DEFAULT_DAYS = 2;
+const CHUNK_DAYS = 31;
+const MAX_DAYS = 186;
+const DAY = 86_400_000;
 
-  const days = Math.min(31, Math.max(1, Number(new URL(req.url).searchParams.get('days') ?? 2)));
+function safeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let d = 0;
+  for (let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return d === 0;
+}
+
+/** שפת מייל האישור לסל. מסד לפני המיגרציה (אין עמודה) → עברית, כמו קודם. */
+// deno-lint-ignore no-explicit-any
+async function sessionLang(db: any, id: string): Promise<'he' | 'en'> {
+  const { data, error } = await db.from('checkout_sessions').select('lang').eq('id', id).maybeSingle();
+  return !error && data?.lang === 'en' ? 'en' : 'he';
+}
+
+Deno.serve(async (req) => {
+  // הסוד חובה. בלעדיו הפונקציה מסרבת, ולא רצה פתוחה לכל אחד: כל קריאה
+  // מושכת דוחות ויכולה ליצור הזמנות. הסוד מתקבל רק בכותרת — מחרוזת
+  // שאילתה נשמרת ביומני גישה. RECONCILE_ALLOW_QUERY_KEY=1 מקבל זמנית גם
+  // ?key= כדי שה-cron הקיים לא יישבר עד שיעבור לכותרת (מעבר מתואם).
+  const secret = Deno.env.get('RECONCILE_SECRET') ?? '';
+  if (!secret) return new Response('reconcile secret not configured', { status: 503 });
+  const url = new URL(req.url);
+  let given = req.headers.get('x-reconcile-secret') ?? '';
+  if (!given && Deno.env.get('RECONCILE_ALLOW_QUERY_KEY') === '1') given = url.searchParams.get('key') ?? '';
+  if (!safeEqual(given, secret)) return new Response('forbidden', { status: 403 });
 
   const db = createClient(
     Deno.env.get('SUPABASE_URL')!,
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
   );
 
+  // טווח: מהריצה המוצלחת האחרונה, עם יום חפיפה. אחרי השבתה ארוכה הטווח
+  // גדל, ונמשך בחלקים של עד 31 יום. ?days= דורס (בדיקה ידנית).
   const until = new Date();
-  const since = new Date(until.getTime() - days * 86_400_000);
+  let since: Date;
+  const daysParam = url.searchParams.get('days');
+  if (daysParam) {
+    since = new Date(until.getTime() - Math.min(MAX_DAYS, Math.max(1, Number(daysParam) || DEFAULT_DAYS)) * DAY);
+  } else {
+    const { data: lastOk } = await db.from('payment_events').select('payload')
+      .eq('source', 'reconcile_run').eq('payload->>ok', 'true')
+      .order('created_at', { ascending: false }).limit(1);
+    const prevUntil = lastOk?.[0]?.payload?.until ? new Date(`${lastOk[0].payload.until}T00:00:00Z`) : null;
+    since = prevUntil && !Number.isNaN(prevUntil.getTime())
+      ? new Date(prevUntil.getTime() - OVERLAP_DAYS * DAY)
+      : new Date(until.getTime() - DEFAULT_DAYS * DAY);
+  }
+  let capped = false;
+  if (until.getTime() - since.getTime() > MAX_DAYS * DAY) {
+    // מעבר לחצי שנה: לא מנסים בריצה אחת. נבדק החלק הישן ביותר, ונקודת
+    // ההתקדמות זזה רק עד סופו — הריצה הבאה ממשיכה משם.
+    capped = true;
+  }
+  const end = capped ? new Date(since.getTime() + MAX_DAYS * DAY) : until;
 
-  let txns;
+  let txns: Awaited<ReturnType<typeof listTransactions>> = [];
   try {
-    txns = (await listTransactions(ymd(since), ymd(until)))
-      .filter(isApproved).filter(isCharge);
+    const seen = new Set<number>();
+    for (let from = since; from < end; from = new Date(from.getTime() + CHUNK_DAYS * DAY)) {
+      const to = new Date(Math.min(end.getTime(), from.getTime() + CHUNK_DAYS * DAY));
+      for (const t of await listTransactions(ymd(from), ymd(to))) {
+        // חלקים חופפים ביום הקצה: כל עסקה פעם אחת
+        if (seen.has(Number(t.index))) continue;
+        seen.add(Number(t.index));
+        txns.push(t);
+      }
+    }
+    txns = txns.filter(isApproved).filter(isCharge);
   } catch (e) {
     console.error('reconcile report', e);
     // ההשוואה לא רצה. זה לא "אין חריגות": נרשם ומתריעים, והאדמין מציג
     // את הריצה האחרונה (payment_events, source=reconcile_run).
     await db.from('payment_events').insert({
-      source: 'reconcile_run', payload: { ok: false, error: String(e) },
+      source: 'reconcile_run', payload: { ok: false, error: String(e), since: ymd(since), until: ymd(end) },
       note: `ההשוואה היומית נכשלה: ${String(e)}`,
     });
     const alertErr = await sendAlert('ההשוואה היומית מול טרנזילה נכשלה', [['שגיאה', String(e)], ['משמעות', 'חיובים שלא הפכו להזמנה לא נבדקו היום']]);
@@ -162,7 +212,7 @@ Deno.serve(async (req) => {
     if (data?.ok) {
       result.recovered++;
       // הלקוח הזה מעולם לא קיבל אישור, כי ההודעה לא הגיעה
-      const mailErr = await confirmOrderOnce(db, session.id);
+      const mailErr = await confirmOrderOnce(db, session.id, await sessionLang(db, session.id));
       if (mailErr) console.error('reconcile mail', mailErr);
     } else if (data?.issue) {
       // finalize רשמה חריגה (חיוב שני, אין מלאי וכו')
@@ -187,7 +237,7 @@ Deno.serve(async (req) => {
     .gte('created_at', since.toISOString()).limit(50);
 
   for (const u of unsent ?? []) {
-    const err = await confirmOrderOnce(db, u.id);
+    const err = await confirmOrderOnce(db, u.id, await sessionLang(db, u.id));
     if (err) console.error('resend confirmation', u.id, err);
   }
 
@@ -207,11 +257,16 @@ Deno.serve(async (req) => {
 
   // סימן חיים: האדמין מתריע אם לא הייתה ריצה מוצלחת ב-26 השעות האחרונות
   await db.from('payment_events').insert({
-    source: 'reconcile_run', payload: { ok: true, ...result, open_issues: (open ?? []).length },
+    source: 'reconcile_run', payload: { ok: true, since: ymd(since), until: ymd(end), capped, ...result, open_issues: (open ?? []).length },
     note: `השוואה יומית: ${result.checked} עסקאות, ${result.recovered} שוחזרו, ${result.issues} תיקים חדשים`,
   });
 
-  return new Response(JSON.stringify({ ...result, open_issues: (open ?? []).length, mails_retried: (unsent ?? []).length }), {
+  // סימן חיים חיצוני (אופציונלי): שירות "מתג מת" שמתריע כשלא הגיע פינג.
+  // לא מחובר — דורש שירות חיצוני ואישור. בלי HEARTBEAT_URL לא קורה כלום.
+  const hb = Deno.env.get('HEARTBEAT_URL');
+  if (hb) await fetch(hb).catch(e => console.error('heartbeat', e));
+
+  return new Response(JSON.stringify({ ...result, since: ymd(since), until: ymd(end), capped, open_issues: (open ?? []).length, mails_retried: (unsent ?? []).length }), {
     headers: { 'Content-Type': 'application/json' },
   });
 });

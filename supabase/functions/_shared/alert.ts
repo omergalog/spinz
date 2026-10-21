@@ -6,9 +6,8 @@
  * כישלון בשליחה לא מפיל את מה שקרא לה.
  */
 
-const RESEND_KEY = Deno.env.get('RESEND_API_KEY') ?? '';
-const FROM = Deno.env.get('ORDER_EMAIL_FROM') ?? 'SPINZ <info@spinzbikes.com>';
-const TO = Deno.env.get('ALERT_EMAIL_TO') ?? 'info@spinzbikes.com';
+// נקראים בכל שליחה ולא בטעינה: מפתח חסר או מוחלף מתגלה בשליחה הבאה
+const env = (k: string, d = '') => Deno.env.get(k) ?? d;
 const ADMIN = 'https://admin.spinzbikes.com/payments';
 
 export const ISSUE_LABEL: Record<string, string> = {
@@ -32,6 +31,7 @@ const esc = (s: unknown) => String(s ?? '').replace(/[&<>"]/g, c =>
   ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
 
 export async function sendAlert(subject: string, lines: Array<[string, unknown]>): Promise<string | null> {
+  const RESEND_KEY = env('RESEND_API_KEY');
   if (!RESEND_KEY) return 'RESEND_API_KEY missing';
   const rows = lines.map(([k, v]) =>
     `<tr><td style="padding:4px 12px 4px 0;color:#666">${esc(k)}</td><td style="padding:4px 0"><b>${esc(v)}</b></td></tr>`).join('');
@@ -44,7 +44,7 @@ export async function sendAlert(subject: string, lines: Array<[string, unknown]>
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: FROM, to: [TO], subject: `[SPINZ תשלומים] ${subject}`, html }),
+      body: JSON.stringify({ from: env('ORDER_EMAIL_FROM', 'SPINZ <info@spinzbikes.com>'), to: [env('ALERT_EMAIL_TO', 'info@spinzbikes.com')], subject: `[SPINZ תשלומים] ${subject}`, html }),
     });
     return res.ok ? null : `resend ${res.status}`;
   } catch (e) {

@@ -70,6 +70,27 @@ export default function VideoSection() {
     return () => cancelAnimationFrame(raf);
   }, []);
 
+  // אייפון במצב חיסכון בסוללה (ו-Safari בכמה הגדרות נוספות) לא מפעיל
+  // סרטון אוטומטית, גם בלי קול. נגיעה של המשתמש כן מתירה הפעלה, ולכן
+  // הנגיעה הראשונה בדף מפעילה את הסרטון אם הוא עדיין עומד.
+  useEffect(() => {
+    const kick = () => {
+      const v = videoRef.current;
+      if (!v || !v.paused) { stop(); return; }
+      const r = sectionRef.current?.getBoundingClientRect();
+      if (r && r.bottom > 0 && r.top < window.innerHeight) {
+        v.play().then(stop).catch(() => { /* ננסה בנגיעה הבאה */ });
+      }
+    };
+    const stop = () => {
+      document.removeEventListener('touchend', kick);
+      document.removeEventListener('click', kick);
+    };
+    document.addEventListener('touchend', kick, { passive: true });
+    document.addEventListener('click', kick);
+    return stop;
+  }, []);
+
   const toggleMute = () => {
     if (videoRef.current) {
       videoRef.current.muted = !muted;
@@ -88,6 +109,21 @@ export default function VideoSection() {
         backgroundColor: DARK,
       }}
     >
+      {/* תמונת פתיחה מתוך הפריים הראשון של הסרטון. כשהסרטון לא מתנגן
+          (למשל אייפון במצב חיסכון בסוללה) רואים אותה במקום מסך כהה. */}
+      <picture>
+        <source media="(max-width: 767px)" srcSet="/assets/hero-poster-mobile.webp" />
+        <img
+          src="/assets/hero-poster.webp"
+          alt=""
+          aria-hidden
+          style={{
+            position: 'absolute', inset: 0, width: '100%', height: '100%',
+            objectFit: 'cover', objectPosition: 'center center', opacity: 0.85,
+          }}
+        />
+      </picture>
+
       {/* Video */}
       <video
         ref={videoRef}

@@ -138,7 +138,7 @@ export default function AccessibilityWidget() {
 
   useEffect(() => {
     applySettings(settings);
-    localStorage.setItem('a11y_settings', JSON.stringify(settings));
+    try { localStorage.setItem('a11y_settings', JSON.stringify(settings)); } catch { /* אחסון חסום */ }
   }, [settings]);
 
   // Close on outside click

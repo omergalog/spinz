@@ -17,8 +17,13 @@ import { useT } from '../i18n/LanguageContext';
 // Read fresh on every mount (lazy initializer) — NOT once at module load.
 // Otherwise navigating back to the homepage replays the intro loader, because
 // the module-level value was captured before sessionStorage was ever set.
-const hasLoaded = () =>
-  typeof window !== 'undefined' && sessionStorage.getItem('spinz-loaded') === '1';
+// אחסון חסום (הגדרות פרטיות): הקריאה זורקת. הזיכרון מחליף את האחסון,
+// כך שמסך הפתיחה יחזור רק אחרי רענון מלא — והאתר לא נשבר.
+let loadedInMemory = false;
+const hasLoaded = () => {
+  if (typeof window === 'undefined') return false;
+  try { return sessionStorage.getItem('spinz-loaded') === '1'; } catch { return loadedInMemory; }
+};
 
 const Index = () => {
   const t = useT();
@@ -29,7 +34,8 @@ const Index = () => {
   useLenis();
 
   const handleLoaderDone = useCallback(() => {
-    sessionStorage.setItem('spinz-loaded', '1');
+    loadedInMemory = true;
+    try { sessionStorage.setItem('spinz-loaded', '1'); } catch { /* אחסון חסום */ }
     setShowLoader(false);
     window.dispatchEvent(new Event(LOADER_DONE_EVENT));
   }, []);

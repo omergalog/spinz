@@ -12,7 +12,7 @@ const SESSION_KEY = 'spinz_auth';
 export default function PasswordGate({ children }: { children: React.ReactNode }) {
   const [authed, setAuthed] = useState(() => {
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') return true;
-    return sessionStorage.getItem(SESSION_KEY) === 'ok';
+    try { return sessionStorage.getItem(SESSION_KEY) === 'ok'; } catch { return false; }
   });
   const [input, setInput] = useState('');
   const [error, setError] = useState(false);
@@ -20,7 +20,8 @@ export default function PasswordGate({ children }: { children: React.ReactNode }
 
   const submit = () => {
     if (input === PASSWORD) {
-      sessionStorage.setItem(SESSION_KEY, 'ok');
+      // אחסון חסום: הכניסה תקפה ללשונית הזו בלבד
+      try { sessionStorage.setItem(SESSION_KEY, 'ok'); } catch { /* אחסון חסום */ }
       setAuthed(true);
     } else {
       setError(true);

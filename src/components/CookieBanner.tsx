@@ -14,7 +14,9 @@ export default function CookieBanner() {
   const { pathname } = useLocation();
   // בדף הבית מחכים לסוף מסך הפתיחה, כדי שהבאנר לא יופיע מעליו.
   const [loaderDone, setLoaderDone] = useState(() =>
-    stripLangPrefix(pathname) !== '/' || sessionStorage.getItem('spinz-loaded') === '1');
+    stripLangPrefix(pathname) !== '/' || (() => {
+      try { return sessionStorage.getItem('spinz-loaded') === '1'; } catch { return false; }
+    })());
   useEffect(() => {
     const done = () => setLoaderDone(true);
     window.addEventListener(LOADER_DONE_EVENT, done);

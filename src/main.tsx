@@ -1,3 +1,5 @@
+// ראשון בכוונה: אחסון חסום בדפדפן לא יפיל ספריות שנטענות אחריו
+import './lib/storageGuard';
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';

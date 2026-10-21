@@ -12,7 +12,8 @@
  * לכל לשונית — כל אחת מוגנת לחוד, בלי התכנסות.
  */
 
-const FUNCTIONS = 'https://ayrwfyutpbkepnyjkyop.supabase.co/functions/v1';
+import { SUPABASE_URL } from './supabase';
+const FUNCTIONS = `${SUPABASE_URL}/functions/v1`;
 const KEY = 'spinz-purchase';
 const LOCK = 'spinz-purchase';
 /** אחרי תשלום הרכישה נשמרת שבוע, כדי שלשונית ישנה תזהה שכבר שולם. */
@@ -29,16 +30,22 @@ export type Purchase = {
 // מצב פרטי / אחסון חסום: הרכישה חיה בזיכרון של הלשונית בלבד
 let memory: Purchase | null = null;
 
+// הזיכרון משמש רק כשהאחסון עצמו לא זמין. אחסון ריק פירושו "אין רכישה" —
+// לשונית אחרת אולי מחקה אותה, ואסור להחזיר את הישנה מהזיכרון.
 function read(): Purchase | null {
+  let raw: string | null;
   try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return memory;
-    const p = JSON.parse(raw) as Purchase;
-    if (!p?.key || !p?.token) return memory;
+    raw = localStorage.getItem(KEY);
+  } catch {
+    return memory;
+  }
+  try {
+    const p = raw ? JSON.parse(raw) as Purchase : null;
+    if (!p?.key || !p?.token) return null;
     if (p.state === 'paid' && Date.now() - (p.at ?? 0) > PAID_TTL) return null;
     return p;
   } catch {
-    return memory;
+    return null;
   }
 }
 

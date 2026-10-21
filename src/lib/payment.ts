@@ -6,9 +6,9 @@
  * בתוך ה-iframe ולעולם אינם עוברים דרך העמוד שלנו — זה מה שמשאיר את
  * החברה מחוץ לתקן PCI המחמיר.
  */
-import { supabase } from './supabase';
+import { SUPABASE_URL, supabase } from './supabase';
 
-const FUNCTIONS = 'https://ayrwfyutpbkepnyjkyop.supabase.co/functions/v1';
+const FUNCTIONS = `${SUPABASE_URL}/functions/v1`;
 
 export type CheckoutItem = {
   color: string;

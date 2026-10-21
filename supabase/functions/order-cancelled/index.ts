@@ -9,6 +9,7 @@
  */
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { corsHeaders } from '../_shared/cors.ts';
+import { callerIsAdmin } from '../_shared/admin.ts';
 import { sendCancellationEmail } from '../_shared/email.ts';
 
 Deno.serve(async (req) => {
@@ -20,6 +21,8 @@ Deno.serve(async (req) => {
     });
 
   if (req.method !== 'POST') return json({ error: 'method' }, 405);
+  // רק מהאדמין (_shared/admin.ts)
+  if (!(await callerIsAdmin(req, ['owner']))) return json({ error: 'forbidden' }, 403);
 
   let body: { order_id?: string; lang?: string };
   try { body = await req.json(); } catch { return json({ error: 'bad_body' }, 400); }
@@ -51,5 +54,6 @@ Deno.serve(async (req) => {
   });
 
   if (err) { console.error('cancel mail', err); return json({ ok: false, error: err }, 502); }
-  return json({ ok: true, sent_to: o.customer_email });
+  // בלי כתובת המייל בתשובה: האדמין צריך רק לדעת שנשלח
+  return json({ ok: true });
 });

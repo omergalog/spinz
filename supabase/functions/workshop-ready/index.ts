@@ -12,6 +12,7 @@
  */
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { corsHeaders } from '../_shared/cors.ts';
+import { callerIsAdmin } from '../_shared/admin.ts';
 import { sendReadyEmail } from '../_shared/email.ts';
 import { isPickup } from '../_shared/delivery.ts';
 
@@ -24,6 +25,8 @@ Deno.serve(async (req) => {
     });
 
   if (req.method !== 'POST') return json({ error: 'method' }, 405);
+  // רק מהאדמין (_shared/admin.ts)
+  if (!(await callerIsAdmin(req, ['owner', 'workshop']))) return json({ error: 'forbidden' }, 403);
 
   let body: { order_id?: string; lang?: string };
   try { body = await req.json(); } catch { return json({ error: 'bad_body' }, 400); }
@@ -89,5 +92,5 @@ Deno.serve(async (req) => {
     title: 'נשלח מייל "מוכן למסירה" ללקוח', detail: o.customer_email,
   });
 
-  return json({ ok: true, sent_to: o.customer_email, checks: passed });
+  return json({ ok: true, checks: passed });
 });

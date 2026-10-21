@@ -56,6 +56,14 @@ Deno.serve(async (req) => {
       .filter(isApproved).filter(isCharge);
   } catch (e) {
     console.error('reconcile report', e);
+    // ההשוואה לא רצה. זה לא "אין חריגות": נרשם ומתריעים, והאדמין מציג
+    // את הריצה האחרונה (payment_events, source=reconcile_run).
+    await db.from('payment_events').insert({
+      source: 'reconcile_run', payload: { ok: false, error: String(e) },
+      note: `ההשוואה היומית נכשלה: ${String(e)}`,
+    });
+    const alertErr = await sendAlert('ההשוואה היומית מול טרנזילה נכשלה', [['שגיאה', String(e)], ['משמעות', 'חיובים שלא הפכו להזמנה לא נבדקו היום']]);
+    if (alertErr) console.error('reconcile alert', alertErr);
     return new Response(JSON.stringify({ error: String(e) }), {
       status: 502, headers: { 'Content-Type': 'application/json' },
     });
@@ -74,13 +82,26 @@ Deno.serve(async (req) => {
     (known ?? []).filter(s => ['paid', 'overbooked', 'duplicate'].includes(s.status))
       .map(s => Number(s.tranzila_index)).filter(Boolean),
   );
-  const { data: issueRows } = await db.from('payment_issues')
+  const { data: issueRows, error: issueErr } = await db.from('payment_issues')
     .select('tranzila_index').not('tranzila_index', 'is', null);
   const flagged = new Set((issueRows ?? []).map(i => Number(i.tranzila_index)));
+
+  // מסד לפני מיגרציית הרכישות (אין payment_issues): התנהגות הגרסה הקודמת
+  // לסלים עם מספר עסקה, ותיעוד ב-payment_events במקום בתיק. קורה רק אם
+  // הפונקציות עולות לפני ה-SQL, או אחרי חזרה של ה-SQL.
+  const legacyDb = !!issueErr && (issueErr.code === '42P01' || /payment_issues/.test(issueErr.message ?? ''));
 
   const result = { checked: txns.length, matched: 0, recovered: 0, issues: 0 };
 
   const openIssue = async (t: typeof txns[number], note: string) => {
+    if (legacyDb) {
+      await db.from('payment_events').insert({
+        session_id: null, source: 'reconcile', payload: t as unknown as Record<string, unknown>,
+        note: `עסקה ${t.index} על ${t.amount} נגבתה בטרנזילה ואין לה הזמנה (${note}) — דורש בדיקה ידנית.`,
+      });
+      result.issues++;
+      return;
+    }
     const { error } = await db.from('payment_issues').insert({
       kind: 'unmatched',
       tranzila_index: Number(t.index),
@@ -115,6 +136,12 @@ Deno.serve(async (req) => {
     }
 
     const session = exact[0];
+    // במסד הישן finalize מקבלת רק pending, ולכן הסל מוחזר אליו קודם (כמו בגרסה הקודמת)
+    if (legacyDb) {
+      await db.from('checkout_sessions')
+        .update({ status: 'pending', expires_at: new Date(Date.now() + 60_000).toISOString() })
+        .eq('id', session.id);
+    }
     const { data, error } = await db.rpc('finalize_checkout_session', {
       p_session_id: session.id,
       p_amount: reportAmountToIls(Number(t.amount)),   // הסכום שנגבה, לא זה שביקשנו
@@ -144,6 +171,11 @@ Deno.serve(async (req) => {
         session: session.id, index: idx, amount: t.amount, note: data.reason });
       if (err) console.error('reconcile alert', err);
     } else {
+      if (legacyDb && data?.reason !== 'PAID_BUT_OUT_OF_STOCK') {
+        await db.from('checkout_sessions')
+          .update({ status: 'failed', tranzila_index: idx, failure_reason: error?.message ?? data?.reason ?? 'שחזור נכשל' })
+          .eq('id', session.id);
+      }
       await openIssue(t, `שחזור נכשל: ${error?.message ?? data?.reason}`);
     }
   }
@@ -161,7 +193,7 @@ Deno.serve(async (req) => {
 
   // תזכורת יומית: כל תיק פתוח, עד שנסגר באדמין. ההשוואה רצה פעם ביום
   // (cron 06:00), ולכן זו גם התזכורת.
-  const { data: open } = await db.from('payment_issues')
+  const { data: open } = legacyDb ? { data: [] as Array<Record<string, any>> } : await db.from('payment_issues')
     .select('kind, session_id, tranzila_index, amount, owner, status, due_at, created_at')
     .neq('status', 'resolved').order('created_at');
   if ((open ?? []).length > 0) {
@@ -172,6 +204,12 @@ Deno.serve(async (req) => {
     ]));
     if (err) console.error('reconcile digest', err);
   }
+
+  // סימן חיים: האדמין מתריע אם לא הייתה ריצה מוצלחת ב-26 השעות האחרונות
+  await db.from('payment_events').insert({
+    source: 'reconcile_run', payload: { ok: true, ...result, open_issues: (open ?? []).length },
+    note: `השוואה יומית: ${result.checked} עסקאות, ${result.recovered} שוחזרו, ${result.issues} תיקים חדשים`,
+  });
 
   return new Response(JSON.stringify({ ...result, open_issues: (open ?? []).length, mails_retried: (unsent ?? []).length }), {
     headers: { 'Content-Type': 'application/json' },

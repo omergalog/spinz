@@ -29,7 +29,8 @@ const COPY = {
     paidSub: (n: string) => `שילמת ${n}. נשלח אליך עדכון כשהמשלוח יוצא אליך.`,
     paidSubPickup: (n: string) => `שילמת ${n}. ניצור איתך קשר לתיאום מועד האיסוף מכפר ויתקין.`,
     failed: 'התשלום לא הושלם',
-    failedSub: 'לא חויבת. אפשר לנסות שוב, או לכתוב לנו ונסדר את זה.',
+    // לא "לא חויבת": העמוד הזה מוצג לפי ההפניה מעמוד התשלום, לא לפי אימות.
+    failedSub: 'התשלום לא אושר. אם בכל זאת ירד חיוב, הוא יופיע אצלנו ונחזור אליך. אפשר לנסות שוב, או לכתוב לנו ונסדר את זה.',
     expired: 'פג תוקף ההזמנה',
     expiredSub: 'עברו יותר מדי דקות בעמוד התשלום. הוסיפו את האופניים לעגלה ונסו שוב.',
     overbooked: 'התשלום התקבל אך המלאי אזל',
@@ -49,7 +50,7 @@ const COPY = {
     paidSub: (n: string) => `You paid ${n}. We'll email you when your bike ships.`,
     paidSubPickup: (n: string) => `You paid ${n}. We'll contact you to arrange pickup from Kfar Vitkin.`,
     failed: 'Payment did not go through',
-    failedSub: 'You were not charged. Try again, or message us and we will sort it out.',
+    failedSub: 'The payment was not approved. If a charge does appear, we will see it and get back to you. You can try again, or message us and we will sort it out.',
     expired: 'Checkout expired',
     expiredSub: 'Too long on the payment page. Add the bike to your cart and try again.',
     overbooked: 'Paid, but the item sold out',

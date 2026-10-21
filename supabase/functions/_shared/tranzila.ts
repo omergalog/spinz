@@ -98,7 +98,12 @@ export async function verifyTransaction(index: number): Promise<Verified> {
     return { ok: false, retry: true, reason: `report_error_${data.error_code}`, raw: data };
   }
 
-  const txn = data?.transactions?.[0];
+  // תשובה במבנה לא צפוי אינה תשובה. לא מסיקים ממנה כלום — ממתינים.
+  if (!Array.isArray(data?.transactions)) {
+    return { ok: false, retry: true, reason: 'report_format', raw: data };
+  }
+
+  const txn = data.transactions[0];
   // ייתכן שהשורה טרם נוצרה בדוח. זו אינה הוכחה שלא נגבה כסף.
   if (!txn) return { ok: false, retry: true, reason: 'not_found', raw: data };
 
@@ -115,10 +120,18 @@ export async function verifyTransaction(index: number): Promise<Verified> {
   // תקינה שנבדקת מיד אחרי התשלום מחזירה 000 עם transtatus=0 —
   // והבדיקה פסלה אותה, כלומר הלקוח חויב וההזמנה לא נוצרה.
   if (code !== '000') {
+    // קוד ריק או לא מוכר אינו דחייה ודאית
+    if (!/^\d{3}$/.test(code)) return { ok: false, retry: true, reason: `unknown_code_${code}`, raw: txn };
     return { ok: false, reason: `declined_${code}`, raw: txn };
   }
 
-  return { ok: true, amount: Number(txn.amount), raw: txn };
+  // אישור בלי סכום תקין: לא משווים מול מספר שאינו מספר
+  const amount = Number(txn.amount);
+  if (!Number.isFinite(amount) || amount <= 0) {
+    return { ok: false, retry: true, reason: 'report_amount_format', raw: txn };
+  }
+
+  return { ok: true, amount, raw: txn };
 }
 
 /**
@@ -201,7 +214,11 @@ export async function listTransactions(
     if (!res.ok) throw new Error(`report_http_${res.status}`);
 
     const data = await res.json();
-    const rows: ReportTxn[] = data?.transactions ?? [];
+    // שגיאה או מבנה לא צפוי אינם "אין עסקאות". זורקים, כדי שההשוואה
+    // תדווח שנכשלה במקום להיראות כאילו הכול תקין.
+    if (data?.error_code && Number(data.error_code) !== 0) throw new Error(`report_error_${data.error_code}`);
+    if (!Array.isArray(data?.transactions)) throw new Error('report_format');
+    const rows: ReportTxn[] = data.transactions;
     all.push(...rows);
 
     // הדוח מדווח כמה שורות קיימות בסך הכול. בלי ההשוואה הזו, חריגה

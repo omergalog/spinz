@@ -44,13 +44,27 @@ Deno.serve(async (req) => {
   const ip = clientIp(req);
   if (ip && !(await take('status-ip', ip, 3000))) return reply({ error: 'RATE_LIMIT' }, 429);
 
-  const { data } = await db.from('checkout_sessions')
+  let { data, error } = await db.from('checkout_sessions')
     .select('status, total_price, card_last4, order_ids, customer_notes, purchase_key')
     .eq('id', id).maybeSingle();
 
+  // המסד עוד לפני מיגרציית הרכישות (אין עמודת purchase_key): אין רכישות
+  // ואין סודות, ולכן ההתנהגות היא של הגרסה הקודמת — מצב ופרטים כמו קודם.
+  // בלי זה, הקוד החדש מול מסד ישן היה מחזיר "לא נמצא" על הזמנה ששולמה.
+  const preMigration = !!error && (error.code === '42703' || /purchase_key/.test(error.message ?? ''));
+  if (preMigration) {
+    ({ data, error } = await db.from('checkout_sessions')
+      .select('status, total_price, card_last4, order_ids, customer_notes')
+      .eq('id', id).maybeSingle());
+  }
+  if (error) {
+    console.error('tranzila-status', error.message);
+    return reply({ error: 'unavailable' }, 503);
+  }
+
   if (!data) return reply({ error: 'not_found' }, 404);
 
-  if (!(await ownsSession(db, data.purchase_key, token))) {
+  if (!preMigration && !(await ownsSession(db, data.purchase_key ?? null, token))) {
     return reply({ status: data.status });
   }
 

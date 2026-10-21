@@ -95,8 +95,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     });
   const clearUnitCoupons = () => setUnitCoupons({});
 
+  // אחסון חסום (הגדרות פרטיות בדפדפן): הכתיבה זרקה ושברה את כל האתר.
+  // העגלה ממשיכה לעבוד בזיכרון של הלשונית.
   useEffect(() => {
-    localStorage.setItem('spinz-cart', JSON.stringify(items));
+    try { localStorage.setItem('spinz-cart', JSON.stringify(items)); } catch { /* אחסון חסום */ }
   }, [items]);
 
   // ריקון שנעשה מחוץ לקומפוננטה — למשל בעמוד תוצאת התשלום, אחרי

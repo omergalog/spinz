@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Check, Star, Calendar } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { colorVariants, sizeVariants } from '../data/models';
 import { useCart } from '../context/CartContext';
 import { supabase } from '../lib/supabase';
@@ -103,8 +103,18 @@ export default function Models() {
   }, []);
 
 
-  const [selectedColor, setSelectedColor] = useState(0);
-  const [selectedSize, setSelectedSize] = useState(0);
+  // הבחירה נשמרת בכתובת (?color=olive&size=57): היא שורדת רענון, ואפשר
+  // לשלוח קישור ישיר לצבע ולמידה. קודם כל רענון חזר לשחור 54.
+  const [params, setParams] = useSearchParams();
+  const [selectedColor, setSelectedColorState] = useState(() =>
+    Math.max(0, colorVariants.findIndex(c => c.id === params.get('color'))));
+  const [selectedSize, setSelectedSizeState] = useState(() =>
+    Math.max(0, sizeVariants.findIndex(s => s.id === params.get('size'))));
+  const remember = (key: 'color' | 'size', value: string) =>
+    setParams(p => { const n = new URLSearchParams(p); n.set(key, value); return n; },
+              { replace: true, preventScrollReset: true });
+  const setSelectedColor = (i: number) => { setSelectedColorState(i); remember('color', colorVariants[i].id); };
+  const setSelectedSize = (i: number) => { setSelectedSizeState(i); remember('size', sizeVariants[i].id); };
   const [added, setAdded] = useState(false);
   const [outOfStock, setOutOfStock] = useState(false);
   const [price, setPrice] = useState(BASE_PRICE);

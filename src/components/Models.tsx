@@ -172,6 +172,8 @@ export default function Models() {
     colorVariants.forEach(c => {
       const img = new Image();
       img.src = c.image;
+      // מפענח מראש, כדי שבמעבר צבע בטלפון התמונה תהיה מוכנה לציור מיד.
+      img.decode?.().catch(() => { /* לא קריטי */ });
     });
   }, []);
 
@@ -485,16 +487,21 @@ export default function Models() {
               שם היא פשוט נגללת עם הדף. */}
           <div ref={imageColRef} className="relative order-2 lg:order-2 lg:flex-1 flex items-center justify-center bg-white px-5 py-1 lg:p-12 h-[33vh] md:h-auto lg:h-auto lg:min-h-0 sticky md:static lg:sticky lg:self-start shadow-[0_12px_20px_-10px_rgba(0,0,0,0.15)] lg:shadow-none z-[4] lg:z-[2]" style={{ top: 'var(--header-h, 104px)' }}>
             {/* 3D viewer for beige disabled for now – .glb loads too slowly; restore when optimized */}
-            <AnimatePresence mode="wait">
+            {/* מעבר צבע: עמעום הדדי. קודם (mode="wait") התמונה הישנה יצאה,
+                ורק אז החדשה נכנסה — רגע ריק באמצע, שבטלפון נראה תקוע. יחד
+                עם mixBlendMode שהיה נחוץ לתמונות השקופות הישנות ומכביד על
+                אנימציה בטלפון. התמונות החדשות על רקע לבן, כמו המסגרת. */}
+            <AnimatePresence mode="popLayout" initial={false}>
               <motion.img
                 key={color.id}
                 src={color.image}
                 alt={colorLabel}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: outOfStock ? 0.5 : 1, y: 0 }}
-                exit={{ opacity: 0, y: -30 }}
-                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                style={{ width: '100%', maxWidth: '820px', height: 'auto', objectFit: 'contain', mixBlendMode: 'multiply' }}
+                decoding="async"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: outOfStock ? 0.5 : 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+                style={{ width: '100%', maxWidth: '820px', height: 'auto', objectFit: 'contain' }}
               />
             </AnimatePresence>
             <AnimatePresence>

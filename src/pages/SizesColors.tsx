@@ -21,9 +21,9 @@ const sizeMeta = [
 ];
 
 const colorMeta = [
-  { id: 'mat',   hex: '#1A1A1A', img: '/assets/bike-mat-v3.png' },
-  { id: 'beige',       hex: '#C4A882', img: '/assets/bike-beige-v3.png' },
-  { id: 'olive',  hex: '#7D9168', img: '/assets/bike-olive-v3.png' },
+  { id: 'mat',   hex: '#1A1A1A', img: '/assets/bike-mat-v3.webp' },
+  { id: 'beige',       hex: '#C4A882', img: '/assets/bike-beige-v3.webp' },
+  { id: 'olive',  hex: '#7D9168', img: '/assets/bike-olive-v3.webp' },
 ];
 
 export default function SizesColors() {

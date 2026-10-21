@@ -39,9 +39,9 @@ const models: BikeModel[] = [
 ];
 
 export const colorVariants = [
-  { id: 'mat',   label: 'שחור מט',  image: '/assets/bike-mat-v3.png',   hex: '#1A1A1A', skuCode: 'MAT', slug: 'mat'   },
-  { id: 'beige', label: "בז'",      image: '/assets/bike-beige-v3.png', hex: '#C4A882', skuCode: 'BEI', slug: 'beige' },
-  { id: 'olive', label: 'ירוק זית', image: '/assets/bike-olive-v3.png', hex: '#7D9168', skuCode: 'OLG', slug: 'olive' },
+  { id: 'mat',   label: 'שחור מט',  image: '/assets/bike-mat-v3.webp',   hex: '#1A1A1A', skuCode: 'MAT', slug: 'mat'   },
+  { id: 'beige', label: "בז'",      image: '/assets/bike-beige-v3.webp', hex: '#C4A882', skuCode: 'BEI', slug: 'beige' },
+  { id: 'olive', label: 'ירוק זית', image: '/assets/bike-olive-v3.webp', hex: '#7D9168', skuCode: 'OLG', slug: 'olive' },
 ];
 
 export const sizeVariants = [

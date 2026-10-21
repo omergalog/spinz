@@ -11,6 +11,7 @@ import { IFRAME_URL } from '../_shared/tranzila.ts';
 import { corsHeaders } from '../_shared/cors.ts';
 import { clientIp } from '../_shared/client.ts';
 import { PICKUP_NOTES } from '../_shared/delivery.ts';
+import { UUID } from '../_shared/purchase.ts';
 
 const SITE = Deno.env.get('SITE_URL') ?? 'https://spinzbikes.com';
 const FUNCTIONS = `${Deno.env.get('SUPABASE_URL')}/functions/v1`;
@@ -138,6 +139,20 @@ Deno.serve(async (req) => {
   if (!Array.isArray(items) || items.length === 0) return json({ error: 'EMPTY_CART' }, 400, req);
   if (!name?.trim() || !phone?.trim()) return json({ error: 'MISSING_DETAILS' }, 400, req);
 
+  // רכישה (_shared/purchase.ts). גרסה ישנה של האתר לא שולחת אותה. כל
+  // עוד REQUIRE_PURCHASE_KEY כבוי היא ממשיכה לעבוד כמו קודם, וכל בקשה
+  // כזו נרשמת כדי שנדע מתי אפשר לסגור את המסלול. כשהוא דלוק, היא נדחית
+  // בקוד שאינו 200: גרסה ישנה שמקבלת 200 במבנה לא מוכר הייתה מגישה טופס
+  // ריק לעמוד התשלום.
+  const rawKey = String((body as { purchaseKey?: unknown }).purchaseKey ?? '');
+  const ownerToken = String((body as { ownerToken?: unknown }).ownerToken ?? '').slice(0, 128);
+  const purchaseKey = UUID.test(rawKey) ? rawKey : null;
+  if (!purchaseKey && Deno.env.get('REQUIRE_PURCHASE_KEY') === '1') {
+    return json({ error: 'CLIENT_OUTDATED' }, 426, req);
+  }
+  // חסימת ניסיון חדש כשהקודם לא פתור. כבויה עד החלטה (SPINZ-תכנון-חיוב-כפול.md).
+  const enforce = Deno.env.get('PURCHASE_LOCK') === '1';
+
   // ניקוי: רק השדות שאנחנו מכירים עוברים הלאה, וכל השאר נזרק.
   const clean = items.map(i => ({
     color: String(i.color ?? ''),
@@ -165,12 +180,22 @@ Deno.serve(async (req) => {
   // כל סל פתוח משריין מלאי ל-25 דקות. מכסת שלושת הסלים נמדדת לפי
   // מספר טלפון, ומספר טלפון עולה כלום להחליף — כלומר אפשר היה לרוקן
   // את המלאי המוצג בלי לשלם שקל. מכסה לכתובת חוסמת את זה.
+  //
+  // עם רכישה המכסה העיקרית היא לרכישה, והמכסה לכתובת רחבה יותר: כמה
+  // לקוחות שגולשים מאותה רשת לא חוסמים זה את זה. בלי רכישה (גרסה ישנה)
+  // נשארת המכסה הקודמת.
   const ip = clientIp(req);
-  if (ip) {
+  const take = async (bucket: string, client: string, limit: number) => {
     const { data: allowed } = await db.rpc('take_rate_token', {
-      p_bucket: 'checkout', p_client: ip, p_limit: 12,
+      p_bucket: bucket, p_client: client, p_limit: limit,
     });
-    if (allowed === false) return json({ error: 'TOO_MANY_OPEN_CARTS' }, 429, req);
+    return allowed !== false;
+  };
+  if (purchaseKey) {
+    if (!(await take('checkout-purchase', purchaseKey, 10))) return json({ error: 'TOO_MANY_OPEN_CARTS' }, 429, req);
+    if (ip && !(await take('checkout-ip', ip, 40))) return json({ error: 'TOO_MANY_OPEN_CARTS' }, 429, req);
+  } else if (ip) {
+    if (!(await take('checkout', ip, 12))) return json({ error: 'TOO_MANY_OPEN_CARTS' }, 429, req);
   }
 
   const args = {
@@ -187,13 +212,20 @@ Deno.serve(async (req) => {
   // אחד מחזיק עד 30 יחידות. הפונקציה העוטפת מגבילה את מספר האופניים
   // שכתובת אחת מחזיקה משוריינים בו-זמנית, ובודקת את זה באותה טרנזקציה
   // שיוצרת את הסל.
-  let { data, error } = await db.rpc('create_checkout_session_guarded', { p_ip: ip, ...args });
+  let { data, error } = await db.rpc('create_checkout_session_guarded', {
+    p_ip: ip, ...args,
+    p_purchase_key: purchaseKey,
+    p_owner_token: purchaseKey ? ownerToken : null,
+    p_enforce: enforce,
+    p_terms: { lang: lang === 'en' ? 'en' : 'he', delivery: delivery === 'pickup' ? 'pickup' : 'ship' },
+  });
 
-  // הפונקציה העוטפת עוד לא הותקנה בבסיס הנתונים: ממשיכים בדרך הישנה,
-  // כדי שהעלאת הקוד לפני ה-SQL לא תשבית את התשלום.
+  // המיגרציה של הרכישות (MIGRATION-double-charge-1.sql) עוד לא רצה:
+  // החתימה הקודמת של הפונקציה העוטפת, בלי רכישה. כך העלאת הקוד לפני
+  // ה-SQL לא משביתה את התשלום, וגם לא עוקפת את תקרת השריון.
   if (error && (error.code === 'PGRST202' || error.code === '42883')) {
-    console.error('create_checkout_session_guarded missing — hold cap is OFF');
-    ({ data, error } = await db.rpc('create_checkout_session', args));
+    console.error('create_checkout_session_guarded: purchase params missing — migration not applied');
+    ({ data, error } = await db.rpc('create_checkout_session_guarded', { p_ip: ip, ...args }));
   }
 
   if (error) {
@@ -223,6 +255,11 @@ Deno.serve(async (req) => {
     if (msg.includes('TOO_MANY_OPEN_CARTS')) {
       return json({ error: 'TOO_MANY_OPEN_CARTS' }, 429, req);
     }
+    // רכישה שלא קיימת או סוד שלא תואם: הדפדפן פותח רכישה חדשה. בלי
+    // פרטים על הרכישה המבוקשת.
+    if (msg.includes('PURCHASE_UNKNOWN') || msg.includes('PURCHASE_FORBIDDEN')) {
+      return json({ error: 'PURCHASE_INVALID' }, 409, req);
+    }
     // מוצר שאינו קיים הוא בקשה שגויה, לא תקלת שרת. הוא הוחזר כ-500
     // ונרשם ביומן השגיאות יחד עם תקלות אמיתיות.
     if (msg.includes('PRODUCT_NOT_FOUND') || msg.includes('INVALID_QUANTITY')
@@ -233,8 +270,28 @@ Deno.serve(async (req) => {
     return json({ error: 'SERVER' }, 500, req);
   }
 
+  // הרכישה כבר שולמה, או שיש בה ניסיון שעדיין יכול להסתיים בחיוב: לא
+  // נוצר ניסיון חדש ולא מוחזרים פרמטרי תשלום. 409 ולא 200 — ראו למעלה.
+  if (data?.ok === false) {
+    if (data.reason === 'ALREADY_PAID') {
+      return json({ error: 'ALREADY_PAID', sessionId: data.session_id }, 409, req);
+    }
+    if (data.reason === 'PREVIOUS_ATTEMPT_OPEN') {
+      return json({ error: 'PREVIOUS_ATTEMPT_OPEN', sessionId: data.session_id, state: data.state }, 409, req);
+    }
+    console.error('create_checkout_session_guarded', data);
+    return json({ error: 'SERVER' }, 500, req);
+  }
+
   const sessionId = data.session_id as string;
   const total = Number(data.total);
+
+  if (!purchaseKey) {
+    await db.from('payment_events').insert({
+      session_id: sessionId, source: 'legacy_checkout',
+      payload: {}, note: 'סל נפתח מגרסה של האתר שלא שולחת רכישה',
+    });
+  }
 
   // שורות החשבונית. הסל כבר מתומחר בשרת, ולכן נמשך משם ולא מהדפדפן.
   const { data: session } = await db.from('checkout_sessions')

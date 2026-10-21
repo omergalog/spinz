@@ -4,8 +4,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Plus, Minus, ArrowRight, ArrowLeft, CalendarClock } from 'lucide-react';
 import { COMPANY } from '../config/company';
 import { MAX_BIKES_PER_ORDER, MAX_PER_LINE, useCart, type UnitCoupon } from '../context/CartContext';
-import { CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, TooManyCartsError, checkCoupon, checkUnitCoupon, fetchStatus, loadApplePay, openCheckout, reportBlockedFrame, submitToIframe }
+import { AlreadyPaidError, AttemptOpenError, CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, PurchaseInvalidError, TooManyCartsError, checkCoupon, checkUnitCoupon, fetchStatus, loadApplePay, openCheckout, reportBlockedFrame, submitToIframe }
   from '../lib/payment';
+import { dropPurchase, ensurePurchase, markPurchasePaid, purchaseToken, startNewPurchase } from '../lib/purchase';
 import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
 import { arrivalLabelIn, usePresale } from '../config/presale';
 import { merchLabel } from '../data/merch';
@@ -144,6 +145,10 @@ export default function CartDrawer() {
   const [orderError, setOrderError] = useState<string | null>(null);
   // שגיאות שהפתרון שלהן הוא לדבר איתנו מקבלות קישור לוואטסאפ.
   const [orderErrorContact, setOrderErrorContact] = useState(false);
+  // הרכישה כבר שולמה (מזהה הסל ששולם): מוצעת רכישה נוספת, בבחירה מפורשת
+  const [alreadyPaid, setAlreadyPaid] = useState<string | null>(null);
+  // ניסיון קודם ברכישה עדיין יכול להסתיים בחיוב: לא נפתח תשלום חדש
+  const [attemptOpen, setAttemptOpen] = useState<string | null>(null);
   const bikeUnits = items.reduce((n, i) => n + (i.kind === 'merch' ? 0 : i.quantity), 0);
   const tooManyBikes = bikeUnits > MAX_BIKES_PER_ORDER;
   const waLink = `https://wa.me/${COMPANY.phoneE164}`;
@@ -197,7 +202,7 @@ export default function CartDrawer() {
 
       // העגלה מתרוקנת רק בהצלחה. בכישלון הלקוח אמור להיות מסוגל
       // לנסות שוב בלי לבנות אותה מחדש.
-      if (e.data.outcome === 'success') { clearCart(); saveCoupon(''); clearCheckoutDetails(); }
+      if (e.data.outcome === 'success') { clearCart(); saveCoupon(''); clearCheckoutDetails(); markPurchasePaid(id); }
 
       closeCart();
       setStep('cart');
@@ -213,29 +218,37 @@ export default function CartDrawer() {
   // ולא הגיע לדף החזרה, ולכן ההודעה למעלה לא נשלחה — הלקוח חויב ונשאר
   // מול ספינר. כאן שואלים את השרת אם הסל שולם (ההזמנה נוצרת ב-notify,
   // בלי קשר למסגרת), ובהצלחה עוברים לעמוד התודה.
+  //
+  // אותו ערוץ משמש גם כשהשרת סירב לפתוח תשלום חדש כי ניסיון קודם
+  // ברכישה עדיין פתוח (attemptOpen): אם הוא יאושר, עוברים לתודה.
+  const watchId = step === 'payment' ? 'payment' : attemptOpen;
   useEffect(() => {
-    if (step !== 'payment') return;
+    if (!watchId) return;
     let alive = true;
-    let tries = 0;
+    const started = Date.now();
     let timer: ReturnType<typeof setTimeout>;
     const tick = async () => {
-      const id = sessionIdRef.current;
+      const id = watchId === 'payment' ? sessionIdRef.current : watchId;
       if (!alive || !id) return;
-      const s = await fetchStatus(id).catch(() => null);
+      const s = await fetchStatus(id, purchaseToken()).catch(() => null);
       if (!alive) return;
-      if (s?.status === 'paid') {
-        clearCart(); saveCoupon(''); clearCheckoutDetails();
+      if (s && s !== 'rate' && s.status === 'paid') {
+        clearCart(); saveCoupon(''); clearCheckoutDetails(); markPurchasePaid(id);
+        setAttemptOpen(null);
         closeCart();
         setStep('cart');
         navigate(`/order/success?s=${id}`);
         return;
       }
-      // עד 30 דקות: מעבר לזה הסל עצמו פג תוקף.
-      if (++tries < 450) timer = setTimeout(tick, 4000);
+      // כל 5 שניות בשתי הדקות הראשונות, אחר כך כל 30, עד חצי שעה.
+      // השרת ביקש להאט — מאטים.
+      const age = Date.now() - started;
+      if (age > 30 * 60_000) return;
+      timer = setTimeout(tick, s === 'rate' || age > 120_000 ? 30_000 : 5_000);
     };
-    timer = setTimeout(tick, 4000);
+    timer = setTimeout(tick, 5_000);
     return () => { alive = false; clearTimeout(timer); };
-  }, [step, clearCart, closeCart, navigate, saveCoupon]);
+  }, [watchId, clearCart, closeCart, navigate, saveCoupon]);
 
   // הקוד שהוזן בעמוד המוצר נבדק כאן מחדש מול סכום העגלה האמיתי.
   // בעמוד המוצר הוא נבדק מול מחיר יחידה אחת, ולכן הסכומים יכולים
@@ -369,10 +382,15 @@ export default function CartDrawer() {
     handleCheckout();
   };
 
-  const handleCheckout = async () => {
+  const handleCheckout = async (retried = false) => {
     setOrdering(true);
     setOrderError(null);
     setOrderErrorContact(false);
+    setAlreadyPaid(null);
+    setAttemptOpen(null);
+    // הרכישה מזהה את הקנייה הזו גם אחרי רענון ובלשוניות אחרות. אם השרת
+    // לא זמין לפתוח רכישה, ממשיכים בלעדיה כמו קודם.
+    const purchase = await ensurePurchase();
     try {
       // השרת מתמחר, שומר את הסל ומחזיר טופס מוכן. שום סכום לא נשלח
       // מכאן — אחרת אפשר היה לשנות אותו בכלי הפיתוח של הדפדפן.
@@ -393,6 +411,8 @@ export default function CartDrawer() {
         // רק קוד שהוחל בפועל. מה שמופיע על המסך הוא מה שנגבה.
         coupon: couponState === 'ok' ? coupon.trim() : undefined,
         lang,
+        purchaseKey: purchase?.key,
+        ownerToken: purchase?.token,
       });
 
       setPayFrameReady(false);
@@ -403,7 +423,18 @@ export default function CartDrawer() {
       // ה-iframe נוצר ברינדור הבא, ולכן ההגשה מחכה לו.
       requestAnimationFrame(() => submitToIframe(session, TRANZILA_FRAME));
     } catch (e) {
-      if (e instanceof CouponRejectedError && e.code) {
+      if (e instanceof PurchaseInvalidError && purchase && !retried) {
+        dropPurchase(purchase.key);
+        return handleCheckout(true);
+      }
+      if (e instanceof AlreadyPaidError) {
+        setAlreadyPaid(e.sessionId);
+        setOrderError(t.cart.errAlreadyPaid(e.sessionId.slice(0, 8).toUpperCase()));
+      } else if (e instanceof AttemptOpenError) {
+        setAttemptOpen(e.sessionId);
+        setOrderError(t.cart.errAttemptOpen(e.sessionId.slice(0, 8).toUpperCase()));
+        setOrderErrorContact(true);
+      } else if (e instanceof CouponRejectedError && e.code) {
         // קוד של זוג שנדחה: מסירים בדיוק אותו, וקוד ההזמנה נשאר.
         // אם הקוד הוחל על כמה זוגות, השרת דחה את השימוש האחרון (למשל
         // מכסה שנגמרה). מסירים רק אותו, מהשורה האחרונה שבה הוא מופיע.
@@ -820,6 +851,20 @@ export default function CartDrawer() {
                               {t.cart.talkToUs}
                             </a>
                           </>
+                        )}
+                        {alreadyPaid && (
+                          <div style={{ marginTop: '10px', display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
+                            <a href={localizePath(`/order/success?s=${alreadyPaid}`, lang)}
+                               style={{ color: '#A3462B', fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+                              {t.cart.viewPaidOrder}
+                            </a>
+                            {/* רכישה נוספת: רק בלחיצה מפורשת, רכישה חדשה */}
+                            <button type="button" disabled={ordering}
+                              onClick={async () => { await startNewPurchase(); handleCheckout(); }}
+                              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: '#A3462B', fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: '2px', fontFamily: 'inherit', fontSize: 'inherit' }}>
+                              {t.cart.newPurchase}
+                            </button>
+                          </div>
                         )}
                       </div>
                     )}

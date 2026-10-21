@@ -6,27 +6,24 @@
  * הזמנה, ואף אחד לא יודע על כך עד שהוא מתקשר. הפונקציה הזו סוגרת את
  * הפער: היא שואלת את טרנזילה מה נגבה בפועל, ומשווה.
  *
- * עסקה שאין לה סל תואם אינה נזרקת ואינה נוצרת בעיוורון. אם יש בדיוק
- * מועמד אחד סביר — סל באותו סכום, מאותו חלון זמן, שמעולם לא נסגר —
- * ההזמנה נוצרת. בכל מקרה אחר היא נרשמת כחריגה לבדיקה אנושית, כי
- * לנחש למי שייך תשלום זה בדיוק סוג הטעות שקשה לתקן אחר כך.
+ * עסקה מקושרת לסל רק לפי מספר העסקה שנרשם עליו. עסקה בלי קישור כזה
+ * אינה מוצמדת לסל לפי סכום וזמן — חיוב עודף של לקוח אחד היה עלול
+ * להיסגר על סל פתוח של לקוח אחר באותו סכום. היא נפתחת כתיק
+ * (payment_issues, kind=unmatched) לבדיקה אנושית.
+ *
+ * בסוף הריצה נשלחת תזכורת על כל התיקים הפתוחים.
  *
  *   GET /tranzila-reconcile?days=2
  */
 import { createClient } from 'jsr:@supabase/supabase-js@2';
-import { amountMatches, isApproved, isCharge, listTransactions, reportAmountToIls }
+import { isApproved, isCharge, listTransactions, reportAmountToIls }
   from '../_shared/tranzila.ts';
 import { confirmOrderOnce } from '../_shared/email.ts';
+import { ISSUE_LABEL, REASON_KIND, alertIssue, sendAlert } from '../_shared/alert.ts';
 
 /**
- * חלון הזמן שבו סל ועסקה עוד יכולים להיות אותו דבר.
- *
- * רחב בכוונה. הדוח מחזיר תאריך בלי אזור זמן, ולכן ייתכן פער קבוע של
- * שעתיים-שלוש בין שעון המסוף לשעון שלנו. חלון צר היה מפספס את הסל
- * הנכון בדיוק בגלל הפער הזה.
- *
- * ההרחבה בטוחה משום שהתאמה מתקבלת רק כשיש מועמד יחיד. חלון רחב יותר
- * מגדיל את הסיכוי לשני מועמדים — וזה נשלח לבדיקה ידנית, לא לניחוש.
+ * כמה זמן לפני תחילת הטווח טוענים סלים. עסקה שקרתה מיד אחרי תחילת
+ * הטווח שייכת לסל שנוצר לפניו, והדוח מחזיר תאריך בלי אזור זמן.
  */
 const MATCH_WINDOW_MS = 8 * 60 * 60 * 1000;
 
@@ -72,58 +69,52 @@ Deno.serve(async (req) => {
     .select('id, total_price, status, created_at, tranzila_index')
     .gte('created_at', new Date(since.getTime() - MATCH_WINDOW_MS).toISOString());
 
-  const paid = new Set(
-    (known ?? []).filter(s => s.status === 'paid')
+  // עסקאות שכבר משויכות: לסל שנרשם בו כסף, או לחריגה שכבר נפתחה.
+  const linked = new Set(
+    (known ?? []).filter(s => ['paid', 'overbooked', 'duplicate'].includes(s.status))
       .map(s => Number(s.tranzila_index)).filter(Boolean),
   );
+  const { data: issueRows } = await db.from('payment_issues')
+    .select('tranzila_index').not('tranzila_index', 'is', null);
+  const flagged = new Set((issueRows ?? []).map(i => Number(i.tranzila_index)));
 
-  const result = { checked: txns.length, matched: 0, recovered: 0, orphans: 0 };
+  const result = { checked: txns.length, matched: 0, recovered: 0, issues: 0 };
+
+  const openIssue = async (t: typeof txns[number], note: string) => {
+    const { error } = await db.from('payment_issues').insert({
+      kind: 'unmatched',
+      tranzila_index: Number(t.index),
+      amount: reportAmountToIls(Number(t.amount)),
+      details: { txn: t, note },
+    });
+    // 23505: כבר נפתח תיק על העסקה הזו
+    if (error && error.code !== '23505') console.error('reconcile issue', error.message);
+    if (!error) {
+      result.issues++;
+      const err = await alertIssue('unmatched', { index: Number(t.index), amount: t.amount, note });
+      if (err) console.error('reconcile alert', err);
+    }
+  };
 
   for (const t of txns) {
     const idx = Number(t.index);
-    if (paid.has(idx)) { result.matched++; continue; }
+    if (linked.has(idx) || flagged.has(idx)) { result.matched++; continue; }
 
-    const when = new Date(t.transaction_date).getTime();
+    // התאמה רק לפי מספר העסקה עצמו: סל שכבר נושא אותו ולא נסגר. כך
+    // נראית הזמנה ששולמה ונפלה על תקלה זמנית באימות.
+    const exact = (known ?? []).filter(s =>
+      Number(s.tranzila_index) === idx && !['paid', 'overbooked', 'duplicate'].includes(s.status));
 
-    // התאמה מדויקת קודמת לכול: סל שכבר נושא את מספר העסקה הזה אך לא
-    // נסגר. כך נראית הזמנה ששולמה ונפלה על תקלה זמנית באימות — אין
-    // כאן ניחוש, המספר עצמו מקשר.
-    // overbooked פירושו "נגבה, המלאי אזל, מחכה לזיכוי". זהו מצב סופי
-    // שכבר תועד. ניסיון לשחזר אותו רק היה מוחק את הסימון.
-    const open = (known ?? []).filter(s => s.status !== 'paid' && s.status !== 'overbooked');
-
-    let candidates = open.filter(s => Number(s.tranzila_index) === idx);
-
-    // רק אם אין קישור מפורש, נופלים להתאמה לפי סכום וחלון זמן
-    if (candidates.length === 0) {
-      candidates = open.filter(s =>
-        !s.tranzila_index &&
-        amountMatches(Number(t.amount), s.total_price) &&
-        Math.abs(new Date(s.created_at).getTime() - when) < MATCH_WINDOW_MS
-      );
-    }
-
-    if (candidates.length !== 1) {
-      // אפס מועמדים או יותר מאחד — לא מנחשים
-      await db.from('payment_events').insert({
-        session_id: null,
-        source: 'reconcile',
-        payload: t as unknown as Record<string, unknown>,
-        note: `עסקה ${t.index} על ${t.amount} נגבתה בטרנזילה ואין לה הזמנה. ` +
-              `${candidates.length === 0 ? 'לא נמצא סל תואם' : `נמצאו ${candidates.length} סלים תואמים`} — דורש בדיקה ידנית.`,
-      });
-      result.orphans++;
+    // בלי מספר עסקה אין ניחוש לפי סכום וזמן: חיוב עודף של לקוח אחד
+    // היה עלול להיצמד לסל פתוח של לקוח אחר באותו סכום. תיק לבדיקה.
+    if (exact.length !== 1) {
+      await openIssue(t, exact.length === 0
+        ? 'עסקה מאושרת בטרנזילה בלי סל שנושא את מספר העסקה'
+        : `${exact.length} סלים נושאים את אותו מספר עסקה`);
       continue;
     }
 
-    const session = candidates[0];
-
-    // הסל חייב לחזור ל-pending כדי ש-finalize תסכים לטפל בו. זה בטוח:
-    // הגענו לכאן רק אחרי שטרנזילה אישרה שהעסקה קיימת ובסכום הנכון.
-    await db.from('checkout_sessions')
-      .update({ status: 'pending', expires_at: new Date(Date.now() + 60_000).toISOString() })
-      .eq('id', session.id);
-
+    const session = exact[0];
     const { data, error } = await db.rpc('finalize_checkout_session', {
       p_session_id: session.id,
       p_amount: reportAmountToIls(Number(t.amount)),   // הסכום שנגבה, לא זה שביקשנו
@@ -132,36 +123,28 @@ Deno.serve(async (req) => {
       p_last4: null,
     });
 
-    // אם השחזור נכשל, הסל חייב לחזור למצב לא-ממתין. אחרת הוא ממשיך
-    // להיספר כמלאי שמור ומקטין את הזמינות המוצגת באתר ללא סיבה.
-    // finalize מסמנת overbooked בעצמה, ואת זה לא דורסים.
-    const failed = error || !data?.ok;
-    if (failed && data?.reason !== 'PAID_BUT_OUT_OF_STOCK') {
-      await db.from('checkout_sessions')
-        .update({
-          status: 'failed',
-          tranzila_index: idx,
-          failure_reason: error?.message ?? data?.reason ?? 'שחזור נכשל',
-        })
-        .eq('id', session.id);
-    }
-
     await db.from('payment_events').insert({
       session_id: session.id,
       source: 'reconcile',
       payload: t as unknown as Record<string, unknown>,
-      note: failed
-        ? `שחזור נכשל: ${error?.message ?? data?.reason}`
-        : `הזמנה שוחזרה מהשוואה — ההודעה מטרנזילה מעולם לא הגיעה (${data?.order_ids?.length ?? 0} שורות)`,
+      note: data?.ok
+        ? `הזמנה שוחזרה מהשוואה — ההודעה מטרנזילה מעולם לא הגיעה (${data?.order_ids?.length ?? 0} שורות)`
+        : `שחזור לא יצר הזמנה: ${error?.message ?? data?.reason}`,
     });
 
-    if (failed) {
-      result.orphans++;
-    } else {
+    if (data?.ok) {
       result.recovered++;
       // הלקוח הזה מעולם לא קיבל אישור, כי ההודעה לא הגיעה
       const mailErr = await confirmOrderOnce(db, session.id);
       if (mailErr) console.error('reconcile mail', mailErr);
+    } else if (data?.issue) {
+      // finalize רשמה חריגה (חיוב שני, אין מלאי וכו')
+      result.issues++;
+      const err = await alertIssue(REASON_KIND[data.reason] ?? data.reason, {
+        session: session.id, index: idx, amount: t.amount, note: data.reason });
+      if (err) console.error('reconcile alert', err);
+    } else {
+      await openIssue(t, `שחזור נכשל: ${error?.message ?? data?.reason}`);
     }
   }
 
@@ -176,7 +159,21 @@ Deno.serve(async (req) => {
     if (err) console.error('resend confirmation', u.id, err);
   }
 
-  return new Response(JSON.stringify({ ...result, mails_retried: (unsent ?? []).length }), {
+  // תזכורת יומית: כל תיק פתוח, עד שנסגר באדמין. ההשוואה רצה פעם ביום
+  // (cron 06:00), ולכן זו גם התזכורת.
+  const { data: open } = await db.from('payment_issues')
+    .select('kind, session_id, tranzila_index, amount, owner, status, due_at, created_at')
+    .neq('status', 'resolved').order('created_at');
+  if ((open ?? []).length > 0) {
+    const now = Date.now();
+    const err = await sendAlert(`${open!.length} תיקי תשלום פתוחים`, open!.map(i => [
+      `${ISSUE_LABEL[i.kind] ?? i.kind}${new Date(i.due_at).getTime() < now ? ' (באיחור)' : ''}`,
+      `סל ${String(i.session_id ?? '—').slice(0, 8).toUpperCase()} · עסקה ${i.tranzila_index ?? '—'} · ₪${i.amount ?? '—'} · ${i.owner} · ${i.status}`,
+    ]));
+    if (err) console.error('reconcile digest', err);
+  }
+
+  return new Response(JSON.stringify({ ...result, open_issues: (open ?? []).length, mails_retried: (unsent ?? []).length }), {
     headers: { 'Content-Type': 'application/json' },
   });
 });

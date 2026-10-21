@@ -14,6 +14,7 @@ import { amountMatches, looksLikeUnitMismatch, reportAmountToIls, safeLast4, ver
   from '../_shared/tranzila.ts';
 import { confirmOrderOnce } from '../_shared/email.ts';
 import { sendPurchase } from '../_shared/meta.ts';
+import { REASON_KIND, alertIssue } from '../_shared/alert.ts';
 
 Deno.serve(async (req) => {
   // טרנזילה מצפה ל-200 בכל מקרה. שגיאה שמוחזרת אליה רק תגרום
@@ -99,25 +100,15 @@ Deno.serve(async (req) => {
     return ok();
   }
 
-  if (session.status === 'paid') {
-    await log('הודעה חוזרת — ההזמנה כבר קיימת');
-    return ok();
-  }
-
-  // סל שפג תוקפו בזמן שהלקוח עמד באימות של חברת האשראי. הכסף נגבה,
-  // ולכן חייבים לתעד את מספר העסקה — בלעדיו ההשוואה היומית לא תדע
-  // לאיזה סל התשלום שייך ולא תוכל לשחזר.
-  if (session.status !== 'pending') {
-    await db.from('checkout_sessions')
-      .update({ tranzila_index: index, failure_reason: `נגבה תשלום על סל במצב ${session.status}` })
-      .eq('id', sessionId);
-    await log(`נגבה תשלום אך הסל במצב ${session.status} — דורש בדיקה`, { verified: v.raw });
-    return ok();
-  }
-
   const reported = Number(v.amount ?? 0);
 
-  if (!amountMatches(reported, session.total_price)) {
+  // על סל שכבר נרשם בו כסף לא בודקים סכום: finalize מבדילה בין הודעה
+  // חוזרת (אותו אינדקס, לא קורה כלום) לבין חיוב שני (אינדקס אחר, חריגה
+  // לטיפול), בכל סכום. סל unresolved / expired / failed הוא סל שעדיין
+  // יכול היה להסתיים בחיוב — ממשיכים אליו כרגיל, ו-finalize יוצרת הזמנה.
+  const moneyRecorded = ['paid', 'overbooked', 'duplicate', 'failed_final'].includes(session.status);
+
+  if (!moneyRecorded && !amountMatches(reported, session.total_price)) {
     // אם הסכום תואם דווקא בפירוש ההפוך, המסוף מדווח ביחידה אחרת.
     // לא מאשרים, אבל אומרים את זה במפורש במקום להשאיר חידה.
     const unit = looksLikeUnitMismatch(reported, session.total_price)
@@ -147,6 +138,23 @@ Deno.serve(async (req) => {
 
   if (error || !data?.ok) {
     const reason = error?.message ?? data?.reason ?? 'לא ידוע';
+
+    // חריגה כספית: finalize כבר רשמה אותה ב-payment_issues עם האינדקס,
+    // וההזמנה המקורית לא נגעה. כאן רק מתריעים. אסור לדרוס את האינדקס
+    // של הסל: בחיוב שני על אותו סל הוא היה מוחק את מספר העסקה הראשונה.
+    if (data?.issue) {
+      await log(`חריגה כספית: ${reason} — נפתח תיק לטיפול`, { verified: v.raw });
+      const kind = REASON_KIND[data.reason] ?? data.reason;
+      const alertErr = await alertIssue(kind, { session: sessionId, index, amount: reported, note: reason });
+      if (alertErr) await log(`התראה על חריגה נכשלה: ${alertErr}`);
+      return ok();
+    }
+
+    // הודעה חוזרת על סל שכבר נסגר (overbooked / duplicate): נרשם בלבד
+    if (data?.already) {
+      await log(`הודעה חוזרת — ${reason}`);
+      return ok();
+    }
 
     // הכסף נגבה. חייבים לרשום את מספר העסקה על הסל, אחרת ההשוואה
     // היומית לא תוכל לקשר ביניהם ואיש לא יידע שיש כאן מה לתקן.

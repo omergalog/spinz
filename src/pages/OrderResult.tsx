@@ -4,6 +4,7 @@ import { CheckCircle, Clock, XCircle } from 'lucide-react';
 import PageShell from '../components/PageShell';
 import { useDir, useLang, localizePath } from '../i18n/LanguageContext';
 import { fetchStatus, type PaymentStatus } from '../lib/payment';
+import { markPurchasePaid, purchaseToken } from '../lib/purchase';
 import { pixelPurchase } from '../lib/pixel';
 import { COMPANY } from '../config/company';
 
@@ -32,7 +33,11 @@ const COPY = {
     expired: 'פג תוקף ההזמנה',
     expiredSub: 'עברו יותר מדי דקות בעמוד התשלום. הוסיפו את האופניים לעגלה ונסו שוב.',
     overbooked: 'התשלום התקבל אך המלאי אזל',
-    overbookedSub: 'זה נדיר וזו אשמתנו. ניצור איתך קשר להחזר מלא היום.',
+    overbookedSub: 'הדגם שבחרת אזל במלאי בזמן התשלום. ניצור איתך קשר כדי לסגור מה עושים, וזה בטיפול שלנו.',
+    unresolved: 'התשלום עדיין בבדיקה',
+    unresolvedSub: (r: string) => `עדיין לא קיבלנו מחברת הסליקה תשובה סופית על התשלום. אם הוא אושר, תקבל אישור במייל וההזמנה תופיע אצלנו. אין צורך לשלם שוב. לעזרה ציין את מספר הפנייה ${r}.`,
+    duplicate: 'התשלום התקבל ונמצא בבדיקה',
+    duplicateSub: (r: string) => `נראה שהתשלום הזה התקבל בנוסף לתשלום קודם על אותה הזמנה. ניצור איתך קשר. מספר פנייה ${r}.`,
     slow: 'האישור מתעכב. אם חויבת, ההזמנה תיקלט מעצמה ואין צורך לשלם שוב.',
     home: 'חזרה לעמוד הבית',
     contact: 'דברו איתנו',
@@ -48,7 +53,11 @@ const COPY = {
     expired: 'Checkout expired',
     expiredSub: 'Too long on the payment page. Add the bike to your cart and try again.',
     overbooked: 'Paid, but the item sold out',
-    overbookedSub: 'This is rare and it is on us. We will contact you today for a full refund.',
+    overbookedSub: 'The model you chose sold out during payment. We will contact you to sort it out — it is on us.',
+    unresolved: 'Payment still being checked',
+    unresolvedSub: (r: string) => `We have not yet received a final answer from the payment processor. If it was approved, you will get a confirmation email and the order will appear on our side. Please do not pay again. For help, quote reference ${r}.`,
+    duplicate: 'Payment received and under review',
+    duplicateSub: (r: string) => `This payment seems to have arrived in addition to an earlier payment for the same order. We will contact you. Reference ${r}.`,
     slow: 'Confirmation is taking a while. If you were charged, the order will register on its own, so do not pay again.',
     home: 'Back to home',
     contact: 'Contact us',
@@ -97,32 +106,41 @@ export default function OrderResult({ outcome }: { outcome: 'success' | 'failed'
     let tries = 0;
 
     const tick = async () => {
-      const s = await fetchStatus(sessionId);
+      // הסוד של הרכישה מביא גם סכום ואופן קבלה. בלעדיו (דפדפן אחר,
+      // קישור שהועבר) מתקבל רק המצב.
+      const s = await fetchStatus(sessionId, purchaseToken());
       if (!alive) return;
 
-      if (s) {
-        setTotal(s.total);
+      if (s && s !== 'rate') {
+        if (s.total != null) setTotal(s.total);
         setPickup(!!s.pickup);
-        if (s.status !== 'pending') {
-          setStatus(s.status);
+        // unresolved אינו סופי: התשלום עדיין יכול להיות מאושר. ממשיכים
+        // לשאול, לאט יותר.
+        if (s.status !== 'pending') setStatus(s.status);
+        if (s.status !== 'pending' && s.status !== 'unresolved') {
           // אותו מזהה אירוע שהשרת שולח, כדי שמטא תאחד ולא תספור פעמיים
           if (s.status === 'paid') {
-            pixelPurchase(sessionId, s.total);
+            if (s.total != null) pixelPurchase(sessionId, s.total);
             clearPaidCart();
+            markPurchasePaid(sessionId);
           }
           return;                       // הגיע למצב סופי — מפסיקים לשאול
         }
       }
 
-      // הודעת התשלום מגיעה בדרך כלל תוך שניות. מפסיקים אחרי דקה כדי
-      // לא להשאיר לשונית פתוחה שמתדפקת על השרת בלי סוף.
-      if (++tries > 30) { setSlow(true); return; }
-      setTimeout(tick, 2000);
+      // הודעת התשלום מגיעה בדרך כלל תוך שניות: כל 2 שניות בדקה הראשונה,
+      // ואחר כך כל 15 שניות עד חצי שעה. השרת ביקש להאט — מאטים.
+      tries++;
+      if (tries === 30) setSlow(true);
+      if (tries > 30 + 116) return;
+      setTimeout(tick, s === 'rate' ? 30000 : tries < 30 ? 2000 : 15000);
     };
 
     tick();
     return () => { alive = false; };
   }, [sessionId, outcome]);
+
+  const ref = sessionId.slice(0, 8).toUpperCase();
 
   const view = (() => {
     switch (status) {
@@ -135,9 +153,14 @@ export default function OrderResult({ outcome }: { outcome: 'success' | 'failed'
                  sub: (pickup ? c.paidSubPickup : c.paidSub)(total ? `\u2066₪${total.toLocaleString('he-IL')}\u2069` : '') };
       case 'expired':
         return { icon: <Clock size={52} style={{ color: MUTED }} />, title: c.expired, sub: c.expiredSub };
+      case 'unresolved':
+        return { icon: <Clock size={52} style={{ color: GOLD }} />, title: c.unresolved, sub: c.unresolvedSub(ref) };
+      case 'duplicate':
+        return { icon: <Clock size={52} style={{ color: GOLD }} />, title: c.duplicate, sub: c.duplicateSub(ref) };
       case 'overbooked':
         return { icon: <XCircle size={52} style={{ color: '#A3462B' }} />, title: c.overbooked, sub: c.overbookedSub };
       case 'failed':
+      case 'failed_final':
         return { icon: <XCircle size={52} style={{ color: '#A3462B' }} />, title: c.failed, sub: c.failedSub };
       default:
         return { icon: <Clock size={52} style={{ color: GOLD }} />,

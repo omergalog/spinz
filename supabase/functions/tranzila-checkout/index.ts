@@ -22,9 +22,6 @@ const json = (body: unknown, status: number, req: Request) =>
   });
 
 
-const COLOR_HE: Record<string, string> = {
-  mat: 'שחור מט', beige: "בז'", olive: 'ירוק זית',
-};
 
 /**
  * שורות המוצרים לחשבונית.
@@ -39,7 +36,7 @@ const COLOR_HE: Record<string, string> = {
  * שתי התאמות נוספות: קופון מקטין כל שורה באותו יחס, ועיגול לאגורות
  * נספג בשורה האחרונה כדי שהסכום לפני מע"מ יישאר מדויק.
  */
-function buildInvoiceLines(items: Array<Record<string, unknown>>, total: number): string {
+function buildInvoiceLines(items: Array<Record<string, unknown>>, total: number, lang = 'he'): string {
   if (!Array.isArray(items) || items.length === 0) return '';
 
   const vat = Number(Deno.env.get('INVOICE_VAT_RATE') ?? '0');
@@ -50,10 +47,10 @@ function buildInvoiceLines(items: Array<Record<string, unknown>>, total: number)
   const ratio = total / gross;                       // הנחת הקופון, אם הייתה
 
   const lines = items.map(i => {
-    const color = COLOR_HE[String(i.color)] ?? String(i.color);
     const qty = Math.max(1, Number(i.quantity ?? 1));
     return {
-      product_name: `SPINZ Urban · ${color} · מידה ${i.size}`,
+      // אותו שם כמו בתיאור (describeOrder): חולצה לא נקראת "SPINZ Urban".
+      product_name: itemLabel(i, lang),
       product_quantity: qty,
       product_price: Math.round(Number(i.unit_price ?? 0) * ratio / (1 + vat) * 100) / 100,
     };
@@ -63,9 +60,11 @@ function buildInvoiceLines(items: Array<Record<string, unknown>>, total: number)
   const linesTotal = lines.reduce((s, l) => s + l.product_price * l.product_quantity, 0);
   const drift = Math.round((net - linesTotal) * 100) / 100;
   if (drift !== 0) {
-    const last = lines[lines.length - 1];
-    last.product_price = Math.round(
-      (last.product_price + drift / last.product_quantity) * 100) / 100;
+    // ההפרש נספג בשורה של יחידה אחת, אם יש: בשורה של 2 יחידות חצי אגורה
+    // מתעגלת, והחשבונית יצאה באגורה מעל או מתחת לחיוב.
+    const target = [...lines].reverse().find(l => l.product_quantity === 1) ?? lines[lines.length - 1];
+    target.product_price = Math.round(
+      (target.product_price + drift / target.product_quantity) * 100) / 100;
   }
 
   return JSON.stringify(lines);
@@ -85,17 +84,22 @@ const COLOR_NAMES: Record<string, { he: string; en: string }> = {
   olive: { he: 'ירוק זית', en: 'Olive green' },
 };
 
+/** שם פריט עם צבע ומידה, לחשבונית. */
+function itemLabel(i: Record<string, unknown>, lang = 'he'): string {
+  const en = lang === 'en';
+  const size = String(i.size ?? '').trim();
+  const isBike = String(i.category ?? 'bike') !== 'merch';
+  const name = isBike
+    ? `SPINZ Urban ${COLOR_NAMES[String(i.color)]?.[en ? 'en' : 'he'] ?? String(i.color ?? '')}`.trim()
+    : String(i.product_name ?? 'SPINZ').split(/\s[—–-]\s/)[0].trim();
+  return `${name}${size ? (en ? `, size ${size}` : `, מידה ${size}`) : ''}`;
+}
+
 function describeOrder(items: Array<Record<string, unknown>>, lang = 'he'): string {
   const en = lang === 'en';
   const parts = items.map(i => {
     const qty = Math.max(1, Number(i.quantity ?? 1));
-    const size = String(i.size ?? '').trim();
-    const isBike = String(i.category ?? 'bike') !== 'merch';
-    const name = isBike
-      ? `SPINZ Urban ${COLOR_NAMES[String(i.color)]?.[en ? 'en' : 'he'] ?? String(i.color ?? '')}`.trim()
-      : String(i.product_name ?? 'SPINZ').split(/\s[—–-]\s/)[0].trim();
-    const sizePart = size ? (en ? `, size ${size}` : `, מידה ${size}`) : '';
-    return `${name}${sizePart}, ${en ? 'qty' : 'כמות'} ${qty}`;
+    return `${itemLabel(i, lang)}, ${en ? 'qty' : 'כמות'} ${qty}`;
   });
   // רק תווי ASCII כמפרידים: תו מיוחד עלול להשתבש אצל חברת האשראי.
   const text = parts.join(' / ');
@@ -249,7 +253,7 @@ Deno.serve(async (req) => {
    * ב-pdesc. להדלקה מחדש כשטרנזילה יתקנו: INVOICE_LINES=1.
    */
   const invoiceLines = Deno.env.get('INVOICE_LINES') === '1'
-    ? buildInvoiceLines(session?.items ?? [], total)
+    ? buildInvoiceLines(session?.items ?? [], total, lang)
     : '';
 
   const fields: Record<string, string> = {

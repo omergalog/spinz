@@ -12,6 +12,9 @@ export default function VideoSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [muted, setMuted] = useState(true);
+  // תמונת הפתיחה יושבת מתחת לסרטון, והסרטון שקוף ב-15% — בלי להסתיר אותה
+  // היא נראתה דרכו כהשתקפות לאורך כל הנגינה. היא יורדת ברגע שהסרטון זז.
+  const [playing, setPlaying] = useState(false);
   const textRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -111,7 +114,7 @@ export default function VideoSection() {
     >
       {/* תמונת פתיחה מתוך הפריים הראשון של הסרטון. כשהסרטון לא מתנגן
           (למשל אייפון במצב חיסכון בסוללה) רואים אותה במקום מסך כהה. */}
-      <picture>
+      {!playing && <picture>
         <source media="(max-width: 767px)" srcSet="/assets/hero-poster-mobile.webp" />
         <img
           src="/assets/hero-poster.webp"
@@ -122,7 +125,7 @@ export default function VideoSection() {
             objectFit: 'cover', objectPosition: 'center center', opacity: 0.85,
           }}
         />
-      </picture>
+      </picture>}
 
       {/* Video */}
       <video
@@ -130,6 +133,7 @@ export default function VideoSection() {
         muted
         loop
         playsInline
+        onPlaying={() => setPlaying(true)}
         style={{
           position: 'absolute',
           inset: 0,

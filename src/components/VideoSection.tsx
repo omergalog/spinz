@@ -131,23 +131,12 @@ export default function VideoSection() {
         backgroundColor: DARK,
       }}
     >
-      {/* תמונת פתיחה מתוך הפריים הראשון של הסרטון. כשהסרטון לא מתנגן
-          (למשל אייפון במצב חיסכון בסוללה) רואים אותה במקום מסך כהה. */}
-      {!playing && <picture>
-        <source media="(max-width: 767px)" srcSet={blocked ? '/assets/hero-loop-mobile.webp' : '/assets/hero-poster-mobile.webp'} />
-        <img
-          src="/assets/hero-poster.webp"
-          alt=""
-          aria-hidden
-          style={{
-            position: 'absolute', inset: 0, width: '100%', height: '100%',
-            objectFit: 'cover', objectPosition: 'center center', opacity: 0.85,
-          }}
-        />
-      </picture>}
+      {/* כפתור הפליי שאייפון מצייר על סרטון עומד */}
+      <style>{`.spinz-hero-video::-webkit-media-controls-start-playback-button{display:none!important;-webkit-appearance:none}.spinz-hero-video::-webkit-media-controls{display:none!important}`}</style>
 
       {/* Video */}
       <video
+        className="spinz-hero-video"
         ref={videoRef}
         muted
         loop
@@ -169,6 +158,27 @@ export default function VideoSection() {
         <source media="(max-width: 767px)" src="/assets/spinz-mobile.mp4" type="video/mp4" />
         <source src="/assets/spinz-video-compressed.mp4" type="video/mp4" />
       </video>
+
+      {/* תמונת פתיחה, ובחסימת הפעלה אוטומטית לולאה מונפשת. יושבת **מעל**
+          הסרטון ומכסה אותו לגמרי (רקע כהה מלא) עד שהוא באמת זז: כשהיא
+          הייתה מתחתיו, הסרטון העומד — שקוף ב-15% ועם כפתור הפליי של
+          אייפון — נראה מעליה כהשתקפות. */}
+      {!playing && (
+        <div aria-hidden style={{ position: 'absolute', inset: 0, backgroundColor: DARK }}>
+          <picture>
+            <source media="(max-width: 767px)" srcSet={blocked ? '/assets/hero-loop-mobile.webp' : '/assets/hero-poster-mobile.webp'} />
+            <img
+              src="/assets/hero-poster.webp"
+              alt=""
+              style={{
+                position: 'absolute', inset: 0, width: '100%', height: '100%',
+                objectFit: 'cover', objectPosition: 'center center', opacity: 0.85,
+              }}
+            />
+          </picture>
+        </div>
+      )}
+
 
       {/* Overlay gradient */}
       <div

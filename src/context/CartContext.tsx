@@ -27,6 +27,9 @@ export interface CartItem {
 export const itemSlug = (i: Pick<CartItem, 'slug' | 'colorId' | 'size'>) =>
   i.slug ?? `spinz-${i.colorId}-${i.size}`;
 
+/** קוד שהוחל על זוג אופניים אחד בשורה. ההנחה כאן לתצוגה; השרת קובע. */
+export type UnitCoupon = { code: string; discount: number; label?: string | null };
+
 interface CartContextType {
   items: CartItem[];
   addItem: (
@@ -41,6 +44,11 @@ interface CartContextType {
   /** קוד הקופון שהוזן. ההנחה עצמה מחושבת בשרת בלבד. */
   coupon: string;
   setCoupon: (code: string) => void;
+  /** קודים לזוג בודד, לפי מזהה השורה (model.id). עד כמות השורה. */
+  unitCoupons: Record<string, UnitCoupon[]>;
+  addUnitCoupon: (lineId: string, c: UnitCoupon) => void;
+  removeUnitCoupon: (lineId: string, code: string) => void;
+  clearUnitCoupons: () => void;
   openCart: () => void;
   closeCart: () => void;
 }
@@ -74,6 +82,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
   // מעצמו בביקור הבא, בלי שהלקוח הקליד דבר — וזו בדיוק הדרך לחיוב
   // לא צפוי, לשני הכיוונים. רענון מחזיר את המחיר המקורי.
   const [coupon, setCoupon] = useState('');
+  // קודים לזוג בודד. בזיכרון בלבד, מאותה סיבה כמו הקוד של ההזמנה.
+  const [unitCoupons, setUnitCoupons] = useState<Record<string, UnitCoupon[]>>({});
+  const addUnitCoupon = (lineId: string, c: UnitCoupon) =>
+    setUnitCoupons(prev => ({ ...prev, [lineId]: [...(prev[lineId] ?? []), c] }));
+  const removeUnitCoupon = (lineId: string, code: string) =>
+    setUnitCoupons(prev => {
+      const list = prev[lineId] ?? [];
+      const at = list.findIndex(c => c.code === code);
+      if (at < 0) return prev;
+      return { ...prev, [lineId]: [...list.slice(0, at), ...list.slice(at + 1)] };
+    });
+  const clearUnitCoupons = () => setUnitCoupons({});
 
   useEffect(() => {
     localStorage.setItem('spinz-cart', JSON.stringify(items));
@@ -188,12 +208,28 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const clearCart = () => setItems([]);
+  const clearCart = () => { setItems([]); setUnitCoupons({}); };
 
   const totalCount = items.reduce((sum, i) => sum + i.quantity, 0);
 
+  // קוד לזוג לא יכול לעלות על מספר הזוגות בשורה: שורה שהוסרה או
+  // שהכמות שלה ירדה מאבדת את הקודים העודפים (מהאחרון שהוחל).
+  useEffect(() => {
+    setUnitCoupons(prev => {
+      let changed = false;
+      const next: Record<string, UnitCoupon[]> = {};
+      for (const [id, list] of Object.entries(prev)) {
+        const q = items.find(i => i.model.id === id)?.quantity ?? 0;
+        if (list.length > q) changed = true;
+        if (q > 0 && list.length) next[id] = list.slice(0, q);
+        else if (list.length) changed = true;
+      }
+      return changed ? next : prev;
+    });
+  }, [items]);
+
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, totalCount, isOpen, coupon, setCoupon, openCart: () => setIsOpen(true), closeCart: () => setIsOpen(false) }}>
+    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, totalCount, isOpen, coupon, setCoupon, unitCoupons, addUnitCoupon, removeUnitCoupon, clearUnitCoupons, openCart: () => setIsOpen(true), closeCart: () => setIsOpen(false) }}>
       {children}
     </CartContext.Provider>
   );

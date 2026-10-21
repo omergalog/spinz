@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Plus, Minus, ArrowRight, ArrowLeft, CalendarClock } from 'lucide-react';
 import { COMPANY } from '../config/company';
-import { MAX_BIKES_PER_ORDER, MAX_PER_LINE, useCart } from '../context/CartContext';
-import { CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, TooManyCartsError, checkCoupon, fetchStatus, loadApplePay, openCheckout, reportBlockedFrame, submitToIframe }
+import { MAX_BIKES_PER_ORDER, MAX_PER_LINE, useCart, type UnitCoupon } from '../context/CartContext';
+import { CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, TooManyCartsError, checkCoupon, checkUnitCoupon, fetchStatus, loadApplePay, openCheckout, reportBlockedFrame, submitToIframe }
   from '../lib/payment';
 import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
 import { arrivalLabelIn, usePresale } from '../config/presale';
@@ -46,7 +46,8 @@ export default function CartDrawer() {
   const t = useT();
   const dir = useDir();
   const lang = useLang();
-  const { items, updateQuantity, clearCart, totalCount, isOpen, closeCart, coupon: savedCoupon, setCoupon: saveCoupon } = useCart();
+  const { items, updateQuantity, clearCart, totalCount, isOpen, closeCart, coupon: savedCoupon, setCoupon: saveCoupon,
+          unitCoupons, addUnitCoupon, removeUnitCoupon } = useCart();
   const navigate = useNavigate();
   const presale = usePresale();
 
@@ -105,6 +106,20 @@ export default function CartDrawer() {
   // תקרת היחידות של הקופון נמדדת מול המספר הזה, ולא מול מספר השורות.
   const units = items.reduce((sum, i) => sum + i.quantity, 0);
 
+  // קודים לזוג בודד. ההנחה של כל אחד נשמרת ברגע ההחלה, לתצוגה; השרת
+  // מתמחר מחדש ביצירת הסל. קוד ההזמנה חל על מה שנשאר אחריהם.
+  const unitDiscOf = (id: string) => (unitCoupons[id] ?? []).reduce((s, c) => s + c.discount, 0);
+  const unitDiscTotal = items.reduce((s, i) => s + unitDiscOf(i.model.id), 0);
+  const afterUnits = total - unitDiscTotal;
+  // מחיר הזוג ה-k בשורה לפני קוד: קודם זוגות שבמחיר ההשקה, כמו בשרת.
+  const unitBase = (i: typeof items[number], k: number) => {
+    const atPresale = i.kind !== 'merch' && presale.active
+      ? Math.min(i.quantity, Math.max(0, i.presaleLeft ?? i.quantity)) : 0;
+    return k < atPresale ? i.model.price : (i.fullPrice ?? i.model.price);
+  };
+  const codeInCart = (code: string) =>
+    Object.values(unitCoupons).flat().filter(c => c.code.toUpperCase() === code.toUpperCase()).length;
+
   /**
    * המחיר לפני הנחת ההשקה.
    *
@@ -141,6 +156,9 @@ export default function CartDrawer() {
   const [coupon, setCoupon] = useState(savedCoupon);
   const [couponState, setCouponState] = useState<'idle' | 'checking' | 'ok' | 'bad'>('idle');
   const [discount, setDiscount] = useState(0);
+  // UNIT_SCOPE: קוד של זוג בודד שהוזן בשדה של כל ההזמנה.
+  const [couponMsg, setCouponMsg] = useState<string | null>(null);
+  const payable = afterUnits - discount;
   const iframeRef = useRef<HTMLIFrameElement>(null);
   // פרטי הקשר והמסירה שורדים רענון של הלשונית (sessionStorage: נמחקים
   // כשהלשונית נסגרת ואחרי תשלום מוצלח). פרטי כרטיס לא עוברים כאן בכלל —
@@ -225,14 +243,14 @@ export default function CartDrawer() {
   useEffect(() => {
     if (!isOpen || !savedCoupon || total <= 0) return;
     let alive = true;
-    checkCoupon(savedCoupon, total, units).then(r => {
+    checkCoupon(savedCoupon, afterUnits, units).then(r => {
       if (!alive) return;
       setCoupon(savedCoupon);
       setDiscount(r.valid ? r.discount : 0);
       setCouponState(r.valid ? 'ok' : 'bad');
     });
     return () => { alive = false; };
-  }, [isOpen, savedCoupon, total, units]);
+  }, [isOpen, savedCoupon, afterUnits, units]);
 
   /**
    * המגירה היא חלון מודאלי.
@@ -320,9 +338,10 @@ export default function CartDrawer() {
     setCouponState('checking');
     // ההנחה מחושבת בשרת. כאן רק מציגים את התוצאה, כדי שהסכום שמוצג
     // יהיה בדיוק זה שייגבה.
-    const r = await checkCoupon(coupon.trim(), total, units);
+    const r = await checkCoupon(coupon.trim(), afterUnits, units);
     setDiscount(r.valid ? r.discount : 0);
     setCouponState(r.valid ? 'ok' : 'bad');
+    setCouponMsg(!r.valid && r.reason === 'UNIT_SCOPE' ? t.cart.couponUnitScope : null);
     saveCoupon(r.valid ? coupon.trim() : '');
     return r.valid;
   };
@@ -364,6 +383,7 @@ export default function CartDrawer() {
           quantity: i.quantity,
           colorSkuCode: i.colorSkuCode,
           slug: i.slug,
+          coupons: (unitCoupons[i.model.id] ?? []).map(c => c.code),
         })),
         name: form.name,
         phone: form.phone,
@@ -383,7 +403,15 @@ export default function CartDrawer() {
       // ה-iframe נוצר ברינדור הבא, ולכן ההגשה מחכה לו.
       requestAnimationFrame(() => submitToIframe(session, TRANZILA_FRAME));
     } catch (e) {
-      if (e instanceof CouponRejectedError) {
+      if (e instanceof CouponRejectedError && e.code) {
+        // קוד של זוג שנדחה: מסירים בדיוק אותו, וקוד ההזמנה נשאר.
+        // אם הקוד הוחל על כמה זוגות, השרת דחה את השימוש האחרון (למשל
+        // מכסה שנגמרה). מסירים רק אותו, מהשורה האחרונה שבה הוא מופיע.
+        const hit = Object.entries(unitCoupons).reverse()
+          .find(([, list]) => list.some(c => c.code.toUpperCase() === e.code!.toUpperCase()));
+        if (hit) removeUnitCoupon(hit[0], hit[1].find(c => c.code.toUpperCase() === e.code!.toUpperCase())!.code);
+        setOrderError(t.cart.errCouponRejected);
+      } else if (e instanceof CouponRejectedError) {
         // הקוד חדל להיות תקף בין ההחלה לאישור. מנקים אותו כדי שהמסך
         // יציג את המחיר שייגבה בפועל, ולא סכום שכבר אינו קיים.
         setDiscount(0); setCouponState('bad'); saveCoupon('');
@@ -521,9 +549,9 @@ export default function CartDrawer() {
                           </h3>
                           <span style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
                             <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 700, color: GOLD_TEXT }}>
-                              {formatPrice(lineTotal(item))}
+                              {formatPrice(lineTotal(item) - unitDiscOf(item.model.id))}
                             </span>
-                            {listUnit(item) * item.quantity > lineTotal(item) && (
+                            {listUnit(item) * item.quantity > lineTotal(item) - unitDiscOf(item.model.id) && (
                               <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: MUTED_TEXT, textDecoration: 'line-through' }}>
                                 {formatPrice(listUnit(item) * item.quantity)}
                               </span>
@@ -542,6 +570,30 @@ export default function CartDrawer() {
                               </span>
                             );
                           })()}
+                          {/* הנחת ההשקה של השורה, ומתחתיה קוד לכל זוג */}
+                          {item.kind !== 'merch' && listUnit(item) * item.quantity > lineTotal(item) && (
+                            <span style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px', fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: '#3B6B33' }}>
+                              <span>{t.cart.presaleDiscount}</span>
+                              <span>−{formatPrice(listUnit(item) * item.quantity - lineTotal(item))}</span>
+                            </span>
+                          )}
+                          {item.kind !== 'merch' && (
+                            <UnitCouponBox
+                              t={t}
+                              list={unitCoupons[item.model.id] ?? []}
+                              max={item.quantity}
+                              onRemove={code => removeUnitCoupon(item.model.id, code)}
+                              onApply={async code => {
+                                const k = (unitCoupons[item.model.id] ?? []).length;
+                                const r = await checkUnitCoupon(code, unitBase(item, k), codeInCart(code));
+                                if (r.valid && r.code) {
+                                  addUnitCoupon(item.model.id, { code: r.code, discount: r.discount ?? 0, label: r.label });
+                                  return null;
+                                }
+                                return r.reason === 'ORDER_SCOPE' ? t.cart.couponOrderScope : t.cart.couponBad;
+                              }}
+                            />
+                          )}
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
                           <button
@@ -721,7 +773,7 @@ export default function CartDrawer() {
                         </button>
                       </div>
                       {couponState === 'bad' && (
-                        <p style={{ color: ERROR_TEXT, fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>{t.cart.couponBad}</p>
+                        <p style={{ color: ERROR_TEXT, fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>{couponMsg ?? t.cart.couponBad}</p>
                       )}
                       {couponState === 'ok' && (
                         <p style={{ color: '#3B6B33', fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>{t.cart.couponOk}</p>
@@ -730,6 +782,12 @@ export default function CartDrawer() {
 
                     {/* Summary */}
                     <div style={{ backgroundColor: SUBTLE, border: `1px solid ${BORDER}`, borderRadius: '8px', padding: '14px 16px', marginTop: '8px' }}>
+                      {unitDiscTotal > 0 && (
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#3B6B33' }}>{t.cart.unitCouponsTotal}</span>
+                          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 700, color: '#3B6B33' }}>−{formatPrice(unitDiscTotal)}</span>
+                        </div>
+                      )}
                       {discount > 0 && (
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
                           <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#3B6B33' }}>{t.cart.discount}</span>
@@ -738,7 +796,7 @@ export default function CartDrawer() {
                       )}
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
                         <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: "#6A6862" }}>{t.cart.orderTotal}</span>
-                        <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 700, color: GOLD_TEXT }}>{formatPrice(total - discount)}</span>
+                        <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 700, color: GOLD_TEXT }}>{formatPrice(payable)}</span>
                       </div>
                       <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: MUTED_TEXT, margin: 0 }}>{t.cart.inclVat}</p>
                     </div>
@@ -885,6 +943,12 @@ export default function CartDrawer() {
                     </span>
                   </div>
                 )}
+                {unitDiscTotal > 0 && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                    <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#3B6B33' }}>{t.cart.unitCouponsTotal}</span>
+                    <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, color: '#3B6B33' }}>−{formatPrice(unitDiscTotal)}</span>
+                  </div>
+                )}
                 {discount > 0 && (
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                     <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#3B6B33' }}>
@@ -898,13 +962,13 @@ export default function CartDrawer() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                   <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: "#6A6862" }}>{t.cart.total}</span>
                   <span style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
-                    {listTotal > total - discount && (
+                    {listTotal > payable && (
                       <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', color: MUTED_TEXT, textDecoration: 'line-through' }}>
                         {formatPrice(listTotal)}
                       </span>
                     )}
                     <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '22px', fontWeight: 800, color: GOLD_TEXT }}>
-                      {formatPrice(total - discount)}
+                      {formatPrice(payable)}
                     </span>
                   </span>
                 </div>
@@ -981,5 +1045,75 @@ export default function CartDrawer() {
         </>
       )}
     </AnimatePresence>
+  );
+}
+
+/**
+ * קודים לזוג אופניים אחד, בתוך שורת העגלה. כל קוד מוזיל זוג אחד, עד
+ * כמות השורה. ההנחה המוצגת היא תצוגה; השרת מתמחר מחדש ביצירת הסל.
+ */
+function UnitCouponBox({ t, list, max, onApply, onRemove }: {
+  t: ReturnType<typeof useT>;
+  list: UnitCoupon[];
+  max: number;
+  onApply: (code: string) => Promise<string | null>;
+  onRemove: (code: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [code, setCode] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const apply = async () => {
+    const c = code.trim().toUpperCase();
+    if (!c || busy) return;
+    setBusy(true); setErr(null);
+    const e = await onApply(c);
+    setBusy(false);
+    if (e) { setErr(e); return; }
+    setCode(''); setOpen(false);
+  };
+  return (
+    <div style={{ marginTop: '6px' }}>
+      {list.map((c, i) => (
+        <div key={`${c.code}-${i}`} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px',
+                                              fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: '#3B6B33', marginTop: '3px' }}>
+          <span>{t.cart.unitCouponLabel} {c.code}</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ fontWeight: 700 }}>−{formatPrice(c.discount)}</span>
+            <button onClick={() => onRemove(c.code)} aria-label={t.cart.unitCouponRemove(c.code)}
+              style={{ background: 'none', border: 'none', color: '#6E6A64', cursor: 'pointer', padding: '2px 4px', fontSize: '14px', lineHeight: 1 }}>×</button>
+          </span>
+        </div>
+      ))}
+      {list.length < max && !open && (
+        <button onClick={() => setOpen(true)}
+          style={{ background: 'none', border: 'none', padding: 0, marginTop: '6px', cursor: 'pointer',
+                   fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: '#7E6129', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+          {t.cart.unitCouponCta(max > 1)}
+        </button>
+      )}
+      {list.length < max && open && (
+        <div style={{ marginTop: '6px' }}>
+          <div style={{ display: 'flex', border: `1px solid ${err ? '#B3261E' : '#E0DCD4'}`, borderRadius: '6px', overflow: 'hidden', backgroundColor: '#FFFFFF' }}>
+            <input
+              value={code}
+              dir="ltr"
+              autoFocus
+              aria-label={t.cart.couponHint}
+              placeholder={t.cart.couponPlaceholder}
+              onChange={e => { setCode(e.target.value.toUpperCase()); setErr(null); }}
+              onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); apply(); } }}
+              style={{ flex: 1, minWidth: 0, padding: '7px 10px', border: 'none', outline: 'none', fontFamily: "'Heebo', sans-serif", fontSize: '13px', textAlign: 'left', backgroundColor: 'transparent' }}
+            />
+            <button onClick={apply} disabled={busy || !code.trim()}
+              style={{ padding: '0 12px', border: 'none', borderInlineStart: '1px solid #E0DCD4', backgroundColor: '#F5F2EC',
+                       fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 700, color: '#1C1C1C', cursor: 'pointer' }}>
+              {busy ? '…' : t.cart.couponApply}
+            </button>
+          </div>
+          {err && <p style={{ color: '#B3261E', fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>{err}</p>}
+        </div>
+      )}
+    </div>
   );
 }

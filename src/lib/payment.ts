@@ -17,6 +17,8 @@ export type CheckoutItem = {
   colorSkuCode: string;
   /** שורת המוצר שהשרת מתמחר לפיה. אופניים ללא slug מתומחרים לפי צבע ומידה. */
   slug?: string;
+  /** קודים לזוג בודד בשורה הזו, קוד לכל זוג. */
+  coupons?: string[];
 };
 
 export type CheckoutSession = {
@@ -31,7 +33,43 @@ export type CouponResult = {
   total: number;
   discount: number;
   label?: string;
+  /** UNIT_SCOPE: קוד של זוג בודד שהוזן בשדה של כל ההזמנה. */
+  reason?: string;
 };
+
+export type UnitCouponResult = {
+  valid: boolean;
+  code?: string;
+  label?: string | null;
+  /** מחיר הזוג אחרי הקוד */
+  price?: number;
+  discount?: number;
+  /** ORDER_SCOPE: קוד של כל ההזמנה שהוזן ליד זוג. */
+  reason?: string;
+};
+
+/**
+ * בדיקת קוד לזוג אופניים אחד, לתצוגה בעגלה. המחיר הסופי נקבע בשרת
+ * ביצירת הסל.
+ *
+ * unitPrice — מחיר הזוג לפני הקוד. inCart — כמה פעמים הקוד כבר
+ * הוחל בעגלה הזו, על זוגות אחרים.
+ */
+export async function checkUnitCoupon(
+  code: string, unitPrice: number, inCart: number,
+): Promise<UnitCouponResult> {
+  try {
+    const res = await fetch(`${FUNCTIONS}/tranzila-coupon`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, scope: 'unit', unit_price: unitPrice, in_cart: inCart }),
+    });
+    if (!res.ok) return { valid: false };
+    return await res.json() as UnitCouponResult;
+  } catch {
+    return { valid: false };
+  }
+}
 
 /**
  * בדיקת קוד קופון לתצוגה בעגלה.
@@ -56,7 +94,9 @@ export async function checkCoupon(
 }
 
 export class CouponRejectedError extends Error {
-  constructor() { super('COUPON_REJECTED'); }
+  /** קוד של זוג שנדחה, כשהדחייה היא שלו ולא של קוד ההזמנה. */
+  code: string | null;
+  constructor(code: string | null = null) { super('COUPON_REJECTED'); this.code = code; }
 }
 
 export class TooManyCartsError extends Error {
@@ -108,7 +148,7 @@ export async function openCheckout(input: {
   if (!res.ok) {
     if (body?.error === 'OUT_OF_STOCK') throw new OutOfStockError(Number(body.left ?? 0));
     if (body?.error === 'TOO_MANY_OPEN_CARTS') throw new TooManyCartsError();
-    if (body?.error === 'COUPON_REJECTED') throw new CouponRejectedError();
+    if (body?.error === 'COUPON_REJECTED') throw new CouponRejectedError(body.code ?? null);
     if (body?.error === 'ORDER_TOO_LARGE') throw new OrderTooLargeError();
     if (body?.error === 'IP_HOLD_LIMIT') throw new HoldLimitError();
     throw new Error(body?.error ?? 'SERVER');

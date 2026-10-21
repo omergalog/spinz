@@ -368,7 +368,9 @@ export async function confirmOrderOnce(db: Db, sessionId: string, lang: Lang = '
   if (!claimed) return null;
 
   const { data: s } = await db.from('checkout_sessions')
-    .select('customer_email, customer_name, customer_phone, customer_notes, items, total_price, card_last4, discount, coupon_code')
+    // '*' ולא רשימת עמודות: unit_coupons/unit_discount נוספו ב-SETUP-unit-coupons.sql,
+    // ורשימה מפורשת הייתה מפילה את כל מיילי האישור עד שה-SQL רץ.
+    .select('*')
     .eq('id', sessionId).maybeSingle();
 
   if (!s) return 'הסל לא נמצא';
@@ -392,14 +394,23 @@ export async function confirmOrderOnce(db: Db, sessionId: string, lang: Lang = '
   const err = await sendOrderConfirmation({
     to: s.customer_email ?? '',
     name: s.customer_name ?? '',
-    items: s.items ?? [],
+    items: ((s.items ?? []) as Array<OrderItem & { list_price?: number }>)
+      .map(i => (i.list_price ? { ...i, unit_price: i.list_price } : i)),
     total: s.total_price,
     last4: s.card_last4,
     installments,
     address: s.customer_notes,
     phone: s.customer_phone,
-    discount: s.discount,
-    couponCode: s.coupon_code,
+    // זוג עם קוד שמור בסל במחיר שאחרי הקוד. במייל הוא מוצג במחירו
+    // לפני הקוד, וההנחה מופיעה בשורת "הנחה" יחד עם קוד ההזמנה — כך
+    // השורות פחות ההנחה שוות בדיוק למה ששולם.
+    discount: (s.discount ?? 0) + (s.unit_discount ?? 0),
+    couponCode: [
+      ...new Set([
+        ...((s.unit_coupons ?? []) as { code: string }[]).map(u => u.code),
+        ...(s.coupon_code ? [s.coupon_code] : []),
+      ]),
+    ].join(', ') || null,
     lang,
     reference: sessionId.slice(0, 8).toUpperCase(),
     arrival,

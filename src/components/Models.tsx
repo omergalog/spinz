@@ -8,7 +8,7 @@ import { supabase } from '../lib/supabase';
 import { fetchApprovedReviews } from '../lib/reviews';
 import { useLang, useT, useDir, localizePath } from '../i18n/LanguageContext';
 import { arrivalLabelIn, discountLabelIn, usePresale } from '../config/presale';
-import { checkCoupon } from '../lib/payment';
+import { checkCoupon, checkUnitCoupon } from '../lib/payment';
 
 const DARK   = '#1C1C1C';
 const BEIGE  = '#FFFFFF';
@@ -156,13 +156,16 @@ export default function Models() {
     });
   }, [added]);
 
-  const { addItem, coupon, setCoupon } = useCart();
+  const { addItem, coupon, setCoupon, addUnitCoupon } = useCart();
 
   // תצוגת הקופון. ההנחה מחושבת בשרת — כאן רק מציגים את התוצאה, ואותה
   // פונקציה עצמה תקבע את הסכום שייגבה בפועל.
   const [couponInput, setCouponInput] = useState(coupon);
   const [couponState, setCouponState] = useState<'idle' | 'checking' | 'ok' | 'bad'>(coupon ? 'ok' : 'idle');
   const [couponPrice, setCouponPrice] = useState<number | null>(null);
+  // קוד לזוג בודד (scope='unit'). לא נשמר כקוד ההזמנה: הוא נצמד לזוג
+  // שנוסף לעגלה מכאן.
+  const [unitCode, setUnitCode] = useState<string | null>(null);
   const color = colorVariants[selectedColor];
   const colorLabel = t.product.colors[color.id as keyof typeof t.product.colors];
   const size  = sizeVariants[selectedSize];
@@ -235,6 +238,12 @@ export default function Models() {
       color.skuCode,
       size.id,
     );
+    // קוד לזוג נצמד לזוג שנוסף עכשיו, ונגמר בו. לחיצה נוספת מוסיפה זוג
+    // במחיר הרגיל, לא עוד שימוש בקוד.
+    if (unitCode && couponPrice != null) {
+      addUnitCoupon(`spinz-${size.id}-${color.id}`, { code: unitCode, discount: Math.max(0, shownPrice - couponPrice) });
+      setUnitCode(null); setCouponInput(''); setCouponPrice(null); setCouponState('idle');
+    }
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
@@ -242,6 +251,15 @@ export default function Models() {
   // מחיר אחרי קופון. נבדק מחדש בכל שינוי וריאנט או מחיר, אחרת אפשר
   // היה להישאר עם מספר ישן על המסך.
   useEffect(() => {
+    if (unitCode) {
+      let alive = true;
+      checkUnitCoupon(unitCode, shownPrice, 0).then(r => {
+        if (!alive) return;
+        setCouponPrice(r.valid ? r.price ?? null : null);
+        setCouponState(r.valid ? 'ok' : 'bad');
+      });
+      return () => { alive = false; };
+    }
     if (!coupon) { setCouponPrice(null); return; }
     let alive = true;
     checkCoupon(coupon, shownPrice, 1).then(r => {
@@ -250,15 +268,19 @@ export default function Models() {
       setCouponState(r.valid ? 'ok' : 'bad');
     });
     return () => { alive = false; };
-  }, [coupon, shownPrice]);
+  }, [coupon, unitCode, shownPrice]);
 
   const applyCoupon = async () => {
     const code = couponInput.trim();
     if (!code) { setCoupon(''); setCouponState('idle'); setCouponPrice(null); return; }
     setCouponState('checking');
     const r = await checkCoupon(code, shownPrice, 1);
-    if (r.valid) { setCoupon(code); setCouponPrice(r.total); setCouponState('ok'); }
-    else { setCoupon(''); setCouponPrice(null); setCouponState('bad'); }
+    if (r.valid) { setUnitCode(null); setCoupon(code); setCouponPrice(r.total); setCouponState('ok'); return; }
+    if (r.reason === 'UNIT_SCOPE') {
+      const u = await checkUnitCoupon(code, shownPrice, 0);
+      if (u.valid && u.code) { setCoupon(''); setUnitCode(u.code); setCouponPrice(u.price ?? null); setCouponState('ok'); return; }
+    }
+    setUnitCode(null); setCoupon(''); setCouponPrice(null); setCouponState('bad');
   };
 
   // The upper block (label → heading → subtitle → rating → presale banner).

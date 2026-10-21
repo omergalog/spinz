@@ -92,7 +92,8 @@ function itemLabel(i: Record<string, unknown>, lang = 'he'): string {
   const name = isBike
     ? `SPINZ Urban ${COLOR_NAMES[String(i.color)]?.[en ? 'en' : 'he'] ?? String(i.color ?? '')}`.trim()
     : String(i.product_name ?? 'SPINZ').split(/\s[—–-]\s/)[0].trim();
-  return `${name}${size ? (en ? `, size ${size}` : `, מידה ${size}`) : ''}`;
+  const code = i.coupon ? String(i.coupon) : '';
+  return `${name}${size ? (en ? `, size ${size}` : `, מידה ${size}`) : ''}${code ? (en ? ` (code ${code})` : ` (קופון ${code})`) : ''}`;
 }
 
 function describeOrder(items: Array<Record<string, unknown>>, lang = 'he'): string {
@@ -144,6 +145,12 @@ Deno.serve(async (req) => {
     quantity: Number(i.quantity ?? 0),
     colorSkuCode: String(i.colorSkuCode ?? ''),
     slug: String(i.slug ?? ''),
+    // קודים לזוג בודד: עד 5 בשורה, אותיות/ספרות בלבד. המחיר שלהם נקבע
+    // בשרת (create_checkout_session).
+    coupons: Array.isArray(i.coupons)
+      ? (i.coupons as unknown[]).slice(0, 5).map(c => String(c ?? '').trim().toUpperCase())
+          .filter(c => /^[A-Z0-9_-]{1,40}$/.test(c))
+      : [],
   }));
 
   // ה-slug בוחר את שורת המוצר שממנה נגזרים המחיר, השם והמלאי.
@@ -201,7 +208,9 @@ Deno.serve(async (req) => {
     // קופון שנדחה בשרת חייב לעצור את התהליך ולהיאמר ללקוח. הוא ראה
     // מחיר מוזל על המסך, ושתיקה כאן פירושה חיוב בסכום אחר.
     if (msg.includes('COUPON_REJECTED')) {
-      return json({ error: 'COUPON_REJECTED' }, 409, req);
+      // קוד של זוג מוחזר בשמו, כדי שהעגלה תסיר בדיוק אותו.
+      const code = msg.split('COUPON_REJECTED:')[1]?.trim().split(/\s/)[0] || null;
+      return json({ error: 'COUPON_REJECTED', code }, 409, req);
     }
     // שתי התקרות על שריון מלאי. הלקוח צריך לדעת איזו מהן עצרה אותו:
     // הזמנה גדולה מדי מפנה אותו אלינו, ושריון קיים מבקש ממנו להמתין.

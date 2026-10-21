@@ -26,10 +26,27 @@ Deno.serve(async (req) => {
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
   );
 
-  let body: { code?: string; subtotal?: number; quantity?: number };
+  let body: { code?: string; subtotal?: number; quantity?: number; scope?: string; unit_price?: number; in_cart?: number };
   try { body = await req.json(); } catch { return reply({ valid: false }, 400); }
 
   const code = String(body.code ?? '').trim();
+
+  // קוד לזוג בודד: נבדק מול מחיר הזוג, וכמה פעמים הוא כבר בעגלה.
+  if (body.scope === 'unit') {
+    const up = Number(body.unit_price);
+    const unitPrice = Number.isFinite(up) ? Math.min(Math.max(Math.round(up), 0), 100_000) : 0;
+    const ic = Number(body.in_cart);
+    const inCart = Number.isFinite(ic) ? Math.min(Math.max(Math.round(ic), 0), 10) : 0;
+    if (!code || unitPrice <= 0) return reply({ valid: false });
+    const ipU = (req.headers.get('x-forwarded-for') ?? '').split(',')[0].trim();
+    const { data: okU } = await db.rpc('take_rate_token', { p_bucket: 'coupon', p_client: ipU, p_limit: 20 });
+    if (okU === false) return reply({ valid: false });
+    const { data, error } = await db.rpc('validate_unit_coupon', {
+      p_code: code, p_unit_price: unitPrice, p_phone: null, p_in_cart: inCart,
+    });
+    if (error) return reply({ valid: false });
+    return reply(data);
+  }
   // הסכום מגיע מהדפדפן ומשמש לתצוגה בלבד — החיוב מתומחר בשרת. ובכל
   // זאת הוא לא מוחזר כפי שהתקבל: סכום שלילי או לא-מספרי הוחזר קודם
   // כמות שהוא, וייצר מסך שמראה מחיר שלילי.

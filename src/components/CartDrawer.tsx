@@ -32,6 +32,11 @@ const BORDER  = '#E0DCD4';
 
 // שם קבוע ל-iframe, כדי שהטופס המוגש ידע לאן לכוון
 const TRANZILA_FRAME = 'spinz-tranzila-frame';
+const DETAILS_KEY = 'spinz-checkout-details';
+/** אחרי תשלום מוצלח הפרטים לא נשארים בדפדפן. */
+function clearCheckoutDetails() {
+  try { sessionStorage.removeItem(DETAILS_KEY); } catch { /* אחסון חסום */ }
+}
 
 function formatPrice(n: number) {
   return `₪${n.toLocaleString('he-IL')}`;  // מספרים זהים בשתי השפות
@@ -137,14 +142,29 @@ export default function CartDrawer() {
   const [couponState, setCouponState] = useState<'idle' | 'checking' | 'ok' | 'bad'>('idle');
   const [discount, setDiscount] = useState(0);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [form, setForm] = useState({ name: '', email: '', phone: '', address: '' });
+  // פרטי הקשר והמסירה שורדים רענון של הלשונית (sessionStorage: נמחקים
+  // כשהלשונית נסגרת ואחרי תשלום מוצלח). פרטי כרטיס לא עוברים כאן בכלל —
+  // הם מוזנים בחלון של טרנזילה.
+  const [form, setForm] = useState<{ name: string; email: string; phone: string; address: string }>(() => {
+    const empty = { name: '', email: '', phone: '', address: '' };
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(DETAILS_KEY) ?? 'null');
+      return saved?.form ? { ...empty, ...saved.form } : empty;
+    } catch { return empty; }
+  });
   /**
    * אופן המסירה.
    *
    * האתר מבטיח איסוף עצמי חינם מכפר ויתקין, ובטופס לא הייתה דרך
    * לבחור בו — הכתובת הייתה שדה חובה והלקוח נאלץ להמציא אחת.
    */
-  const [delivery, setDelivery] = useState<'ship' | 'pickup'>('ship');
+  const [delivery, setDelivery] = useState<'ship' | 'pickup'>(() => {
+    try { return JSON.parse(sessionStorage.getItem(DETAILS_KEY) ?? 'null')?.delivery === 'pickup' ? 'pickup' : 'ship'; }
+    catch { return 'ship'; }
+  });
+  useEffect(() => {
+    try { sessionStorage.setItem(DETAILS_KEY, JSON.stringify({ form, delivery })); } catch { /* אחסון חסום */ }
+  }, [form, delivery]);
   const [formErrors, setFormErrors] = useState<Record<string, boolean>>({});
 
   // עמוד התשלום חי בתוך מסגרת, ולכן סיום התשלום אינו יכול פשוט להפנות
@@ -159,7 +179,7 @@ export default function CartDrawer() {
 
       // העגלה מתרוקנת רק בהצלחה. בכישלון הלקוח אמור להיות מסוגל
       // לנסות שוב בלי לבנות אותה מחדש.
-      if (e.data.outcome === 'success') { clearCart(); saveCoupon(''); }
+      if (e.data.outcome === 'success') { clearCart(); saveCoupon(''); clearCheckoutDetails(); }
 
       closeCart();
       setStep('cart');
@@ -186,7 +206,7 @@ export default function CartDrawer() {
       const s = await fetchStatus(id).catch(() => null);
       if (!alive) return;
       if (s?.status === 'paid') {
-        clearCart(); saveCoupon('');
+        clearCart(); saveCoupon(''); clearCheckoutDetails();
         closeCart();
         setStep('cart');
         navigate(`/order/success?s=${id}`);

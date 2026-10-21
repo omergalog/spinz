@@ -69,6 +69,7 @@ const COPY = {
 function clearPaidCart() {
   try {
     localStorage.removeItem('spinz-cart');
+    sessionStorage.removeItem('spinz-checkout-details');
     window.dispatchEvent(new StorageEvent('storage', { key: 'spinz-cart', newValue: null }));
   } catch { /* אחסון חסום — אין מה לנקות */ }
 }

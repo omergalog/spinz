@@ -15,14 +15,32 @@ export default function VideoSection() {
   // תמונת הפתיחה יושבת מתחת לסרטון, והסרטון שקוף ב-15% — בלי להסתיר אותה
   // היא נראתה דרכו כהשתקפות לאורך כל הנגינה. היא יורדת ברגע שהסרטון זז.
   const [playing, setPlaying] = useState(false);
+  // הדפדפן חסם הפעלה אוטומטית (אייפון במצב חיסכון בסוללה). במקום הסרטון
+  // מוצגת לולאה קצרה מאותו סרטון כתמונה מונפשת, שמתנגנת גם במצב הזה.
+  const [blocked, setBlocked] = useState(false);
   const textRef = useRef<HTMLDivElement>(null);
 
+  // נסיון הפעלה. NotAllowedError = הדפדפן לא מתיר הפעלה אוטומטית.
+  const tryPlay = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    // אייפון בודק את התכונה muted ולא רק את המאפיין. React מגדיר רק את
+    // המאפיין, ולכן הסרטון עלול להיחשב "עם קול" ולא להתחיל לבד.
+    v.muted = true; v.defaultMuted = true; v.setAttribute('muted', '');
+    v.play().then(() => setBlocked(false)).catch((e: DOMException) => {
+      if (e?.name === 'NotAllowedError') setBlocked(true);
+    });
+  };
+
   useEffect(() => {
+    // מנסים מיד בטעינה, ולא רק כשהמסגרת "נראית" — בטלפון הסרטון התחיל
+    // רק אחרי גלילה.
+    tryPlay();
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setVisible(true);
-          videoRef.current?.play().catch(() => {});
+          tryPlay();
         } else {
           videoRef.current?.pause();
         }
@@ -31,6 +49,7 @@ export default function VideoSection() {
     );
     if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -115,7 +134,7 @@ export default function VideoSection() {
       {/* תמונת פתיחה מתוך הפריים הראשון של הסרטון. כשהסרטון לא מתנגן
           (למשל אייפון במצב חיסכון בסוללה) רואים אותה במקום מסך כהה. */}
       {!playing && <picture>
-        <source media="(max-width: 767px)" srcSet="/assets/hero-poster-mobile.webp" />
+        <source media="(max-width: 767px)" srcSet={blocked ? '/assets/hero-loop-mobile.webp' : '/assets/hero-poster-mobile.webp'} />
         <img
           src="/assets/hero-poster.webp"
           alt=""
@@ -133,7 +152,10 @@ export default function VideoSection() {
         muted
         loop
         playsInline
-        onPlaying={() => setPlaying(true)}
+        autoPlay
+        preload="auto"
+        onPlaying={() => { setPlaying(true); setBlocked(false); }}
+        onCanPlay={() => { if (!playing) tryPlay(); }}
         style={{
           position: 'absolute',
           inset: 0,

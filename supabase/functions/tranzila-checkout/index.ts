@@ -72,11 +72,35 @@ function buildInvoiceLines(items: Array<Record<string, unknown>>, total: number)
 }
 
 /** תיאור קצר של תוכן ההזמנה, לחשבונית. */
-function describeOrder(items: Array<Record<string, unknown>>): string {
-  const cats = new Set(items.map(i => String(i.category ?? 'bike')));
-  if (cats.size === 1 && cats.has('merch')) return 'SPINZ מרצ׳נדייז';
-  if (cats.size > 1) return 'SPINZ הזמנה';
-  return 'SPINZ אופני עיר';
+/**
+ * תיאור ההזמנה בחשבונית: כל פריט עם צבע, מידה וכמות.
+ *
+ * החשבונית יוצאת בשורה אחת, כי פירוט שורות אמיתי (json_purchase_data)
+ * מפיל את ביט — ראה buildInvoiceLines. עד שטרנזילה יתקנו, הפירוט עובר
+ * כאן, בתיאור של אותה שורה. קודם נכתב רק "SPINZ אופני עיר".
+ */
+const COLOR_NAMES: Record<string, { he: string; en: string }> = {
+  mat:   { he: 'שחור מט', en: 'Matte black' },
+  beige: { he: "בז'",     en: 'Beige' },
+  olive: { he: 'ירוק זית', en: 'Olive green' },
+};
+
+function describeOrder(items: Array<Record<string, unknown>>, lang = 'he'): string {
+  const en = lang === 'en';
+  const parts = items.map(i => {
+    const qty = Math.max(1, Number(i.quantity ?? 1));
+    const size = String(i.size ?? '').trim();
+    const isBike = String(i.category ?? 'bike') !== 'merch';
+    const name = isBike
+      ? `SPINZ Urban ${COLOR_NAMES[String(i.color)]?.[en ? 'en' : 'he'] ?? String(i.color ?? '')}`.trim()
+      : String(i.product_name ?? 'SPINZ').split(/\s[—–-]\s/)[0].trim();
+    const sizePart = size ? (en ? `, size ${size}` : `, מידה ${size}`) : '';
+    return `${name}${sizePart}, ${en ? 'qty' : 'כמות'} ${qty}`;
+  });
+  // רק תווי ASCII כמפרידים: תו מיוחד עלול להשתבש אצל חברת האשראי.
+  const text = parts.join(' / ');
+  // שדה טקסט אחד אצל טרנזילה. הזמנה ארוכה במיוחד נחתכת ולא נדחית.
+  return text.length > 240 ? `${text.slice(0, 237)}...` : (text || 'SPINZ');
 }
 
 Deno.serve(async (req) => {
@@ -244,7 +268,7 @@ Deno.serve(async (req) => {
 
     // תיאור העסקה בחשבונית שהלקוח מקבל. הזמנה של חולצה בלבד תוארה
     // עד כה כ"אופני עיר".
-    pdesc: describeOrder(session?.items ?? []),
+    pdesc: describeOrder(session?.items ?? [], lang),
     // שפת החשבונית שנשלחת ללקוח
     Ilang: lang === 'en' ? 'ENG' : 'HEB',
 

@@ -160,62 +160,123 @@ export default function CartDrawer() {
   // הלקוח ראה מסך אפור ריק ולא ידע מה לעשות.
   const [payBlocked, setPayBlocked] = useState(false);
   const sessionIdRef = useRef<string | null>(null);
-  const [coupon, setCoupon] = useState(savedCoupon);
-  // error: הבדיקה לא הסתיימה (פסק זמן). הקוד נשאר, אבל לא נחשב מאושר.
-  const [couponState, setCouponState] = useState<'idle' | 'checking' | 'ok' | 'bad' | 'error'>('idle');
-  const [discount, setDiscount] = useState(0);
-  // UNIT_SCOPE: קוד של זוג בודד שהוזן בשדה של כל ההזמנה.
-  const [couponMsg, setCouponMsg] = useState<string | null>(null);
-  const payable = afterUnits - discount;
-
   /**
-   * בדיקות הקופון.
+   * קוד ההנחה של כל ההזמנה.
    *
-   * בדיקה נשלחת בכל שינוי בעגלה, ותשובה ישנה הגיעה לפעמים אחרי החדשה
-   * ודרסה אותה. בזמן ההמתנה המסך הציג את ההנחה הקודמת כאילו היא
-   * הסופית. עכשיו לכל בדיקה יש מספר, ורק התשובה לאחרונה נקבעת. שינוי
-   * בעגלה, שינוי בקוד, סגירת המגירה ופסק זמן מבטלים את כל מה שבדרך.
-   * ההנחה נחשבת מאושרת רק מול העגלה והקוד שנבדקו (couponKey).
+   * השדה (coupon) הוא טיוטה. הקוד שקובע את הסכום הוא הקוד שהוחל
+   * (savedCoupon, נשמר בעגלה). קודם כל הקלדה בשדה מחקה את הקוד שהוחל,
+   * ותשובת "לא תקף" — גם כשהרשת נפלה — מחקה אותו לגמרי. עכשיו רק
+   * "החל" מצליח מחליף אותו, ורק "הסרת הקוד" מסירה אותו.
+   *
+   * קוד שהוחל אינו אישור להנחה על עגלה אחרת: ההנחה תקפה רק מול הקוד
+   * והעגלה שנבדקו (couponKey). מיד כשהעגלה משתנה, עוד לפני שהבדיקה
+   * יוצאת, הסכום מוצג כ"מעדכן…" ולא לפי ההנחה הקודמת.
+   *
+   * לכל בדיקה יש מספר, ורק התשובה לאחרונה נקבעת. שינוי בעגלה, בטיוטה
+   * או בקוד שהוחל, סגירת המגירה ופסק זמן מבטלים את מה שבדרך.
    */
-  const couponSeq = useRef(0);
-  const verifiedKey = useRef<string | null>(null);
+  const [coupon, setCoupon] = useState(savedCoupon);
+  useEffect(() => { setCoupon(savedCoupon); }, [savedCoupon]);
+  type CouponCheck = { key: string; status: 'checking' | 'ok' | 'bad' | 'error'; discount: number };
+  const [applied, setApplied] = useState<CouponCheck | null>(null);
+  // "החל" על טיוטה שעוד לא הפכה לקוד שהוחל
+  const [draftCheck, setDraftCheck] = useState<{ code: string; status: 'checking' | 'bad' | 'error'; unitScope?: boolean } | null>(null);
+  const appliedSeq = useRef(0);
+  const draftSeq = useRef(0);
   const couponKey = (code: string) => `${code.trim().toUpperCase()}|${afterUnits}|${units}`;
-  const invalidateCoupon = () => { couponSeq.current += 1; verifiedKey.current = null; };
-  const couponVerified = couponState === 'ok' && verifiedKey.current === couponKey(coupon);
-  // קוד שנבדק עכשיו או שהבדיקה שלו לא הסתיימה: לא מציגים סכום כאילו הוא סופי.
-  const couponPendingCode = !!coupon.trim() && (couponState === 'checking' || couponState === 'error');
-  const couponPendingText = couponState === 'checking' ? t.cart.couponUpdating : t.cart.couponPending;
+  const appliedCode = savedCoupon.trim().toUpperCase();
+  const draftCode = coupon.trim().toUpperCase();
+  const appliedNow = appliedCode && applied?.key === couponKey(appliedCode) ? applied : null;
+  const appliedStatus: 'none' | 'pending' | 'ok' | 'bad' | 'error' =
+    !appliedCode || total <= 0 ? 'none'
+      : !appliedNow || appliedNow.status === 'checking' ? 'pending'
+      : appliedNow.status;
+  const discount = appliedStatus === 'ok' ? appliedNow!.discount : 0;
+  const payable = afterUnits - discount;
+  // בכל מצב שאינו "אושר" או "אין קוד" לא מוצג סכום, כי אין סכום סופי.
+  // גם בזמן בדיקה של קוד חדש: הסכום עומד להשתנות.
+  const draftChecking = draftCheck?.status === 'checking';
+  const amountPending = draftChecking || appliedStatus === 'pending' || appliedStatus === 'error' || appliedStatus === 'bad';
+  const pendingText = draftChecking || appliedStatus === 'pending' ? t.cart.couponUpdating
+    : appliedStatus === 'error' ? t.cart.couponPending : t.cart.couponTotalBlocked;
+  const discountRowText = appliedStatus === 'ok' ? `−${formatPrice(discount)}`
+    : appliedStatus === 'pending' ? t.cart.couponUpdating
+    : appliedStatus === 'error' ? t.cart.couponPending : t.cart.couponNotApplied;
+  const clearCouponOrderError = () => setOrderError(prev =>
+    prev === t.cart.couponCheckFailed || prev === t.cart.couponBad
+      || (appliedCode && prev === t.cart.couponInvalidForCart(appliedCode)) ? null : prev);
 
-  const runCouponCheck = async (code: string, fromInput: boolean): Promise<'ok' | 'bad' | 'error' | 'stale'> => {
-    const id = ++couponSeq.current;
+  // null = פסק זמן. תשובה שתגיע אחריו לא תיקבע, כי המספר שלה כבר ישן.
+  const timedCheck = (code: string) => Promise.race([
+    checkCoupon(code, afterUnits, units),
+    new Promise<null>(res => setTimeout(() => res(null), COUPON_TIMEOUT_MS)),
+  ]);
+
+  // בדיקת הקוד שהוחל מול העגלה הנוכחית
+  const verifyApplied = async (): Promise<'ok' | 'bad' | 'error' | 'stale'> => {
+    const code = appliedCode;
+    const id = ++appliedSeq.current;
     const key = couponKey(code);
-    verifiedKey.current = null;
-    setCouponState('checking');
-    const r = await Promise.race([
-      checkCoupon(code, afterUnits, units),
-      new Promise<null>(res => setTimeout(() => res(null), COUPON_TIMEOUT_MS)),
-    ]);
-    if (id !== couponSeq.current) return 'stale';
-    if (r === null) {
-      // פסק זמן: תשובה שתגיע אחריו כבר לא תיקבע.
-      couponSeq.current += 1;
-      setDiscount(0);
-      setCouponState('error');
+    setApplied({ key, status: 'checking', discount: 0 });
+    const r = await timedCheck(code);
+    if (id !== appliedSeq.current) return 'stale';
+    if (r === null || r.failed) {
+      // כשל בבדיקה אינו קביעה שהקוד שגוי: הקוד נשאר, ההנחה לא מאושרת.
+      appliedSeq.current += 1;
+      setApplied({ key, status: 'error', discount: 0 });
       return 'error';
     }
-    if (r.valid) {
-      verifiedKey.current = key;
-      // הודעת קוד ליד כפתור ההזמנה כבר לא נכונה.
-      setOrderError(prev => prev === t.cart.couponCheckFailed || prev === t.cart.couponBad ? null : prev);
-    }
-    setDiscount(r.valid ? r.discount : 0);
-    setCouponState(r.valid ? 'ok' : 'bad');
-    if (fromInput) {
-      setCouponMsg(!r.valid && r.reason === 'UNIT_SCOPE' ? t.cart.couponUnitScope : null);
-      saveCoupon(r.valid ? code : '');
-    }
+    setApplied({ key, status: r.valid ? 'ok' : 'bad', discount: r.valid ? r.discount : 0 });
+    if (r.valid) clearCouponOrderError();
     return r.valid ? 'ok' : 'bad';
   };
+
+  // "החל" על הטיוטה. רק הצלחה מחליפה את הקוד שהוחל.
+  const applyDraft = async (): Promise<'ok' | 'bad' | 'error' | 'stale' | 'empty'> => {
+    const code = draftCode;
+    if (!code) return 'empty';
+    const id = ++draftSeq.current;
+    const key = couponKey(code);
+    setDraftCheck({ code, status: 'checking' });
+    const r = await timedCheck(code);
+    if (id !== draftSeq.current) return 'stale';
+    if (r === null || r.failed) {
+      draftSeq.current += 1;
+      setDraftCheck({ code, status: 'error' });
+      return 'error';
+    }
+    if (!r.valid) {
+      setDraftCheck({ code, status: 'bad', unitScope: r.reason === 'UNIT_SCOPE' });
+      return 'bad';
+    }
+    appliedSeq.current += 1;           // בדיקה של הקוד הקודם כבר לא רלוונטית
+    setApplied({ key, status: 'ok', discount: r.discount });
+    setDraftCheck(null);
+    saveCoupon(code);
+    clearCouponOrderError();
+    return 'ok';
+  };
+
+  const removeApplied = () => {
+    appliedSeq.current += 1;
+    draftSeq.current += 1;
+    setApplied(null);
+    setDraftCheck(null);
+    saveCoupon('');
+    setCoupon('');
+    clearCouponOrderError();
+  };
+
+  // "לבדוק שוב" ו"הסרת הקוד" ליד הקוד שהוחל. ההסרה היא הדרך המפורשת
+  // להמשיך במחיר מלא; שום מסלול אחר לא מוריד את הקוד.
+  const couponLinks = (
+    <>
+      {appliedStatus === 'error' && (
+        <>{' · '}<button type="button" onClick={() => { verifyApplied(); }} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: ERROR_TEXT, fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: '2px', fontFamily: 'inherit', fontSize: 'inherit' }}>{t.cart.couponRetry}</button></>
+      )}
+      {' · '}<button type="button" onClick={removeApplied} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: ERROR_TEXT, fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: '2px', fontFamily: 'inherit', fontSize: 'inherit' }}>{t.cart.couponRemove}</button>
+    </>
+  );
   const iframeRef = useRef<HTMLIFrameElement>(null);
   // פרטי הקשר והמסירה שורדים רענון של הלשונית (sessionStorage: נמחקים
   // כשהלשונית נסגרת ואחרי תשלום מוצלח). פרטי כרטיס לא עוברים כאן בכלל —
@@ -302,18 +363,14 @@ export default function CartDrawer() {
     return () => { alive = false; clearTimeout(timer); };
   }, [watchId, clearCart, closeCart, navigate, saveCoupon]);
 
-  // הקוד שהוזן בעמוד המוצר נבדק כאן מחדש מול סכום העגלה האמיתי.
-  // בעמוד המוצר הוא נבדק מול מחיר יחידה אחת, ולכן הסכומים יכולים
-  // להיות שונים כשיש בעגלה יותר מפריט אחד.
+  // הקוד שהוחל (גם מעמוד המוצר) נבדק כאן מחדש מול העגלה האמיתית, בכל
+  // שינוי בה. בעמוד המוצר הוא נבדק מול מחיר יחידה אחת.
   useEffect(() => {
-    if (!isOpen || !savedCoupon) return;
-    if (total <= 0) { invalidateCoupon(); setDiscount(0); setCouponState('idle'); return; }
-    // הקוד כבר נבדק מול העגלה הזו בדיוק (למשל רגע אחרי "החל").
-    if (verifiedKey.current === couponKey(savedCoupon)) return;
-    setCoupon(savedCoupon);
-    runCouponCheck(savedCoupon, false);
+    if (!isOpen || !appliedCode || total <= 0) return;
+    if (appliedNow) return;            // כבר נבדק, או בבדיקה, מול העגלה הזו בדיוק
+    verifyApplied();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, savedCoupon, afterUnits, units]);
+  }, [isOpen, appliedCode, afterUnits, units, applied]);
 
   /**
    * המגירה היא חלון מודאלי.
@@ -393,16 +450,12 @@ export default function CartDrawer() {
     setStep('cart');
     setPayFrameReady(false);
     setOrderError(null);
-    invalidateCoupon();
-    setCouponState('idle');
+    // הקוד שהוחל נשאר. הבדיקה שלו תיעשה מחדש בפתיחה הבאה.
+    appliedSeq.current += 1;
+    draftSeq.current += 1;
+    setApplied(null);
+    setDraftCheck(null);
   }, [isOpen]);
-
-  // ההנחה מחושבת בשרת. כאן רק מציגים את התוצאה, והשרת מתמחר שוב
-  // ביצירת הסל.
-  const applyCoupon = async (): Promise<boolean> => {
-    if (!coupon.trim()) { invalidateCoupon(); setCouponState('idle'); setDiscount(0); return false; }
-    return (await runCouponCheck(coupon.trim(), true)) === 'ok';
-  };
 
   // לחיצה כפולה על "לתשלום" פתחה שתי בדיקות קוד ושני ניסיונות לפתוח סל.
   const submitting = useRef(false);
@@ -425,22 +478,41 @@ export default function CartDrawer() {
     setFormErrors(errors);
     if (Object.keys(errors).length > 0) return;
 
-    // קוד שהוקלד ולא אושר מול העגלה הנוכחית: בודקים אותו כאן ומראים את
-    // התוצאה, במקום להתעלם ממנו בשקט. אחרת המסך מציג קוד וההזמנה
-    // נשלחת בלעדיו. קוד שגוי או בדיקה שלא הסתיימה עוצרים כאן, עם הסבר.
-    if (coupon.trim() && !couponVerified) {
-      const res = await runCouponCheck(coupon.trim(), true);
-      if (res !== 'ok') {
-        // ההסבר גם ליד הכפתור: השדה עצמו יכול להיות מחוץ למסך.
-        if (res !== 'stale') setOrderError(res === 'error' ? t.cart.couponCheckFailed : t.cart.couponBad);
-        return;
-      }
+    // ההסברים כאן מוצגים גם ליד הכפתור: השדה עצמו יכול להיות מחוץ למסך.
+    // אף מסלול לא מוריד קוד בשקט וממשיך במחיר מלא.
+
+    // קוד שהוקלד ולא הוחל: מחילים אותו כאן, במקום להתעלם ממנו בשקט.
+    if (draftCode && draftCode !== appliedCode) {
+      const res = await applyDraft();
+      if (res === 'error') { setOrderError(t.cart.couponCheckFailed); return; }
+      if (res === 'bad') { setOrderError(t.cart.couponBad); return; }
+      if (res !== 'ok') return;
+      checkoutCode.current = draftCode;
+      await handleCheckout(false, draftCode);
+      return;
     }
 
-    await handleCheckout();
+    // הקוד שהוחל חייב להיות מאושר מול העגלה הזו.
+    if (appliedCode) {
+      if (appliedStatus !== 'ok') {
+        const res = await verifyApplied();
+        if (res === 'error') { setOrderError(t.cart.couponCheckFailed); return; }
+        if (res === 'bad') { setOrderError(t.cart.couponInvalidForCart(appliedCode)); return; }
+        if (res !== 'ok') return;
+      }
+      checkoutCode.current = appliedCode;
+      await handleCheckout(false, appliedCode);
+      return;
+    }
+
+    checkoutCode.current = null;
+    await handleCheckout(false, null);
   };
 
-  const handleCheckout = async (retried = false) => {
+  // הקוד שאושר בלחיצה האחרונה על "אשר הזמנה". גם ניסיון חוזר ורכישה
+  // נוספת משתמשים בו.
+  const checkoutCode = useRef<string | null>(null);
+  const handleCheckout = async (retried = false, code: string | null = checkoutCode.current) => {
     setOrdering(true);
     setOrderError(null);
     setOrderErrorContact(false);
@@ -466,8 +538,8 @@ export default function CartDrawer() {
         email: form.email || undefined,
         address: delivery === 'pickup' ? undefined : form.address,
         delivery,
-        // רק קוד שהוחל בפועל. מה שמופיע על המסך הוא מה שנגבה.
-        coupon: couponState === 'ok' ? coupon.trim() : undefined,
+        // רק קוד שאושר מול העגלה הזו. מה שמופיע על המסך הוא מה שנגבה.
+        coupon: code ?? undefined,
         lang,
         purchaseKey: purchase?.key,
         ownerToken: purchase?.token,
@@ -483,7 +555,7 @@ export default function CartDrawer() {
     } catch (e) {
       if (e instanceof PurchaseInvalidError && purchase && !retried) {
         dropPurchase(purchase.key);
-        return handleCheckout(true);
+        return handleCheckout(true, code);
       }
       if (e instanceof AlreadyPaidError) {
         setAlreadyPaid(e.sessionId);
@@ -501,9 +573,12 @@ export default function CartDrawer() {
         if (hit) removeUnitCoupon(hit[0], hit[1].find(c => c.code.toUpperCase() === e.code!.toUpperCase())!.code);
         setOrderError(t.cart.errCouponRejected);
       } else if (e instanceof CouponRejectedError) {
-        // הקוד חדל להיות תקף בין ההחלה לאישור. מנקים אותו כדי שהמסך
-        // יציג את המחיר שייגבה בפועל, ולא סכום שכבר אינו קיים.
-        invalidateCoupon(); setDiscount(0); setCouponState('bad'); saveCoupon('');
+        // הקוד חדל להיות תקף בין ההחלה לאישור. הוא נשאר ומסומן כלא תקף,
+        // והלקוח מחליט: להחליף או להסיר ולהמשיך במחיר מלא.
+        if (code) {
+          appliedSeq.current += 1;
+          setApplied({ key: couponKey(code), status: 'bad', discount: 0 });
+        }
         setOrderError(t.cart.errCouponRejected);
       } else if (e instanceof TooManyCartsError) {
         setOrderError(t.cart.errTooManyCarts);
@@ -828,8 +903,8 @@ export default function CartDrawer() {
                       </label>
                       <div style={{
                         display: 'flex', alignItems: 'stretch', backgroundColor: SUBTLE,
-                        border: `1px solid ${couponState === 'bad' ? ERROR_TEXT
-                                  : couponState === 'ok' ? '#3B6B33' : BORDER}`,
+                        border: `1px solid ${draftCheck && draftCheck.status !== 'checking' ? ERROR_TEXT
+                                  : appliedStatus === 'ok' && draftCode === appliedCode ? '#3B6B33' : BORDER}`,
                         borderRadius: '8px', overflow: 'hidden',
                       }}>
                         <input
@@ -839,13 +914,12 @@ export default function CartDrawer() {
                           placeholder={t.cart.couponPlaceholder}
                           value={coupon}
                           onChange={e => {
-                            // קוד שנערך כבר אינו הקוד שנבדק. גם הקוד השמור יורד, אחרת
-                            // שינוי בעגלה היה מחזיר אותו לשדה ודורס את מה שהוקלד.
-                            invalidateCoupon(); setCoupon(e.target.value.toUpperCase());
-                            setCouponState('idle'); setDiscount(0); setCouponMsg(null);
-                            if (savedCoupon) saveCoupon('');
+                            // טיוטה בלבד: הקוד שהוחל לא משתנה עד "החל" מצליח.
+                            draftSeq.current += 1;
+                            setCoupon(e.target.value.toUpperCase());
+                            setDraftCheck(null);
                           }}
-                          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); if (couponState !== 'checking') applyCoupon(); } }}
+                          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); if (draftCheck?.status !== 'checking') applyDraft(); } }}
                           style={{
                             flex: 1, minWidth: 0, padding: '11px 14px',
                             backgroundColor: 'transparent', border: 'none', outline: 'none',
@@ -855,31 +929,41 @@ export default function CartDrawer() {
                         />
                         <button
                           type="button"
-                          onClick={applyCoupon}
-                          disabled={couponState === 'checking' || !coupon.trim()}
+                          onClick={() => { applyDraft(); }}
+                          disabled={draftCheck?.status === 'checking' || !draftCode || draftCode === appliedCode}
                           style={{
                             padding: '0 18px', backgroundColor: '#EFEBE3',
                             border: 'none', borderInlineStart: `1px solid ${BORDER}`,
-                            color: coupon.trim() ? TEXT : '#B5B1AA',
+                            color: draftCode && draftCode !== appliedCode ? TEXT : '#B5B1AA',
                             fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 700,
-                            cursor: coupon.trim() ? 'pointer' : 'default', whiteSpace: 'nowrap',
+                            cursor: draftCode && draftCode !== appliedCode ? 'pointer' : 'default', whiteSpace: 'nowrap',
                           }}>
-                          {couponState === 'checking' ? '…' : t.cart.couponApply}
+                          {draftCheck?.status === 'checking' ? '…' : t.cart.couponApply}
                         </button>
                       </div>
-                      {couponState === 'bad' && (
-                        <p style={{ color: ERROR_TEXT, fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>{couponMsg ?? t.cart.couponBad}</p>
+                      {draftCheck?.status === 'bad' && (
+                        <p role="alert" style={{ color: ERROR_TEXT, fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>
+                          {draftCheck.unitScope ? t.cart.couponUnitScope : t.cart.couponBad}
+                        </p>
                       )}
-                      {couponState === 'ok' && (
-                        <p style={{ color: '#3B6B33', fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>{t.cart.couponOk}</p>
-                      )}
-                      {couponState === 'error' && (
+                      {draftCheck?.status === 'error' && (
                         <p role="alert" style={{ color: ERROR_TEXT, fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>
                           {t.cart.couponCheckFailed}{' '}
-                          <button type="button" onClick={applyCoupon}
-                            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: ERROR_TEXT, fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: '2px', fontFamily: 'inherit', fontSize: 'inherit' }}>
-                            {t.cart.couponRetry}
-                          </button>
+                          <button type="button" onClick={() => { applyDraft(); }} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: ERROR_TEXT, fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: '2px', fontFamily: 'inherit', fontSize: 'inherit' }}>{t.cart.couponRetry}</button>
+                        </p>
+                      )}
+                      {!draftCheck && draftCode && draftCode !== appliedCode && (
+                        <p style={{ color: MUTED_TEXT, fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>{t.cart.couponDraftPending}</p>
+                      )}
+                      {/* הקוד שקובע את הסכום, ומצבו מול העגלה הנוכחית */}
+                      {appliedCode && (
+                        <p aria-live="polite" style={{ color: appliedStatus === 'bad' || appliedStatus === 'error' ? ERROR_TEXT : '#3B6B33', fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>
+                          {t.cart.couponActive}: <span dir="ltr" style={{ fontWeight: 700 }}>{appliedCode}</span>{' · '}
+                          {appliedStatus === 'ok' ? t.cart.couponOk
+                            : appliedStatus === 'pending' ? t.cart.couponUpdating
+                            : appliedStatus === 'error' ? t.cart.couponCheckFailed
+                            : appliedStatus === 'bad' ? t.cart.couponInvalidForCart(appliedCode) : ''}
+                          {couponLinks}
                         </p>
                       )}
                     </div>
@@ -892,18 +976,18 @@ export default function CartDrawer() {
                           <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 700, color: '#3B6B33' }}>−{formatPrice(unitDiscTotal)}</span>
                         </div>
                       )}
-                      {(couponVerified ? discount > 0 : couponPendingCode) && (
+                      {appliedStatus !== 'none' && (
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#3B6B33' }}>{t.cart.discount} · {coupon.trim().toUpperCase()}</span>
-                          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 700, color: '#3B6B33' }}>
-                            {couponVerified ? `−${formatPrice(discount)}` : couponPendingText}
+                          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#3B6B33' }}>{t.cart.discount} · {appliedCode}</span>
+                          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 700, color: appliedStatus === 'bad' || appliedStatus === 'error' ? ERROR_TEXT : '#3B6B33' }}>
+                            {discountRowText}
                           </span>
                         </div>
                       )}
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
                         <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: "#6A6862" }}>{t.cart.orderTotal}</span>
                         <span aria-live="polite" style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', fontWeight: 700, color: GOLD_TEXT }}>
-                          {couponPendingCode ? couponPendingText : formatPrice(payable)}
+                          {amountPending ? pendingText : formatPrice(payable)}
                         </span>
                       </div>
                       <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: MUTED_TEXT, margin: 0 }}>{t.cart.inclVat}</p>
@@ -945,9 +1029,9 @@ export default function CartDrawer() {
                         )}
                       </div>
                     )}
-                    <button onClick={validateAndCheckout} disabled={ordering || couponState === 'checking'}
-                      style={{ width: '100%', backgroundColor: GOLD, color: DARK, border: 'none', borderRadius: '4px', padding: '15px', fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: ordering || couponState === 'checking' ? 'not-allowed' : 'pointer', opacity: ordering || couponState === 'checking' ? 0.7 : 1 }}>
-                      {ordering || couponState === 'checking' ? '...' : t.cart.confirm}
+                    <button onClick={validateAndCheckout} disabled={ordering || appliedStatus === 'pending' || draftCheck?.status === 'checking'}
+                      style={{ width: '100%', backgroundColor: GOLD, color: DARK, border: 'none', borderRadius: '4px', padding: '15px', fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase', cursor: ordering || appliedStatus === 'pending' || draftCheck?.status === 'checking' ? 'not-allowed' : 'pointer', opacity: ordering || appliedStatus === 'pending' || draftCheck?.status === 'checking' ? 0.7 : 1 }}>
+                      {ordering || appliedStatus === 'pending' || draftCheck?.status === 'checking' ? '...' : t.cart.confirm}
                     </button>
                     <p style={{
                       fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#6A6862',
@@ -1071,36 +1155,28 @@ export default function CartDrawer() {
                     <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, color: '#3B6B33' }}>−{formatPrice(unitDiscTotal)}</span>
                   </div>
                 )}
-                {(couponVerified ? discount > 0 : couponPendingCode) && (
+                {appliedStatus !== 'none' && (
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                     <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#3B6B33' }}>
-                      {t.cart.discount}{coupon ? ` · ${coupon.toUpperCase()}` : ''}
+                      {t.cart.discount} · {appliedCode}
                     </span>
-                    <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, color: '#3B6B33' }}>
-                      {couponVerified ? `−${formatPrice(discount)}` : couponPendingText}
-                      {/* בעגלה אין שדה קוד, ולכן הניסיון החוזר נמצא כאן */}
-                      {couponState === 'error' && (
-                        <>
-                          {' · '}
-                          <button type="button" onClick={applyCoupon}
-                            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: ERROR_TEXT, fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: '2px', fontFamily: 'inherit', fontSize: '13px' }}>
-                            {t.cart.couponRetry}
-                          </button>
-                        </>
-                      )}
+                    <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, color: appliedStatus === 'bad' || appliedStatus === 'error' ? ERROR_TEXT : '#3B6B33', textAlign: 'end' }}>
+                      {discountRowText}
+                      {/* בעגלה אין שדה קוד, ולכן הניסיון החוזר וההסרה נמצאים כאן */}
+                      {(appliedStatus === 'error' || appliedStatus === 'bad') && <span style={{ fontSize: '13px' }}>{couponLinks}</span>}
                     </span>
                   </div>
                 )}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                   <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: "#6A6862" }}>{t.cart.total}</span>
                   <span style={{ display: 'flex', alignItems: 'baseline', gap: '10px' }}>
-                    {!couponPendingCode && listTotal > payable && (
+                    {!amountPending && listTotal > payable && (
                       <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', color: MUTED_TEXT, textDecoration: 'line-through' }}>
                         {formatPrice(listTotal)}
                       </span>
                     )}
-                    <span aria-live="polite" style={{ fontFamily: "'Heebo', sans-serif", fontSize: couponPendingCode ? '15px' : '22px', fontWeight: 800, color: GOLD_TEXT }}>
-                      {couponPendingCode ? couponPendingText : formatPrice(payable)}
+                    <span aria-live="polite" style={{ fontFamily: "'Heebo', sans-serif", fontSize: amountPending ? '15px' : '22px', fontWeight: 800, color: GOLD_TEXT }}>
+                      {amountPending ? pendingText : formatPrice(payable)}
                     </span>
                   </span>
                 </div>
@@ -1138,7 +1214,7 @@ export default function CartDrawer() {
                 )}
                 <button
                   onClick={() => setStep('details')}
-                  disabled={ordering || tooManyBikes || couponState === 'checking'}
+                  disabled={ordering || tooManyBikes || appliedStatus === 'pending'}
                   style={{
                     width: '100%',
                     backgroundColor: GOLD, color: DARK,

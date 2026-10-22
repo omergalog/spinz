@@ -35,6 +35,11 @@ export type CouponResult = {
   label?: string;
   /** UNIT_SCOPE: קוד של זוג בודד שהוזן בשדה של כל ההזמנה. */
   reason?: string;
+  /**
+   * הבדיקה עצמה נכשלה: רשת, תשובה שאינה 200 או תשובה בצורה לא צפויה.
+   * זו לא קביעה שהקוד שגוי — valid:false בלי הדגל הזה היא דחייה של השרת.
+   */
+  failed?: true;
 };
 
 export type UnitCouponResult = {
@@ -86,10 +91,16 @@ export async function checkCoupon(
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code, subtotal, quantity }),
     });
-    if (!res.ok) return { valid: false, total: subtotal, discount: 0 };
-    return await res.json() as CouponResult;
+    if (!res.ok) return { valid: false, total: subtotal, discount: 0, failed: true };
+    const r = await res.json() as Partial<CouponResult> | null;
+    // רק תשובה בצורה הצפויה נחשבת להכרעה של השרת על הקוד.
+    if (!r || typeof r.valid !== 'boolean') return { valid: false, total: subtotal, discount: 0, failed: true };
+    if (r.valid && !(typeof r.discount === 'number' && Number.isFinite(r.discount) && r.discount >= 0)) {
+      return { valid: false, total: subtotal, discount: 0, failed: true };
+    }
+    return r as CouponResult;
   } catch {
-    return { valid: false, total: subtotal, discount: 0 };
+    return { valid: false, total: subtotal, discount: 0, failed: true };
   }
 }
 

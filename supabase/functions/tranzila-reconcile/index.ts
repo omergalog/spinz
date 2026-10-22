@@ -51,33 +51,63 @@ async function sessionLang(db: any, id: string): Promise<'he' | 'en'> {
 }
 
 Deno.serve(async (req) => {
-  // הסוד חובה. בלעדיו הפונקציה מסרבת, ולא רצה פתוחה לכל אחד: כל קריאה
-  // מושכת דוחות ויכולה ליצור הזמנות. הסוד מתקבל רק בכותרת — מחרוזת
-  // שאילתה נשמרת ביומני גישה. RECONCILE_ALLOW_QUERY_KEY=1 מקבל זמנית גם
-  // ?key= כדי שה-cron הקיים לא יישבר עד שיעבור לכותרת (מעבר מתואם).
-  const secret = Deno.env.get('RECONCILE_SECRET') ?? '';
-  if (!secret) return new Response('reconcile secret not configured', { status: 503 });
+  // הסוד חובה, ומתקבל רק בכותרת x-reconcile-secret (מחרוזת שאילתה נשמרת
+  // ביומני גישה). מקור הסוד: Vault (reconcile_secret, דרך reconcile_secret_ok),
+  // שממנו קורא גם ה-cron — מקור אחד, בלי להעתיק ערך. RECONCILE_SECRET בסביבה
+  // נתמך בתקופת המעבר, וכך גם ?key= עם RECONCILE_ALLOW_QUERY_KEY=1.
+  // אין סוד מוגדר בשום מקום → 503, לא ריצה פתוחה.
   const url = new URL(req.url);
-  let given = req.headers.get('x-reconcile-secret') ?? '';
-  if (!given && Deno.env.get('RECONCILE_ALLOW_QUERY_KEY') === '1') given = url.searchParams.get('key') ?? '';
-  if (!safeEqual(given, secret)) return new Response('forbidden', { status: 403 });
-
   const db = createClient(
     Deno.env.get('SUPABASE_URL')!,
     Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
   );
+  const envSecret = Deno.env.get('RECONCILE_SECRET') ?? '';
+  const header = req.headers.get('x-reconcile-secret') ?? '';
+  let authorized = false;
+  let configured = !!envSecret;
+  if (header && envSecret && safeEqual(header, envSecret)) {
+    authorized = true;
+  } else {
+    // null = אין סוד ב-Vault (או שהפונקציה עוד לא קיימת)
+    const { data: vaultOk, error: vaultErr } = await db.rpc('reconcile_secret_ok', { p_given: header });
+    if (!vaultErr && vaultOk !== null) { configured = true; authorized = header !== '' && vaultOk === true; }
+  }
+  if (!authorized && !header && envSecret && Deno.env.get('RECONCILE_ALLOW_QUERY_KEY') === '1') {
+    authorized = safeEqual(url.searchParams.get('key') ?? '', envSecret);
+  }
+  if (!configured) return new Response('reconcile secret not configured', { status: 503 });
+  if (!authorized) return new Response('forbidden', { status: 403 });
 
-  // טווח: מהריצה המוצלחת האחרונה, עם יום חפיפה. אחרי השבתה ארוכה הטווח
-  // גדל, ונמשך בחלקים של עד 31 יום. ?days= דורס (בדיקה ידנית).
+  // ריצה ידנית (?days=) אינה נקודת התקדמות: היא בודקת טווח קצר ולא
+  // מוכיחה שהפער הישן נבדק. רק ריצה מתוזמנת (בלי days) מקדמת.
+  const daysParam = url.searchParams.get('days');
+  const scheduled = !daysParam;
+
+  // כל כשל שמונע טיפול מלא בחיובים: הריצה נרשמת כנכשלת, נקודת ההתקדמות
+  // לא זזה, ונשלחת התראה. שגיאה לעולם לא נחשבת "תוצאה ריקה".
+  const fail = async (stage: string, e: unknown, extra: Record<string, unknown> = {}) => {
+    const msg = `${stage}: ${String((e as { message?: string })?.message ?? e)}`;
+    console.error('reconcile', msg);
+    await db.from('payment_events').insert({
+      source: 'reconcile_run', payload: { ok: false, scheduled, error: msg, ...extra },
+      note: `ההשוואה היומית נכשלה: ${msg}`,
+    });
+    const alertErr = await sendAlert('ההשוואה היומית מול טרנזילה נכשלה', [['שלב', stage], ['שגיאה', msg], ['משמעות', 'חיובים שלא הפכו להזמנה לא נבדקו במלואם. הריצה הבאה תתחיל מאותה נקודה']]);
+    if (alertErr) console.error('reconcile alert', alertErr);
+    return new Response(JSON.stringify({ error: msg, ...extra }), { status: 502, headers: { 'Content-Type': 'application/json' } });
+  };
+
+  // טווח: מהריצה המתוזמנת המוצלחת האחרונה, עם יום חפיפה. אחרי השבתה
+  // ארוכה הטווח גדל, ונמשך בחלקים של עד 31 יום.
   const until = new Date();
   let since: Date;
-  const daysParam = url.searchParams.get('days');
   if (daysParam) {
     since = new Date(until.getTime() - Math.min(MAX_DAYS, Math.max(1, Number(daysParam) || DEFAULT_DAYS)) * DAY);
   } else {
-    const { data: lastOk } = await db.from('payment_events').select('payload')
-      .eq('source', 'reconcile_run').eq('payload->>ok', 'true')
+    const { data: lastOk, error: lastErr } = await db.from('payment_events').select('payload')
+      .eq('source', 'reconcile_run').eq('payload->>ok', 'true').eq('payload->>scheduled', 'true')
       .order('created_at', { ascending: false }).limit(1);
+    if (lastErr) return await fail('נקודת ההתקדמות', lastErr);
     const prevUntil = lastOk?.[0]?.payload?.until ? new Date(`${lastOk[0].payload.until}T00:00:00Z`) : null;
     since = prevUntil && !Number.isNaN(prevUntil.getTime())
       ? new Date(prevUntil.getTime() - OVERLAP_DAYS * DAY)
@@ -105,27 +135,17 @@ Deno.serve(async (req) => {
     }
     txns = txns.filter(isApproved).filter(isCharge);
   } catch (e) {
-    console.error('reconcile report', e);
-    // ההשוואה לא רצה. זה לא "אין חריגות": נרשם ומתריעים, והאדמין מציג
-    // את הריצה האחרונה (payment_events, source=reconcile_run).
-    await db.from('payment_events').insert({
-      source: 'reconcile_run', payload: { ok: false, error: String(e), since: ymd(since), until: ymd(end) },
-      note: `ההשוואה היומית נכשלה: ${String(e)}`,
-    });
-    const alertErr = await sendAlert('ההשוואה היומית מול טרנזילה נכשלה', [['שגיאה', String(e)], ['משמעות', 'חיובים שלא הפכו להזמנה לא נבדקו היום']]);
-    if (alertErr) console.error('reconcile alert', alertErr);
-    return new Response(JSON.stringify({ error: String(e) }), {
-      status: 502, headers: { 'Content-Type': 'application/json' },
-    });
+    return await fail('דוח טרנזילה', e, { since: ymd(since), until: ymd(end) });
   }
 
   // מה שכבר ידוע לנו
   // הסלים נטענים מוקדם יותר מהעסקאות: עסקה שקרתה מיד אחרי תחילת
   // הטווח שייכת לסל שנוצר לפניו. בלי ההרחבה, הסל האמיתי היה נופל
   // מחוץ לרשימה ועסקה הייתה עלולה להיתפס לסל אחר.
-  const { data: known } = await db.from('checkout_sessions')
+  const { data: known, error: knownErr } = await db.from('checkout_sessions')
     .select('id, total_price, status, created_at, tranzila_index')
     .gte('created_at', new Date(since.getTime() - MATCH_WINDOW_MS).toISOString());
+  if (knownErr) return await fail('קריאת סלים', knownErr, { since: ymd(since), until: ymd(end) });
 
   // עסקאות שכבר משויכות: לסל שנרשם בו כסף, או לחריגה שכבר נפתחה.
   const linked = new Set(
@@ -139,17 +159,23 @@ Deno.serve(async (req) => {
   // מסד לפני מיגרציית הרכישות (אין payment_issues): התנהגות הגרסה הקודמת
   // לסלים עם מספר עסקה, ותיעוד ב-payment_events במקום בתיק. קורה רק אם
   // הפונקציות עולות לפני ה-SQL, או אחרי חזרה של ה-SQL.
-  const legacyDb = !!issueErr && (issueErr.code === '42P01' || /payment_issues/.test(issueErr.message ?? ''));
+  const legacyDb = !!issueErr && (issueErr.code === '42P01' || issueErr.code === 'PGRST205'
+    || /relation .*payment_issues.* does not exist|Could not find the table/.test(issueErr.message ?? ''));
+  if (issueErr && !legacyDb) return await fail('קריאת תיקים', issueErr, { since: ymd(since), until: ymd(end) });
+
+  // כשלים בטיפול בעסקה מסוימת. כל אחד מונע את קידום נקודת ההתקדמות.
+  const problems: string[] = [];
 
   const result = { checked: txns.length, matched: 0, recovered: 0, issues: 0 };
 
   const openIssue = async (t: typeof txns[number], note: string) => {
     if (legacyDb) {
-      await db.from('payment_events').insert({
+      const { error } = await db.from('payment_events').insert({
         session_id: null, source: 'reconcile', payload: t as unknown as Record<string, unknown>,
         note: `עסקה ${t.index} על ${t.amount} נגבתה בטרנזילה ואין לה הזמנה (${note}) — דורש בדיקה ידנית.`,
       });
-      result.issues++;
+      if (error) problems.push(`תיעוד עסקה ${t.index}: ${error.message}`);
+      else result.issues++;
       return;
     }
     const { error } = await db.from('payment_issues').insert({
@@ -158,8 +184,8 @@ Deno.serve(async (req) => {
       amount: reportAmountToIls(Number(t.amount)),
       details: { txn: t, note },
     });
-    // 23505: כבר נפתח תיק על העסקה הזו
-    if (error && error.code !== '23505') console.error('reconcile issue', error.message);
+    // 23505: כבר נפתח תיק על העסקה הזו — זה מצב תקין
+    if (error && error.code !== '23505') problems.push(`תיק לעסקה ${t.index}: ${error.message}`);
     if (!error) {
       result.issues++;
       const err = await alertIssue('unmatched', { index: Number(t.index), amount: t.amount, note });
@@ -188,9 +214,10 @@ Deno.serve(async (req) => {
     const session = exact[0];
     // במסד הישן finalize מקבלת רק pending, ולכן הסל מוחזר אליו קודם (כמו בגרסה הקודמת)
     if (legacyDb) {
-      await db.from('checkout_sessions')
+      const { error } = await db.from('checkout_sessions')
         .update({ status: 'pending', expires_at: new Date(Date.now() + 60_000).toISOString() })
         .eq('id', session.id);
+      if (error) { problems.push(`הכנת סל ${session.id}: ${error.message}`); continue; }
     }
     const { data, error } = await db.rpc('finalize_checkout_session', {
       p_session_id: session.id,
@@ -222,9 +249,10 @@ Deno.serve(async (req) => {
       if (err) console.error('reconcile alert', err);
     } else {
       if (legacyDb && data?.reason !== 'PAID_BUT_OUT_OF_STOCK') {
-        await db.from('checkout_sessions')
+        const { error: uErr } = await db.from('checkout_sessions')
           .update({ status: 'failed', tranzila_index: idx, failure_reason: error?.message ?? data?.reason ?? 'שחזור נכשל' })
           .eq('id', session.id);
+        if (uErr) problems.push(`סימון סל ${session.id}: ${uErr.message}`);
       }
       await openIssue(t, `שחזור נכשל: ${error?.message ?? data?.reason}`);
     }
@@ -255,16 +283,21 @@ Deno.serve(async (req) => {
     if (err) console.error('reconcile digest', err);
   }
 
-  // סימן חיים: האדמין מתריע אם לא הייתה ריצה מוצלחת ב-26 השעות האחרונות
+  if (problems.length > 0) {
+    return await fail('טיפול בעסקאות', problems.join(' | '), { since: ymd(since), until: ymd(end), ...result, problems });
+  }
+
+  // סימן חיים: האדמין מתריע אם לא הייתה ריצה מתוזמנת מוצלחת ב-26 השעות האחרונות
   await db.from('payment_events').insert({
-    source: 'reconcile_run', payload: { ok: true, since: ymd(since), until: ymd(end), capped, ...result, open_issues: (open ?? []).length },
+    source: 'reconcile_run', payload: { ok: true, scheduled, since: ymd(since), until: ymd(end), capped, ...result, open_issues: (open ?? []).length },
     note: `השוואה יומית: ${result.checked} עסקאות, ${result.recovered} שוחזרו, ${result.issues} תיקים חדשים`,
   });
 
   // סימן חיים חיצוני (אופציונלי): שירות "מתג מת" שמתריע כשלא הגיע פינג.
   // לא מחובר — דורש שירות חיצוני ואישור. בלי HEARTBEAT_URL לא קורה כלום.
+  // ריצה ידנית לא שולחת: היא לא מוכיחה שהריצה המתוזמנת חיה.
   const hb = Deno.env.get('HEARTBEAT_URL');
-  if (hb) await fetch(hb).catch(e => console.error('heartbeat', e));
+  if (hb && scheduled) await fetch(hb).catch(e => console.error('heartbeat', e));
 
   return new Response(JSON.stringify({ ...result, since: ymd(since), until: ymd(end), capped, open_issues: (open ?? []).length, mails_retried: (unsent ?? []).length }), {
     headers: { 'Content-Type': 'application/json' },

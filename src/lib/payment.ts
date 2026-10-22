@@ -6,9 +6,9 @@
  * בתוך ה-iframe ולעולם אינם עוברים דרך העמוד שלנו — זה מה שמשאיר את
  * החברה מחוץ לתקן PCI המחמיר.
  */
-import { supabase } from './supabase';
+import { SUPABASE_URL, supabase } from './supabase';
 
-const FUNCTIONS = 'https://ayrwfyutpbkepnyjkyop.supabase.co/functions/v1';
+const FUNCTIONS = `${SUPABASE_URL}/functions/v1`;
 
 export type CheckoutItem = {
   color: string;
@@ -117,6 +117,21 @@ export class OutOfStockError extends Error {
   constructor(public left: number) { super('OUT_OF_STOCK'); }
 }
 
+/** הרכישה הזו כבר שולמה. לא נפתח תשלום חדש. */
+export class AlreadyPaidError extends Error {
+  constructor(public sessionId: string) { super('ALREADY_PAID'); }
+}
+
+/** ניסיון קודם ברכישה הזו עדיין יכול להסתיים בחיוב. לא נפתח תשלום חדש. */
+export class AttemptOpenError extends Error {
+  constructor(public sessionId: string, public state: string) { super('PREVIOUS_ATTEMPT_OPEN'); }
+}
+
+/** השרת לא מכיר את הרכישה, או שהסוד לא תואם. פותחים רכישה חדשה. */
+export class PurchaseInvalidError extends Error {
+  constructor() { super('PURCHASE_INVALID'); }
+}
+
 export async function openCheckout(input: {
   items: CheckoutItem[];
   name: string;
@@ -128,6 +143,9 @@ export async function openCheckout(input: {
   delivery?: 'ship' | 'pickup';
   /** שפת החשבונית שטרנזילה תשלח ללקוח */
   lang?: string;
+  /** הרכישה (lib/purchase.ts). בלעדיה השרת מתנהג כמו בגרסה הקודמת. */
+  purchaseKey?: string;
+  ownerToken?: string;
 }): Promise<CheckoutSession> {
   const { data: { session } } = await supabase.auth.getSession();
 
@@ -151,6 +169,9 @@ export async function openCheckout(input: {
     if (body?.error === 'COUPON_REJECTED') throw new CouponRejectedError(body.code ?? null);
     if (body?.error === 'ORDER_TOO_LARGE') throw new OrderTooLargeError();
     if (body?.error === 'IP_HOLD_LIMIT') throw new HoldLimitError();
+    if (body?.error === 'ALREADY_PAID') throw new AlreadyPaidError(String(body.sessionId ?? ''));
+    if (body?.error === 'PREVIOUS_ATTEMPT_OPEN') throw new AttemptOpenError(String(body.sessionId ?? ''), String(body.state ?? ''));
+    if (body?.error === 'PURCHASE_INVALID') throw new PurchaseInvalidError();
     throw new Error(body?.error ?? 'SERVER');
   }
   return body as CheckoutSession;
@@ -185,12 +206,24 @@ export function submitToIframe(s: CheckoutSession, iframeName: string) {
 }
 
 export type PaymentStatus =
-  | 'pending' | 'paid' | 'expired' | 'failed' | 'overbooked';
+  | 'pending' | 'paid' | 'expired' | 'failed' | 'overbooked'
+  /** לא ידוע אם הניסיון יסתיים בחיוב (פג תוקף / נפתח ניסיון אחר) */
+  | 'unresolved'
+  /** נסגר באסמכתה שלא יחויב */
+  | 'failed_final'
+  /** חיוב נוסף על רכישה ששולמה — נבדק ידנית */
+  | 'duplicate';
 
-export async function fetchStatus(sessionId: string): Promise<{
-  status: PaymentStatus; total: number; last4?: string; orders: number; pickup?: boolean;
-} | null> {
-  const res = await fetch(`${FUNCTIONS}/tranzila-status?s=${encodeURIComponent(sessionId)}`);
+/**
+ * מצב הסל. עם סוד הבעלות של הרכישה (token) השרת מחזיר גם סכום, ספרות
+ * כרטיס ואופן קבלה. בלעדיו — מצב בלבד. 'rate' כשהשרת ביקש להאט.
+ */
+export async function fetchStatus(sessionId: string, token?: string | null): Promise<{
+  status: PaymentStatus; total?: number; last4?: string; orders?: number; pickup?: boolean;
+} | 'rate' | null> {
+  const t = token ? `&t=${encodeURIComponent(token)}` : '';
+  const res = await fetch(`${FUNCTIONS}/tranzila-status?s=${encodeURIComponent(sessionId)}${t}`);
+  if (res.status === 429) return 'rate';
   if (!res.ok) return null;
   return res.json();
 }

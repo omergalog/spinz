@@ -32,6 +32,12 @@ const ymd = (d: Date) => d.toISOString().slice(0, 10);
 /** כמה ימים אחורה נבדק כל דוח, ומה המקסימום לריצה אחת (התאוששות אחרי השבתה). */
 const OVERLAP_DAYS = 1;
 const DEFAULT_DAYS = 2;
+/**
+ * ריצה מתוזמנת ראשונה, כשאין נקודת התקדמות מתוזמנת (למשל מיד אחרי
+ * המעבר: ה-cron הישן שולח ?days=2 ולכן נרשם כידני). חלון רחב, כדי לכסות
+ * כל פער מאז הריצה המוצלחת האחרונה של הגרסה הקודמת. הכפילויות מטופלות.
+ */
+const FIRST_RUN_DAYS = 14;
 const CHUNK_DAYS = 31;
 const MAX_DAYS = 186;
 const DAY = 86_400_000;
@@ -111,7 +117,7 @@ Deno.serve(async (req) => {
     const prevUntil = lastOk?.[0]?.payload?.until ? new Date(`${lastOk[0].payload.until}T00:00:00Z`) : null;
     since = prevUntil && !Number.isNaN(prevUntil.getTime())
       ? new Date(prevUntil.getTime() - OVERLAP_DAYS * DAY)
-      : new Date(until.getTime() - DEFAULT_DAYS * DAY);
+      : new Date(until.getTime() - FIRST_RUN_DAYS * DAY);
   }
   let capped = false;
   if (until.getTime() - since.getTime() > MAX_DAYS * DAY) {

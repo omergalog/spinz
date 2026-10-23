@@ -1196,7 +1196,7 @@ export default function CartDrawer() {
                       name={payForm.frame}
                       title={t.cart.payTitle}
                       onLoad={onPayFrameLoad}
-                      allow="payment"
+                      allow="payment https://directng.tranzila.com"
                       // @ts-expect-error — תכונה לא סטנדרטית שטרנזילה דורשת ל-Google Pay
                       allowpaymentrequest="true"
                       style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}

@@ -294,6 +294,9 @@ export default function CartDrawer() {
    * - "נטען" רק כשהמסגרת עברה לעמוד של טרנזילה, לא על about:blank.
    */
   const checkoutSeq = useRef(0);
+  // הנעילה של "אשר הזמנה" שייכת לניסיון שלקח אותה. ניסיון שננטש משחרר
+  // אותה מיד, וכשהוא מסתיים מאוחר יותר הוא לא נוגע בנעילה של ניסיון חדש.
+  const submitting = useRef<object | null>(null);
   const [payForm, setPayForm] = useState<{ seq: number; session: CheckoutSession; frame: string } | null>(null);
   const submittedFrame = useRef<string | null>(null);
   const [payFrame, setPayFrame] = useState<HTMLIFrameElement | null>(null);
@@ -302,6 +305,8 @@ export default function CartDrawer() {
   // יציאה משלב התשלום: שום תשובה, הגשה או טיימר של הניסיון הזה לא ימשיכו.
   const abandonPayment = () => {
     checkoutSeq.current += 1;
+    submitting.current = null;
+    setOrdering(false);
     submittedFrame.current = null;
     sessionIdRef.current = null;
     setPayForm(null);
@@ -515,14 +520,18 @@ export default function CartDrawer() {
   }, [isOpen]);
 
   // לחיצה כפולה על "לתשלום" פתחה שתי בדיקות קוד ושני ניסיונות לפתוח סל.
-  const submitting = useRef(false);
   const validateAndCheckout = async () => {
     if (submitting.current) return;
-    submitting.current = true;
-    try { await validateAndCheckoutOnce(); } finally { submitting.current = false; }
+    const mine = {};
+    submitting.current = mine;
+    try { await validateAndCheckoutOnce(); } finally { if (submitting.current === mine) submitting.current = null; }
   };
 
   const validateAndCheckoutOnce = async () => {
+    // בדיקת הקוד לפני פתיחת הסל לוקחת זמן. אם הלקוח סגר או חזר בינתיים,
+    // הניסיון הזה לא ממשיך לפתיחת סל.
+    const startSeq = checkoutSeq.current;
+    const abandoned = () => startSeq !== checkoutSeq.current;
     const errors: Record<string, boolean> = {};
     if (!form.name.trim()) errors.name = true;
     if (!form.phone.trim()) errors.phone = true;
@@ -541,11 +550,12 @@ export default function CartDrawer() {
     // קוד שהוקלד ולא הוחל: מחילים אותו כאן, במקום להתעלם ממנו בשקט.
     if (draftCode && draftCode !== appliedCode) {
       const res = await applyDraft();
+      if (abandoned()) return;
       if (res === 'error') { setOrderError(t.cart.couponCheckFailed); return; }
       if (res === 'bad') { setOrderError(t.cart.couponBad); return; }
       if (res !== 'ok') return;
       checkoutCode.current = draftCode;
-      await handleCheckout(false, draftCode);
+      if (!abandoned()) await handleCheckout(false, draftCode);
       return;
     }
 
@@ -553,17 +563,18 @@ export default function CartDrawer() {
     if (appliedCode) {
       if (appliedStatus !== 'ok') {
         const res = await verifyApplied();
+        if (abandoned()) return;
         if (res === 'error') { setOrderError(t.cart.couponCheckFailed); return; }
         if (res === 'bad') { setOrderError(t.cart.couponInvalidForCart(appliedCode)); return; }
         if (res !== 'ok') return;
       }
       checkoutCode.current = appliedCode;
-      await handleCheckout(false, appliedCode);
+      if (!abandoned()) await handleCheckout(false, appliedCode);
       return;
     }
 
     checkoutCode.current = null;
-    await handleCheckout(false, null);
+    if (!abandoned()) await handleCheckout(false, null);
   };
 
   // הקוד שאושר בלחיצה האחרונה על "אשר הזמנה". גם ניסיון חוזר ורכישה
@@ -579,6 +590,8 @@ export default function CartDrawer() {
     // הרכישה מזהה את הקנייה הזו גם אחרי רענון ובלשוניות אחרות. אם השרת
     // לא זמין לפתוח רכישה, ממשיכים בלעדיה כמו קודם.
     const purchase = await ensurePurchase();
+    // ננטש בזמן פתיחת הרכישה: לא פותחים סל. המצב שייך כבר לניסיון אחר.
+    if (seq !== checkoutSeq.current) return;
     try {
       // השרת מתמחר, שומר את הסל ומחזיר טופס מוכן. שום סכום לא נשלח
       // מכאן — אחרת אפשר היה לשנות אותו בכלי הפיתוח של הדפדפן.
@@ -605,7 +618,8 @@ export default function CartDrawer() {
 
       // הלקוח סגר את העגלה או חזר לפרטים בזמן ההמתנה: התשובה לא מעבירה
       // לתשלום. הסל שנפתח ייסגר בניסיון הבא או יפוג.
-      if (seq !== checkoutSeq.current) { setOrdering(false); return; }
+      // ordering לא מתאפס כאן: הוא כבר שייך לניסיון החדש, אם יש כזה.
+      if (seq !== checkoutSeq.current) return;
 
       submittedFrame.current = null;
       setPayFrameReady(false);
@@ -616,7 +630,8 @@ export default function CartDrawer() {
       setStep('payment');
       loadApplePay();
     } catch (e) {
-      if (seq !== checkoutSeq.current) { setOrdering(false); return; }
+      // שגיאה מאוחרת של ניסיון שננטש לא מוצגת ולא משנה את המצב
+      if (seq !== checkoutSeq.current) return;
       if (e instanceof PurchaseInvalidError && purchase && !retried) {
         dropPurchase(purchase.key);
         return handleCheckout(true, code);
@@ -658,7 +673,7 @@ export default function CartDrawer() {
         setOrderError(t.cart.errGeneric);
       }
     }
-    setOrdering(false);
+    if (seq === checkoutSeq.current) setOrdering(false);
   };
 
   return (
@@ -1138,6 +1153,32 @@ export default function CartDrawer() {
                     <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '17px', color: TEXT, margin: 0 }}>{t.cart.payTitle}</h3>
                   </div>
 
+                  {/* פסק זמן: הודעה מעל המסגרת ולא עליה. אם העמוד בכל זאת עלה ורק
+                      אירוע הטעינה מתעכב, הלקוח ממשיך לראות אותו ולשלם בו. */}
+                  {payTimedOut && !payFrameReady && !payBlocked && (
+                    <div role="alert" style={{
+                      padding: '12px 20px', backgroundColor: '#FBEEE9', borderBottom: '1px solid #E0B9A6',
+                      display: 'flex', flexDirection: 'column', gap: '8px',
+                    }}>
+                      <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: '#A3462B', lineHeight: 1.6, margin: 0 }}>
+                        <strong>{t.cart.payLoadTimeoutTitle}.</strong> {t.cart.payLoadTimeoutBody}
+                      </p>
+                      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                        <button
+                          onClick={backToDetails}
+                          style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '13px', padding: '8px 16px', borderRadius: '8px', border: 'none', backgroundColor: '#C9A870', color: '#1C1C1C', cursor: 'pointer' }}
+                        >
+                          {t.cart.backToDetails}
+                        </button>
+                        <a
+                          href={waLink} target="_blank" rel="noopener noreferrer"
+                          style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '13px', padding: '7px 16px', borderRadius: '8px', border: '1px solid #1C1C1C', color: '#1C1C1C', textDecoration: 'none' }}
+                        >
+                          WhatsApp
+                        </a>
+                      </div>
+                    </div>
+                  )}
                   <div style={{ flex: 1, position: 'relative', backgroundColor: SUBTLE }}>
                     {!payFrameReady && !payTimedOut && (
                       <p style={{
@@ -1160,34 +1201,6 @@ export default function CartDrawer() {
                       allowpaymentrequest="true"
                       style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
                     />}
-                    {payTimedOut && !payFrameReady && !payBlocked && (
-                      <div role="alert" style={{
-                        position: 'absolute', inset: 0, backgroundColor: SURFACE, display: 'flex',
-                        flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                        gap: '14px', padding: '28px', textAlign: 'center',
-                      }}>
-                        <h4 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '17px', color: TEXT, margin: 0 }}>
-                          {t.cart.payLoadTimeoutTitle}
-                        </h4>
-                        <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: '#4A4845', lineHeight: 1.7, margin: 0, maxWidth: '360px' }}>
-                          {t.cart.payLoadTimeoutBody}
-                        </p>
-                        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                          <button
-                            onClick={backToDetails}
-                            style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '14px', padding: '11px 20px', borderRadius: '8px', border: 'none', backgroundColor: '#C9A870', color: '#1C1C1C', cursor: 'pointer' }}
-                          >
-                            {t.cart.backToDetails}
-                          </button>
-                          <a
-                            href={waLink} target="_blank" rel="noopener noreferrer"
-                            style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '14px', padding: '10px 20px', borderRadius: '8px', border: '1px solid #1C1C1C', color: '#1C1C1C', textDecoration: 'none' }}
-                          >
-                            WhatsApp
-                          </a>
-                        </div>
-                      </div>
-                    )}
                     {payBlocked && (
                       <div role="alert" style={{
                         position: 'absolute', inset: 0, backgroundColor: SURFACE, display: 'flex',

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Plus, Minus, ArrowRight, ArrowLeft, CalendarClock } from 'lucide-react';
 import { COMPANY } from '../config/company';
 import { MAX_BIKES_PER_ORDER, MAX_PER_LINE, useCart, type UnitCoupon } from '../context/CartContext';
-import { AlreadyPaidError, AttemptOpenError, CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, PurchaseInvalidError, TooManyCartsError, checkCoupon, checkUnitCoupon, fetchStatus, loadApplePay, openCheckout, reportBlockedFrame, submitToIframe }
+import { type CheckoutSession, AlreadyPaidError, AttemptOpenError, CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, PurchaseInvalidError, TooManyCartsError, checkCoupon, checkUnitCoupon, fetchStatus, loadApplePay, openCheckout, reportBlockedFrame, submitToIframe }
   from '../lib/payment';
 import { dropPurchase, ensurePurchase, markPurchasePaid, purchaseToken, startNewPurchase } from '../lib/purchase';
 import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
@@ -35,6 +35,9 @@ const BORDER  = '#E0DCD4';
 const TRANZILA_FRAME = 'spinz-tranzila-frame';
 // בדיקת קופון שלא חזרה עד אז נחשבת כושלת, וכפתור ההמשך משתחרר.
 const COUPON_TIMEOUT_MS = 8000;
+// חלון התשלום שלא נטען עד אז: הודעה ודרך חזרה, במקום "טוען…" בלי סוף.
+// חל רק על הטעינה הראשונה של החלון, לא על 3DS ולא על תשלום שכבר התחיל.
+const PAY_LOAD_TIMEOUT_MS = 20000;
 const DETAILS_KEY = 'spinz-checkout-details';
 /** אחרי תשלום מוצלח הפרטים לא נשארים בדפדפן. */
 function clearCheckoutDetails() {
@@ -277,7 +280,61 @@ export default function CartDrawer() {
       {' · '}<button type="button" onClick={removeApplied} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: ERROR_TEXT, fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: '2px', fontFamily: 'inherit', fontSize: 'inherit' }}>{t.cart.couponRemove}</button>
     </>
   );
-  const iframeRef = useRef<HTMLIFrameElement>(null);
+  /**
+   * חלון התשלום.
+   *
+   * ההגשה ל-iframe חיכתה לפריים אחד (requestAnimationFrame) בהנחה שהמסגרת
+   * כבר קיימת, ותשובה שהגיעה אחרי שהלקוח סגר את העגלה או חזר לפרטים עדיין
+   * העבירה לשלב התשלום ושלחה טופס למסגרת שלא הייתה קיימת. בפתיחה הבאה
+   * הוצגה מסגרת ריקה ו"טוען…" בלי סוף, עד חזרה ואישור מחדש. עכשיו:
+   * - לכל ניסיון יש מספר. סגירה וחזרה מבטלות את מה שבדרך, ותשובה ישנה לא
+   *   נוגעת במסך.
+   * - הטופס נשלח מ-effect, רק כשהמסגרת של הסל הזה קיימת. לכל סל מסגרת בשם
+   *   משלה, כדי שמסגרת קודמת שעוד יוצאת באנימציה לא תקבל אותו.
+   * - "נטען" רק כשהמסגרת עברה לעמוד של טרנזילה, לא על about:blank.
+   */
+  const checkoutSeq = useRef(0);
+  const [payForm, setPayForm] = useState<{ seq: number; session: CheckoutSession; frame: string } | null>(null);
+  const submittedFrame = useRef<string | null>(null);
+  const [payFrame, setPayFrame] = useState<HTMLIFrameElement | null>(null);
+  const [payTimedOut, setPayTimedOut] = useState(false);
+
+  // יציאה משלב התשלום: שום תשובה, הגשה או טיימר של הניסיון הזה לא ימשיכו.
+  const abandonPayment = () => {
+    checkoutSeq.current += 1;
+    submittedFrame.current = null;
+    sessionIdRef.current = null;
+    setPayForm(null);
+    setPayFrameReady(false);
+    setPayTimedOut(false);
+    setPayBlocked(false);
+  };
+  const backToDetails = () => { abandonPayment(); setStep('details'); };
+
+  useEffect(() => {
+    if (step !== 'payment' || !payForm || !payFrame) return;
+    if (payForm.seq !== checkoutSeq.current) return;
+    if (payFrame.name !== payForm.frame || submittedFrame.current === payForm.frame) return;
+    submittedFrame.current = payForm.frame;
+    submitToIframe(payForm.session, payForm.frame);
+  }, [step, payForm, payFrame]);
+
+  useEffect(() => {
+    if (step !== 'payment' || !payForm || payFrameReady || payTimedOut) return;
+    const seq = payForm.seq;
+    const timer = setTimeout(() => { if (seq === checkoutSeq.current) setPayTimedOut(true); }, PAY_LOAD_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, [step, payForm, payFrameReady, payTimedOut]);
+
+  const onPayFrameLoad = (e: React.SyntheticEvent<HTMLIFrameElement>) => {
+    const f = e.currentTarget;
+    // מסגרת שעוד לא נשלח אליה טופס טוענת about:blank, וזה לא עמוד התשלום.
+    if (submittedFrame.current !== f.name) return;
+    try {
+      if (f.contentWindow?.location.href === 'about:blank') return;
+    } catch { /* מקור אחר: העמוד של טרנזילה נטען */ }
+    setPayFrameReady(true);
+  };
   // פרטי הקשר והמסירה שורדים רענון של הלשונית (sessionStorage: נמחקים
   // כשהלשונית נסגרת ואחרי תשלום מוצלח). פרטי כרטיס לא עוברים כאן בכלל —
   // הם מוזנים בחלון של טרנזילה.
@@ -448,7 +505,7 @@ export default function CartDrawer() {
   useEffect(() => {
     if (isOpen) return;
     setStep('cart');
-    setPayFrameReady(false);
+    abandonPayment();
     setOrderError(null);
     // הקוד שהוחל נשאר. הבדיקה שלו תיעשה מחדש בפתיחה הבאה.
     appliedSeq.current += 1;
@@ -513,6 +570,7 @@ export default function CartDrawer() {
   // נוספת משתמשים בו.
   const checkoutCode = useRef<string | null>(null);
   const handleCheckout = async (retried = false, code: string | null = checkoutCode.current) => {
+    const seq = ++checkoutSeq.current;
     setOrdering(true);
     setOrderError(null);
     setOrderErrorContact(false);
@@ -545,14 +603,20 @@ export default function CartDrawer() {
         ownerToken: purchase?.token,
       });
 
+      // הלקוח סגר את העגלה או חזר לפרטים בזמן ההמתנה: התשובה לא מעבירה
+      // לתשלום. הסל שנפתח ייסגר בניסיון הבא או יפוג.
+      if (seq !== checkoutSeq.current) { setOrdering(false); return; }
+
+      submittedFrame.current = null;
       setPayFrameReady(false);
       setPayBlocked(false);
+      setPayTimedOut(false);
       sessionIdRef.current = session.session_id ?? null;
+      setPayForm({ seq, session, frame: `${TRANZILA_FRAME}-${session.session_id ?? seq}` });
       setStep('payment');
       loadApplePay();
-      // ה-iframe נוצר ברינדור הבא, ולכן ההגשה מחכה לו.
-      requestAnimationFrame(() => submitToIframe(session, TRANZILA_FRAME));
     } catch (e) {
+      if (seq !== checkoutSeq.current) { setOrdering(false); return; }
       if (e instanceof PurchaseInvalidError && purchase && !retried) {
         dropPurchase(purchase.key);
         return handleCheckout(true, code);
@@ -798,7 +862,8 @@ export default function CartDrawer() {
                   {/* Header */}
                   <div style={{ padding: '20px 24px', borderBottom: `1px solid ${BORDER}`, display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <button
-                      onClick={() => setStep('cart')}
+                      // חזרה בזמן שהסל נפתח: התשובה לא תעביר לתשלום
+                      onClick={() => { abandonPayment(); setStep('cart'); }}
                       aria-label={t.cart.backToCart}
                       style={backBtn}
                     >
@@ -1064,7 +1129,7 @@ export default function CartDrawer() {
                 >
                   <div style={{ padding: '20px 24px', borderBottom: `1px solid ${BORDER}`, display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <button
-                      onClick={() => setStep('details')}
+                      onClick={backToDetails}
                       aria-label={t.cart.backToDetails}
                       style={backBtn}
                     >
@@ -1074,7 +1139,7 @@ export default function CartDrawer() {
                   </div>
 
                   <div style={{ flex: 1, position: 'relative', backgroundColor: SUBTLE }}>
-                    {!payFrameReady && (
+                    {!payFrameReady && !payTimedOut && (
                       <p style={{
                         position: 'absolute', inset: 0, display: 'flex',
                         alignItems: 'center', justifyContent: 'center', margin: 0,
@@ -1084,16 +1149,45 @@ export default function CartDrawer() {
                       </p>
                     )}
                     {/* allowpaymentrequest נדרש כדי ש-Google Pay יופיע בתוך המסגרת */}
-                    <iframe
-                      ref={iframeRef}
-                      name={TRANZILA_FRAME}
+                    {payForm && <iframe
+                      key={payForm.frame}
+                      ref={setPayFrame}
+                      name={payForm.frame}
                       title={t.cart.payTitle}
-                      onLoad={() => setPayFrameReady(true)}
+                      onLoad={onPayFrameLoad}
                       allow="payment"
                       // @ts-expect-error — תכונה לא סטנדרטית שטרנזילה דורשת ל-Google Pay
                       allowpaymentrequest="true"
                       style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
-                    />
+                    />}
+                    {payTimedOut && !payFrameReady && !payBlocked && (
+                      <div role="alert" style={{
+                        position: 'absolute', inset: 0, backgroundColor: SURFACE, display: 'flex',
+                        flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                        gap: '14px', padding: '28px', textAlign: 'center',
+                      }}>
+                        <h4 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '17px', color: TEXT, margin: 0 }}>
+                          {t.cart.payLoadTimeoutTitle}
+                        </h4>
+                        <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', color: '#4A4845', lineHeight: 1.7, margin: 0, maxWidth: '360px' }}>
+                          {t.cart.payLoadTimeoutBody}
+                        </p>
+                        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
+                          <button
+                            onClick={backToDetails}
+                            style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '14px', padding: '11px 20px', borderRadius: '8px', border: 'none', backgroundColor: '#C9A870', color: '#1C1C1C', cursor: 'pointer' }}
+                          >
+                            {t.cart.backToDetails}
+                          </button>
+                          <a
+                            href={waLink} target="_blank" rel="noopener noreferrer"
+                            style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '14px', padding: '10px 20px', borderRadius: '8px', border: '1px solid #1C1C1C', color: '#1C1C1C', textDecoration: 'none' }}
+                          >
+                            WhatsApp
+                          </a>
+                        </div>
+                      </div>
+                    )}
                     {payBlocked && (
                       <div role="alert" style={{
                         position: 'absolute', inset: 0, backgroundColor: SURFACE, display: 'flex',
@@ -1108,7 +1202,7 @@ export default function CartDrawer() {
                         </p>
                         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
                           <button
-                            onClick={() => { setPayBlocked(false); setStep('details'); }}
+                            onClick={backToDetails}
                             style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '14px', padding: '11px 20px', borderRadius: '8px', border: 'none', backgroundColor: '#C9A870', color: '#1C1C1C', cursor: 'pointer' }}
                           >
                             {t.cart.payBlockedRetry}

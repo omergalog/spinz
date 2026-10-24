@@ -11,7 +11,11 @@
     },
     {
       "source": "/en/(bikes|merch|specs|sizes|faq|guides|story|gallery|community|reviews|contact|terms|regulations|presale-terms|cancel-order|accessibility)",
-      "destination": "/en/index.html"
+      "destination": "/en/$1/index.html"
+    },
+    {
+      "source": "/en/guides/(assembly|sizing|maintenance|brakes-drivetrain|city-safety|tel-aviv-routes)",
+      "destination": "/en/guides/$1/index.html"
     },
     {
       "source": "/en/guides/:slug",
@@ -27,7 +31,11 @@
     },
     {
       "source": "/(bikes|merch|specs|sizes|faq|guides|story|gallery|community|reviews|contact|terms|regulations|presale-terms|cancel-order|accessibility)",
-      "destination": "/index.html"
+      "destination": "/$1/index.html"
+    },
+    {
+      "source": "/guides/(assembly|sizing|maintenance|brakes-drivetrain|city-safety|tel-aviv-routes)",
+      "destination": "/guides/$1/index.html"
     },
     {
       "source": "/guides/:slug",

@@ -761,7 +761,23 @@ export default function CartDrawer() {
                   </p>
                 </div>
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div className="cart-lines" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {/* בהגדלת טקסט (zoom מתפריט הנגישות) הרשימה צרה, ועמודת הפרטים
+                      בין התמונה לכמות ירדה לכ-75px: הכותרת נשברה בכל מילה ושדה
+                      הקופון נחתך. מתחת ל-320px: הפרטים ליד תמונה קטנה, הכמות
+                      והקופון ברוחב מלא מתחת. מעל זה הפריסה לא משתנה. */}
+                  <style>{`
+                    .cart-lines { container: cartlines / inline-size; }
+                    @container cartlines (max-width: 320px) {
+                      .cart-line { display: grid !important; grid-template-columns: 64px minmax(0, 1fr);
+                        grid-template-areas: "img info" "qty qty" "coupon coupon"; gap: 10px 12px !important; }
+                      .cart-line > img { grid-area: img; width: 64px !important; height: 48px !important; }
+                      .cart-line-body { display: contents; }
+                      .cart-line-info { grid-area: info; min-width: 0; }
+                      .cart-line-coupon { grid-area: coupon; min-width: 0; }
+                      .cart-line-qty { grid-area: qty; flex-direction: row !important; justify-self: start; }
+                    }
+                  `}</style>
                   <AnimatePresence>
                     {items.map(item => (
                       <motion.div
@@ -770,6 +786,7 @@ export default function CartDrawer() {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -20 }}
                         transition={{ duration: 0.3 }}
+                        className="cart-line"
                         style={{
                           backgroundColor: SUBTLE,
                           border: `1px solid ${BORDER}`,
@@ -786,7 +803,8 @@ export default function CartDrawer() {
                           onError={e => { (e.currentTarget as HTMLImageElement).src = item.model.image; }}
                           style={{ width: '80px', height: '60px', objectFit: 'contain', flexShrink: 0 }}
                         />
-                        <div style={{ flex: 1, minWidth: 0 }}>
+                        <div className="cart-line-body" style={{ flex: 1, minWidth: 0 }}>
+                          <div className="cart-line-info">
                           <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '16px', color: TEXT, margin: '0 0 4px' }}>
                             {displayName(item)}
                           </h3>
@@ -820,7 +838,9 @@ export default function CartDrawer() {
                               <span>−{formatPrice(listUnit(item) * item.quantity - lineTotal(item))}</span>
                             </span>
                           )}
+                          </div>
                           {item.kind !== 'merch' && (
+                            <div className="cart-line-coupon">
                             <UnitCouponBox
                               t={t}
                               list={unitCoupons[item.model.id] ?? []}
@@ -836,9 +856,10 @@ export default function CartDrawer() {
                                 return r.reason === 'ORDER_SCOPE' ? t.cart.couponOrderScope : t.cart.couponBad;
                               }}
                             />
+                            </div>
                           )}
                         </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
+                        <div className="cart-line-qty" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', flexShrink: 0 }}>
                           <button
                             onClick={() => updateQuantity(item.model.id, item.quantity + 1)}
                             aria-label={t.cart.more}

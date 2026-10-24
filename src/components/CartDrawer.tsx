@@ -853,7 +853,9 @@ export default function CartDrawer() {
                                   addUnitCoupon(item.model.id, { code: r.code, discount: r.discount ?? 0, label: r.label });
                                   return null;
                                 }
-                                return r.reason === 'ORDER_SCOPE' ? t.cart.couponOrderScope : t.cart.couponBad;
+                                // כשל רשת או שגיאת שרת הוצגו כ"הקוד אינו תקף". זו לא הכרעה על הקוד.
+                                if (r.failed) return { msg: t.cart.couponCheckFailedRetry, retry: true };
+                                return { msg: r.reason === 'ORDER_SCOPE' ? t.cart.couponOrderScope : t.cart.couponBad };
                               }}
                             />
                             </div>
@@ -1397,13 +1399,14 @@ function UnitCouponBox({ t, list, max, onApply, onRemove }: {
   t: ReturnType<typeof useT>;
   list: UnitCoupon[];
   max: number;
-  onApply: (code: string) => Promise<string | null>;
+  /** retry: הבדיקה לא הגיעה להכרעה; הקוד נשאר בשדה לניסיון חוזר. */
+  onApply: (code: string) => Promise<{ msg: string; retry?: boolean } | null>;
   onRemove: (code: string) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState<string | null>(null);
+  const [err, setErr] = useState<{ msg: string; retry?: boolean } | null>(null);
   const apply = async () => {
     const c = code.trim().toUpperCase();
     if (!c || busy) return;
@@ -1435,7 +1438,7 @@ function UnitCouponBox({ t, list, max, onApply, onRemove }: {
       )}
       {list.length < max && open && (
         <div style={{ marginTop: '6px' }}>
-          <div style={{ display: 'flex', border: `1px solid ${err ? '#B3261E' : '#E0DCD4'}`, borderRadius: '6px', overflow: 'hidden', backgroundColor: '#FFFFFF' }}>
+          <div style={{ display: 'flex', border: `1px solid ${err && !err.retry ? '#B3261E' : '#E0DCD4'}`, borderRadius: '6px', overflow: 'hidden', backgroundColor: '#FFFFFF' }}>
             <input
               value={code}
               dir="ltr"
@@ -1452,7 +1455,8 @@ function UnitCouponBox({ t, list, max, onApply, onRemove }: {
               {busy ? '…' : t.cart.couponApply}
             </button>
           </div>
-          {err && <p style={{ color: '#B3261E', fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>{err}</p>}
+          {err && <p role={err.retry ? 'status' : undefined}
+                     style={{ color: err.retry ? '#7E6129' : '#B3261E', fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>{err.msg}</p>}
         </div>
       )}
     </div>

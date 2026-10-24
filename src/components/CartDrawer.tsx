@@ -1444,7 +1444,7 @@ function UnitCouponBox({ t, list, max, onApply, onRemove }: {
               dir="ltr"
               autoFocus
               aria-label={t.cart.couponHint}
-              placeholder={t.cart.couponPlaceholder}
+              placeholder={t.cart.unitCouponPlaceholder}
               onChange={e => { setCode(e.target.value.toUpperCase()); setErr(null); }}
               onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); apply(); } }}
               style={{ flex: 1, minWidth: 0, padding: '7px 10px', border: 'none', outline: 'none', fontFamily: "'Heebo', sans-serif", fontSize: '13px', textAlign: 'left', backgroundColor: 'transparent' }}

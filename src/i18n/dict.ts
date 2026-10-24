@@ -378,6 +378,7 @@ export const dict = {
       couponHint: 'יש לך קוד הנחה?',
       unitCouponCta: (many: boolean) => many ? '+ קוד הנחה לאחד הזוגות' : '+ קוד הנחה לזוג הזה',
       unitCouponLabel: 'קופון',
+      unitCouponPlaceholder: 'קוד קופון',
       unitCouponRemove: (code: string) => `הסרת הקוד ${code}`,
       unitCouponsTotal: 'קופונים לזוגות',
       couponOrderScope: 'הקוד הזה חל על כל ההזמנה. הזינו אותו בשדה קוד ההנחה בשלב פרטי ההזמנה.',
@@ -805,6 +806,8 @@ export const dict = {
       couponHint: 'Have a discount code?',
       unitCouponCta: (many: boolean) => many ? '+ Discount code for one of these bikes' : '+ Discount code for this bike',
       unitCouponLabel: 'Code',
+      // השדה ליד הזוג צר: "Coupon code" נחתך ל-"Coupon cc" בטלפון ברוחב 390px
+      unitCouponPlaceholder: 'Code',
       unitCouponRemove: (code: string) => `Remove code ${code}`,
       unitCouponsTotal: 'Per-bike codes',
       couponOrderScope: 'This code applies to the whole order. Enter it in the discount code field at the order details step.',

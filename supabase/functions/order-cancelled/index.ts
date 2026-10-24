@@ -1,8 +1,9 @@
 /**
  * הודעת ביטול ללקוח.
  *
- * נקראת מהאדמין מיד אחרי ביטול מוצלח. מוגנת בבדיקת JWT של Supabase,
- * כלומר רק משתמש מחובר יכול להפעיל אותה — אין כאן סוד נוסף לנהל.
+ * נקראת מהאדמין מיד אחרי ביטול מוצלח. הפונקציה נפרסת עם --no-verify-jwt,
+ * כלומר Supabase לא בודק את הפונה; הבדיקה היא isAdminCaller למטה, לפני
+ * קריאת פרטי ההזמנה. (עד 24.10.2026 נכתב כאן שיש בדיקת JWT — לא הייתה.)
  *
  * כישלון בשליחה אינו מבטל את הביטול. הוא מוחזר כהודעה, והאדמין מציג
  * אותה, כדי שתדע לפנות ללקוח ידנית.
@@ -10,6 +11,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { corsHeaders } from '../_shared/cors.ts';
 import { sendCancellationEmail } from '../_shared/email.ts';
+import { isAdminCaller } from '../_shared/admin-auth.ts';
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response(null, { headers: corsHeaders(req) });
@@ -20,6 +22,8 @@ Deno.serve(async (req) => {
     });
 
   if (req.method !== 'POST') return json({ error: 'method' }, 405);
+  // לפני גוף הבקשה, קריאת ההזמנה או שליחה. התשובה לא מגלה דבר על הזמנה.
+  if (!(await isAdminCaller(req))) return json({ error: 'unauthorized' }, 401);
 
   let body: { order_id?: string; lang?: string };
   try { body = await req.json(); } catch { return json({ error: 'bad_body' }, 400); }

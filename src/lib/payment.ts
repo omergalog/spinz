@@ -51,6 +51,8 @@ export type UnitCouponResult = {
   discount?: number;
   /** ORDER_SCOPE: קוד של כל ההזמנה שהוזן ליד זוג. */
   reason?: string;
+  /** הבדיקה לא הגיעה להכרעה (רשת, שגיאת שרת). כמו ב-CouponResult. */
+  failed?: true;
 };
 
 /**
@@ -69,10 +71,12 @@ export async function checkUnitCoupon(
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code, scope: 'unit', unit_price: unitPrice, in_cart: inCart }),
     });
-    if (!res.ok) return { valid: false };
-    return await res.json() as UnitCouponResult;
+    if (!res.ok) return { valid: false, failed: true };
+    const r = await res.json() as Partial<UnitCouponResult> | null;
+    if (!r || typeof r.valid !== 'boolean') return { valid: false, failed: true };
+    return r as UnitCouponResult;
   } catch {
-    return { valid: false };
+    return { valid: false, failed: true };
   }
 }
 

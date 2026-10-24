@@ -161,7 +161,9 @@ export default function Models() {
   // תצוגת הקופון. ההנחה מחושבת בשרת — כאן רק מציגים את התוצאה, ואותה
   // פונקציה עצמה תקבע את הסכום שייגבה בפועל.
   const [couponInput, setCouponInput] = useState(coupon);
-  const [couponState, setCouponState] = useState<'idle' | 'checking' | 'ok' | 'bad'>(coupon ? 'ok' : 'idle');
+  // failed: הבדיקה לא הגיעה לשרת או לא קיבלה תשובה. זה לא "קוד לא תקף",
+  // והקוד השמור לא נמחק בגללה.
+  const [couponState, setCouponState] = useState<'idle' | 'checking' | 'ok' | 'bad' | 'failed'>(coupon ? 'ok' : 'idle');
   const [couponPrice, setCouponPrice] = useState<number | null>(null);
   // קוד לזוג בודד (scope='unit'). לא נשמר כקוד ההזמנה: הוא נצמד לזוג
   // שנוסף לעגלה מכאן.
@@ -256,7 +258,7 @@ export default function Models() {
       checkUnitCoupon(unitCode, shownPrice, 0).then(r => {
         if (!alive) return;
         setCouponPrice(r.valid ? r.price ?? null : null);
-        setCouponState(r.valid ? 'ok' : 'bad');
+        setCouponState(r.valid ? 'ok' : r.failed ? 'failed' : 'bad');
       });
       return () => { alive = false; };
     }
@@ -265,7 +267,7 @@ export default function Models() {
     checkCoupon(coupon, shownPrice, 1).then(r => {
       if (!alive) return;
       setCouponPrice(r.valid ? r.total : null);
-      setCouponState(r.valid ? 'ok' : 'bad');
+      setCouponState(r.valid ? 'ok' : r.failed ? 'failed' : 'bad');
     });
     return () => { alive = false; };
   }, [coupon, unitCode, shownPrice]);
@@ -275,9 +277,13 @@ export default function Models() {
     if (!code) { setCoupon(''); setCouponState('idle'); setCouponPrice(null); return; }
     setCouponState('checking');
     const r = await checkCoupon(code, shownPrice, 1);
+    // כשל רשת סומן כקוד לא תקף ומחק את קוד ההזמנה השמור (גם בעגלה).
+    // עכשיו: הודעה נפרדת, והקוד השמור והקוד לזוג נשארים כפי שהיו.
+    if (r.failed) { setCouponState('failed'); return; }
     if (r.valid) { setUnitCode(null); setCoupon(code); setCouponPrice(r.total); setCouponState('ok'); return; }
     if (r.reason === 'UNIT_SCOPE') {
       const u = await checkUnitCoupon(code, shownPrice, 0);
+      if (u.failed) { setCouponState('failed'); return; }
       if (u.valid && u.code) { setCoupon(''); setUnitCode(u.code); setCouponPrice(u.price ?? null); setCouponState('ok'); return; }
     }
     setUnitCode(null); setCoupon(''); setCouponPrice(null); setCouponState('bad');
@@ -471,6 +477,11 @@ export default function Models() {
         {couponState === 'bad' && (
           <p style={{ color: '#FF6B6B', fontSize: '11.5px', margin: '5px 0 0', fontFamily: "'Heebo', sans-serif" }}>
             {t.cart.couponBad}
+          </p>
+        )}
+        {couponState === 'failed' && (
+          <p role="status" style={{ color: '#7E6129', fontSize: '11.5px', margin: '5px 0 0', fontFamily: "'Heebo', sans-serif" }}>
+            {t.cart.couponCheckFailedRetry}
           </p>
         )}
         {couponState === 'ok' && couponPrice != null && (

@@ -11,6 +11,7 @@ const MUTED = '#4A4845';
 const GOLD = '#C9A870';
 const LINK = '#7E6129';
 const BORDER = '#E0DCD4';
+const ERROR_TEXT = '#B3261E';
 
 type Status = 'idle' | 'sending' | 'sent' | 'error';
 
@@ -45,7 +46,15 @@ export default function CancelOrder() {
     // אותו סף כמו בשרת, כדי שטלפון קצר ייעצר כאן ולא יחזור כשגיאה.
     if (form.phone.replace(/\D/g, '').length < 7) errs.phone = true;
     setErrors(errs);
-    if (Object.keys(errs).length) return;
+    // מעבר לשדה הראשון עם שגיאה: קורא מסך מקריא אותו יחד עם ההסבר.
+    // גלילה לאמצע המסך, אחרת הכותרת הצפה מכסה את השדה.
+    const first = Object.keys(errs)[0];
+    if (first) {
+      const el = (e.currentTarget as HTMLFormElement).querySelector<HTMLInputElement>(`[name="${first}"]`);
+      el?.focus({ preventScroll: true });
+      el?.scrollIntoView({ block: 'center' });
+      return;
+    }
 
     setStatus('sending');
 
@@ -73,6 +82,9 @@ export default function CancelOrder() {
     key: string, label: string, placeholder: string,
     opts: { type?: string; required?: boolean; dir?: 'rtl' | 'ltr' } = {}
   ) => (
+    // בשליחה ריקה הופיעה רק מסגרת כתומה, בלי הסבר ובלי סימון לקורא מסך.
+    // ההודעה מחוץ ל-label, כדי שלא תיכנס לשם השדה, ומקושרת אליו ב-aria-describedby.
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
     <label style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
       <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 600, color: DARK }}>
         {label}{opts.required && ' *'}
@@ -82,6 +94,9 @@ export default function CancelOrder() {
         name={key}
         autoComplete={AUTOFILL[key] ?? 'on'}
         dir={opts.dir ?? dir}
+        aria-required={opts.required || undefined}
+        aria-invalid={errors[key] || undefined}
+        aria-describedby={errors[key] ? `cancel-${key}-err` : undefined}
         value={form[key as keyof typeof form]}
         onChange={e => set(key, e.target.value)}
         placeholder={placeholder}
@@ -93,6 +108,12 @@ export default function CancelOrder() {
         }}
       />
     </label>
+    {errors[key] && (
+      <p id={`cancel-${key}-err`} role="alert" style={{ margin: 0, fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: ERROR_TEXT }}>
+        {key === 'phone' && form.phone.trim() ? c.errPhone : c.errRequired}
+      </p>
+    )}
+    </div>
   );
 
   return (

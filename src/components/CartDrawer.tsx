@@ -1407,6 +1407,19 @@ function UnitCouponBox({ t, list, max, onApply, onRemove }: {
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<{ msg: string; retry?: boolean } | null>(null);
+  // הגדלת טקסט בזמן שהשדה פתוח מגדילה את השורה, והשדה ירד מתחת לחלק הגלוי
+  // של הרשימה: נשאר פתוח ובפוקוס, אבל מוסתר. כשגודלו משתנה והוא בפוקוס,
+  // הרשימה נגללת אליו.
+  const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const el = inputRef.current;
+    if (!open || !el || typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(() => {
+      if (document.activeElement === el) el.scrollIntoView({ block: 'nearest' });
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [open]);
   const apply = async () => {
     const c = code.trim().toUpperCase();
     if (!c || busy) return;
@@ -1440,6 +1453,7 @@ function UnitCouponBox({ t, list, max, onApply, onRemove }: {
         <div style={{ marginTop: '6px' }}>
           <div style={{ display: 'flex', border: `1px solid ${err && !err.retry ? '#B3261E' : '#E0DCD4'}`, borderRadius: '6px', overflow: 'hidden', backgroundColor: '#FFFFFF' }}>
             <input
+              ref={inputRef}
               value={code}
               dir="ltr"
               autoFocus

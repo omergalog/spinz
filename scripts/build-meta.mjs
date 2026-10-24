@@ -47,9 +47,17 @@ for (const lang of ['he', 'en']) {
 }
 
 // vercel.json: כל מדריך צריך כלל משלו, אחרת יוגש index.html עם כותרת דף הבית
-const vercel = await readFile('vercel.json', 'utf8');
-const listed = prefix => vercel.match(new RegExp(`"source": "${prefix}/guides/\\(([^)]+)\\)"`))?.[1].split('|') ?? [];
+// נקרא כ-JSON ולא בחיפוש טקסט: ב-Vercel החיפוש לא מצא אף כלל, אף שהקובץ זהה.
+const sources = (JSON.parse(await readFile('vercel.json', 'utf8')).rewrites ?? []).map(r => r.source);
+const listed = prefix => {
+  const head = `${prefix}/guides/(`;
+  const src = sources.find(s => s.startsWith(head) && s.endsWith(')'));
+  return src ? src.slice(head.length, -1).split('|') : [];
+};
 const missing = ['', '/en'].flatMap(pre => GUIDE_SLUGS.filter(s => !listed(pre).includes(s)).map(s => `${pre}/guides/${s}`));
-if (missing.length) fail(`מדריכים בלי כלל ב-vercel.json: ${missing.join(', ')}`);
+if (missing.length) {
+  console.error(`build-meta: ${sources.length} כללים ב-vercel.json; כללי מדריכים: ${sources.filter(s => s.includes('/guides/')).join(' ; ') || 'אין'}`);
+  fail(`מדריכים בלי כלל ב-vercel.json: ${missing.join(', ')}`);
+}
 
 console.log(`build-meta: ${count} עמודים`);

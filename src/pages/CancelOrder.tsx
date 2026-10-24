@@ -80,7 +80,7 @@ export default function CancelOrder() {
 
   const field = (
     key: string, label: string, placeholder: string,
-    opts: { type?: string; required?: boolean; dir?: 'rtl' | 'ltr' } = {}
+    opts: { type?: string; required?: boolean; dir?: 'rtl' | 'ltr'; hint?: string } = {}
   ) => (
     // בשליחה ריקה הופיעה רק מסגרת כתומה, בלי הסבר ובלי סימון לקורא מסך.
     // ההודעה מחוץ ל-label, כדי שלא תיכנס לשם השדה, ומקושרת אליו ב-aria-describedby.
@@ -96,7 +96,7 @@ export default function CancelOrder() {
         dir={opts.dir ?? dir}
         aria-required={opts.required || undefined}
         aria-invalid={errors[key] || undefined}
-        aria-describedby={errors[key] ? `cancel-${key}-err` : undefined}
+        aria-describedby={errors[key] ? `cancel-${key}-err` : opts.hint ? `cancel-${key}-hint` : undefined}
         value={form[key as keyof typeof form]}
         onChange={e => set(key, e.target.value)}
         placeholder={placeholder}
@@ -108,6 +108,11 @@ export default function CancelOrder() {
         }}
       />
     </label>
+    {opts.hint && !errors[key] && (
+      <p id={`cancel-${key}-hint`} data-hint style={{ margin: 0, fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: MUTED }}>
+        {opts.hint}
+      </p>
+    )}
     {errors[key] && (
       <p id={`cancel-${key}-err`} role="alert" style={{ margin: 0, fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: ERROR_TEXT }}>
         {key === 'phone' && form.phone.trim() ? c.errPhone : c.errRequired}
@@ -164,7 +169,7 @@ export default function CancelOrder() {
                 {field('name', c.name, c.name, { required: true })}
                 {field('phone', c.phone, '050-0000000', { type: 'tel', required: true, dir: 'ltr' })}
                 {field('email', c.email, 'israel@example.com', { type: 'email', dir: 'ltr' })}
-                {field('orderRef', c.orderNo, c.optional)}
+                {field('orderRef', c.orderNo, c.optional, { hint: c.orderNoHint })}
 
                 <label style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 600, color: DARK }}>

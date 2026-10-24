@@ -225,7 +225,9 @@ export default function Footer() {
           </p>
 
           {/* Bottom bar */}
-          <div className="flex flex-col items-center justify-between gap-2 py-6 md:flex-row" style={{ borderTop: `1px solid ${BORDER}` }}>
+          {/* הכפתורים הצפים (וואטסאפ, נגישות) יושבים 24px מהתחתית ובגובה 48px. עד רוחב
+              ~1300px הם כיסו את הקישורים ואת שורת הזכויות גם בסוף הגלילה. */}
+          <div className="flex flex-col items-center justify-between gap-2 pt-6 pb-[88px] md:flex-row min-[1300px]:pb-6" style={{ borderTop: `1px solid ${BORDER}` }}>
             <p className="text-xs" style={{ color: '#FFFFFF', fontFamily: "'Heebo', sans-serif" }}>
               {t.footer.rights}
             </p>

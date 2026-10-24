@@ -950,8 +950,13 @@ export default function CartDrawer() {
                           aria-invalid={formErrors[key] || undefined}
                           autoComplete={auto}
                           // Email/phone hold Latin characters – force LTR so the
-                          // caret and separators don't jump inside an RTL form
-                          dir={type === 'email' || type === 'tel' ? 'ltr' : 'rtl'}
+                          // caret and separators don't jump inside an RTL form.
+                          // שם וכתובת היו קבועים ל-rtl, ולכן בטופס האנגלי יושרו
+                          // לימין ו-"1 Test St" הוצג כ-"Test St 1". ריק: כיוון
+                          // השפה (כדי שה-placeholder יתיישר נכון). עם טקסט: auto,
+                          // כך שכתובת בעברית באתר האנגלי, או באנגלית באתר העברי,
+                          // מוצגת לפי האות הראשונה שלה.
+                          dir={type === 'email' || type === 'tel' ? 'ltr' : form[key as keyof typeof form].trim() ? 'auto' : dir}
                           placeholder={placeholder}
                           value={form[key as keyof typeof form]}
                           onChange={e => { setForm(f => ({ ...f, [key]: e.target.value })); setFormErrors(f => ({ ...f, [key]: false })); }}
@@ -961,7 +966,7 @@ export default function CartDrawer() {
                             border: `1px solid ${formErrors[key] ? ERROR_TEXT : BORDER}`,
                             borderRadius: '8px', color: TEXT,
                             fontFamily: "'Heebo', sans-serif", fontSize: '14px',
-                            outline: 'none', direction: key === 'email' || key === 'phone' ? 'ltr' : 'rtl',
+                            outline: 'none',
                             boxSizing: 'border-box',
                           }}
                         />

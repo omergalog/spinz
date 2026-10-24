@@ -12,7 +12,10 @@ import { readFile, writeFile, mkdir } from 'node:fs/promises';
 
 const SITE = 'https://www.spinzbikes.com';
 const EN = {
-  title: 'Spinz Bikes | The quiet revolution of riding in the city',
+  // זהה ל-meta.homeTitle במילון, שהאפליקציה כותבת אחרי JavaScript. og:title
+  // נשאר כותרת השיווק, כמו בעברית (שם ה-title וה-og:title שונים מלכתחילה).
+  title: 'SPINZ | Single Speed Urban Bikes',
+  ogTitle: 'Spinz Bikes | The quiet revolution of riding in the city',
   description: 'Spinz. Urban single-speed city bikes, built for the street and designed to stand out.',
   ogDescription: 'Everyone will ask where it is from. Meet the single-speed brand that changes the way you ride the city.',
 };
@@ -23,7 +26,7 @@ let out = src
   .replace('<html lang="he" dir="rtl">', '<html lang="en" dir="ltr">')
   .replace(/<title>[^<]*<\/title>/, `<title>${EN.title}</title>`)
   .replace(/(<meta name="description" content=")[^"]*/, `$1${EN.description}`)
-  .replace(/(<meta property="og:title" content=")[^"]*/, `$1${EN.title}`)
+  .replace(/(<meta property="og:title" content=")[^"]*/, `$1${EN.ogTitle}`)
   .replace(/(<meta property="og:description" content=")[^"]*/, `$1${EN.ogDescription}`)
   .replace(/(<meta property="og:url" content=")[^"]*/, `$1${SITE}/en`);
 

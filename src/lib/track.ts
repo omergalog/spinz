@@ -90,8 +90,16 @@ export function startTracking() {
     enabled = true;
     if (pendingTest) ls.set(K.test, '1');
     if (!ls.get(K.vid)) ls.set(K.vid, uuid());
-    if (pendingEntry) ls.set(K.attr, JSON.stringify(pendingEntry));
-    ensureSession(!!pendingEntry);
+    // אותו קישור בתוך אותו ביקור (רענון, חזרה אחורה, הכתובת עדיין עם ref): לא כניסה חדשה.
+    // בלי זה כל רענון נספר ככניסה מתועדת נוספת ומאריך את חלון השיוך.
+    const prev = currentAttr();
+    let alive = false;
+    try { const s = JSON.parse(ls.get(K.ses) ?? 'null'); alive = !!s && Date.now() - s.last <= SESSION_GAP_MS; } catch { alive = false; }
+    const sameVisit = !!pendingEntry && !!prev && alive &&
+      prev.ref === pendingEntry.ref && prev.us === pendingEntry.us && prev.uc === pendingEntry.uc;
+    const newEntry = !!pendingEntry && !sameVisit;
+    if (newEntry) ls.set(K.attr, JSON.stringify(pendingEntry));
+    ensureSession(newEntry);
     pendingEntry = null;
     timer = setInterval(() => flush(false), FLUSH_MS);
     addEventListener('pagehide', () => flush(true));

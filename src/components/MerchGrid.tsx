@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Check, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLang, useT } from '../i18n/LanguageContext';
 import { supabase } from '../lib/supabase';
 import { merchProducts, merchSlug, type MerchProduct } from '../data/merch';
+import { TRACKING_STARTED_EVENT, trackProductView } from '../lib/track';
 
 const DARK   = '#1C1C1C';
 const BORDER = '#E2DED8';
@@ -32,6 +33,30 @@ function MerchCard({ product, rows }: { product: MerchProduct; rows: Record<stri
 
   const color = product.colors.find(c => c.id === colorId) ?? product.colors[0];
   const slug  = sizeId ? merchSlug(product.slugBase, colorId, sizeId) : '';
+
+  // צפייה במוצר: אותה הגדרה כמו באופניים — הכרטיס חצי על המסך לפחות, פעם
+  // אחת לכל צבע בעמוד. מידה לא נדרשת לצפייה, ולכן המזהה הוא דגם וצבע.
+  const cardRef = useRef<HTMLElement>(null);
+  const [visible, setVisible] = useState(false);
+  const viewed = useRef(new Set<string>());
+  const [trackOn, setTrackOn] = useState(0);
+  useEffect(() => {
+    const on = () => setTrackOn(n => n + 1);
+    window.addEventListener(TRACKING_STARTED_EVENT, on);
+    return () => window.removeEventListener(TRACKING_STARTED_EVENT, on);
+  }, []);
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(([e]) => setVisible(e.isIntersecting), { threshold: 0.5 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  useEffect(() => {
+    const id = `${product.slugBase}-${colorId}`;
+    if (!visible || viewed.current.has(id)) return;
+    if (trackProductView(id)) viewed.current.add(id);
+  }, [visible, colorId, product.slugBase, trackOn]);
   const row   = slug ? rows[slug] : undefined;
 
   const price = row ? (row.sale_price ?? row.price) : product.price;
@@ -74,7 +99,7 @@ function MerchCard({ product, rows }: { product: MerchProduct; rows: Record<stri
   };
 
   return (
-    <article style={{
+    <article ref={cardRef} style={{
       border: `1px solid ${BORDER}`, borderRadius: '10px', backgroundColor: '#fff',
       overflow: 'hidden', display: 'flex', flexDirection: 'column',
     }}>

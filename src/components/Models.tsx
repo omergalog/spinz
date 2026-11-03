@@ -9,6 +9,7 @@ import { fetchApprovedReviews } from '../lib/reviews';
 import { useLang, useT, useDir, localizePath } from '../i18n/LanguageContext';
 import { arrivalLabelIn, discountLabelIn, usePresale } from '../config/presale';
 import { checkCoupon, checkUnitCoupon } from '../lib/payment';
+import { TRACKING_STARTED_EVENT, trackProductView } from '../lib/track';
 
 const DARK   = '#1C1C1C';
 const BEIGE  = '#FFFFFF';
@@ -198,6 +199,28 @@ export default function Models() {
 
   // Presale applies per variant, and only while that variant has quota left
   const variantSlug = `spinz-${color.id}-${size.id}`;
+
+  // צפייה במוצר: אזור המוצר על המסך (חצי ממנו לפחות). פעם אחת לכל צבע
+  // ומידה בעמוד, כדי שגלילה הלוך וחזור לא תיספר שוב.
+  const [productVisible, setProductVisible] = useState(false);
+  const viewedSlugs = useRef(new Set<string>());
+  const [trackOn, setTrackOn] = useState(0);
+  useEffect(() => {
+    const on = () => setTrackOn(n => n + 1);
+    window.addEventListener(TRACKING_STARTED_EVENT, on);
+    return () => window.removeEventListener(TRACKING_STARTED_EVENT, on);
+  }, []);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const io = new IntersectionObserver(([e]) => setProductVisible(e.isIntersecting), { threshold: 0.5 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  useEffect(() => {
+    if (!productVisible || viewedSlugs.current.has(variantSlug)) return;
+    if (trackProductView(variantSlug)) viewedSlugs.current.add(variantSlug);
+  }, [productVisible, variantSlug, trackOn]);
   const quotaLeft = presaleQty[variantSlug] ?? 0;
   const presale = presaleCfg.active && (!presaleReady || quotaLeft > 0);
   const presaleSoldOut = presaleCfg.active && presaleReady && quotaLeft <= 0;

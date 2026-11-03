@@ -12,6 +12,7 @@ import { corsHeaders } from '../_shared/cors.ts';
 import { clientIp } from '../_shared/client.ts';
 import { PICKUP_NOTES } from '../_shared/delivery.ts';
 import { UUID } from '../_shared/purchase.ts';
+import { afterResponse, recordAttribution } from '../_shared/attribution.ts';
 
 const SITE = Deno.env.get('SITE_URL') ?? 'https://spinzbikes.com';
 const FUNCTIONS = `${Deno.env.get('SUPABASE_URL')}/functions/v1`;
@@ -300,6 +301,11 @@ Deno.serve(async (req) => {
   }
 
   const sessionId = data.session_id as string;
+
+  // שיוך למקור התנועה (_shared/attribution.ts): תמונת מצב על הסל. רץ אחרי
+  // התשובה ונבלע בכשל, כך שהוא לא משנה ולא מעכב את התשלום.
+  afterResponse(recordAttribution(db, sessionId, (body as { attribution?: unknown }).attribution,
+    req.headers.get('origin') ?? ''));
   const total = Number(data.total);
 
   if (!purchaseKey) {

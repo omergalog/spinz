@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { BikeModel } from '../data/models';
 import { supabase } from '../lib/supabase';
+import { trackAddToCart } from '../lib/track';
 
 export interface CartItem {
   model: BikeModel;
@@ -178,6 +179,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     model: BikeModel, colorId: string, colorLabel: string, colorSkuCode: string, size: string,
     opts?: { slug?: string; kind?: 'bike' | 'merch' },
   ) => {
+    trackAddToCart(opts?.slug ?? `spinz-${colorId}-${size}`, model.price);
     setItems(prev => {
       const existing = prev.find(i => i.model.id === model.id);
       if (existing) {

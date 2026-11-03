@@ -29,10 +29,22 @@ import AccessibilityWidget from './components/AccessibilityWidget';
 import WhatsAppFab from './components/WhatsAppFab';
 import { getPauseMotion, onPauseMotionChange } from './utils/motionStore';
 import { loadTracking } from './lib/consent';
+import { captureEntry, trackPage } from './lib/track';
+import { useLocation } from 'react-router-dom';
 import CookieBanner from './components/CookieBanner';
 import PasswordGate from './components/PasswordGate';
 import { LanguageProvider, EN_PREFIX, langFromPath } from './i18n/LanguageContext';
 import { getDict } from './i18n/dict';
+
+// ref ו-UTM נקראים מהכתובת לפני שער הסיסמה ולפני כל ניווט, כדי שלא יאבדו.
+captureEntry();
+
+/** צפייה לכל מעבר בנתב, גם בלי טעינה מחדש של העמוד. */
+function TrackRoutes() {
+  const { pathname } = useLocation();
+  useEffect(() => { trackPage(pathname); }, [pathname]);
+  return null;
+}
 
 function Root() {
   const [pauseMotion, setPauseMotionState] = useState(getPauseMotion);
@@ -69,6 +81,7 @@ function Root() {
             {/* בכל עמוד, ולא רק בדף הבית: מי שנכנס ישר לעמוד מוצר או
                 למדריך מגוגל לא ראה את הבאנר מעולם. */}
             <CookieBanner />
+            <TrackRoutes />
 
             <main id="main-content">
               <Routes>

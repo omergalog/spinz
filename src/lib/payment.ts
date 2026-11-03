@@ -7,6 +7,7 @@
  * החברה מחוץ לתקן PCI המחמיר.
  */
 import { SUPABASE_URL, supabase } from './supabase';
+import { attributionForCheckout, trackBeginCheckout } from './track';
 
 const FUNCTIONS = `${SUPABASE_URL}/functions/v1`;
 
@@ -163,6 +164,9 @@ export async function openCheckout(input: {
   ownerToken?: string;
 }): Promise<CheckoutSession> {
   const { data: { session } } = await supabase.auth.getSession();
+  // מעקב בלבד: לא ממתין לו ולא נכשל בגללו. בלי אישור עוגיות השיוך ריק.
+  trackBeginCheckout();
+  const attribution = attributionForCheckout();
 
   const res = await fetch(`${FUNCTIONS}/tranzila-checkout`, {
     method: 'POST',
@@ -173,7 +177,7 @@ export async function openCheckout(input: {
       Authorization: `Bearer ${session?.access_token ??
         (supabase as unknown as { supabaseKey: string }).supabaseKey}`,
     },
-    body: JSON.stringify(input),
+    body: JSON.stringify(attribution ? { ...input, attribution } : input),
   });
 
   const body = await res.json().catch(() => ({}));

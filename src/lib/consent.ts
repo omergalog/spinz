@@ -10,6 +10,7 @@
  * בלחיצה, ולכן היא נשמרת.
  */
 import { initPixel } from './pixel';
+import { startTracking, stopTracking } from './track';
 
 const KEY = 'spinz-cookies';
 const GA_ID = 'G-Q414LWJ252';
@@ -44,6 +45,7 @@ export function setConsent(v: 'granted' | 'denied') {
   w[`ga-disable-${GA_ID}`] = true;
   w.gtag?.('consent', 'update', { analytics_storage: 'denied', ad_storage: 'denied' });
   clearTrackingCookies();
+  stopTracking();
   // סקריפט שכבר נטען לא נפרק. מי שחוזר בו מהסכמה מקבל טעינה מחדש,
   // והעמוד עולה בלי המדידה.
   if (before === 'granted') window.location.reload();
@@ -86,9 +88,10 @@ function loadAnalytics() {
 export function loadTracking() {
   // בכל טעינה בלי הסכמה מנקים שוב: עוגייה שנכתבה ברגע הדחייה, לפני
   // הרענון, לא תישאר.
-  if (getConsent() !== 'granted') { clearTrackingCookies(); return; }
+  if (getConsent() !== 'granted') { clearTrackingCookies(); stopTracking(); return; }
   loadAnalytics();
   initPixel();
+  startTracking();
 }
 
 /** פותח מחדש את באנר העוגיות, מהקישור "הגדרות עוגיות" בפוטר. */

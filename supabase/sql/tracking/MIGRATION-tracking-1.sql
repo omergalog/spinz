@@ -25,13 +25,16 @@ create policy "own admin row" on public.admins for select to authenticated using
 revoke all on public.admins from anon;
 revoke insert, update, delete on public.admins from authenticated;
 
--- שלב 1: המנהלים. רק שלושת החשבונות שאושרו (לפי מזהה, נשלף בקריאה בלבד ב-3.11.2026
--- ואושר על ידי עומר). חשבון אחר, גם אם קיים, לא מקבל הרשאה.
+-- שלב 1: המנהלים. שלושת החשבונות נשלפו בקריאה בלבד ב-3.11.2026, ועומר גל אישר
+-- ב-3.11.2026 בצ'אט הרשאת owner מלאה לשלושתם: עומר גל, עומר דונוביץ' ואורי שחר.
+-- רק הם מקבלים הרשאה. חשבון אחר, גם אם קיים, לא מקבל.
 -- אם אחד מהם לא קיים, ההרצה נעצרת ולא משנה כלום.
---   0bc59fff-5d6d-4873-85b9-8eef3d2c2001  (נוצר 1.4.2026)
---   0a574d25-941a-4499-b94e-bd4e6befebae  (נוצר 1.4.2026)
---   cb115a56-62e2-40bb-8e72-a8ac4773ca45  (נוצר 1.4.2026)
--- לבדיקה לפני הרצה: select id, email from auth.users where id in (...שלושת המזהים...);
+--   0bc59fff-5d6d-4873-85b9-8eef3d2c2001  עומר גל         (נוצר 1.4.2026)
+--   0a574d25-941a-4499-b94e-bd4e6befebae  עומר דונוביץ'   (נוצר 1.4.2026)
+--   cb115a56-62e2-40bb-8e72-a8ac4773ca45  אורי שחר        (נוצר 1.4.2026)
+-- לבדיקה לפני הרצה:
+--   select id, email from auth.users where id in ('0bc59fff-5d6d-4873-85b9-8eef3d2c2001',
+--     '0a574d25-941a-4499-b94e-bd4e6befebae', 'cb115a56-62e2-40bb-8e72-a8ac4773ca45');
 do $$
 declare
   approved uuid[] := array['0bc59fff-5d6d-4873-85b9-8eef3d2c2001', '0a574d25-941a-4499-b94e-bd4e6befebae',
@@ -43,7 +46,7 @@ begin
     raise exception 'ADMINS_CHECK: נמצאו % מתוך % החשבונות שאושרו. לא ממשיכים', found, array_length(approved, 1);
   end if;
   insert into public.admins (user_id, role, note)
-    select u, 'owner', 'אושר 3.11.2026 להקמת מערכת המעקב' from unnest(approved) as u
+    select u, 'owner', 'אושר על ידי עומר גל, 3.11.2026, להקמת מערכת המעקב' from unnest(approved) as u
     on conflict (user_id) do nothing;
 end $$;
 

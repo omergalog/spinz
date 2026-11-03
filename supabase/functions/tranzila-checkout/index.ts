@@ -71,6 +71,22 @@ function buildInvoiceLines(items: Array<Record<string, unknown>>, total: number,
   return JSON.stringify(lines);
 }
 
+/**
+ * קידוד הערך של json_purchase_data, כמו rawurlencode של PHP.
+ *
+ * התיעוד של טרנזילה מקודד את ה-JSON לפני שהוא נכנס לטופס, והטופס מקודד
+ * אותו שוב בשליחה. עמוד התשלום שלהם מפענח את הערך בעצמו
+ * (JSON.parse(decodeURIComponent(...)) ב-npay.js, לפני חלון Google Pay).
+ * JSON גולמי הגיע אליהם כמחרוזת שטוחה: ביט נפל ב-System Error.
+ *
+ * encodeURIComponent משאיר את !'()* כמו שהם. rawurlencode מקודד אותם, וזה
+ * חשוב כאן בגלל הגרש ב"בז'".
+ */
+function rawUrlEncode(s: string): string {
+  return encodeURIComponent(s).replace(/[!'()*]/g,
+    c => `%${c.charCodeAt(0).toString(16).toUpperCase()}`);
+}
+
 /** תיאור קצר של תוכן ההזמנה, לחשבונית. */
 /**
  * תיאור ההזמנה בחשבונית: כל פריט עם צבע, מידה וכמות.
@@ -317,6 +333,9 @@ Deno.serve(async (req) => {
    *
    * אמצעי תשלום פעיל שווה יותר מפירוט שורות בחשבונית, שממילא מתוארת
    * ב-pdesc. להדלקה מחדש כשטרנזילה יתקנו: INVOICE_LINES=1.
+   *
+   * 26.10: טרנזילה שחזרו את הכשל וראו שהערך הגיע כמחרוזת שטוחה. הסיבה
+   * הסבירה: JSON גולמי במקום ערך מקודד (ראה rawUrlEncode).
    */
   const invoiceLines = Deno.env.get('INVOICE_LINES') === '1'
     ? buildInvoiceLines(session?.items ?? [], total, lang)
@@ -370,7 +389,8 @@ Deno.serve(async (req) => {
     // פירוט שורות לחשבונית. אם הסכומים לא יסתדרו, טרנזילה תדפיס
     // חשבונית תקינה בלי הפירוט — כלומר טעות כאן לא מייצרת חשבונית
     // שגויה, רק פחות מפורטת.
-    ...(invoiceLines ? { json_purchase_data: invoiceLines } : {}),
+    // מקודד לפי התיעוד (ראה rawUrlEncode). הדפדפן מקודד אותו שוב בהגשה.
+    ...(invoiceLines ? { json_purchase_data: rawUrlEncode(invoiceLines) } : {}),
 
     // מיתוג העמוד
     nologo: '1',

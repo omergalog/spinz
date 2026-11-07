@@ -32,7 +32,6 @@ import { loadTracking } from './lib/consent';
 import { captureEntry, trackPage } from './lib/track';
 import { useLocation } from 'react-router-dom';
 import CookieBanner from './components/CookieBanner';
-import PasswordGate from './components/PasswordGate';
 import { LanguageProvider, EN_PREFIX, langFromPath } from './i18n/LanguageContext';
 import { getDict } from './i18n/dict';
 
@@ -56,7 +55,8 @@ function Root() {
 
   return (
     <>
-      <PasswordGate>
+      {/* שער הסיסמה הוסר בפתיחת האתר לציבור (7.11.2026). הרכיב נשאר
+          ב-components/PasswordGate.tsx אם יידרש שוב. */}
         <MotionConfig
           reducedMotion={pauseMotion ? 'always' : 'never'}
           transition={pauseMotion ? { duration: 0, delay: 0 } : undefined}
@@ -122,7 +122,6 @@ function Root() {
             </LanguageProvider>
           </BrowserRouter>
         </MotionConfig>
-      </PasswordGate>
     </>
   );
 }

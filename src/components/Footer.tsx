@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { submitNewsletter } from '../lib/payment';
 import { openCookieSettings } from '../lib/consent';
-import { COMPANY } from '../config/company';
+import { COMPANY, INSTAGRAM } from '../config/company';
 import { useLang, useT, useDir, localizePath } from '../i18n/LanguageContext';
 import PrivacyNote from './PrivacyNote';
 import { usePresale } from '../config/presale';
@@ -146,12 +146,14 @@ export default function Footer() {
                 {t.footer.tagline}
               </p>
               <div style={{ display: 'flex', gap: '14px', marginTop: '18px' }}>
-                <a href="https://www.instagram.com/spinz.bikes" target="_blank" rel="noopener noreferrer" aria-label="Instagram"
+{INSTAGRAM && (
+                <a href={INSTAGRAM.url} target="_blank" rel="noopener noreferrer" aria-label="Instagram"
                   style={{ color: '#888', transition: 'color 0.2s', padding: '12px', margin: '-12px', display: 'inline-flex' }}
                   onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#C9A870'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#888'; }}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1.2" fill="currentColor" stroke="none"/></svg>
                 </a>
+                )}
                 <a href={whatsappHref} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"
                   style={{ color: '#888', transition: 'color 0.2s', padding: '12px', margin: '-12px', display: 'inline-flex' }}
                   onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#C9A870'; }}
@@ -219,7 +221,7 @@ export default function Footer() {
           <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', color: '#B5B2AC', lineHeight: 1.7, margin: '0 0 18px' }}>
             <Link to={L('/cancel-order')} style={{ color: '#EDEBE6', textDecoration: 'underline', textUnderlineOffset: '2px' }}>{t.footer.links.cancelOrder}</Link>
             {': '}{t.footer.cancelHow1}{' '}
-            <a href={`tel:${COMPANY.phone}`} style={{ color: '#EDEBE6' }}>{COMPANY.phone}</a>,{' '}
+            {/* הטלפון הוסר מהפוטר (7.11.2026). הוא מופיע בעמוד הביטול ובתקנון. */}
             {t.footer.cancelHowMail}{' '}
             <a href={`mailto:${COMPANY.email}`} style={{ color: '#EDEBE6' }}>{COMPANY.email}</a>{' '}
             {t.footer.cancelHow2}<a href={`https://wa.me/${COMPANY.phoneE164}`} target="_blank" rel="noopener noreferrer" style={{ color: '#EDEBE6' }}>WhatsApp</a>.{' '}

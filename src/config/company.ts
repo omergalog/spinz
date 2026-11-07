@@ -30,3 +30,10 @@ export const COMPANY_LINE =
 /** אותה מחרוזת באנגלית — השם הרשום בעברית נשאר בסוגריים, כנדרש במסמך משפטי. */
 export const COMPANY_LINE_EN =
   `${COMPANY.legalNameEn} (${COMPANY.legalNameHe}), company no. ${COMPANY.companyNumber}, ${COMPANY.addressEn}`;
+
+/**
+ * חשבון האינסטגרם. null = עוד אין חשבון פעיל, וכל הקישורים לאינסטגרם באתר
+ * מוסתרים (7.11.2026: הקישור הוביל לחשבון שלא קיים). כשהחשבון נפתח,
+ * ממלאים כאן — והכפתורים חוזרים בפוטר, ביצירת קשר, בטופס הלידים ובקהילה.
+ */
+export const INSTAGRAM: { url: string; handle: string } | null = null;

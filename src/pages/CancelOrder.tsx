@@ -149,7 +149,7 @@ export default function CancelOrder() {
                 {c.receivedBody1}
                 {c.receivedBody2}
                 <br />
-                {c.questions} <a href={`mailto:${COMPANY.email}`} style={{ color: LINK }}>{COMPANY.email}</a> · {COMPANY.phone}
+                {c.questions} <a href={`mailto:${COMPANY.email}`} style={{ color: LINK }}>{COMPANY.email}</a>
               </p>
             </div>
           ) : (
@@ -218,8 +218,6 @@ export default function CancelOrder() {
                   }}>
                     <strong>{c.failedTitle}</strong><br />
                     {c.failedBody}{' '}
-                    <a href={`tel:${COMPANY.phone}`} style={{ color: '#8C1D18', fontWeight: 700 }}>{COMPANY.phone}</a>
-                    {' · '}
                     <a href={`mailto:${COMPANY.email}`} style={{ color: '#8C1D18', fontWeight: 700 }}>{COMPANY.email}</a>
                     {' · '}
                     <a href={`https://wa.me/${COMPANY.phoneE164}`} target="_blank" rel="noopener noreferrer" style={{ color: '#8C1D18', fontWeight: 700 }}>WhatsApp</a>

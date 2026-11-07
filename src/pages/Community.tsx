@@ -3,14 +3,13 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Instagram, Bike, Coffee, MapPin, Handshake, ArrowLeft } from 'lucide-react';
 import PageShell from '../components/PageShell';
-import { COMPANY } from '../config/company';
+import { COMPANY, INSTAGRAM } from '../config/company';
 
 const GOLD = '#C9A870';
 const DARK = '#1C1C1C';
 const CREAM = '#EDEBE6';
 const MUTED = '#6A6862';
 
-const INSTAGRAM_URL = 'https://instagram.com/spinz.bikes';
 
 // Real photos from the launch shoot (Tel Aviv streets) — not fabricated UGC
 const streetPhotos = [
@@ -123,6 +122,7 @@ export default function Community() {
             })}
           </div>
 
+          {INSTAGRAM && (
           <motion.div
             initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.3 }}
             style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '16px', justifyContent: 'space-between', borderTop: '1px solid rgba(201,168,112,0.2)', paddingTop: '28px' }}
@@ -130,12 +130,13 @@ export default function Community() {
             <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', color: CREAM, margin: 0, fontWeight: 600 }}>
               {c.followFirst} <span aria-hidden>🚲</span>
             </p>
-            <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer"
+            <a href={INSTAGRAM.url} target="_blank" rel="noopener noreferrer"
               style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: GOLD, color: DARK, fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '14px', padding: '12px 24px', borderRadius: '100px', textDecoration: 'none', whiteSpace: 'nowrap' }}
             >
               <Instagram size={17} /> {c.followCta}
             </a>
           </motion.div>
+          )}
         </div>
 
         <style>{`@keyframes spinzPulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(0.7); } }`}</style>
@@ -195,6 +196,7 @@ export default function Community() {
         </div>
       </section>
 
+      {INSTAGRAM && (<>
       {/* ── Instagram CTA ───────────────────────────────────────────── */}
       <section style={{ backgroundColor: DARK, padding: 'clamp(48px, 7vw, 80px) clamp(20px, 6vw, 64px)', textAlign: 'center' }} dir={dir}>
         <Instagram size={36} color={GOLD} style={{ margin: '0 auto 16px' }} />
@@ -204,12 +206,13 @@ export default function Community() {
         <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '15px', color: 'rgba(237,235,230,0.6)', margin: '0 0 28px' }}>
           {c.joinBody}
         </p>
-        <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer"
+        <a href={INSTAGRAM.url} target="_blank" rel="noopener noreferrer"
           style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', backgroundColor: GOLD, color: DARK, fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '15px', padding: '14px 32px', borderRadius: '8px', textDecoration: 'none' }}
         >
-          <Instagram size={18} /> @spinz.bikes
+          <Instagram size={18} /> {INSTAGRAM.handle}
         </a>
       </section>
+      </>)}
     </PageShell>
   );
 }

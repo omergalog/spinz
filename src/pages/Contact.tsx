@@ -2,7 +2,7 @@ import { useT } from '../i18n/LanguageContext';
 import { motion } from 'framer-motion';
 import { MessageCircle, Mail, Instagram, MapPin } from 'lucide-react';
 import PageShell from '../components/PageShell';
-import { COMPANY } from '../config/company';
+import { COMPANY, INSTAGRAM } from '../config/company';
 import LeadForm from '../components/LeadForm';
 
 const GOLD = '#C9A870';
@@ -20,7 +20,7 @@ export default function Contact() {
   const channels = [
     { icon: MessageCircle, label: 'WhatsApp', value: t.pages.contact.whatsappValue, href: whatsappHref },
     { icon: Mail, label: t.pages.contact.email, value: COMPANY.email, href: `mailto:${COMPANY.email}` },
-    { icon: Instagram, label: t.pages.contact.instagram, value: '@spinz.bikes', href: 'https://instagram.com/spinz.bikes' },
+    ...(INSTAGRAM ? [{ icon: Instagram, label: t.pages.contact.instagram, value: INSTAGRAM.handle, href: INSTAGRAM.url }] : []),
   ];
   return (
     <PageShell

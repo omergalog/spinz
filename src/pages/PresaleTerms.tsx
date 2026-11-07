@@ -1,6 +1,7 @@
 import PageShell from '../components/PageShell';
 import PresaleTermsEn from './PresaleTermsEn';
-import { useLang } from '../i18n/LanguageContext';
+import { Navigate } from 'react-router-dom';
+import { useLang, localizePath } from '../i18n/LanguageContext';
 import { usePresale } from '../config/presale';
 import { COMPANY as CO } from '../config/company';
 
@@ -34,9 +35,21 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
+/**
+ * תנאי המכירה המוקדמת חלים רק בזמן פרי-סייל. כשהוא כבוי (מ-7.11.2026, מחיר
+ * השקה רגיל) הכתובת מפנה לתקנון, שבו התנאים התקפים. עד שההגדרות נטענות לא
+ * מוצג דבר, כדי שהעמוד הישן לא יהבהב לפני ההפניה.
+ */
 export default function PresaleTerms() {
+  const lang = useLang();
+  const presale = usePresale();
+  if (!presale.ready) return null;
+  if (!presale.active) return <Navigate to={localizePath('/regulations', lang)} replace />;
   // הנוסח העברי הוא המחייב — נשאר כפי שהוא, בלי שכבת תרגום.
-  if (useLang() === 'en') return <PresaleTermsEn />;
+  return lang === 'en' ? <PresaleTermsEn /> : <PresaleTermsHe />;
+}
+
+function PresaleTermsHe() {
   const presale = usePresale();
 
   return (

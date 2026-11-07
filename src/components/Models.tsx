@@ -449,10 +449,11 @@ export default function Models() {
               </span>
             )}
             {/* בלי המחיר הרגיל: עוד לא נמכר בו בפועל. הדחיפות היא הכמות
-                האמיתית שנותרה, שנספרת בשרת (launch_status). */}
+                האמיתית, שנספרת בשרת (launch_status) ונסגרת לבד כשנגמרת.
+                בלי מונה "נותרו" — החלטת עומר (7.11). */}
             {launch && launch.remaining > 0 && (
               <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, color: '#8A4B2E' }}>
-                {t.product.launchUnits(launch.units, launch.remaining)}
+                {t.product.launchUnits(launch.units)}
               </span>
             )}
           </>

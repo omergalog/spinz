@@ -14,7 +14,8 @@ import { readFile, writeFile } from 'node:fs/promises';
 
 const SITE = 'https://www.spinzbikes.com';
 const PAGES = ['', 'bikes', 'merch', 'specs', 'sizes', 'faq', 'guides', 'story', 'gallery',
-  'community', 'reviews', 'contact', 'terms', 'regulations', 'presale-terms', 'cancel-order', 'accessibility'];
+  'community', 'reviews', 'contact', 'terms', 'regulations', 'cancel-order', 'accessibility'];
+// presale-terms הוצא (7.11.2026): בזמן שהפרי-סייל כבוי הכתובת מפנה לתקנון (vercel.json).
 
 const guidesSrc = await readFile('src/data/guides.ts', 'utf8');
 const slugs = [...guidesSrc.matchAll(/^    slug: '([a-z0-9-]+)'/gm)].map(m => m[1]);

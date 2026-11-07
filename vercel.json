@@ -1,5 +1,9 @@
 {
   "trailingSlash": false,
+  "redirects": [
+    { "source": "/presale-terms", "destination": "/regulations", "permanent": false },
+    { "source": "/en/presale-terms", "destination": "/en/regulations", "permanent": false }
+  ],
   "rewrites": [
     {
       "source": "/.well-known/(.*)",

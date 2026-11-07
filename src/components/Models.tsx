@@ -119,6 +119,7 @@ export default function Models() {
   const [added, setAdded] = useState(false);
   // מחיר ומלאי לכל הווריאנטים, נטענים פעם אחת. קודם כל החלפת צבע או
   // מידה הסתירה את המחיר ושאלה את השרת מחדש, והמחיר הופיע באיחור (7.11).
+  const [launch, setLaunch] = useState<{ units: number; remaining: number } | null>(null);
   const [variantRows, setVariantRows] = useState<Record<string, { stock: number; price: number | null; sale_price: number | null }>>({});
   // דירוג נפתח רק כשיש ממה לחשב אותו. ברירת המחדל הייתה avg: 5,
   // ולכן האתר הציג חמישה כוכבים מלאים גם כשלא הייתה אף ביקורת.
@@ -158,6 +159,11 @@ export default function Models() {
       setPresaleQty(map);
       setVariantRows(rows);
       setPresaleReady(true);
+    });
+    // מחיר השקה לכמות מוגבלת (7.11.2026): כמה זוגות נותרו, מספרים בלבד.
+    supabase.rpc('launch_status').then(({ data }) => {
+      const d = data as { units: number | null; remaining: number } | null;
+      setLaunch(d && d.units ? { units: d.units, remaining: d.remaining } : null);
     });
   }, [added]);
 
@@ -442,9 +448,13 @@ export default function Models() {
                 {discountLabelIn(presaleCfg.discountLabel, lang)}
               </span>
             )}
-            <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 600, color: '#6A6862' }}>
-              {t.product.afterLaunch(`₪${price.toLocaleString('he-IL')}`)}
-            </span>
+            {/* בלי המחיר הרגיל: עוד לא נמכר בו בפועל. הדחיפות היא הכמות
+                האמיתית שנותרה, שנספרת בשרת (launch_status). */}
+            {launch && launch.remaining > 0 && (
+              <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, color: '#8A4B2E' }}>
+                {t.product.launchUnits(launch.units, launch.remaining)}
+              </span>
+            )}
           </>
         ) : null}
       </div>

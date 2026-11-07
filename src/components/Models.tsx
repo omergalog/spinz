@@ -431,16 +431,36 @@ export default function Models() {
             )}
           </>
         ) : salePrice ? (
-          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', color: '#6A6862', textDecoration: 'line-through', textDecorationColor: '#FF4444' }}>
-            ₪{price.toLocaleString('he-IL')}
-          </span>
+          <>
+            <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', color: '#6A6862', textDecoration: 'line-through', textDecorationColor: '#C17A56' }}>
+              ₪{price.toLocaleString('he-IL')}
+            </span>
+            {/* מחיר השקה בלי מכסה (7.11): מחיר מבצע על המוצר, והסיבה
+                מאותה תווית בדשבורד כמו בפרי-סייל. */}
+            {presaleCfg.discountLabel && (
+              <span style={{
+                fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 800,
+                color: '#3B6B33', backgroundColor: '#F2F7F1', border: '1px solid #CFE0CB',
+                borderRadius: '999px', padding: '3px 10px',
+              }}>
+                {discountLabelIn(presaleCfg.discountLabel, lang)}
+              </span>
+            )}
+          </>
         ) : null}
       </div>
-      {presale && couponPrice == null && (
+      {couponPrice == null && (
         <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13.5px', color: MUTED, margin: '10px 0 0' }}>
           {/* בלי סכום חודשי: החלוקה בפועל נקבעת בטרנזילה (עיגול לתשלום
               הראשון), וסכום מעוגל כאן עלול לא להתאים לחיוב (20.10.2026). */}
           {t.product.installments(payments)}
+        </p>
+      )}
+      {/* מה כלול במחיר. בפרי-סייל המוצר טרם במלאי, ולכן מועד האספקה
+          מופיע שם בהערת המכירה המוקדמת ולא כאן. */}
+      {!presale && (
+        <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, color: DARK, margin: '8px 0 0' }}>
+          {t.product.includedNote}
         </p>
       )}
 

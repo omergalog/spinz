@@ -146,9 +146,8 @@ export default function PresaleTermsEn() {
           <Section title="7. Warranty">
             <p style={{ margin: 0 }}>
               The full warranty terms are in <a href="/en/regulations#warranty" style={{ color: GOLD, fontWeight: 700 }}>section 3 of the Terms &amp; Conditions</a>.
-              In short: 5 years on the frame, 12 months on the fork and rigid components, and wear items are not
-              covered, other than a manufacturing defect discovered within 30 days of delivery. Completing the
-              assembly according to the instructions and the included video does not affect the warranty.
+              In short: 5 years on the frame, and 14 days from delivery against manufacturing defects on all
+              other parts.
             </p>
           </Section>
 

@@ -117,10 +117,9 @@ export default function Models() {
   const setSelectedColor = (i: number) => { setSelectedColorState(i); remember('color', colorVariants[i].id); };
   const setSelectedSize = (i: number) => { setSelectedSizeState(i); remember('size', sizeVariants[i].id); };
   const [added, setAdded] = useState(false);
-  const [outOfStock, setOutOfStock] = useState(false);
-  const [price, setPrice] = useState(BASE_PRICE);
-  const [priceLoaded, setPriceLoaded] = useState(false);
-  const [salePrice, setSalePrice] = useState<number | null>(null);
+  // מחיר ומלאי לכל הווריאנטים, נטענים פעם אחת. קודם כל החלפת צבע או
+  // מידה הסתירה את המחיר ושאלה את השרת מחדש, והמחיר הופיע באיחור (7.11).
+  const [variantRows, setVariantRows] = useState<Record<string, { stock: number; price: number | null; sale_price: number | null }>>({});
   // דירוג נפתח רק כשיש ממה לחשב אותו. ברירת המחדל הייתה avg: 5,
   // ולכן האתר הציג חמישה כוכבים מלאים גם כשלא הייתה אף ביקורת.
   const [reviewStats, setReviewStats] = useState<{ avg: number; count: number } | null>(null);
@@ -146,13 +145,18 @@ export default function Models() {
     });
   }, []);
 
-  // Per-variant presale quota, set by the admin and shown to the customer
+  // Per-variant presale quota, price and stock, set by the admin and shown to the customer
   useEffect(() => {
-    supabase.from('products').select('slug, presale_qty').then(({ data }) => {
+    supabase.from('products').select('slug, presale_qty, stock, price, sale_price').then(({ data }) => {
       if (!data) return;
       const map: Record<string, number> = {};
-      data.forEach(row => { map[String(row.slug)] = row.presale_qty ?? 0; });
+      const rows: Record<string, { stock: number; price: number | null; sale_price: number | null }> = {};
+      data.forEach(row => {
+        map[String(row.slug)] = row.presale_qty ?? 0;
+        rows[String(row.slug)] = { stock: row.stock ?? 0, price: row.price ?? null, sale_price: row.sale_price ?? null };
+      });
       setPresaleQty(map);
+      setVariantRows(rows);
       setPresaleReady(true);
     });
   }, [added]);
@@ -183,17 +187,11 @@ export default function Models() {
     });
   }, []);
 
-  useEffect(() => {
-    const slug = `spinz-${color.id}-${size.id}`;
-    setPriceLoaded(false);
-    supabase.from('products').select('stock, price, sale_price').eq('slug', slug).single().then(({ data }) => {
-      setPriceLoaded(true);
-      if (!data) return;
-      setOutOfStock(data.stock === 0);
-      if (data.price) setPrice(data.price);
-      setSalePrice(data.sale_price ?? null);
-    });
-  }, [selectedColor, selectedSize]);
+  const variantRow = variantRows[`spinz-${color.id}-${size.id}`];
+  const priceLoaded = !!variantRow;
+  const outOfStock = variantRow ? variantRow.stock === 0 : false;
+  const price = variantRow?.price || BASE_PRICE;
+  const salePrice = variantRow?.sale_price ?? null;
 
   const displayPrice = salePrice ?? price;
 

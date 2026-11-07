@@ -73,8 +73,7 @@ const COPY = {
     maker: 'יצרן', origin: 'מיוצר בסין',
     warranty: [
       'שלדה: 5 שנים ממועד המסירה, כנגד פגמי ייצור, סדקים בריתוכים או כשל מבני.',
-      'מזלג ורכיבים קשיחים שאינם מתכלים (כידון, מוט מושב, זרועות דיווש): 12 חודשים.',
-      'חלקים מתכלים (צמיגים, פנימיות, רפידות בלם, שרשרת וגלגלי שיניים) אינם מכוסים, למעט פגם ייצור מובהק שהתגלה בתוך 30 ימים מהמסירה, לפני שימוש.',
+      'שאר החלקים (מזלג, כידון, מוט מושב, זרועות דיווש, צמיגים, בלמים ושרשרת): 14 ימים ממועד המסירה, כנגד פגמי ייצור.',
       'האחריות מותנית בהצגת החשבונית.',
     ],
     warrantyTerms: 'תנאי האחריות המלאים ב',
@@ -105,8 +104,7 @@ const COPY = {
     maker: 'Manufacturer', origin: 'Made in China',
     warranty: [
       'Frame: 5 years from delivery, against manufacturing defects, weld cracks or structural failure.',
-      'Fork and non-wearing rigid components (handlebar, seat post, crank arms): 12 months.',
-      'Wear parts (tyres, tubes, brake pads, chain and cogs) are not covered, except for a clear manufacturing defect found within 30 days of delivery, before use.',
+      'All other parts (fork, handlebar, seat post, crank arms, tyres, brakes and chain): 14 days from delivery, against manufacturing defects.',
       'The warranty requires the purchase invoice.',
     ],
     warrantyTerms: 'Full warranty terms in our ',

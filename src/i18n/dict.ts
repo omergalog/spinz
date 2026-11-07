@@ -648,8 +648,7 @@ export const dict = {
         s3t: '3. Limited warranty',
         s3: [
           ['Frame:', ' A limited warranty of 5 years (60 months) from the date of delivery against manufacturing defects, cracked welds or structural failure.'],
-          ['Components:', ' The fork and rigid non-wear components (handlebars, seat post, crank arms) carry a 12-month warranty.'],
-          ['Wear items:', ' Tires, inner tubes, brake pads, chain and cogs are not covered by the warranty, other than a clear manufacturing defect discovered within 30 days of delivery and before use.'],
+          ['Other parts:', ' All parts of the bicycle other than the frame, including the fork, handlebars, seat post, crank arms, tires, inner tubes, brakes and chain, carry a 14-day warranty from the date of delivery against manufacturing defects. Wear from use is not covered.'],
           ['Finish and color:', ' The finish (matte paint / powder coating) may show slight variation in shade between units and between the on-screen display and the actual product. Such variation is not considered a defect. The warranty does not cover scratches, scuffs, fading or color change resulting from exposure to sun, weather or chemicals, from improper care, or from reasonable wear. A clear manufacturing defect in the finish (such as peeling or bubbling originating at the factory and not caused by use) will be handled provided it is reported BEFORE use, within 7 days of receiving the product, and accompanied by photographic documentation.'],
           [null, 'The warranty is conditional on presenting the original purchase invoice. Adjusting the saddle and handlebar height in accordance with the guidance supplied does not void the warranty; the warranty does not cover reasonable wear, or damage originating from disassembly or reassembly not carried out by the Company, from an accident, from improper use, or from modifications made to the product.'],
         ],

@@ -30,7 +30,7 @@ const he: FaqItem[] = [
   },
   {
     q: 'מה כוללת האחריות?',
-    a: '5 שנים על שלדת האלומיניום, 12 חודשים על המזלג ועל הרכיבים הקשיחים (כידון, מוט מושב, זרועות דיווש). חלקים מתכלים כמו צמיגים, פנימיות, רפידות בלם ושרשרת אינם מכוסים, למעט פגם ייצור שהתגלה בתוך 30 ימים מהמסירה. הנוסח המלא:',
+    a: '5 שנים על שלדת האלומיניום. על שאר החלקים, ובהם המזלג, הכידון, הצמיגים, הבלמים והשרשרת, 14 ימים מהמסירה נגד פגמי ייצור. הנוסח המלא:',
     link: { text: 'סעיף 3 בתקנון', href: '/regulations#warranty' },
   },
   {
@@ -70,7 +70,7 @@ const en: FaqItem[] = [
   },
   {
     q: 'What does the warranty cover?',
-    a: '5 years on the aluminum frame, and 12 months on the fork and rigid components (handlebars, seat post, crank arms). Wear items such as tires, inner tubes, brake pads and chain aren’t covered, other than a manufacturing defect discovered within 30 days of delivery. The full wording:',
+    a: '5 years on the aluminum frame. All other parts, including the fork, handlebars, tires, brakes and chain, are covered for 14 days from delivery against manufacturing defects. The full wording:',
     link: { text: 'section 3 of the Terms & Conditions', href: '/en/regulations#warranty' },
   },
   {

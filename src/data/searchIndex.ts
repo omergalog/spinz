@@ -79,7 +79,7 @@ const pagesHe: SearchDoc[] = [
   },
   {
     id: 'page-community', type: 'page', title: 'קהילה', to: '/community',
-    summary: 'הרוכבים, האינסטגרם ואיך מצטרפים.',
+    summary: 'הרוכבים, הרכיבות ואיך מצטרפים.',
     body: 'קהילה רוכבים אינסטגרם רשתות חברתיות הצטרפות',
     keywords: ['קהילה', 'אינסטגרם', 'instagram', 'community'],
   },
@@ -138,7 +138,7 @@ const pagesEn: SearchDoc[] = [
   { id: 'page-guides', type: 'page', title: 'Guides', to: '/guides', summary: 'Assembly, sizing, maintenance, safety and routes.', body: 'guides how to tips explained tutorial', keywords: ['guide', 'how to', 'tutorial'] },
   { id: 'page-merch', type: 'page', title: 'Merch', to: '/merch', summary: 'SPINZ apparel. Tees with a Bauhaus print and an engineering drawing.', body: 'merch merchandise tee tees shirt t-shirt apparel clothing bauhaus blueprint size cotton oversized', keywords: ['tee', 'shirt', 'merch', 'apparel', 'clothing'] },
   { id: 'page-gallery', type: 'page', title: 'Gallery', to: '/gallery', summary: 'Professional photos of the bikes and of riding in the city.', body: 'gallery photos pictures images', keywords: ['photos', 'pictures', 'gallery'] },
-  { id: 'page-community', type: 'page', title: 'Community', to: '/community', summary: 'The riders, our Instagram, and how to join.', body: 'community riders instagram social join group rides', keywords: ['community', 'instagram', 'rides'] },
+  { id: 'page-community', type: 'page', title: 'Community', to: '/community', summary: 'The riders, the rides, and how to join.', body: 'community riders instagram social join group rides', keywords: ['community', 'instagram', 'rides'] },
   { id: 'page-reviews', type: 'page', title: 'Reviews', to: '/reviews', summary: 'What riders say about SPINZ.', body: 'reviews testimonials ratings stars customers feedback', keywords: ['reviews', 'testimonials', 'ratings'] },
   { id: 'page-story', type: 'page', title: 'Our Story', to: '/story', summary: 'How and why the brand started, and what stands behind it.', body: 'story about brand founders tel aviv values', keywords: ['about', 'story', 'brand', 'who we are'] },
   { id: 'page-contact', type: 'page', title: 'Contact', to: '/contact', summary: 'Phone, WhatsApp, email and a contact form.', body: 'contact phone whatsapp email address customer service enquiry', keywords: ['contact', 'phone', 'whatsapp', 'email'] },
@@ -161,7 +161,7 @@ const buildProducts = (lang: Lang): SearchDoc[] => colorVariants.flatMap(c =>
     to: '/bikes',
     keywords: [
       c.label, s.label, ...(lang === 'en' ? ['buy', 'order', 'height'] : ['לקנות', 'להזמין', 'גובה']),
-      ...(s.id === '54' ? heightRange(155, 175) : heightRange(175, 195)),
+      ...(s.id === '54' ? heightRange(165, 180) : heightRange(180, 193)),
     ],
   })),
 );

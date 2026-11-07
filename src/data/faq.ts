@@ -22,7 +22,7 @@ const he: FaqItem[] = [
   },
   {
     q: 'לאיזה גובה מתאים כל דגם?',
-    a: 'שלדה 54 מתאימה לגובה 160–175 ס״מ. שלדה 57 מתאימה לגובה 175–190 ס״מ. במקרי ספק עדיף לבחור שלדה קטנה יותר.',
+    a: 'שלדה 54 מתאימה לגובה 170–180 ס״מ. שלדה 57 מתאימה לגובה 180–188 ס״מ. במקרי ספק עדיף לבחור שלדה קטנה יותר.',
   },
   {
     q: 'כל הצבעים זמינים בכל המידות?',
@@ -62,7 +62,7 @@ const en: FaqItem[] = [
   },
   {
     q: 'Which frame size suits my height?',
-    a: 'The 54 frame fits riders 160–175 cm. The 57 frame fits riders 175–190 cm. If you’re between sizes, go with the smaller frame.',
+    a: 'The 54 frame fits riders 170–180 cm. The 57 frame fits riders 180–188 cm. If you’re between sizes, go with the smaller frame.',
   },
   {
     q: 'Are all colors available in both sizes?',

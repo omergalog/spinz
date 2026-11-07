@@ -99,7 +99,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
     readTime: '4 min read',
     facts: [
       { label: 'Sizes', value: '54 · 57' },
-      { label: 'Height range', value: '160–190 cm' },
+      { label: 'Height range', value: '170–188 cm' },
     ],
     intro:
       'Getting the frame size right is the difference between a ride that feels natural and one that leaves you with a sore back and less control. The SPINZ Urban geometry was designed to be universal and forgiving, which is why two frame sizes are enough to cover most people. This guide shows you how to choose with confidence based on your height, and what to do if you fall between sizes.',
@@ -111,15 +111,15 @@ export const guidesEn: Record<string, GuideTextEn> = {
           {
             type: 'list',
             items: [
-              'Size 54 (S), fits riders 160–175 cm.',
-              'Size 57 (L), fits riders 175–190 cm.',
+              'Size 54 (S), fits riders 170–180 cm.',
+              'Size 57 (L), fits riders 180–188 cm.',
             ],
           },
           { type: 'paragraph', text: 'These ranges reflect population averages and are a recommendation. Your build, leg length and personal comfort can move you a size up or down.' },
         ],
       },
       {
-        heading: 'What if you’re right in the overlap (175 cm)?',
+        heading: 'What if you’re right in the overlap (180 cm)?',
         blocks: [
           { type: 'paragraph', text: 'If you’re right on the line, ask yourself:' },
           {
@@ -152,7 +152,7 @@ export const guidesEn: Record<string, GuideTextEn> = {
     faq: [
       { q: 'What if I’m exactly between two sizes?', a: 'Take the smaller one. It’s more nimble in the city, and the adjustable saddle height easily makes up the difference.' },
       { q: 'Does the same size work for men and women?', a: 'Yes. The geometry is universal, and the fit is dialed in mainly through saddle height. Both sizes suit all genders.' },
-      { q: 'I’m under 160 cm or over 190 cm. What now?', a: 'Drop us a message and we’ll gladly advise you personally based on your build before you order.' },
+      { q: 'I’m under 170 cm or over 188 cm. What now?', a: 'Drop us a message and we’ll gladly advise you personally based on your build before you order.' },
     ],
   },
 

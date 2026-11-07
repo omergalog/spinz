@@ -13,8 +13,8 @@ const FROM = Deno.env.get('ORDER_EMAIL_FROM') ?? 'SPINZ <info@spinzbikes.com>';
 const BCC = Deno.env.get('ORDER_EMAIL_BCC') ?? 'info@spinzbikes.com';
 const SITE = Deno.env.get('SITE_URL') ?? 'https://spinzbikes.com';
 
-const COMPANY = 'אופני סיבוב בערבון מוגבל בע״מ (SPINZ BIKES LTD), ח.פ. 517343661, התמר 137, בית חרות · טלפון 052-756-5262 · info@spinzbikes.com';
-const COMPANY_EN = 'SPINZ BIKES LTD (אופני סיבוב בערבון מוגבל בע״מ), company no. 517343661, HaTamar 137, Beit Herut, Israel · Tel. +972-52-756-5262 · info@spinzbikes.com';
+const COMPANY = 'אופני סיבוב בערבון מוגבל בע״מ (SPINZ BIKES LTD), ח.פ. 517343661, התמר 137, בית חרות · info@spinzbikes.com';
+const COMPANY_EN = 'SPINZ BIKES LTD (אופני סיבוב בערבון מוגבל בע״מ), company no. 517343661, HaTamar 137, Beit Herut, Israel · info@spinzbikes.com';
 
 /**
  * היצרן, כפי שהוא מופיע בחשבונית, בשטר המטען ובפרופורמה. מייל האישור

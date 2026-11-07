@@ -29,7 +29,9 @@ export type PresaleSettings = {
 
 /** ברירת מחדל – מוצגת מיד עד שה-DB עונה (מונע הבהוב) */
 export const PRESALE_DEFAULTS: PresaleSettings = {
-  active: true,
+  // כבוי עד שהשרת עונה. כשזה היה true, כל טעינת עמוד הציגה לשבריר שנייה
+  // "PRE-SALE", "טרם במלאי" ו"הזמנה מוקדמת", גם כשהפרי-סייל כבוי (7.11.2026).
+  active: false,
   regularPrice: 1299,
   presalePrice: 1090,
   presaleUnits: 100,

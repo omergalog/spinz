@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import PageShell from '../components/PageShell';
 import LegalNotice from '../components/LegalNotice';
 import { useLang, localizePath } from '../i18n/LanguageContext';
+import { usePresale } from '../config/presale';
 import { getPrivacySections, PRIVACY_UPDATED } from '../data/privacy';
 
 const DARK = '#1C1C1C';
@@ -40,6 +41,7 @@ function Section({ title, children }: { title: string | null; children: React.Re
 export default function Terms() {
   const lang = useLang();
   const en = lang === 'en';
+  const presale = usePresale();
   const L = (to: string) => localizePath(to, lang);
 
   return (
@@ -67,8 +69,10 @@ export default function Terms() {
             {en ? <>Last updated: {PRIVACY_UPDATED.en}. Terms of use are set out in the{' '}</>
                 : <>תאריך עדכון אחרון: {PRIVACY_UPDATED.he}. תנאי השימוש מפורטים ב</>}
             <Link to={L('/regulations')} style={{ color: LINK }}>{en ? 'Terms & Conditions' : 'תקנון'}</Link>
-            {en ? ' and the ' : ' ובתנאי '}
-            <Link to={L('/presale-terms')} style={{ color: LINK }}>{en ? 'Pre-Sale Terms' : 'המכירה המוקדמת'}</Link>.
+            {presale.active && (<>
+              {en ? ' and the ' : ' ובתנאי '}
+              <Link to={L('/presale-terms')} style={{ color: LINK }}>{en ? 'Pre-Sale Terms' : 'המכירה המוקדמת'}</Link>
+            </>)}.
           </p>
         </div>
       </div>

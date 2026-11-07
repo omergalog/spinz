@@ -32,7 +32,7 @@ const pagesHe: SearchDoc[] = [
   {
     id: 'page-home', type: 'page', title: 'דף הבית', to: '/',
     summary: 'אופני עיר סינגל ספיד בעיצוב נקי, עוצבו בתל אביב.',
-    body: 'SPINZ ספינז אופני עיר סינגל ספיד fixie אורבני מחיר השקה פרי סייל',
+    body: 'SPINZ ספינז אופני עיר סינגל ספיד fixie אורבני מחיר השקה',
     keywords: ['בית', 'ראשי', 'home', 'spinz'],
   },
   {
@@ -108,12 +108,6 @@ const pagesHe: SearchDoc[] = [
     keywords: ['תקנון', 'אחריות', 'ביטול', 'החזר', 'terms'],
   },
   {
-    id: 'page-presale-terms', type: 'page', title: 'תנאי מכירה מוקדמת', to: '/presale-terms',
-    summary: 'תנאי הפרי-סייל: מחיר השקה, מועדי אספקה וביטול.',
-    body: 'פרי סייל מכירה מוקדמת מחיר השקה 100 הראשונים אספקה הזמנה מוקדמת',
-    keywords: ['פרי סייל', 'presale', 'מחיר השקה', 'מכירה מוקדמת'],
-  },
-  {
     id: 'page-cancel', type: 'page', title: 'ביטול עסקה', to: '/cancel-order',
     summary: 'טופס ביטול הזמנה והחזר כספי מלא, ללא דמי ביטול.',
     body: 'ביטול עסקה ביטול הזמנה החזר כספי החזרת מוצר דמי ביטול טופס',
@@ -149,7 +143,6 @@ const pagesEn: SearchDoc[] = [
   { id: 'page-story', type: 'page', title: 'Our Story', to: '/story', summary: 'How and why the brand started, and what stands behind it.', body: 'story about brand founders tel aviv values', keywords: ['about', 'story', 'brand', 'who we are'] },
   { id: 'page-contact', type: 'page', title: 'Contact', to: '/contact', summary: 'Phone, WhatsApp, email and a contact form.', body: 'contact phone whatsapp email address customer service enquiry', keywords: ['contact', 'phone', 'whatsapp', 'email'] },
   { id: 'page-regulations', type: 'page', title: 'Terms & Conditions', to: '/regulations', summary: 'The full legal agreement: warranty, cancellation and jurisdiction.', body: 'terms conditions limited warranty cancellation refund jurisdiction assembly liability finish colour', keywords: ['terms', 'warranty', 'cancel', 'refund', 'legal'] },
-  { id: 'page-presale-terms', type: 'page', title: 'Pre-Sale Terms', to: '/presale-terms', summary: 'Pre-sale terms: launch price, delivery dates and cancellation.', body: 'pre-sale presale launch price first 100 delivery pre-order', keywords: ['presale', 'pre-order', 'launch price'] },
   { id: 'page-cancel', type: 'page', title: 'Cancel an Order', to: '/cancel-order', summary: 'Cancellation form and a full refund, with no cancellation fee.', body: 'cancel order cancellation refund return product fee form', keywords: ['cancel', 'refund', 'return'] },
   { id: 'page-terms', type: 'page', title: 'Privacy Policy', to: '/terms', summary: 'What data we collect, how it is stored and what your rights are.', body: 'privacy policy terms of use personal data cookies security rights', keywords: ['privacy', 'cookies', 'data'] },
   { id: 'page-accessibility', type: 'page', title: 'Accessibility Statement', to: '/accessibility', summary: 'The accessibility level of the site and how to report an issue.', body: 'accessibility statement accessible WCAG standard contrast screen reader', keywords: ['accessibility', 'wcag'] },

@@ -114,9 +114,7 @@ export default function RegulationsEn() {
             lineHeight: 1.7, marginTop: '34px', paddingTop: '18px', borderTop: `1px solid ${BORDER}`,
           }}>
             {r.footerA}
-            <a href="/en/terms" style={{ color: GOLD }}>{r.footerTerms}</a>
-            {r.footerAnd}
-            <a href="/en/presale-terms" style={{ color: GOLD }}>{r.footerPresale}</a>.
+            <a href="/en/terms" style={{ color: GOLD }}>{r.footerTerms}</a>.
           </p>
 
         </div>

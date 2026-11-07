@@ -5,6 +5,7 @@ import { openCookieSettings } from '../lib/consent';
 import { COMPANY } from '../config/company';
 import { useLang, useT, useDir, localizePath } from '../i18n/LanguageContext';
 import PrivacyNote from './PrivacyNote';
+import { usePresale } from '../config/presale';
 
 const BG = '#1C1C1C';
 const BORDER = '#2A2A2A';
@@ -102,6 +103,7 @@ export default function Footer() {
   const lang = useLang();
   const dir = useDir();
   const t = useT();
+  const presale = usePresale();
   const L = (to: string) => localizePath(to, lang);
   const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER.replace(/\D/g, '')}?text=${encodeURIComponent(t.footer.whatsappText)}`;
 
@@ -170,7 +172,8 @@ export default function Footer() {
                 { label: t.nav.links.faq, to: '/faq' },
                 { label: t.nav.links.guides, to: '/guides' },
                 { label: t.footer.links.regulations, to: '/regulations' },
-                { label: t.footer.links.presaleTerms, to: '/presale-terms' },
+                // תנאי המכירה המוקדמת רלוונטיים רק בזמן פרי-סייל (7.11.2026).
+                ...(presale.active ? [{ label: t.footer.links.presaleTerms, to: '/presale-terms' }] : []),
                 { label: t.footer.links.cancelOrder, to: '/cancel-order' },
                 { label: t.nav.contact, to: '/contact' },
               ]},

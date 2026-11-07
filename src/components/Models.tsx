@@ -430,11 +430,9 @@ export default function Models() {
           </>
         ) : salePrice ? (
           <>
-            <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', color: '#6A6862', textDecoration: 'line-through', textDecorationColor: '#C17A56' }}>
-              ₪{price.toLocaleString('he-IL')}
-            </span>
             {/* מחיר השקה בלי מכסה (7.11): מחיר מבצע על המוצר, והסיבה
-                מאותה תווית בדשבורד כמו בפרי-סייל. */}
+                מאותה תווית בדשבורד כמו בפרי-סייל. המחיר הרגיל לא מוצג מחוק:
+                עוד לא נמכר בו בפועל, ולכן הוא מוצג כמחיר שאחרי ההשקה. */}
             {presaleCfg.discountLabel && (
               <span style={{
                 fontFamily: "'Heebo', sans-serif", fontSize: '12px', fontWeight: 800,
@@ -444,6 +442,9 @@ export default function Models() {
                 {discountLabelIn(presaleCfg.discountLabel, lang)}
               </span>
             )}
+            <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 600, color: '#6A6862' }}>
+              {t.product.afterLaunch(`₪${price.toLocaleString('he-IL')}`)}
+            </span>
           </>
         ) : null}
       </div>

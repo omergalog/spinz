@@ -1146,10 +1146,13 @@ export default function CartDrawer() {
                       lineHeight: 1.6, margin: '10px 0 0', textAlign: 'center',
                     }}>
                       {t.cart.agree1}{' '}
-                      <a href={localizePath('/presale-terms', lang)} target="_blank" rel="noopener noreferrer" style={{ color: GOLD_TEXT, textDecoration: 'underline', textUnderlineOffset: '2px' }}>
-                        {t.cart.agreePresale}
-                      </a>{' '}
-                      {t.cart.agreeAnd}{' '}
+                      {/* תנאי המכירה המוקדמת חלים רק בזמן פרי-סייל (7.11.2026). */}
+                      {presale.active && (<>
+                        <a href={localizePath('/presale-terms', lang)} target="_blank" rel="noopener noreferrer" style={{ color: GOLD_TEXT, textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+                          {t.cart.agreePresale}
+                        </a>{' '}
+                        {t.cart.agreeAnd}{' '}
+                      </>)}
                       <a href={localizePath('/regulations', lang)} target="_blank" rel="noopener noreferrer" style={{ color: GOLD_TEXT, textDecoration: 'underline', textUnderlineOffset: '2px' }}>
                         {t.cart.agreeTerms}
                       </a>.

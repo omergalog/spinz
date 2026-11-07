@@ -35,7 +35,7 @@ const he: FaqItem[] = [
   },
   {
     q: 'איפה אפשר לתקן את האופניים?',
-    a: 'האופניים בנויים על רכיבים סטנדרטיים שניתן למצוא בכל חנות אופניים בישראל, כך שלתיקון ולתחזוקה אין צורך בטכנאי מורשה. לפני הרכיבה הראשונה אנחנו ממליצים בחום על בדיקת תקינות אצל מכונאי אופניים.',
+    a: 'האופניים בנויים על רכיבים סטנדרטיים שניתן למצוא בכל חנות אופניים בישראל, כך שלתיקון ולתחזוקה אין צורך בטכנאי מורשה.',
   },
   {
     q: 'האופניים מתאימים לגברים ולנשים?',
@@ -75,7 +75,7 @@ const en: FaqItem[] = [
   },
   {
     q: 'Where can I get the bike serviced?',
-    a: 'The bike is built entirely from standard components that any bike shop in Israel carries, so repairs and servicing need no authorized technician. Before your first ride we strongly recommend a check by a bike mechanic.',
+    a: 'The bike is built entirely from standard components that any bike shop in Israel carries, so repairs and servicing need no authorized technician.',
   },
   {
     q: 'Is the bike suitable for both men and women?',

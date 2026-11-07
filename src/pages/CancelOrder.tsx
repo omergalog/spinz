@@ -5,6 +5,7 @@ import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
 import { submitCancellation } from '../lib/payment';
 import { COMPANY, COMPANY_LINE, COMPANY_LINE_EN } from '../config/company';
 import PrivacyNote from '../components/PrivacyNote';
+import { usePresale } from '../config/presale';
 
 const DARK = '#1C1C1C';
 const MUTED = '#4A4845';
@@ -29,6 +30,7 @@ export default function CancelOrder() {
   const lang = useLang();
   const L = (to: string) => localizePath(to, lang);
   const c = t.pages.cancel;
+  const presale = usePresale();
   const REASONS = c.reasons;
   const [form, setForm] = useState({ name: '', phone: '', email: '', orderRef: '', reason: REASONS[0], details: '' });
   const [status, setStatus] = useState<Status>('idle');
@@ -162,7 +164,10 @@ export default function CancelOrder() {
                 {c.alsoBy2} <a href={`mailto:${COMPANY.email}`} style={{ color: LINK }}>{COMPANY.email}</a> {c.alsoBy3}<a href={`https://wa.me/${COMPANY.phoneE164}`} target="_blank" rel="noopener noreferrer" style={{ color: LINK }}>WhatsApp</a>.{' '}
                 {c.byMail} {lang === 'en' ? COMPANY.addressEn : COMPANY.address}.{' '}
                 <strong>{c.include}</strong>{' '}
-                {c.seeTerms1} <a href={L('/presale-terms')} style={{ color: LINK }}>{c.seeTerms2}</a>.
+                {/* מחוץ לפרי-סייל זכות הביטול מופיעה בסעיף 4 בתקנון (7.11.2026). */}
+                {c.seeTerms1} {presale.active
+                  ? <a href={L('/presale-terms')} style={{ color: LINK }}>{c.seeTerms2}</a>
+                  : <a href={L('/regulations')} style={{ color: LINK }}>{c.seeTermsRegs}</a>}.
               </div>
 
               <form onSubmit={submit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>

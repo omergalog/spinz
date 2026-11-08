@@ -151,7 +151,7 @@ function Lightbox({ photos, alt, index, onClose, onNav }: { photos: GalleryPhoto
   );
 }
 
-export default function Gallery({ hideHeader = false, photos = BIKE_PHOTOS, title, photoAlt, thumbAspect = '1 / 1', gridClass = 'grid-cols-3 sm:grid-cols-4 md:grid-cols-6', showAllModels = true, sectionId = 'gallery' }: {
+export default function Gallery({ hideHeader = false, photos = BIKE_PHOTOS, title, photoAlt, thumbAspect = '1 / 1', gridClass = 'grid-cols-3 sm:grid-cols-4 md:grid-cols-6', showAllModels = true, sectionId = 'gallery', compactTop = false }: {
   hideHeader?: boolean;
   photos?: GalleryPhoto[];
   /** כותרת במקום כותרת גלריית האופניים. */
@@ -161,6 +161,8 @@ export default function Gallery({ hideHeader = false, photos = BIKE_PHOTOS, titl
   gridClass?: string;
   showAllModels?: boolean;
   sectionId?: string;
+  /** גלריה שיושבת מתחת לתוכן אחר בעמוד (החולצות) — בלי הריווח העליון הגדול של עמוד הגלריה. */
+  compactTop?: boolean;
 }) {
   const dir = useDir();
   const t = useT();
@@ -178,8 +180,8 @@ export default function Gallery({ hideHeader = false, photos = BIKE_PHOTOS, titl
   }, [TOTAL]);
 
   return (
-    <section ref={ref} id={sectionId} className="relative py-7 lg:py-32" style={{ backgroundColor: BG }}>
-      <div className="mx-auto max-w-7xl px-6 lg:px-16 pt-2 lg:pt-20" dir={dir}>
+    <section ref={ref} id={sectionId} className={compactTop ? 'relative pt-4 pb-10 lg:pb-24' : 'relative py-7 lg:py-32'} style={{ backgroundColor: BG }}>
+      <div className={`mx-auto max-w-7xl px-6 lg:px-16 ${compactTop ? '' : 'pt-2 lg:pt-20'}`} dir={dir}>
 
         {/* Header */}
         {!hideHeader && (

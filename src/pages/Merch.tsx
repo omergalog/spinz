@@ -23,6 +23,7 @@ export default function Merch() {
         gridClass="grid-cols-3 lg:grid-cols-9"
         showAllModels={false}
         sectionId="merch-gallery"
+        compactTop
       />
     </PageShell>
   );

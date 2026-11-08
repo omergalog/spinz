@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
 import { useT } from '../i18n/LanguageContext';
 
-const WHATSAPP_NUMBER = '+972527565262';
+import { COMPANY } from '../config/company';
+const WHATSAPP_NUMBER = COMPANY.whatsappE164;
 
 /** Floating WhatsApp button. Mounted once globally so it follows the user on
  *  every page and every breakpoint. */

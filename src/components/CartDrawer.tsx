@@ -156,7 +156,7 @@ export default function CartDrawer() {
   const [attemptOpen, setAttemptOpen] = useState<string | null>(null);
   const bikeUnits = items.reduce((n, i) => n + (i.kind === 'merch' ? 0 : i.quantity), 0);
   const tooManyBikes = bikeUnits > MAX_BIKES_PER_ORDER;
-  const waLink = `https://wa.me/${COMPANY.phoneE164}`;
+  const waLink = `https://wa.me/${COMPANY.whatsappE164}`;
   const [step, setStep] = useState<'cart' | 'details' | 'payment'>('cart');
   const [payFrameReady, setPayFrameReady] = useState(false);
   // הדפדפן חסם מסגרת בתוך חלון התשלום (למשל מסך 3DS של בנק). בלי זה

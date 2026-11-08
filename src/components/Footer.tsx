@@ -10,7 +10,7 @@ import { usePresale } from '../config/presale';
 const BG = '#1C1C1C';
 const BORDER = '#2A2A2A';
 const GOLD = '#C9A870';
-const WHATSAPP_NUMBER = '+972527565262';
+const WHATSAPP_NUMBER = COMPANY.whatsappE164;
 
 function NewsletterForm() {
   const t = useT();
@@ -221,10 +221,10 @@ export default function Footer() {
           <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12.5px', color: '#B5B2AC', lineHeight: 1.7, margin: '0 0 18px' }}>
             <Link to={L('/cancel-order')} style={{ color: '#EDEBE6', textDecoration: 'underline', textUnderlineOffset: '2px' }}>{t.footer.links.cancelOrder}</Link>
             {': '}{t.footer.cancelHow1}{' '}
-            {/* הטלפון הוסר מהפוטר (7.11.2026). הוא מופיע בעמוד הביטול ובתקנון. */}
+            <a href={`tel:${COMPANY.phone}`} style={{ color: '#EDEBE6' }}>{COMPANY.phone}</a>,{' '}
             {t.footer.cancelHowMail}{' '}
             <a href={`mailto:${COMPANY.email}`} style={{ color: '#EDEBE6' }}>{COMPANY.email}</a>{' '}
-            {t.footer.cancelHow2}<a href={`https://wa.me/${COMPANY.phoneE164}`} target="_blank" rel="noopener noreferrer" style={{ color: '#EDEBE6' }}>WhatsApp</a>.{' '}
+            {t.footer.cancelHow2}<a href={`https://wa.me/${COMPANY.whatsappE164}`} target="_blank" rel="noopener noreferrer" style={{ color: '#EDEBE6' }}>WhatsApp</a>.{' '}
             {t.footer.cancelByMail} {lang === 'en' ? COMPANY.addressEn : COMPANY.address}.{' '}
             {t.footer.cancelHow3}
           </p>

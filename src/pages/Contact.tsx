@@ -11,7 +11,7 @@ const MUTED = '#6A6862';
 const BORDER = '#E0DCD4';
 const CARD = '#FFFFFF';
 
-const WHATSAPP = '+972527565262';
+const WHATSAPP = COMPANY.whatsappE164;
 
 
 export default function Contact() {

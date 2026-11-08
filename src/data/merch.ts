@@ -44,8 +44,9 @@ export const merchProducts: MerchProduct[] = [
   {
     id: 'bauhaus',
     slugBase: 'merch-bauhaus',
-    name: 'חולצת באוהאוס',
-    nameEn: 'Bauhaus Tee',
+    // השמות מ-8.11.2026 (אורי): לבנה CITY RIDE, שחורה NIGHT RIDE. אותו שם בעברית ובאנגלית.
+    name: 'CITY RIDE',
+    nameEn: 'CITY RIDE',
     tagline: 'הדפס קווי של בניין תל אביבי. גזרה אוברסייז',
     taglineEn: 'A line print of a Tel Aviv building. Oversized fit',
     price: 119,
@@ -58,8 +59,8 @@ export const merchProducts: MerchProduct[] = [
   {
     id: 'blueprint',
     slugBase: 'merch-blueprint',
-    name: 'חולצת שרטוט',
-    nameEn: 'Blueprint Tee',
+    name: 'NIGHT RIDE',
+    nameEn: 'NIGHT RIDE',
     tagline: 'שרטוט הנדסי של SPINZ. גזרה אוברסייז',
     taglineEn: 'The SPINZ engineering drawing. Oversized fit',
     price: 119,

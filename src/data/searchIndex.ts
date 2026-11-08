@@ -97,7 +97,7 @@ const pagesHe: SearchDoc[] = [
   },
   {
     id: 'page-contact', type: 'page', title: 'צור קשר', to: '/contact',
-    summary: 'טלפון, וואטסאפ, מייל וטופס פנייה.',
+    summary: 'וואטסאפ, מייל וטופס פנייה.',
     body: 'צור קשר טלפון וואטסאפ מייל כתובת שירות לקוחות פנייה',
     keywords: ['יצירת קשר', 'טלפון', 'וואטסאפ', 'whatsapp', 'מייל', 'contact'],
   },
@@ -141,7 +141,7 @@ const pagesEn: SearchDoc[] = [
   { id: 'page-community', type: 'page', title: 'Community', to: '/community', summary: 'The riders, the rides, and how to join.', body: 'community riders instagram social join group rides', keywords: ['community', 'instagram', 'rides'] },
   { id: 'page-reviews', type: 'page', title: 'Reviews', to: '/reviews', summary: 'What riders say about SPINZ.', body: 'reviews testimonials ratings stars customers feedback', keywords: ['reviews', 'testimonials', 'ratings'] },
   { id: 'page-story', type: 'page', title: 'Our Story', to: '/story', summary: 'How and why the brand started, and what stands behind it.', body: 'story about brand founders tel aviv values', keywords: ['about', 'story', 'brand', 'who we are'] },
-  { id: 'page-contact', type: 'page', title: 'Contact', to: '/contact', summary: 'Phone, WhatsApp, email and a contact form.', body: 'contact phone whatsapp email address customer service enquiry', keywords: ['contact', 'phone', 'whatsapp', 'email'] },
+  { id: 'page-contact', type: 'page', title: 'Contact', to: '/contact', summary: 'WhatsApp, email and a contact form.', body: 'contact phone whatsapp email address customer service enquiry', keywords: ['contact', 'phone', 'whatsapp', 'email'] },
   { id: 'page-regulations', type: 'page', title: 'Terms & Conditions', to: '/regulations', summary: 'The full legal agreement: warranty, cancellation and jurisdiction.', body: 'terms conditions limited warranty cancellation refund jurisdiction assembly liability finish colour', keywords: ['terms', 'warranty', 'cancel', 'refund', 'legal'] },
   { id: 'page-cancel', type: 'page', title: 'Cancel an Order', to: '/cancel-order', summary: 'Cancellation form and a full refund, with no cancellation fee.', body: 'cancel order cancellation refund return product fee form', keywords: ['cancel', 'refund', 'return'] },
   { id: 'page-terms', type: 'page', title: 'Privacy Policy', to: '/terms', summary: 'What data we collect, how it is stored and what your rights are.', body: 'privacy policy terms of use personal data cookies security rights', keywords: ['privacy', 'cookies', 'data'] },

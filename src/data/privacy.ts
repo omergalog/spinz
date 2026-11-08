@@ -41,7 +41,7 @@ const he: PrivacySection[] = [
   { title: 'עוגיות', text:
     `עוגיות ואחסון בדפדפן למדידה (Google Analytics ומדידה שלנו של עמודים ומקור הגעה)${meta ? ' ולפרסום (Meta)' : ''} נטענים רק אחרי אישור בבאנר העוגיות. בלי אישור הם לא נטענים ולא נשמר מזהה. ` +
     'אפשר לשנות את הבחירה בכל עת בקישור "הגדרות עוגיות" בתחתית כל עמוד. דחייה אחרי אישור מוחקת את עוגיות המדידה ואת מזהי המדידה שבדפדפן.' },
-  { title: 'יצירת קשר', text: `למימוש זכויותיך או לכל שאלה בנושא פרטיות: ${COMPANY.email} · ${COMPANY.phone}. האתר מופעל על ידי ${COMPANY_LINE}.` },
+  { title: 'יצירת קשר', text: `למימוש זכויותיך או לכל שאלה בנושא פרטיות: ${COMPANY.email} · וואטסאפ ${COMPANY.phone}. האתר מופעל על ידי ${COMPANY_LINE}.` },
 ];
 
 const en: PrivacySection[] = [
@@ -69,7 +69,7 @@ const en: PrivacySection[] = [
   { title: 'Cookies', text:
     `Measurement cookies and browser storage (Google Analytics and our own page and referral measurement)${meta ? ' and advertising (Meta)' : ''} load only after you accept them in the cookie banner. Without your consent they are not loaded and no identifier is stored. ` +
     'You can change your choice at any time via the "Cookie settings" link at the bottom of every page. Declining after accepting deletes the measurement cookies and the measurement identifiers in your browser.' },
-  { title: 'Contact', text: `To exercise your rights or for any privacy question: ${COMPANY.email} · ${COMPANY.phone}. The site is operated by ${COMPANY_LINE_EN}.` },
+  { title: 'Contact', text: `To exercise your rights or for any privacy question: ${COMPANY.email} · WhatsApp ${COMPANY.phone}. The site is operated by ${COMPANY_LINE_EN}.` },
 ];
 
 export const getPrivacySections = (lang: string): PrivacySection[] => (lang === 'en' ? en : he);

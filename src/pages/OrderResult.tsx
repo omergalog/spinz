@@ -215,7 +215,7 @@ export default function OrderResult({ outcome }: { outcome: 'success' | 'failed'
           fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: '#9A9690',
           marginTop: '28px', direction: 'ltr',
         }}>
-          {COMPANY.phone} · {COMPANY.email}
+          WhatsApp {COMPANY.phone} · {COMPANY.email}
         </p>
       </div>
     </PageShell>

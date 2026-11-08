@@ -105,7 +105,7 @@ export default function RegulationsEn() {
               {companyName} · Company no. {CO.companyNumber}<br />
               {CO.addressEn}<br />
               {r.emailLabel}: <a href={`mailto:${CO.email}`} style={{ color: GOLD }}>{CO.email}</a> ·
-              {' '}{r.phoneLabel}: <a href={`tel:${CO.phone}`} style={{ color: GOLD }}>{CO.phone}</a>
+              {' '}{r.phoneLabel}: <a href={`https://wa.me/${CO.whatsappE164}`} target="_blank" rel="noopener noreferrer" style={{ color: GOLD }}>{CO.phone}</a>
             </p>
           </Section>
 

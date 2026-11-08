@@ -148,7 +148,7 @@ export default function Regulations() {
             <p style={{ margin: 0 }}>
               ביטול ניתן לבצע דרך
               <a href="/cancel-order" style={{ color: GOLD, fontWeight: 700 }}> טופס ביטול עסקה</a> שבאתר,
-              בדוא״ל, בטלפון, בוואטסאפ, בדואר רשום או במסירה אישית בכתובת החברה (סעיף 7).
+              בדוא״ל, בוואטסאפ ({COMPANY.phone}), בדואר רשום או במסירה אישית בכתובת החברה (סעיף 7).
             </p>
           </Section>
 
@@ -179,7 +179,7 @@ export default function Regulations() {
               {COMPANY.name} · {COMPANY.companyId}<br />
               {COMPANY.address}<br />
               דוא״ל: <a href={`mailto:${COMPANY.email}`} style={{ color: GOLD }}>{COMPANY.email}</a> ·
-              טלפון: <a href={`tel:${COMPANY.phone}`} style={{ color: GOLD }}>{COMPANY.phone}</a>
+              וואטסאפ: <a href={`https://wa.me/${CO.whatsappE164}`} target="_blank" rel="noopener noreferrer" style={{ color: GOLD }}>{COMPANY.phone}</a>
             </p>
           </Section>
 

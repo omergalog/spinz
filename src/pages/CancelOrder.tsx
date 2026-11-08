@@ -149,7 +149,7 @@ export default function CancelOrder() {
                 {c.receivedBody1}
                 {c.receivedBody2}
                 <br />
-                {c.questions} <a href={`mailto:${COMPANY.email}`} style={{ color: LINK }}>{COMPANY.email}</a> · <a href={`tel:${COMPANY.phone}`} style={{ color: LINK }}>{COMPANY.phone}</a>
+                {c.questions} <a href={`mailto:${COMPANY.email}`} style={{ color: LINK }}>{COMPANY.email}</a> · <a href={`https://wa.me/${COMPANY.whatsappE164}`} target="_blank" rel="noopener noreferrer" style={{ color: LINK }}>WhatsApp {COMPANY.phone}</a>
               </p>
             </div>
           ) : (
@@ -160,8 +160,8 @@ export default function CancelOrder() {
                 fontFamily: "'Heebo', sans-serif", fontSize: '13.5px', color: MUTED, lineHeight: 1.75,
               }}>
                 {/* הקישורים היו בזהב #C9A870 על רקע שמנת — 2.2:1, מתחת לסף הקריאות. */}
-                {c.alsoBy1} <a href={`tel:${COMPANY.phone}`} style={{ color: LINK }}>{COMPANY.phone}</a>,{' '}
-                {c.alsoBy2} <a href={`mailto:${COMPANY.email}`} style={{ color: LINK }}>{COMPANY.email}</a> {c.alsoBy3}<a href={`https://wa.me/${COMPANY.whatsappE164}`} target="_blank" rel="noopener noreferrer" style={{ color: LINK }}>WhatsApp</a>.{' '}
+                {c.alsoBy1}{' '}
+                {c.alsoBy2} <a href={`mailto:${COMPANY.email}`} style={{ color: LINK }}>{COMPANY.email}</a> {c.alsoBy3}<a href={`https://wa.me/${COMPANY.whatsappE164}`} target="_blank" rel="noopener noreferrer" style={{ color: LINK }}>WhatsApp {COMPANY.phone}</a>.{' '}
                 {c.byMail} {lang === 'en' ? COMPANY.addressEn : COMPANY.address}.{' '}
                 <strong>{c.include}</strong>{' '}
                 {/* מחוץ לפרי-סייל זכות הביטול מופיעה בסעיף 4 בתקנון (7.11.2026). */}
@@ -218,11 +218,9 @@ export default function CancelOrder() {
                   }}>
                     <strong>{c.failedTitle}</strong><br />
                     {c.failedBody}{' '}
-                    <a href={`tel:${COMPANY.phone}`} style={{ color: '#8C1D18', fontWeight: 700 }}>{COMPANY.phone}</a>
-                    {' · '}
                     <a href={`mailto:${COMPANY.email}`} style={{ color: '#8C1D18', fontWeight: 700 }}>{COMPANY.email}</a>
                     {' · '}
-                    <a href={`https://wa.me/${COMPANY.whatsappE164}`} target="_blank" rel="noopener noreferrer" style={{ color: '#8C1D18', fontWeight: 700 }}>WhatsApp</a>
+                    <a href={`https://wa.me/${COMPANY.whatsappE164}`} target="_blank" rel="noopener noreferrer" style={{ color: '#8C1D18', fontWeight: 700 }}>WhatsApp {COMPANY.phone}</a>
                   </div>
                 )}
 

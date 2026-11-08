@@ -7,19 +7,22 @@ const TEXT_MUTED = '#8A8880';
 const BG = '#F5F2EC';
 const BORDER = '#E0DCD4';
 
-const TOTAL = 64;
-const photos = Array.from({ length: TOTAL }, (_, i) => {
-  const n = String(i + 1).padStart(2, '0');
-  return {
+export type GalleryPhoto = { thumb: string; src: string; n: number };
+
+/** סדרת תמונות ממוספרת: `${dir}/${prefix}-01.jpg` והקטנה ב-`${dir}/thumbs/`. */
+export const numberedPhotos = (dir: string, prefix: string, total: number): GalleryPhoto[] =>
+  Array.from({ length: total }, (_, i) => {
+    const n = String(i + 1).padStart(2, '0');
     // Small ~400px thumbnail for the grid, full 1024px for the lightbox
-    thumb: `/assets/gallery/thumbs/g-${n}.jpg`,
-    src: `/assets/gallery/g-${n}.jpg`,
-    n: i + 1,
-  };
-});
+    return { thumb: `${dir}/thumbs/${prefix}-${n}.jpg`, src: `${dir}/${prefix}-${n}.jpg`, n: i + 1 };
+  });
+
+// גלריית האופניים (ברירת המחדל). גלריות אחרות — למשל החולצות — מעבירות photos משלהן.
+const BIKE_PHOTOS = numberedPhotos('/assets/gallery', 'g', 64);
 
 // ── Full-screen viewer with prev/next, keyboard and swipe ──────────────
-function Lightbox({ index, onClose, onNav }: { index: number; onClose: () => void; onNav: (dir: 1 | -1) => void }) {
+function Lightbox({ photos, alt, index, onClose, onNav }: { photos: GalleryPhoto[]; alt: (n: number) => string; index: number; onClose: () => void; onNav: (dir: 1 | -1) => void }) {
+  const TOTAL = photos.length;
   const t = useT();
   const touchX = useRef<number | null>(null);
   const boxRef = useRef<HTMLDivElement>(null);
@@ -68,7 +71,7 @@ function Lightbox({ index, onClose, onNav }: { index: number; onClose: () => voi
       const img = new Image();
       img.src = photos[j].src;
     });
-  }, [index]);
+  }, [index, photos, TOTAL]);
 
   const arrowBtn: React.CSSProperties = {
     position: 'absolute', top: '50%', transform: 'translateY(-50%)',
@@ -139,7 +142,7 @@ function Lightbox({ index, onClose, onNav }: { index: number; onClose: () => voi
       <img
         key={index}
         src={photos[index].src}
-        alt={t.gallery.photoAlt(photos[index].n)}
+        alt={alt(photos[index].n)}
         onClick={e => e.stopPropagation()}
         style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: '6px', boxShadow: '0 20px 60px rgba(0,0,0,0.5)', animation: 'lbFade 0.25s ease' }}
       />
@@ -148,9 +151,21 @@ function Lightbox({ index, onClose, onNav }: { index: number; onClose: () => voi
   );
 }
 
-export default function Gallery({ hideHeader = false }: { hideHeader?: boolean }) {
+export default function Gallery({ hideHeader = false, photos = BIKE_PHOTOS, title, photoAlt, thumbAspect = '1 / 1', gridClass = 'grid-cols-3 sm:grid-cols-4 md:grid-cols-6', showAllModels = true, sectionId = 'gallery' }: {
+  hideHeader?: boolean;
+  photos?: GalleryPhoto[];
+  /** כותרת במקום כותרת גלריית האופניים. */
+  title?: string;
+  photoAlt?: (n: number) => string;
+  thumbAspect?: string;
+  gridClass?: string;
+  showAllModels?: boolean;
+  sectionId?: string;
+}) {
   const dir = useDir();
   const t = useT();
+  const TOTAL = photos.length;
+  const altOf = photoAlt ?? t.gallery.photoAlt;
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const headingRef = useRef<HTMLDivElement>(null);
@@ -160,10 +175,10 @@ export default function Gallery({ hideHeader = false }: { hideHeader?: boolean }
 
   const nav = useCallback((dir: 1 | -1) => {
     setOpenIndex(i => (i === null ? i : (i + dir + TOTAL) % TOTAL));
-  }, []);
+  }, [TOTAL]);
 
   return (
-    <section ref={ref} id="gallery" className="relative py-7 lg:py-32" style={{ backgroundColor: BG }}>
+    <section ref={ref} id={sectionId} className="relative py-7 lg:py-32" style={{ backgroundColor: BG }}>
       <div className="mx-auto max-w-7xl px-6 lg:px-16 pt-2 lg:pt-20" dir={dir}>
 
         {/* Header */}
@@ -187,12 +202,12 @@ export default function Gallery({ hideHeader = false }: { hideHeader?: boolean }
                   className="leading-none"
                   style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(32px, 7vw, 80px)', color: TEXT, letterSpacing: '-0.02em' }}
                 >
-                  {t.gallery.title}
+                  {title ?? t.gallery.title}
                 </motion.h2>
               </div>
             </div>
 
-            <motion.a
+            {showAllModels && <motion.a
               initial={{ opacity: 0 }}
               animate={isInView ? { opacity: 1 } : {}}
               transition={{ duration: 0.7, delay: 0.2 }}
@@ -201,7 +216,7 @@ export default function Gallery({ hideHeader = false }: { hideHeader?: boolean }
               style={{ color: '#C9A870', fontFamily: "'Heebo', sans-serif", textDecoration: 'none' }}
             >
               {t.gallery.allModels}
-            </motion.a>
+            </motion.a>}
           </div>
         )}
 
@@ -211,18 +226,18 @@ export default function Gallery({ hideHeader = false }: { hideHeader?: boolean }
         </p>
 
         {/* Thumbnail grid */}
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1.5 md:gap-2">
+        <div className={`grid ${gridClass} gap-1.5 md:gap-2`}>
           {photos.map((photo, i) => (
             <button
               key={photo.src}
               onClick={() => setOpenIndex(i)}
               className="gallery-thumb relative overflow-hidden"
-              style={{ aspectRatio: '1 / 1', backgroundColor: '#EDEAE4', border: 'none', padding: 0, cursor: 'pointer' }}
-              aria-label={t.gallery.enlarge(t.gallery.photoAlt(photo.n))}
+              style={{ aspectRatio: thumbAspect, backgroundColor: '#EDEAE4', border: 'none', padding: 0, cursor: 'pointer' }}
+              aria-label={t.gallery.enlarge(altOf(photo.n))}
             >
               <img
                 src={photo.thumb}
-                alt={t.gallery.photoAlt(photo.n)}
+                alt={altOf(photo.n)}
                 width={400}
                 height={400}
                 decoding="async"
@@ -247,7 +262,7 @@ export default function Gallery({ hideHeader = false }: { hideHeader?: boolean }
 
       <AnimatePresence>
         {openIndex !== null && (
-          <Lightbox index={openIndex} onClose={() => setOpenIndex(null)} onNav={nav} />
+          <Lightbox photos={photos} alt={altOf} index={openIndex} onClose={() => setOpenIndex(null)} onNav={nav} />
         )}
       </AnimatePresence>
 

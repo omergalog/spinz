@@ -104,7 +104,8 @@ function MerchCard({ product, rows }: { product: MerchProduct; rows: Record<stri
       overflow: 'hidden', display: 'flex', flexDirection: 'column',
     }}>
       <div style={{
-        aspectRatio: '4 / 5', maxWidth: '100%', backgroundColor: '#F5F2EC',
+        // התמונות מ-8.11.2026 ריבועיות; ב-4:5 השרוולים נחתכו בצדדים.
+        aspectRatio: '1 / 1', maxWidth: '100%', backgroundColor: '#F5F2EC',
         display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
       }}>
         <img

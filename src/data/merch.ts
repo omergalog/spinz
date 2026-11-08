@@ -51,7 +51,7 @@ export const merchProducts: MerchProduct[] = [
     price: 119,
     colors: [
       { id: 'white', label: 'לבן', labelEn: 'White', hex: '#F2F0EB',
-        image: '/assets/merch-tee-bauhaus-white.jpg' },
+        image: '/assets/merch-tee-bauhaus-white-v2.webp' },
     ],
     sizes: merchSizes,
   },
@@ -65,7 +65,7 @@ export const merchProducts: MerchProduct[] = [
     price: 119,
     colors: [
       { id: 'black', label: 'שחור', labelEn: 'Black', hex: '#1A1A1A',
-        image: '/assets/merch-tee-blueprint-black.webp' },
+        image: '/assets/merch-tee-blueprint-black-v2.webp' },
     ],
     sizes: merchSizes,
   },

@@ -9,7 +9,7 @@ import { type CheckoutSession, AlreadyPaidError, AttemptOpenError, CouponRejecte
 import { dropPurchase, ensurePurchase, markPurchasePaid, purchaseToken, startNewPurchase } from '../lib/purchase';
 import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
 import { arrivalLabelIn, usePresale } from '../config/presale';
-import { merchLabel } from '../data/merch';
+import { merchLabel, merchParts } from '../data/merch';
 import PrivacyNote from './PrivacyNote';
 
 const DARK    = '#1C1C1C';   // text on gold buttons
@@ -801,13 +801,30 @@ export default function CartDrawer() {
                           src={item.model.image.replace('.png', '.jpg')}
                           alt={displayName(item)}
                           onError={e => { (e.currentTarget as HTMLImageElement).src = item.model.image; }}
-                          style={{ width: '80px', height: '60px', objectFit: 'contain', flexShrink: 0 }}
+                          // חולצה היא תמונה לאורך על רקע בהיר: בגודל המלא היא יצאה זעירה
+                          // בתוך המסגרת. היא נחתכת למרכז (ההדפס), עם פינות מעוגלות.
+                          style={item.kind === 'merch'
+                            ? { width: '80px', height: '80px', objectFit: 'cover', objectPosition: 'center 40%', borderRadius: '6px', backgroundColor: '#fff', border: `1px solid ${BORDER}`, flexShrink: 0 }
+                            : { width: '80px', height: '60px', objectFit: 'contain', flexShrink: 0 }}
                         />
                         <div className="cart-line-body" style={{ flex: 1, minWidth: 0 }}>
                           <div className="cart-line-info">
-                          <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '16px', color: TEXT, margin: '0 0 4px' }}>
-                            {displayName(item)}
-                          </h3>
+                          {(() => {
+                            const mp = item.kind === 'merch' && item.slug ? merchParts(item.slug, lang) : null;
+                            if (!mp) return (
+                              <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '16px', color: TEXT, margin: '0 0 4px' }}>
+                                {displayName(item)}
+                              </h3>
+                            );
+                            return (<>
+                              <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '16px', color: TEXT, margin: 0 }}>
+                                {mp.name}
+                              </h3>
+                              <span style={{ display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: MUTED_TEXT, margin: '2px 0 4px' }}>
+                                {mp.color} · {t.merch.size} {mp.size}
+                              </span>
+                            </>);
+                          })()}
                           <span style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'wrap' }}>
                             <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 700, color: GOLD_TEXT }}>
                               {formatPrice(lineTotal(item) - unitDiscOf(item.model.id))}

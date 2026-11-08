@@ -134,6 +134,7 @@ function MerchCard({ product, rows }: { product: MerchProduct; rows: Record<stri
             </span>
           )}
         </div>
+        <p style={{ margin: '-6px 0 0', fontSize: '13px', fontWeight: 700, color: DARK }}>{t.merch.freeShip}</p>
 
         {/* צבע — מוסתר כשיש צבע אחד, שאין בו מה לבחור */}
         {product.colors.length > 1 && (

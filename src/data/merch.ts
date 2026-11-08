@@ -43,13 +43,12 @@ export const merchSizes: MerchSize[] = [
 export const merchProducts: MerchProduct[] = [
   {
     id: 'bauhaus',
-    comingSoon: true,
     slugBase: 'merch-bauhaus',
     name: 'חולצת באוהאוס',
     nameEn: 'Bauhaus Tee',
     tagline: 'הדפס קווי של בניין תל אביבי. גזרה אוברסייז',
     taglineEn: 'A line print of a Tel Aviv building. Oversized fit',
-    price: 149,
+    price: 119,
     colors: [
       { id: 'white', label: 'לבן', labelEn: 'White', hex: '#F2F0EB',
         image: '/assets/merch-tee-bauhaus-white.jpg' },
@@ -58,13 +57,12 @@ export const merchProducts: MerchProduct[] = [
   },
   {
     id: 'blueprint',
-    comingSoon: true,
     slugBase: 'merch-blueprint',
     name: 'חולצת שרטוט',
     nameEn: 'Blueprint Tee',
     tagline: 'שרטוט הנדסי של SPINZ. גזרה אוברסייז',
     taglineEn: 'The SPINZ engineering drawing. Oversized fit',
-    price: 149,
+    price: 119,
     colors: [
       { id: 'black', label: 'שחור', labelEn: 'Black', hex: '#1A1A1A',
         image: '/assets/merch-tee-blueprint-black.webp' },
@@ -96,6 +94,21 @@ export function merchLabel(slug: string, lang: string): string | null {
       const name  = lang === 'en' ? p.nameEn : p.name;
       const color = lang === 'en' ? c.labelEn : c.label;
       return `${name} — ${color} ${s.label}`;
+    }
+  }
+  return null;
+}
+
+/** אותו פירוק כמו merchLabel, בחלקים: לעגלה, שבה השם בשורה אחת והצבע והמידה מתחתיו. */
+export function merchParts(slug: string, lang: string): { name: string; color: string; size: string } | null {
+  for (const p of merchProducts) {
+    if (!slug.startsWith(`${p.slugBase}-`)) continue;
+    const rest = slug.slice(p.slugBase.length + 1);
+    for (const c of p.colors) {
+      if (!rest.startsWith(`${c.id}-`)) continue;
+      const s = p.sizes.find(x => x.id === rest.slice(c.id.length + 1));
+      if (!s) continue;
+      return { name: lang === 'en' ? p.nameEn : p.name, color: lang === 'en' ? c.labelEn : c.label, size: s.label };
     }
   }
   return null;

@@ -4,7 +4,8 @@ import MerchGrid from '../components/MerchGrid';
 import Gallery, { numberedPhotos } from '../components/Gallery';
 
 // צילומי החולצות בשטח (8.11.2026). בלי מטא-דאטה — ה-GPS של האייפון הוסר בהמרה.
-const MERCH_PHOTOS = numberedPhotos('/assets/gallery-merch', 'm', 9);
+// הסדר (8.11): שחור/לבן מתחלפים, ובן/בת וקדימה/אחורה מתחלפים ככל האפשר.
+const MERCH_PHOTOS = numberedPhotos('/assets/gallery-merch', 'm', 8);
 
 export default function Merch() {
   const t = useT();
@@ -20,7 +21,7 @@ export default function Merch() {
         title={t.merch.galleryTitle}
         photoAlt={t.merch.galleryAlt}
         thumbAspect="3 / 4"
-        gridClass="grid-cols-3 lg:grid-cols-9"
+        gridClass="grid-cols-4 lg:grid-cols-8"
         showAllModels={false}
         sectionId="merch-gallery"
         compactTop

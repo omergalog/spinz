@@ -42,9 +42,9 @@ const pagesHe: SearchDoc[] = [
     keywords: ['לקנות', 'קנייה', 'חנות', 'מחיר', 'bikes', 'shop'],
   },
   {
-    id: 'page-merch', type: 'page', title: 'מרצ׳נדייז', to: '/merch',
+    id: 'page-merch', type: 'page', title: 'ביגוד', to: '/merch',
     summary: 'הבגדים של SPINZ. חולצות בהדפס באוהאוס ובשרטוט הנדסי.',
-    body: 'מרצנדייז חולצה חולצות בגדים טי שירט CITY RIDE NIGHT RIDE סיטי ראייד נייט ראייד באוהאוס שרטוט מידה כותנה אוברסייז',
+    body: 'ביגוד מרצנדייז חולצה חולצות בגדים טי שירט CITY RIDE NIGHT RIDE סיטי ראייד נייט ראייד באוהאוס שרטוט מידה כותנה אוברסייז',
     keywords: ['חולצה', 'חולצות', 'בגדים', 'merch', 'tee', 'shirt'],
   },
   {
@@ -136,7 +136,7 @@ const pagesEn: SearchDoc[] = [
   { id: 'page-sizes', type: 'page', title: 'Sizes & Colors', to: '/sizes', summary: 'Two frame sizes, three colours, and how to choose.', body: 'sizes colors 54 57 rider height matte black beige olive green', keywords: ['size', 'colour', 'color', 'fit', 'height', ...HEIGHTS] },
   { id: 'page-faq', type: 'page', title: 'FAQ', to: '/faq', summary: 'Shipping, assembly, payments, warranty and returns.', body: 'questions answers help support shipping returns warranty payments', keywords: ['faq', 'help', 'support', 'questions'] },
   { id: 'page-guides', type: 'page', title: 'Guides', to: '/guides', summary: 'Assembly, sizing, maintenance, safety and routes.', body: 'guides how to tips explained tutorial', keywords: ['guide', 'how to', 'tutorial'] },
-  { id: 'page-merch', type: 'page', title: 'Merch', to: '/merch', summary: 'SPINZ apparel. Tees with a Bauhaus print and an engineering drawing.', body: 'merch merchandise tee tees shirt t-shirt apparel clothing bauhaus blueprint size cotton oversized', keywords: ['tee', 'shirt', 'merch', 'apparel', 'clothing'] },
+  { id: 'page-merch', type: 'page', title: 'Apparel', to: '/merch', summary: 'SPINZ apparel. Tees with a Bauhaus print and an engineering drawing.', body: 'merch merchandise tee tees shirt t-shirt apparel clothing bauhaus blueprint size cotton oversized', keywords: ['tee', 'shirt', 'merch', 'apparel', 'clothing'] },
   { id: 'page-gallery', type: 'page', title: 'Gallery', to: '/gallery', summary: 'Professional photos of the bikes and of riding in the city.', body: 'gallery photos pictures images', keywords: ['photos', 'pictures', 'gallery'] },
   { id: 'page-community', type: 'page', title: 'Community', to: '/community', summary: 'The riders, the rides, and how to join.', body: 'community riders instagram social join group rides', keywords: ['community', 'instagram', 'rides'] },
   { id: 'page-reviews', type: 'page', title: 'Reviews', to: '/reviews', summary: 'What riders say about SPINZ.', body: 'reviews testimonials ratings stars customers feedback', keywords: ['reviews', 'testimonials', 'ratings'] },

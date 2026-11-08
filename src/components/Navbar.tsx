@@ -23,7 +23,6 @@ const buildMenus = (t: Dict): Menu[] => [
     label: t.nav.groups.bikes,
     items: [
       { label: t.nav.links.models, to: '/bikes' },
-      { label: t.nav.links.merch, to: '/merch' },
       { label: t.nav.links.specs, to: '/specs' },
       { label: t.nav.links.sizes, to: '/sizes' },
     ],
@@ -42,6 +41,8 @@ const buildMenus = (t: Dict): Menu[] => [
       { label: t.nav.links.gallery, to: '/gallery' },
       { label: t.nav.links.community, to: '/community' },
       { label: t.nav.links.reviews, to: '/reviews' },
+      // ביגוד עבר מ"אופניים" ל"המותג" (8.11.2026). חנות מרצ'נדייז עתידית תחזור תחת אופניים.
+      { label: t.nav.links.merch, to: '/merch' },
     ],
   },
 ];

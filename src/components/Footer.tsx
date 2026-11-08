@@ -166,7 +166,6 @@ export default function Footer() {
             {[
               { title: t.footer.cols.bikes, links: [
                 { label: t.nav.links.models, to: '/bikes' },
-                { label: t.nav.links.merch, to: '/merch' },
                 { label: t.nav.links.specs, to: '/specs' },
                 { label: t.nav.links.sizes, to: '/sizes' },
               ]},
@@ -184,6 +183,7 @@ export default function Footer() {
                 { label: t.nav.links.gallery, to: '/gallery' },
                 { label: t.nav.links.community, to: '/community' },
                 { label: t.nav.links.reviews, to: '/reviews' },
+                { label: t.nav.links.merch, to: '/merch' },
               ]},
             ].map(col => (
               <div key={col.title}>

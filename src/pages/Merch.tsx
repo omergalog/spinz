@@ -11,7 +11,7 @@ export default function Merch() {
   const t = useT();
   return (
     <PageShell
-      eyebrow="SPINZ Goods"
+      eyebrow="SPINZ Apparel"
       title={t.pages.merch.title}
       subtitle={t.pages.merch.sub}
     >

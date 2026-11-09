@@ -18,7 +18,11 @@ export const numberedPhotos = (dir: string, prefix: string, total: number): Gall
   });
 
 // גלריית האופניים (ברירת המחדל). גלריות אחרות — למשל החולצות — מעבירות photos משלהן.
-const BIKE_PHOTOS = numberedPhotos('/assets/gallery', 'g', 64);
+// מוצגות רק תמונות של שניים ומעלה עם האופניים (החלטת עומר, 9.11.26). כל 64 הקבצים נשארים בתיקייה —
+// עמוד הקהילה משתמש בחלקם. להחזרת תמונה לגלריה: להוסיף את המספר שלה לרשימה.
+const BIKE_SHOWN = [38, 39, 40, 41, 42, 43, 44, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64];
+const ALL_BIKE = numberedPhotos('/assets/gallery', 'g', 64);
+const BIKE_PHOTOS: GalleryPhoto[] = BIKE_SHOWN.map((num, i) => ({ ...ALL_BIKE[num - 1], n: i + 1 }));
 
 // ── Full-screen viewer with prev/next, keyboard and swipe ──────────────
 function Lightbox({ photos, alt, index, onClose, onNav }: { photos: GalleryPhoto[]; alt: (n: number) => string; index: number; onClose: () => void; onNav: (dir: 1 | -1) => void }) {

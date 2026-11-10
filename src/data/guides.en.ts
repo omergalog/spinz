@@ -111,8 +111,8 @@ export const guidesEn: Record<string, GuideTextEn> = {
           {
             type: 'list',
             items: [
-              'Size 54 (S), fits riders 170–180 cm.',
-              'Size 57 (L), fits riders 180–188 cm.',
+              'Size 54 fits riders 170–180 cm.',
+              'Size 57 fits riders 180–188 cm.',
             ],
           },
           { type: 'paragraph', text: 'These ranges reflect population averages and are a recommendation. Your build, leg length and personal comfort can move you a size up or down.' },

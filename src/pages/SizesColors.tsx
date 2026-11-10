@@ -66,7 +66,6 @@ export default function SizesColors() {
               >
                 <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: '16px' }}>
                   <h3 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '26px', color: DARK, margin: 0 }}>{s.name}</h3>
-                  <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 700, color: GOLD, letterSpacing: '0.1em' }}>{s.label}</span>
                 </div>
                 <div style={{ display: 'inline-block', backgroundColor: '#F5F2EC', borderRadius: '8px', padding: '8px 16px', marginBottom: '18px' }}>
                   <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 600, color: DARK }}>{sz.riderHeight} {s.height}</span>

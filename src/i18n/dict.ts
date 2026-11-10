@@ -197,8 +197,8 @@ export const dict = {
         cta: 'בחרו את שלכם ←',
         riderHeight: 'גובה רוכב:',
         items: [
-          { label: 'מידה S', height: '170–180 ס״מ', body: 'שלדה קומפקטית וזריזה, מתאימה לרכיבה עירונית קצרה ולמי שמחפש תחושת שליטה מלאה. קלה לתמרון בין מכוניות ובשבילים צרים.' },
-          { label: 'מידה L', height: '180–188 ס״מ', body: 'שלדה מרווחת יותר, עם ישיבה מתוחה מעט יותר. מתאימה לרוכבים גבוהים ולמרחקים ארוכים יותר, למי שמחפש יציבות ושיוט חלק.' },
+          { height: '170–180 ס״מ', body: 'שלדה קומפקטית וזריזה, מתאימה לרכיבה עירונית קצרה ולמי שמחפש תחושת שליטה מלאה. קלה לתמרון בין מכוניות ובשבילים צרים.' },
+          { height: '180–188 ס״מ', body: 'שלדה מרווחת יותר, עם ישיבה מתוחה מעט יותר. מתאימה לרוכבים גבוהים ולמרחקים ארוכים יותר, למי שמחפש יציבות ושיוט חלק.' },
         ],
         colorDesc: {
           mat: 'הקלאסיקה. שחור עמוק ומאט שמשתלב עם הכל ונראה נקי.',
@@ -607,8 +607,8 @@ export const dict = {
         cta: 'Choose yours →',
         riderHeight: 'Rider height:',
         items: [
-          { label: 'Size S', height: '170–180 cm', body: 'A compact, nimble frame, suited to short city trips and riders who want full control. Easy to thread between cars and down narrow lanes.' },
-          { label: 'Size L', height: '180–188 cm', body: 'A roomier frame with a slightly more stretched-out position. Suits taller riders and longer distances, for anyone after stability and smooth cruising.' },
+          { height: '170–180 cm', body: 'A compact, nimble frame, suited to short city trips and riders who want full control. Easy to thread between cars and down narrow lanes.' },
+          { height: '180–188 cm', body: 'A roomier frame with a slightly more stretched-out position. Suits taller riders and longer distances, for anyone after stability and smooth cruising.' },
         ],
         colorDesc: {
           mat: 'The classic. A deep matte black that goes with everything and looks clean.',

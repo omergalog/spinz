@@ -28,6 +28,13 @@ const MANUFACTURER = 'GUANGZHOU KESPOR BICYCLE CO.LTD';
 const MANUFACTURER_ADDRESS = '2ND FLOOR, BUILDING 2, NO. 11 HUAFU ROAD, TIESHAN VILLAGE, HUASHAN TOWN, HUADU DISTRICT, GUANGZHOU, GUANGDONG, CHINA';
 const SUPPORT = 'info@spinzbikes.com';
 
+// הלוגו בראש כל מייל ללקוח. כתובת מלאה עם www: הכתובת בלי www מפנה,
+// וחלק מתוכנות המייל לא עוקבות אחרי הפניה בתמונות.
+const EMAIL_LOGO = 'https://www.spinzbikes.com/assets/email-logo.png';
+// גרסה בזהב לפס השחור שבראש מיילי האישור והביטול.
+const LOGO_ON_DARK = `<img src="https://www.spinzbikes.com/assets/email-logo-light.png" width="130" alt="SPINZ" style="display:inline-block;width:130px;height:auto;border:0;">`;
+const LOGO = `<img src="${EMAIL_LOGO}" width="140" alt="SPINZ" style="display:block;width:140px;height:auto;border:0;margin:0 0 18px;">`;
+
 const COLORS: Record<string, string> = {
   mat: 'שחור מט', beige: "בז'", olive: 'ירוק זית',
 };
@@ -209,7 +216,7 @@ function html(o: OrderEmail): string {
   <div style="max-width:560px;margin:0 auto;background:#fff;border:1px solid #E0DCD4;border-radius:10px;overflow:hidden;">
 
     <div style="background:#1C1C1C;padding:26px 28px;text-align:center;">
-      <div style="color:#C9A870;font-size:22px;font-weight:800;letter-spacing:.18em;">SPINZ</div>
+      ${LOGO_ON_DARK}
     </div>
 
     <div style="padding:28px;">
@@ -495,7 +502,7 @@ function cancelHtml(o: CancelEmail): string {
   <div style="max-width:560px;margin:0 auto;background:#fff;border:1px solid #E0DCD4;border-radius:10px;overflow:hidden;">
 
     <div style="background:#1C1C1C;padding:26px 28px;text-align:center;">
-      <div style="color:#C9A870;font-size:22px;font-weight:800;letter-spacing:.18em;">SPINZ</div>
+      ${LOGO_ON_DARK}
     </div>
 
     <div style="padding:28px;">
@@ -634,6 +641,7 @@ function readyHtml(o: ReadyEmail): string {
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
              style="max-width:560px;background:#FFFFFF;border:1px solid #E0DCD4;border-radius:12px;padding:28px;">
         <tr><td>
+          ${LOGO}
           <h1 style="margin:0 0 6px;font-size:21px;color:#1C1C1C;">${esc(c.title(baseName(o.name)))}</h1>
           <p style="margin:0 0 20px;font-size:15px;color:#4A4845;line-height:1.6;">${esc(o.pickup ? c.introPickup : c.intro)}</p>
 
@@ -694,3 +702,186 @@ export async function sendReadyEmail(o: ReadyEmail): Promise<string | null> {
     return `resend_exception: ${e}`;
   }
 }
+
+// ─── תעודת אחריות ────────────────────────────────────────────────────
+//
+// נשלחת כשההזמנה מסומנת "נמסר" באדמין (פונקציה warranty-certificate).
+// נותנת האחריות כלפי הלקוח היא SPINZ, גם כשהיא מגובה מול היצרן.
+//
+// רשימת החלקים המכוסים ל-14 יום אינה מפורטת כאן בכוונה: היא נקבעת
+// בתקנון (סעיף 3), ולכן שינוי בה הוא שינוי אחד בתקנון ולא גם במייל.
+
+export type WarrantyEmail = {
+  to: string;
+  name: string;
+  productName?: string | null;
+  size?: string | null;
+  color?: string | null;
+  /** מספר השלדה החרוט מתחת לציר המרכזי, מתוך מסך היחידות. אם לא שויך, השורה לא מוצגת. */
+  frameNumber?: string | null;
+  reference: string;
+  deliveredAt: Date;
+  lang?: Lang;
+};
+
+const WARRANTY = {
+  he: {
+    subject: (r: string) => `תעודת אחריות לאופני SPINZ שלך (${r})`,
+    title: 'תעודת אחריות',
+    intro: (n: string) => `${n}, האופניים נמסרו לך. זו תעודת האחריות שלהם, כדאי לשמור את המייל.`,
+    detailsTitle: 'פרטי האופניים',
+    customer: 'שם הלקוח', order: 'מספר אסמכתה', model: 'דגם', size: 'מידה', color: 'צבע',
+    frame: 'מספר שלדה', delivered: 'תאריך מסירה',
+    coverTitle: 'תקופות האחריות',
+    frameLine: 'שלדה: 5 שנים, כנגד פגמי ייצור, סדקים בריתוכים או כשל מבני.',
+    partsLine: 'שאר החלקים: 14 ימים, כנגד פגמי ייצור, לפי הפירוט בתקנון.',
+    until: 'בתוקף עד',
+    notTitle: 'מה האחריות לא כוללת',
+    notCovered: 'בלאי משימוש רגיל, נזק מתאונה או משימוש לא נכון, שינויים במוצר, ופירוק או הרכבה מחדש שלא בוצעו על ידינו.',
+    giver: 'נותנת האחריות: SPINZ. בכל עניין של אחריות פונים אלינו בלבד.',
+    claimTitle: 'איך פונים לאחריות',
+    claim: 'שלחו לנו בוואטסאפ 055-773-3300 או במייל info@spinzbikes.com את מספר האסמכתה או מספר השלדה, תיאור קצר ותמונות. האחריות מותנית בהצגת החשבונית.',
+    cancel: 'תזכורת: אפשר לבטל את העסקה בתוך 14 ימים מיום המסירה, לפי התקנון.',
+    cancelLink: 'טופס ביטול', termsLink: 'תנאי האחריות המלאים בתקנון',
+    dir: 'rtl', path: '', locale: 'he-IL',
+  },
+  en: {
+    subject: (r: string) => `Warranty certificate for your SPINZ bike (${r})`,
+    title: 'Warranty certificate',
+    intro: (n: string) => `${n}, your bike has been delivered. This is its warranty certificate, so keep this email.`,
+    detailsTitle: 'Bike details',
+    customer: 'Customer', order: 'Reference number', model: 'Model', size: 'Size', color: 'Colour',
+    frame: 'Frame no.', delivered: 'Delivery date',
+    coverTitle: 'Warranty periods',
+    frameLine: 'Frame: 5 years, against manufacturing defects, weld cracks or structural failure.',
+    partsLine: 'All other parts: 14 days, against manufacturing defects, as detailed in our terms.',
+    until: 'Valid until',
+    notTitle: 'What the warranty does not cover',
+    notCovered: 'Normal wear from use, damage from accidents or misuse, modifications, and disassembly or reassembly not carried out by us.',
+    giver: 'The warranty is given by SPINZ. For any warranty matter, contact us only.',
+    claimTitle: 'How to make a claim',
+    claim: 'Send us your reference or frame number, a short description and photos on WhatsApp +972-55-773-3300 or to info@spinzbikes.com. The warranty requires the purchase invoice.',
+    cancel: 'Reminder: you may cancel the purchase within 14 days of delivery, as set out in our terms.',
+    cancelLink: 'Cancellation form', termsLink: 'Full warranty terms',
+    dir: 'ltr', path: '/en', locale: 'en-GB',
+  },
+} as const;
+
+/** תאריך לפי שעון ישראל, למשל 11.11.2026. */
+function ilDate(d: Date, locale: string): string {
+  return new Intl.DateTimeFormat(locale, { timeZone: 'Asia/Jerusalem', day: '2-digit', month: '2-digit', year: 'numeric' })
+    .format(d).replace(/\//g, '.');
+}
+
+/** מועדי סיום האחריות. מחושבים לפי היום הקלנדרי בישראל. */
+export function warrantyEnds(delivered: Date): { frame: Date; parts: Date } {
+  const frame = new Date(delivered); frame.setUTCFullYear(frame.getUTCFullYear() + 5);
+  const parts = new Date(delivered.getTime() + 14 * 24 * 3600 * 1000);
+  return { frame, parts };
+}
+
+function warrantyHtml(o: WarrantyEmail): string {
+  const en = o.lang === 'en';
+  const c = WARRANTY[en ? 'en' : 'he'];
+  const ends = warrantyEnds(o.deliveredAt);
+  const color = o.color ? (en ? COLORS_EN : COLORS)[o.color] ?? o.color : '';
+  const end = c.dir === 'rtl' ? 'left' : 'right';
+  const line = (k: string, v: string) => v
+    ? `<tr><td style="padding:6px 0;color:#6A6862;font-size:14px;">${esc(k)}</td>
+         <td style="padding:6px 0;text-align:${end};color:#1C1C1C;font-weight:600;font-size:14px;">${esc(v)}</td></tr>`
+    : '';
+  const period = (text: string, until: Date) =>
+    `<div style="padding:10px 0;border-top:1px solid #E0DCD4;">
+       <div style="font-size:14px;color:#1C1C1C;line-height:1.6;">${esc(text)}</div>
+       <div style="font-size:13px;color:#8A6D3B;font-weight:700;margin-top:3px;">${esc(c.until)} ${esc(ilDate(until, c.locale))}</div>
+     </div>`;
+
+  return `<!doctype html><html dir="${c.dir}"><body style="margin:0;background:#F5F2EC;font-family:Arial,Helvetica,sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F5F2EC;padding:28px 12px;">
+    <tr><td align="center">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+             style="max-width:560px;background:#FFFFFF;border:1px solid #E0DCD4;border-radius:12px;padding:28px;">
+        <tr><td>
+          ${LOGO}
+          <h1 style="margin:0 0 6px;font-size:22px;color:#1C1C1C;">${esc(c.title)}</h1>
+          <p style="margin:0 0 20px;font-size:15px;color:#4A4845;line-height:1.6;">${esc(c.intro(baseName(o.name)))}</p>
+
+          <div style="border:1px solid #E0DCD4;border-radius:10px;padding:14px 18px;margin-bottom:14px;">
+            <div style="font-size:13px;font-weight:700;color:#1C1C1C;margin-bottom:6px;">${esc(c.detailsTitle)}</div>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+              ${line(c.customer, (o.name ?? '').trim())}
+              ${line(c.order, o.reference)}
+              ${line(c.model, o.productName ?? '')}
+              ${line(c.size, o.size ?? '')}
+              ${line(c.color, color)}
+              ${line(c.frame, o.frameNumber ?? '')}
+              ${line(c.delivered, ilDate(o.deliveredAt, c.locale))}
+            </table>
+          </div>
+
+          <div style="border:1px solid #E0DCD4;border-radius:10px;padding:14px 18px 4px;margin-bottom:14px;">
+            <div style="font-size:13px;font-weight:700;color:#1C1C1C;margin-bottom:4px;">${esc(c.coverTitle)}</div>
+            ${period(c.frameLine, ends.frame)}
+            ${period(c.partsLine, ends.parts)}
+          </div>
+
+          <div style="font-size:13px;font-weight:700;color:#1C1C1C;margin:18px 0 4px;">${esc(c.notTitle)}</div>
+          <p style="margin:0;font-size:14px;color:#4A4845;line-height:1.6;">${esc(c.notCovered)}</p>
+
+          <div style="font-size:13px;font-weight:700;color:#1C1C1C;margin:18px 0 4px;">${esc(c.claimTitle)}</div>
+          <p style="margin:0;font-size:14px;color:#4A4845;line-height:1.6;">${esc(c.claim)}</p>
+          <p style="margin:10px 0 0;font-size:14px;color:#4A4845;line-height:1.6;">${esc(c.giver)}</p>
+
+          <p style="margin:18px 0 0;font-size:13px;color:#6A6862;line-height:1.6;">
+            ${esc(c.cancel)} <a href="${SITE}${c.path}/cancel-order" style="color:#8A6D3B;">${esc(c.cancelLink)}</a>
+            · <a href="${SITE}${c.path}/regulations#warranty" style="color:#8A6D3B;">${esc(c.termsLink)}</a>
+          </p>
+          <p style="margin:18px 0 0;font-size:11.5px;color:#9A9690;line-height:1.6;">
+            ${esc(en ? COMPANY_EN : COMPANY)}
+          </p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table></body></html>`;
+}
+
+function warrantyText(o: WarrantyEmail): string {
+  const en = o.lang === 'en';
+  const c = WARRANTY[en ? 'en' : 'he'];
+  const ends = warrantyEnds(o.deliveredAt);
+  const color = o.color ? (en ? COLORS_EN : COLORS)[o.color] ?? o.color : '';
+  const kv = (k: string, v?: string | null) => (v ? `${k}: ${v}` : '');
+  return [
+    c.title, '', c.intro(baseName(o.name)), '',
+    kv(c.customer, (o.name ?? '').trim()), kv(c.order, o.reference), kv(c.model, o.productName),
+    kv(c.size, o.size), kv(c.color, color), kv(c.frame, o.frameNumber), kv(c.delivered, ilDate(o.deliveredAt, c.locale)),
+    '', c.coverTitle + ':',
+    `- ${c.frameLine} ${c.until} ${ilDate(ends.frame, c.locale)}`,
+    `- ${c.partsLine} ${c.until} ${ilDate(ends.parts, c.locale)}`,
+    '', c.notTitle + ': ' + c.notCovered,
+    '', c.claimTitle + ': ' + c.claim, c.giver,
+    '', c.cancel, `${SITE}${c.path}/cancel-order  |  ${SITE}${c.path}/regulations`,
+    '', en ? COMPANY_EN : COMPANY,
+  ].filter((l, i, a) => l !== '' || a[i - 1] !== '').join('\n');
+}
+
+export async function sendWarrantyEmail(o: WarrantyEmail): Promise<string | null> {
+  if (!RESEND_KEY) return 'RESEND_API_KEY חסר';
+  if (!o.to) return 'ללקוח אין כתובת מייל';
+  const c = WARRANTY[o.lang === 'en' ? 'en' : 'he'];
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${RESEND_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: FROM, to: [o.to], bcc: BCC ? [BCC] : undefined, reply_to: SUPPORT,
+        subject: c.subject(o.reference), html: warrantyHtml(o), text: warrantyText(o),
+      }),
+    });
+    if (!res.ok) return `resend_${res.status}: ${(await res.text()).slice(0, 200)}`;
+    return null;
+  } catch (e) {
+    return `resend_exception: ${e}`;
+  }
+}
+

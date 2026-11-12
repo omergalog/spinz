@@ -948,7 +948,7 @@ export default function CartDrawer() {
                             style={{
                               flex: 1, minHeight: '48px', padding: '10px 12px', borderRadius: '8px',
                               cursor: 'pointer', fontFamily: "'Heebo', sans-serif", fontSize: '13.5px',
-                              fontWeight: 700,
+                              fontWeight: 700, whiteSpace: 'pre-line', lineHeight: 1.35,
                               border: `1px solid ${delivery === k ? GOLD : BORDER}`,
                               backgroundColor: delivery === k ? GOLD : SUBTLE,
                               color: delivery === k ? DARK : TEXT,

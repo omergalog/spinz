@@ -41,5 +41,9 @@ export const COMPANY_LINE_EN =
  * חשבון האינסטגרם. null = עוד אין חשבון פעיל, וכל הקישורים לאינסטגרם באתר
  * מוסתרים (7.11.2026: הקישור הוביל לחשבון שלא קיים). כשהחשבון נפתח,
  * ממלאים כאן — והכפתורים חוזרים בפוטר, ביצירת קשר, בטופס הלידים ובקהילה.
+ * 13.11.2026: החשבון נפתח (spinzbikes, הביו מקשר ל-www.spinzbikes.com).
  */
-export const INSTAGRAM: { url: string; handle: string } | null = null;
+export const INSTAGRAM: { url: string; handle: string } | null = {
+  url: 'https://www.instagram.com/spinzbikes/',
+  handle: '@spinzbikes',
+};

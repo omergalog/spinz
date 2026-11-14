@@ -203,6 +203,28 @@ export async function openCheckout(input: {
  * פרמטרים: כך הנתונים אינם נשמרים בהיסטוריית הדפדפן ואינם מודלפים
  * בכותרת Referer.
  */
+/**
+ * תשלום במסך מלא: דף התשלום של טרנזילה נפתח כדף ראשי ולא בתוך מסגרת.
+ *
+ * למה: בטלפונים, ובמיוחד בדפדפן של אינסטגרם, תשלומי כרטיס עם אימות 3DS
+ * נתקעו בתוך המסגרת בלי שום תשובה מטרנזילה (13–14.11.2026). ההשערה: הדפדפן
+ * חוסם לטרנזילה את העוגיות כשהיא מוטמעת באתר אחר, ואחרי האימות היא לא
+ * מזהה את העסקה. כדף ראשי העוגיות שלה אינן "זרות".
+ *
+ * כרגע במצב בדיקה בלבד: מופעל בקישור נסתר ?payfull=1 (ונשאר בלשונית עד
+ * ?payfull=0). לקוחות רגילים לא מושפעים.
+ */
+const PAYFULL_KEY = 'spinz-payfull';
+try {
+  const q = new URLSearchParams(window.location.search).get('payfull');
+  if (q === '1') sessionStorage.setItem(PAYFULL_KEY, '1');
+  if (q === '0') sessionStorage.removeItem(PAYFULL_KEY);
+} catch { /* אחסון חסום */ }
+
+export function fullPagePay(): boolean {
+  try { return sessionStorage.getItem(PAYFULL_KEY) === '1'; } catch { return false; }
+}
+
 export function submitToIframe(s: CheckoutSession, iframeName: string) {
   const form = document.createElement('form');
   form.method = 'POST';

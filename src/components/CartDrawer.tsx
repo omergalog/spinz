@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Plus, Minus, ArrowRight, ArrowLeft, CalendarClock } from 'lucide-react';
 import { COMPANY } from '../config/company';
 import { MAX_BIKES_PER_ORDER, MAX_PER_LINE, useCart, type UnitCoupon } from '../context/CartContext';
-import { type CheckoutSession, AlreadyPaidError, AttemptOpenError, CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, PurchaseInvalidError, TooManyCartsError, checkCoupon, checkUnitCoupon, fetchStatus, loadApplePay, openCheckout, reportBlockedFrame, reportStuck, submitToIframe }
+import { type CheckoutSession, AlreadyPaidError, AttemptOpenError, CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, PurchaseInvalidError, TooManyCartsError, checkCoupon, checkUnitCoupon, fetchStatus, fullPagePay, loadApplePay, openCheckout, reportBlockedFrame, reportStuck, submitToIframe }
   from '../lib/payment';
 import { dropPurchase, ensurePurchase, markPurchasePaid, purchaseToken, startNewPurchase } from '../lib/purchase';
 import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
@@ -704,6 +704,10 @@ export default function CartDrawer() {
       setLastPayLoad(null);
       setPayStuck(false);
       sessionIdRef.current = session.session_id ?? null;
+      // מצב בדיקה: דף התשלום של טרנזילה כדף ראשי (ראה fullPagePay). החזרה
+      // מטרנזילה עוברת דרך tranzila-return, שמנווט את החלון הראשי לדף התודה
+      // או לדף הכשל, וזה עובד גם כשאין מסגרת.
+      if (fullPagePay()) { submitToIframe(session, '_self'); return; }
       setPayForm({ seq, session, frame: `${TRANZILA_FRAME}-${session.session_id ?? seq}` });
       setStep('payment');
       loadApplePay();

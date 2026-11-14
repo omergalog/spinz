@@ -211,18 +211,21 @@ export async function openCheckout(input: {
  * חוסם לטרנזילה את העוגיות כשהיא מוטמעת באתר אחר, ואחרי האימות היא לא
  * מזהה את העסקה. כדף ראשי העוגיות שלה אינן "זרות".
  *
- * כרגע במצב בדיקה בלבד: מופעל בקישור נסתר ?payfull=1 (ונשאר בלשונית עד
- * ?payfull=0). לקוחות רגילים לא מושפעים.
+ * נבדק 14.11.2026 14:29: אייפון בתוך אינסטגרם, אימות 3DS מלא — עבר, וגם
+ * Apple Pay מופיע. מאז זו ברירת המחדל לכולם.
+ *
+ * הדרך הישנה (מסגרת בתוך האתר) נשארה לבדיקות בלבד: ?payfull=0 (נשאר
+ * בלשונית עד ?payfull=1).
  */
-const PAYFULL_KEY = 'spinz-payfull';
+const PAYFRAME_KEY = 'spinz-payframe';
 try {
   const q = new URLSearchParams(window.location.search).get('payfull');
-  if (q === '1') sessionStorage.setItem(PAYFULL_KEY, '1');
-  if (q === '0') sessionStorage.removeItem(PAYFULL_KEY);
+  if (q === '0') sessionStorage.setItem(PAYFRAME_KEY, '1');
+  if (q === '1') sessionStorage.removeItem(PAYFRAME_KEY);
 } catch { /* אחסון חסום */ }
 
 export function fullPagePay(): boolean {
-  try { return sessionStorage.getItem(PAYFULL_KEY) === '1'; } catch { return false; }
+  try { return sessionStorage.getItem(PAYFRAME_KEY) !== '1'; } catch { return true; }
 }
 
 export function submitToIframe(s: CheckoutSession, iframeName: string) {

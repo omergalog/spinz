@@ -704,7 +704,7 @@ export default function CartDrawer() {
       setLastPayLoad(null);
       setPayStuck(false);
       sessionIdRef.current = session.session_id ?? null;
-      // מצב בדיקה: דף התשלום של טרנזילה כדף ראשי (ראה fullPagePay). החזרה
+      // דף התשלום של טרנזילה כדף ראשי (ראה fullPagePay). החזרה
       // מטרנזילה עוברת דרך tranzila-return, שמנווט את החלון הראשי לדף התודה
       // או לדף הכשל, וזה עובד גם כשאין מסגרת.
       if (fullPagePay()) { submitToIframe(session, '_self'); return; }

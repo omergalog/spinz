@@ -18,6 +18,7 @@ export const ALLOWED_ORIGINS = [
   'https://spinzbikes.com',
   'http://localhost:3000',
   'http://localhost:5173',
+  'http://localhost:5174',   // האדמין בפיתוח מקומי
   // האדמין יושב בדומיין נפרד. בלעדיו הדפדפן חוסם כל קריאה שלו
   // לפונקציות, גם כשהשרת מבצע את הפעולה בהצלחה.
   'https://admin.spinzbikes.com',
@@ -29,7 +30,10 @@ export function corsHeaders(req: Request): Record<string, string> {
 
   return {
     'Access-Control-Allow-Origin': allowed,
-    'Access-Control-Allow-Headers': 'authorization, content-type, apikey',
+    // x-client-info: ה-SDK של סופהבייס (supabase.functions.invoke באדמין) שולח אותה
+    // בכל קריאה. בלעדיה הדפדפן חסם כל קריאה מהאדמין לפונקציה (14.11.2026):
+    // תעודת אחריות ב"נמסר", מייל ביטול, "האופניים מוכנים".
+    'Access-Control-Allow-Headers': 'authorization, content-type, apikey, x-client-info',
     'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
     'Vary': 'Origin',
   };

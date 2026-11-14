@@ -381,7 +381,9 @@ export default function CartDrawer() {
 
       closeCart();
       setStep('cart');
-      navigate(`/order/${e.data.outcome === 'failed' ? 'failed' : 'success'}?s=${id}`);
+      // קוד הדחייה של חברת האשראי, אם הגיע (ספרות בלבד), לעמוד הכשל
+      const code = e.data.outcome === 'failed' && /^\d{1,4}$/.test(String(e.data.code ?? '')) ? `&code=${e.data.code}` : '';
+      navigate(`/order/${e.data.outcome === 'failed' ? 'failed' : 'success'}?s=${id}${code}`);
     };
 
     window.addEventListener('message', onMessage);

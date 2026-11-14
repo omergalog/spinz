@@ -21,6 +21,22 @@ const BORDER = '#E0DCD4';
  * ולכן העמוד שואל את השרת מה המצב עד שהוא מתייצב.
  */
 
+/**
+ * קודי דחייה נפוצים של שב"א/טרנזילה, כפי שהם מגיעים בשדה Response.
+ * רק קודים שמשמעותם ברורה. כל קוד אחר מוצג כמספר, כדי שהלקוח יוכל
+ * למסור אותו לנו או לחברת האשראי.
+ */
+const DECLINE: Record<string, { he: string; en: string }> = {
+  '001': { he: 'חברת האשראי מסרה שהכרטיס חסום.', en: 'The card issuer reports this card as blocked.' },
+  '002': { he: 'חברת האשראי סירבה לעסקה בכרטיס הזה.', en: 'The card issuer declined this card.' },
+  '003': { he: 'חברת האשראי מבקשת שתיצרו איתה קשר לפני אישור העסקה.', en: 'The card issuer asks you to contact them to approve this payment.' },
+  '004': { he: 'חברת האשראי סירבה לעסקה.', en: 'The card issuer declined the payment.' },
+  '006': { he: 'קוד האבטחה (CVV) או מספר תעודת הזהות לא תואמים.', en: 'The security code (CVV) or ID number did not match.' },
+  '033': { he: 'פרטי הכרטיס אינם תקינים.', en: 'The card details are not valid.' },
+  '036': { he: 'תוקף הכרטיס פג.', en: 'The card has expired.' },
+  '039': { he: 'מספר הכרטיס שגוי.', en: 'The card number is incorrect.' },
+};
+
 const COPY = {
   he: {
     waiting: 'מאשרים את התשלום…',
@@ -40,6 +56,8 @@ const COPY = {
     duplicate: 'התשלום התקבל ונמצא בבדיקה',
     duplicateSub: (r: string) => `נראה שהתשלום הזה התקבל בנוסף לתשלום קודם על אותה הזמנה. ניצור איתך קשר. מספר פנייה ${r}.`,
     slow: 'האישור מתעכב. אם חויבת, ההזמנה תיקלט מעצמה ואין צורך לשלם שוב.',
+    reason: (code: string) => DECLINE[code]?.he ?? 'חברת האשראי לא אישרה את העסקה.',
+    reasonCode: (code: string) => `קוד שגיאה: ${code}. אפשר לנסות כרטיס אחר או Apple\u00A0Pay, או לשלוח לנו את הקוד ונבדוק.`,
     home: 'חזרה לעמוד הבית',
     contact: 'דברו איתנו',
   },
@@ -60,6 +78,8 @@ const COPY = {
     duplicate: 'Payment received and under review',
     duplicateSub: (r: string) => `This payment seems to have arrived in addition to an earlier payment for the same order. We will contact you. Reference ${r}.`,
     slow: 'Confirmation is taking a while. If you were charged, the order will register on its own, so do not pay again.',
+    reason: (code: string) => DECLINE[code]?.en ?? 'The card issuer did not approve the payment.',
+    reasonCode: (code: string) => `Error code: ${code}. You can try another card or Apple\u00A0Pay, or send us the code and we will check.`,
     home: 'Back to home',
     contact: 'Contact us',
   },
@@ -92,6 +112,7 @@ export default function OrderResult({ outcome }: { outcome: 'success' | 'failed'
 
   const [params] = useSearchParams();
   const sessionId = params.get('s') ?? '';
+  const code = /^\d{1,4}$/.test(params.get('code') ?? '') ? params.get('code')! : '';
 
   const [status, setStatus] = useState<PaymentStatus | 'unknown'>(
     outcome === 'failed' ? 'failed' : 'pending',
@@ -162,7 +183,9 @@ export default function OrderResult({ outcome }: { outcome: 'success' | 'failed'
         return { icon: <XCircle size={52} style={{ color: '#A3462B' }} />, title: c.overbooked, sub: c.overbookedSub };
       case 'failed':
       case 'failed_final':
-        return { icon: <XCircle size={52} style={{ color: '#A3462B' }} />, title: c.failed, sub: c.failedSub };
+        return { icon: <XCircle size={52} style={{ color: '#A3462B' }} />, title: c.failed,
+                 sub: code ? c.reason(code) : c.failedSub,
+                 note: code ? c.reasonCode(code) : undefined };
       default:
         return { icon: <Clock size={52} style={{ color: GOLD }} />,
                  title: c.waiting, sub: slow ? c.slow : c.waitingSub };
@@ -188,6 +211,15 @@ export default function OrderResult({ outcome }: { outcome: 'success' | 'failed'
         }}>
           {view.sub}
         </p>
+        {'note' in view && view.note && (
+          <p style={{
+            fontFamily: "'Heebo', sans-serif", fontSize: '13.5px', color: MUTED,
+            lineHeight: 1.7, margin: '12px auto 0', maxWidth: '46ch',
+            background: '#FBEEE9', border: '1px solid #E0B9A6', borderRadius: '8px', padding: '10px 14px',
+          }}>
+            {view.note}
+          </p>
+        )}
 
         <div style={{
           display: 'flex', gap: '12px', justifyContent: 'center',

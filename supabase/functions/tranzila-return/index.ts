@@ -20,7 +20,7 @@ import { ALLOWED_ORIGINS } from '../_shared/cors.ts';
 
 const SITE = Deno.env.get('SITE_URL') ?? 'https://spinzbikes.com';
 
-const page = (target: string, outcome: string, sessionId: string) => `<!doctype html>
+const page = (target: string, outcome: string, sessionId: string, code: string) => `<!doctype html>
 <html lang="he" dir="rtl"><head><meta charset="utf-8">
 <title>מעבירים אותך חזרה…</title>
 <style>
@@ -40,7 +40,7 @@ const page = (target: string, outcome: string, sessionId: string) => `<!doctype 
   // למקור שתואם באמת, והשאר נזרקות בשקט — כך הודעה אינה הולכת לאיבוד
   // רק בגלל www.
   var msg = { source: 'spinz-tranzila', outcome: ${JSON.stringify(outcome)},
-              sessionId: ${JSON.stringify(sessionId)}, url: target };
+              sessionId: ${JSON.stringify(sessionId)}, code: ${JSON.stringify(code)}, url: target };
   ${JSON.stringify(ALLOWED_ORIGINS)}.forEach(function (o) {
     try { window.parent.postMessage(msg, o); } catch (e) {}
   });
@@ -84,10 +84,16 @@ Deno.serve(async (req) => {
     console.error('return log', e);
   }
 
+  // קוד התשובה של טרנזילה/שב"א, כדי שעמוד הכשל יאמר ללקוח מה קרה
+  // (14.11.2026: לקוחות ראו רק "התשלום לא אושר"). ספרות בלבד — זה כל
+  // מה שעובר לכתובת, בלי שום פרט של הכרטיס.
+  const code = outcome === 'failed' && /^\d{1,4}$/.test(payload.Response ?? '') ? payload.Response : '';
+
   const to = new URL(`${SITE}/order/${outcome}`);
   if (sessionId) to.searchParams.set('s', sessionId);
+  if (code) to.searchParams.set('code', code);
 
-  return new Response(page(to.toString(), outcome, sessionId), {
+  return new Response(page(to.toString(), outcome, sessionId, code), {
     status: 200,
     headers: { 'Content-Type': 'text/html; charset=utf-8' },
   });

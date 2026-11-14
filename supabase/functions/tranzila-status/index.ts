@@ -45,7 +45,7 @@ Deno.serve(async (req) => {
   if (ip && !(await take('status-ip', ip, 3000))) return reply({ error: 'RATE_LIMIT' }, 429);
 
   let { data, error } = await db.from('checkout_sessions')
-    .select('status, total_price, card_last4, order_ids, customer_notes, purchase_key')
+    .select('status, total_price, card_last4, order_ids, customer_notes, purchase_key, failure_reason')
     .eq('id', id).maybeSingle();
 
   // המסד עוד לפני מיגרציית הרכישות (אין עמודת purchase_key): אין רכישות
@@ -64,12 +64,17 @@ Deno.serve(async (req) => {
 
   if (!data) return reply({ error: 'not_found' }, 404);
 
+  // קוד הדחייה (ספרות בלבד, למשל declined_901 → 901), כדי שהקופה
+  // תעבור לעמוד הכשל עם הסיבה גם כשטרנזילה לא החזירה את הלקוח.
+  const code = /^declined_(\d{1,4})$/.exec(String((data as { failure_reason?: string }).failure_reason ?? ''))?.[1];
+
   if (!preMigration && !(await ownsSession(db, data.purchase_key ?? null, token))) {
-    return reply({ status: data.status });
+    return reply({ status: data.status, ...(code ? { code } : {}) });
   }
 
   return reply({
     status: data.status,
+    ...(code ? { code } : {}),
     total: data.total_price,
     last4: data.card_last4,
     orders: (data.order_ids ?? []).length,

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Plus, Minus, ArrowRight, ArrowLeft, CalendarClock } from 'lucide-react';
 import { COMPANY } from '../config/company';
 import { MAX_BIKES_PER_ORDER, MAX_PER_LINE, useCart, type UnitCoupon } from '../context/CartContext';
-import { type CheckoutSession, AlreadyPaidError, AttemptOpenError, CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, PurchaseInvalidError, TooManyCartsError, checkCoupon, checkUnitCoupon, fetchStatus, loadApplePay, openCheckout, reportBlockedFrame, submitToIframe }
+import { type CheckoutSession, AlreadyPaidError, AttemptOpenError, CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, PurchaseInvalidError, TooManyCartsError, checkCoupon, checkUnitCoupon, fetchStatus, loadApplePay, openCheckout, reportBlockedFrame, reportStuck, submitToIframe }
   from '../lib/payment';
 import { dropPurchase, ensurePurchase, markPurchasePaid, purchaseToken, startNewPurchase } from '../lib/purchase';
 import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
@@ -301,6 +301,13 @@ export default function CartDrawer() {
   const submittedFrame = useRef<string | null>(null);
   const [payFrame, setPayFrame] = useState<HTMLIFrameElement | null>(null);
   const [payTimedOut, setPayTimedOut] = useState(false);
+  // כמה פעמים נטען חלון התשלום מאז שנשלח אליו הטופס, ומתי לאחרונה.
+  // הטעינה הראשונה היא טופס הכרטיס; כל טעינה נוספת היא ניווט אחרי
+  // שהלקוח לחץ "לתשלום" (3DS, עיבוד, דף שגיאה של טרנזילה).
+  const payLoads = useRef(0);
+  const [lastPayLoad, setLastPayLoad] = useState<number | null>(null);
+  const [payStuck, setPayStuck] = useState(false);
+  const [stuckChecking, setStuckChecking] = useState(false);
 
   // יציאה משלב התשלום: שום תשובה, הגשה או טיימר של הניסיון הזה לא ימשיכו.
   const abandonPayment = () => {
@@ -313,6 +320,9 @@ export default function CartDrawer() {
     setPayFrameReady(false);
     setPayTimedOut(false);
     setPayBlocked(false);
+    payLoads.current = 0;
+    setLastPayLoad(null);
+    setPayStuck(false);
   };
   const backToDetails = () => { abandonPayment(); setStep('details'); };
 
@@ -339,6 +349,9 @@ export default function CartDrawer() {
       if (f.contentWindow?.location.href === 'about:blank') return;
     } catch { /* מקור אחר: העמוד של טרנזילה נטען */ }
     setPayFrameReady(true);
+    payLoads.current += 1;
+    setLastPayLoad(Date.now());
+    setPayStuck(false);
   };
   // פרטי הקשר והמסירה שורדים רענון של הלשונית (sessionStorage: נמחקים
   // כשהלשונית נסגרת ואחרי תשלום מוצלח). פרטי כרטיס לא עוברים כאן בכלל —
@@ -417,6 +430,15 @@ export default function CartDrawer() {
         navigate(`/order/success?s=${id}`);
         return;
       }
+      // דחייה שהשרת כבר יודע עליה (הגיעה ב-notify), גם כשהחלון של טרנזילה
+      // לא החזיר את הלקוח. 14.11.2026 07:24: אימות 3DS נכשל בכאל, טרנזילה
+      // דיווחה 901 לשרת, והלקוח נשאר מול ספינר כי כאן חיכינו רק להצלחה.
+      if (watchId === 'payment' && s && s !== 'rate' && (s.status === 'failed' || s.status === 'failed_final')) {
+        closeCart();
+        setStep('cart');
+        navigate(`/order/failed?s=${id}${s.code ? `&code=${s.code}` : ''}`);
+        return;
+      }
       // כל 5 שניות בשתי הדקות הראשונות, אחר כך כל 30, עד חצי שעה.
       // השרת ביקש להאט — מאטים.
       const age = Date.now() - started;
@@ -426,6 +448,46 @@ export default function CartDrawer() {
     timer = setTimeout(tick, 5_000);
     return () => { alive = false; clearTimeout(timer); };
   }, [watchId, clearCart, closeCart, navigate, saveCoupon]);
+
+  /**
+   * הקופה לעולם לא נשארת תקועה.
+   *
+   * אחרי שהלקוח לחץ "לתשלום" בחלון של טרנזילה (טעינה שנייה ואילך של
+   * החלון), אם לא חזרה תשובה: אחרי 30 שניות מופיע "התשלום נתקע?", ואחרי
+   * 3 דקות עוברים לבד לעמוד הכשל. העמוד ממשיך לבדוק, ואם התשלום בכל זאת
+   * יאושר הוא מתחלף לעמוד התודה. 3 דקות ולא פחות: אימות 3DS עם קוד ב-SMS
+   * לוקח לפעמים יותר מדקה, ואסור לקטוע אותו.
+   */
+  const resolveStuck = async (how: 'auto' | 'manual') => {
+    const id = sessionIdRef.current;
+    if (!id) return;
+    setStuckChecking(true);
+    const s = await fetchStatus(id, purchaseToken()).catch(() => null);
+    setStuckChecking(false);
+    if (sessionIdRef.current !== id) return;           // הלקוח כבר יצא מהניסיון הזה
+    if (s && s !== 'rate' && s.status === 'paid') {
+      clearCart(); saveCoupon(''); clearCheckoutDetails(); markPurchasePaid(id);
+      closeCart(); setStep('cart');
+      navigate(`/order/success?s=${id}`);
+      return;
+    }
+    const code = s && s !== 'rate' && s.code ? `&code=${s.code}` : '';
+    const declined = s && s !== 'rate' && (s.status === 'failed' || s.status === 'failed_final');
+    if (!declined) {
+      reportStuck(id, lastPayLoad ? Math.round((Date.now() - lastPayLoad) / 1000) : 0, payLoads.current, how);
+    }
+    closeCart(); setStep('cart');
+    navigate(`/order/failed?s=${id}${declined ? code : '&stuck=1'}`);
+  };
+  const resolveStuckRef = useRef(resolveStuck);
+  resolveStuckRef.current = resolveStuck;
+
+  useEffect(() => {
+    if (step !== 'payment' || !lastPayLoad || payLoads.current < 2) return;
+    const show = setTimeout(() => setPayStuck(true), 30_000);
+    const give = setTimeout(() => { resolveStuckRef.current('auto'); }, 180_000);
+    return () => { clearTimeout(show); clearTimeout(give); };
+  }, [step, lastPayLoad]);
 
   // הקוד שהוחל (גם מעמוד המוצר) נבדק כאן מחדש מול העגלה האמיתית, בכל
   // שינוי בה. בעמוד המוצר הוא נבדק מול מחיר יחידה אחת.
@@ -627,6 +689,9 @@ export default function CartDrawer() {
       setPayFrameReady(false);
       setPayBlocked(false);
       setPayTimedOut(false);
+      payLoads.current = 0;
+      setLastPayLoad(null);
+      setPayStuck(false);
       sessionIdRef.current = session.session_id ?? null;
       setPayForm({ seq, session, frame: `${TRANZILA_FRAME}-${session.session_id ?? seq}` });
       setStep('payment');
@@ -1227,6 +1292,23 @@ export default function CartDrawer() {
                           WhatsApp
                         </a>
                       </div>
+                    </div>
+                  )}
+                  {payStuck && !payBlocked && (
+                    <div role="status" style={{
+                      padding: '12px 20px', backgroundColor: '#FBF7EF', borderBottom: `1px solid ${BORDER}`,
+                      display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap',
+                    }}>
+                      <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13px', color: TEXT, lineHeight: 1.6, margin: 0, flex: 1, minWidth: '180px' }}>
+                        <strong>{t.cart.payStuckTitle}</strong> {t.cart.payStuckBody}
+                      </p>
+                      <button
+                        onClick={() => resolveStuck('manual')}
+                        disabled={stuckChecking}
+                        style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 700, fontSize: '13px', padding: '8px 16px', borderRadius: '8px', border: 'none', backgroundColor: '#C9A870', color: '#1C1C1C', cursor: 'pointer', opacity: stuckChecking ? 0.6 : 1 }}
+                      >
+                        {stuckChecking ? t.cart.payStuckChecking : t.cart.payStuckCheck}
+                      </button>
                     </div>
                   )}
                   <div style={{ flex: 1, position: 'relative', backgroundColor: SUBTLE }}>

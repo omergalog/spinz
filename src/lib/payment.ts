@@ -239,12 +239,26 @@ export type PaymentStatus =
  */
 export async function fetchStatus(sessionId: string, token?: string | null): Promise<{
   status: PaymentStatus; total?: number; last4?: string; orders?: number; pickup?: boolean;
+  /** קוד הדחייה של חברת האשראי, ספרות בלבד */
+  code?: string;
 } | 'rate' | null> {
   const t = token ? `&t=${encodeURIComponent(token)}` : '';
   const res = await fetch(`${FUNCTIONS}/tranzila-status?s=${encodeURIComponent(sessionId)}${t}`);
   if (res.status === 429) return 'rate';
   if (!res.ok) return null;
   return res.json();
+}
+
+/**
+ * מדווח שהקופה נתקעה: נשלח טופס בחלון התשלום ולא חזרה שום תשובה.
+ * דיווח בלבד, כישלון כאן לא משנה כלום ללקוח.
+ */
+export function reportStuck(sessionId: string, seconds: number, loads: number, how: 'auto' | 'manual') {
+  fetch(`${FUNCTIONS}/checkout-blocked`, {
+    method: 'POST', keepalive: true,
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ kind: 'stuck', session: sessionId, seconds, loads, how }),
+  }).catch(() => { /* דיווח בלבד */ });
 }
 
 /**

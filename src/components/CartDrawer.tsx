@@ -606,7 +606,18 @@ export default function CartDrawer() {
       errors.email = true;
     }
     setFormErrors(errors);
-    if (Object.keys(errors).length > 0) return;
+    if (Object.keys(errors).length > 0) {
+      // השדה החסר יכול להיות מחוץ למסך: בטלפון עם גופן מוגדל, ובמיוחד
+      // בדפדפן של אינסטגרם, אזור הטופס הוא רצועה צרה מעל הכפתור, והלקוח
+      // לחץ "אשר הזמנה" ולא ראה כלום (14.11.2026). גוללים לשדה הראשון,
+      // מתמקדים בו, ומציגים הודעה גם ליד הכפתור.
+      const first = (['name', 'phone', 'email', 'address'] as const).find(k => errors[k]);
+      const el = first ? document.getElementById(`cart-${first}`) : null;
+      el?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      (el as HTMLInputElement | null)?.focus({ preventScroll: true });
+      setOrderError(t.cart.missingFields);
+      return;
+    }
 
     // ההסברים כאן מוצגים גם ליד הכפתור: השדה עצמו יכול להיות מחוץ למסך.
     // אף מסלול לא מוריד קוד בשקט וממשיך במחיר מלא.
@@ -1184,10 +1195,13 @@ export default function CartDrawer() {
                       </div>
                       <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: MUTED_TEXT, margin: 0 }}>{t.cart.inclVat}</p>
                     </div>
+                    {/* הודעת הפרטיות עברה מהשורה הקבועה של הכפתור לסוף הטופס: בטלפון
+                        עם גופן מוגדל היא תפסה חצי מסך, ושדות הטופס נעלמו. */}
+                    <PrivacyNote kind="order" />
                   </div>
 
                   {/* Submit */}
-                  <div style={{ padding: '20px 24px', borderTop: `1px solid ${BORDER}` }}>
+                  <div style={{ padding: '14px 24px', borderTop: `1px solid ${BORDER}` }}>
                     {orderError && (
                       <div style={{
                         backgroundColor: '#FBEEE9', border: '1px solid #E0B9A6',
@@ -1241,7 +1255,6 @@ export default function CartDrawer() {
                         {t.cart.agreeTerms}
                       </a>.
                     </p>
-                    <PrivacyNote kind="order" />
                   </div>
                 </motion.div>
               )}

@@ -740,7 +740,9 @@ const WARRANTY = {
     notCovered: 'בלאי משימוש רגיל, נזק מתאונה או משימוש לא נכון, שינויים במוצר, ופירוק או הרכבה מחדש שלא בוצעו על ידינו.',
     giver: 'נותנת האחריות: SPINZ. בכל עניין של אחריות פונים אלינו בלבד.',
     claimTitle: 'איך פונים לאחריות',
-    claim: 'שלחו לנו בוואטסאפ 055-773-3300 או במייל info@spinzbikes.com את מספר האסמכתה או מספר השלדה, תיאור קצר ותמונות. האחריות מותנית בהצגת החשבונית.',
+    claim: 'שלחו לנו בוואטסאפ 055-773-3300 או במייל info@spinzbikes.com את מספר האסמכתה או מספר השלדה, תיאור קצר ותמונות. האחריות מותנית בהצגת החשבונית או תעודה זו.',
+    transferTitle: 'אם תמכרו את האופניים',
+    transfer: 'האחריות עוברת עם האופניים לבעלים הבאים, עד תום התקופה שנספרת מתאריך המסירה למעלה. העבירו לקונה את המייל הזה: בלעדיו לא נוכל לאמת את האחריות.',
     cancel: 'תזכורת: אפשר לבטל את העסקה בתוך 14 ימים מיום המסירה, לפי התקנון.',
     cancelLink: 'טופס ביטול', termsLink: 'תנאי האחריות המלאים בתקנון',
     dir: 'rtl', path: '', locale: 'he-IL',
@@ -760,7 +762,9 @@ const WARRANTY = {
     notCovered: 'Normal wear from use, damage from accidents or misuse, modifications, and disassembly or reassembly not carried out by us.',
     giver: 'The warranty is given by SPINZ. For any warranty matter, contact us only.',
     claimTitle: 'How to make a claim',
-    claim: 'Send us your reference or frame number, a short description and photos on WhatsApp +972-55-773-3300 or to info@spinzbikes.com. The warranty requires the purchase invoice.',
+    claim: 'Send us your reference or frame number, a short description and photos on WhatsApp +972-55-773-3300 or to info@spinzbikes.com. The warranty requires the purchase invoice or this certificate.',
+    transferTitle: 'If you sell the bike',
+    transfer: 'The warranty passes with the bike to the next owner, until the end of the period counted from the delivery date above. Forward this email to the buyer: without it we cannot verify the warranty.',
     cancel: 'Reminder: you may cancel the purchase within 14 days of delivery, as set out in our terms.',
     cancelLink: 'Cancellation form', termsLink: 'Full warranty terms',
     dir: 'ltr', path: '/en', locale: 'en-GB',
@@ -832,6 +836,9 @@ function warrantyHtml(o: WarrantyEmail): string {
           <p style="margin:0;font-size:14px;color:#4A4845;line-height:1.6;">${esc(c.claim)}</p>
           <p style="margin:10px 0 0;font-size:14px;color:#4A4845;line-height:1.6;">${esc(c.giver)}</p>
 
+          <div style="font-size:13px;font-weight:700;color:#1C1C1C;margin:18px 0 4px;">${esc(c.transferTitle)}</div>
+          <p style="margin:0;font-size:14px;color:#4A4845;line-height:1.6;">${esc(c.transfer)}</p>
+
           <p style="margin:18px 0 0;font-size:13px;color:#6A6862;line-height:1.6;">
             ${esc(c.cancel)} <a href="${SITE}${c.path}/cancel-order" style="color:#8A6D3B;">${esc(c.cancelLink)}</a>
             · <a href="${SITE}${c.path}/regulations#warranty" style="color:#8A6D3B;">${esc(c.termsLink)}</a>
@@ -860,6 +867,7 @@ function warrantyText(o: WarrantyEmail): string {
     `- ${c.partsLine} ${c.until} ${ilDate(ends.parts, c.locale)}`,
     '', c.notTitle + ': ' + c.notCovered,
     '', c.claimTitle + ': ' + c.claim, c.giver,
+    '', c.transferTitle + ': ' + c.transfer,
     '', c.cancel, `${SITE}${c.path}/cancel-order  |  ${SITE}${c.path}/regulations`,
     '', en ? COMPANY_EN : COMPANY,
   ].filter((l, i, a) => l !== '' || a[i - 1] !== '').join('\n');

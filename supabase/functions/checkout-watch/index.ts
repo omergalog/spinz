@@ -10,14 +10,15 @@
  * הודעה מטרנזילה (notify / חזרה מעמוד התשלום). לקוח שבסוף שילם (גם בסל
  * אחר, למשל עבר ל-Apple Pay) אינו נספר.
  *
- * התראה כשיש 3 לקוחות שונים או יותר עם ניסיון שקט בחלון. לכל היותר התראה
- * אחת בשעתיים. מופעל מ-cron עם סוד בכותרת x-watch-secret (אותו סוד של
- * analytics-watch).
+ * התראה על כל לקוח עם ניסיון שקט (14.11.2026: בתנועה הנוכחית כל לקוח
+ * תקוע הוא מכירה אבודה; קודם נדרשו 3, ואורי ב-17:18 לא התריע). כל לקוח
+ * מתריע פעם אחת בלבד, ועד 6 התראות בשעה. מופעל מ-cron עם סוד בכותרת
+ * x-watch-secret (אותו סוד של analytics-watch).
  */
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { sendAlert } from '../_shared/alert.ts';
 
-const MIN_CUSTOMERS = 3;
+const MIN_CUSTOMERS = 1;
 
 Deno.serve(async (req) => {
   const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
@@ -50,10 +51,17 @@ Deno.serve(async (req) => {
   const byCustomer = new Map<string, typeof silent[number]>();
   for (const s of silent) byCustomer.set(digits(s.customer_phone) || s.id, s);
 
+  // לקוח שכבר התרענו עליו (באחת מהריצות הקודמות) לא מתריע שוב
+  const { data: prev } = await db.from('payment_events').select('payload')
+    .eq('source', 'checkout_watch').gte('created_at', new Date(now - 3 * 3600_000).toISOString());
+  const alerted = new Set<string>();
+  for (const e of prev ?? []) for (const id of ((e.payload as { sessions?: string[] })?.sessions ?? [])) alerted.add(id);
+  for (const [k, s] of [...byCustomer]) if (alerted.has(s.id)) byCustomer.delete(k);
+
   if (byCustomer.size < MIN_CUSTOMERS) return Response.json({ ok: true, silent: byCustomer.size, alerted: false });
 
   const { data: canAlert } = await db.rpc('take_rate_token', {
-    p_bucket: 'checkout-watch-alert', p_client: 'all', p_limit: 1, p_window: '2 hours',
+    p_bucket: 'checkout-watch-alert', p_client: 'all', p_limit: 6, p_window: '1 hour',
   });
   if (canAlert === false) return Response.json({ ok: true, silent: byCustomer.size, alerted: false, throttled: true });
 
@@ -64,15 +72,20 @@ Deno.serve(async (req) => {
     return [`${hhmm(s.created_at)} · ${s.customer_name ?? '—'}`,
       `${s.customer_phone ?? '—'}${p ? ` · https://wa.me/972${p.replace(/^0/, '')}` : ''} · ₪${s.total_price}`];
   });
-  const err = await sendAlert(`ייתכן שהסליקה לא עובדת: ${byCustomer.size} לקוחות ניסו לשלם ולא הסתיים`, [
-    ['מה נמדד', `ב-30 הדקות שהסתיימו לפני 10 דקות: ${byCustomer.size} לקוחות פתחו תשלום, לא שילמו, ולא הגיעה שום הודעה מטרנזילה (לא אישור ולא דחייה). תשלומים שהצליחו באותו חלון: ${paidCount}.`],
-    ['מה לעשות', 'לנסות תשלום בדיקה בכרטיס רגיל. אם נכשל — לפנות לטרנזילה, ולחזור ללקוחות עם קישור תשלום או Apple Pay.'],
+  const many = byCustomer.size > 1;
+  const err = await sendAlert(many
+      ? `ייתכן שהסליקה לא עובדת: ${byCustomer.size} לקוחות ניסו לשלם ולא הסתיים`
+      : `לקוח ניסה לשלם ולא הסתיים: ${[...byCustomer.values()][0].customer_name ?? ''}`, [
+    ['מה נמדד', `לקוח פתח תשלום לפני 10–40 דקות, לא שילם, ולא הגיעה שום הודעה מטרנזילה (לא אישור ולא דחייה). תשלומים שהצליחו באותו חלון: ${paidCount}.`],
+    ['מה לעשות', many
+      ? 'כמה לקוחות במקביל: לנסות תשלום בדיקה. אם נכשל — לפנות לטרנזילה, ולחזור ללקוחות עם קישור תשלום.'
+      : 'לחזור ללקוח בוואטסאפ: לשאול מה ראה, ולהציע קישור תשלום מהמסוף או הזמנה ידנית.'],
     ...rows,
   ]);
   if (err) console.error('checkout-watch alert', err);
   await db.from('payment_events').insert({
     session_id: null, source: 'checkout_watch',
-    payload: { silent: byCustomer.size, paid: paidCount, sessions: silent.map(s => s.id) },
+    payload: { silent: byCustomer.size, paid: paidCount, sessions: [...byCustomer.values()].map(s => s.id) },
     note: `שומר קופה: ${byCustomer.size} לקוחות עם ניסיון תשלום שקט (בלי הודעה מטרנזילה)`,
   });
   return Response.json({ ok: true, silent: byCustomer.size, alerted: !err });

@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Plus, Minus, ArrowRight, ArrowLeft, CalendarClock } from 'lucide-react';
 import { COMPANY } from '../config/company';
 import { MAX_BIKES_PER_ORDER, MAX_PER_LINE, useCart, type UnitCoupon } from '../context/CartContext';
-import { type CheckoutSession, AlreadyPaidError, AttemptOpenError, CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, PurchaseInvalidError, TooManyCartsError, checkCoupon, checkUnitCoupon, fetchStatus, fullPagePay, loadApplePay, openCheckout, reportBlockedFrame, reportStuck, submitToIframe }
+import { type CheckoutSession, AlreadyPaidError, AttemptOpenError, CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, PurchaseInvalidError, TooManyCartsError, checkCoupon, checkUnitCoupon, canApplePay, fetchStatus, fullPagePay, loadApplePay, openCheckout, reportBlockedFrame, reportStuck, submitToIframe }
   from '../lib/payment';
 import { dropPurchase, ensurePurchase, markPurchasePaid, purchaseToken, startNewPurchase } from '../lib/purchase';
 import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
@@ -301,6 +301,13 @@ export default function CartDrawer() {
   const submittedFrame = useRef<string | null>(null);
   const [payFrame, setPayFrame] = useState<HTMLIFrameElement | null>(null);
   const [payTimedOut, setPayTimedOut] = useState(false);
+  // בחירת אמצעי תשלום במכשיר עם Apple Pay: הסל כבר נפתח, מחכים לבחירה
+  const [payChoice, setPayChoice] = useState<{ seq: number; session: CheckoutSession } | null>(null);
+  const openPayFrame = (seq: number, session: CheckoutSession) => {
+    setPayForm({ seq, session, frame: `${TRANZILA_FRAME}-${session.session_id ?? seq}` });
+    setStep('payment');
+    loadApplePay();
+  };
   // כמה פעמים נטען חלון התשלום מאז שנשלח אליו הטופס, ומתי לאחרונה.
   // הטעינה הראשונה היא טופס הכרטיס; כל טעינה נוספת היא ניווט אחרי
   // שהלקוח לחץ "לתשלום" (3DS, עיבוד, דף שגיאה של טרנזילה).
@@ -323,6 +330,7 @@ export default function CartDrawer() {
     payLoads.current = 0;
     setLastPayLoad(null);
     setPayStuck(false);
+    setPayChoice(null);
   };
   const backToDetails = () => { abandonPayment(); setStep('details'); };
 
@@ -707,10 +715,12 @@ export default function CartDrawer() {
       // דף התשלום של טרנזילה כדף ראשי (ראה fullPagePay). החזרה
       // מטרנזילה עוברת דרך tranzila-return, שמנווט את החלון הראשי לדף התודה
       // או לדף הכשל, וזה עובד גם כשאין מסגרת.
-      if (fullPagePay()) { submitToIframe(session, '_self'); return; }
-      setPayForm({ seq, session, frame: `${TRANZILA_FRAME}-${session.session_id ?? seq}` });
-      setStep('payment');
-      loadApplePay();
+      if (fullPagePay()) {
+        // מכשיר עם Apple Pay: הלקוח בוחר (ראה canApplePay). אחרת ישר למסך מלא.
+        if (canApplePay()) { loadApplePay(); setPayChoice({ seq, session }); setOrdering(false); return; }
+        submitToIframe(session, '_self'); return;
+      }
+      openPayFrame(seq, session);
     } catch (e) {
       // שגיאה מאוחרת של ניסיון שננטש לא מוצגת ולא משנה את המצב
       if (seq !== checkoutSeq.current) return;
@@ -1203,6 +1213,29 @@ export default function CartDrawer() {
                         עם גופן מוגדל היא תפסה חצי מסך, ושדות הטופס נעלמו. */}
                     <PrivacyNote kind="order" />
                   </div>
+
+                  {payChoice && (
+                    <div role="dialog" aria-label={t.cart.payChoiceTitle} style={{
+                      position: 'absolute', inset: 0, zIndex: 8, backgroundColor: SURFACE,
+                      display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '14px', padding: '28px 24px',
+                    }}>
+                      <h4 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '19px', color: TEXT, margin: '0 0 6px', textAlign: 'center' }}>
+                        {t.cart.payChoiceTitle}
+                      </h4>
+                      <button onClick={() => { const c = payChoice; setPayChoice(null); openPayFrame(c.seq, c.session); }}
+                        style={{ padding: '16px', borderRadius: '10px', border: 'none', backgroundColor: '#000', color: '#fff', fontFamily: "-apple-system, 'Heebo', sans-serif", fontSize: '17px', fontWeight: 600, cursor: 'pointer' }}>
+                         Pay
+                      </button>
+                      <button onClick={() => { const c = payChoice; setPayChoice(null); submitToIframe(c.session, '_self'); }}
+                        style={{ padding: '15px', borderRadius: '10px', border: `1px solid ${TEXT}`, backgroundColor: 'transparent', color: TEXT, fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 700, cursor: 'pointer' }}>
+                        {t.cart.payChoiceCard}
+                      </button>
+                      <button onClick={() => { abandonPayment(); }}
+                        style={{ background: 'none', border: 'none', color: '#6A6862', fontFamily: "'Heebo', sans-serif", fontSize: '13px', cursor: 'pointer', marginTop: '4px' }}>
+                        {t.cart.backToDetails}
+                      </button>
+                    </div>
+                  )}
 
                   {/* Submit */}
                   <div style={{ padding: '14px 24px', borderTop: `1px solid ${BORDER}` }}>

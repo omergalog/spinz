@@ -224,6 +224,21 @@ try {
   if (q === '1') sessionStorage.removeItem(PAYFRAME_KEY);
 } catch { /* אחסון חסום */ }
 
+/**
+ * האם המכשיר יכול לשלם ב-Apple Pay.
+ *
+ * כפתור Apple Pay של טרנזילה עובד רק כשהסקריפט שלה רץ בעמוד שמארח את
+ * חלון התשלום (loadApplePay). במסך מלא אנחנו לא המארחים, והכפתור הופיע
+ * בלי להגיב (14.11.2026). לכן במכשיר כזה הלקוח בוחר: Apple Pay בחלון
+ * שבתוך האתר, או כרטיס במסך מלא.
+ */
+export function canApplePay(): boolean {
+  try {
+    const s = (window as unknown as { ApplePaySession?: { canMakePayments: () => boolean } }).ApplePaySession;
+    return !!s && s.canMakePayments();
+  } catch { return false; }
+}
+
 export function fullPagePay(): boolean {
   try { return sessionStorage.getItem(PAYFRAME_KEY) !== '1'; } catch { return true; }
 }

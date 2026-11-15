@@ -1229,7 +1229,7 @@ export default function CartDrawer() {
                       <h4 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '19px', color: TEXT, margin: '0 0 6px', textAlign: 'center' }}>
                         {t.cart.payChoiceTitle}
                       </h4>
-                      <button onClick={() => { const c = payChoice; setPayChoice(null); openPayFrame(c.seq, withoutFields(c.session, ['google_pay'])); }}
+                      <button onClick={() => { const c = payChoice; setPayChoice(null); const w = withoutFields(c.session, ['google_pay']); openPayFrame(c.seq, { ...w, fields: { ...w.fields, hide_cc: '1' } }); }}
                         style={{ padding: '16px', borderRadius: '10px', border: 'none', backgroundColor: '#000', color: '#fff', fontFamily: "-apple-system, 'Heebo', sans-serif", fontSize: '17px', fontWeight: 600, cursor: 'pointer' }}>
                         {t.cart.payChoiceAppleBit}
                       </button>

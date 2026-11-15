@@ -304,9 +304,9 @@ export default function CartDrawer() {
   // בחירת אמצעי תשלום במכשיר עם Apple Pay: הסל כבר נפתח, מחכים לבחירה
   const [payChoice, setPayChoice] = useState<{ seq: number; session: CheckoutSession } | null>(null);
   const openPayFrame = (seq: number, session: CheckoutSession) => {
-    // בחלון המוטמע אין ביט: שם הוא נפל אחרי החזרה מהאפליקציה (7.11)
-    if (session.fields?.bit_pay) {
-      const { bit_pay: _drop, ...fields } = session.fields;
+    // בחלון המוטמע אין ביט ו-Google Pay: שם הם נפלו (7.11)
+    if (session.fields?.bit_pay || session.fields?.google_pay) {
+      const { bit_pay: _b, google_pay: _g, ...fields } = session.fields;
       session = { ...session, fields };
     }
     setPayForm({ seq, session, frame: `${TRANZILA_FRAME}-${session.session_id ?? seq}` });
@@ -1213,6 +1213,7 @@ export default function CartDrawer() {
                         </span>
                       </div>
                       <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: MUTED_TEXT, margin: 0 }}>{t.cart.inclVat}</p>
+                      <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: MUTED_TEXT, margin: '4px 0 0' }}>{t.cart.cardsNote}</p>
                     </div>
                     {/* הודעת הפרטיות עברה מהשורה הקבועה של הכפתור לסוף הטופס: בטלפון
                         עם גופן מוגדל היא תפסה חצי מסך, ושדות הטופס נעלמו. */}
@@ -1235,6 +1236,7 @@ export default function CartDrawer() {
                         style={{ padding: '15px', borderRadius: '10px', border: `1px solid ${TEXT}`, backgroundColor: 'transparent', color: TEXT, fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 700, cursor: 'pointer' }}>
                         {bitEnabled() ? t.cart.payChoiceCardBit : t.cart.payChoiceCard}
                       </button>
+                      <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: '#6A6862', margin: 0, textAlign: 'center' }}>{t.cart.cardsNote}</p>
                       <button onClick={() => { abandonPayment(); }}
                         style={{ background: 'none', border: 'none', color: '#6A6862', fontFamily: "'Heebo', sans-serif", fontSize: '13px', cursor: 'pointer', marginTop: '4px' }}>
                         {t.cart.backToDetails}
@@ -1420,7 +1422,7 @@ export default function CartDrawer() {
 
                   <div style={{ padding: '14px 24px', borderTop: `1px solid ${BORDER}` }}>
                     <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#6A6862', lineHeight: 1.6, margin: 0, textAlign: 'center' }}>
-                      {t.cart.payNote}
+                      {t.cart.payNote} {t.cart.cardsNote}
                     </p>
                   </div>
                 </motion.div>

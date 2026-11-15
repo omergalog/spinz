@@ -18,7 +18,7 @@ const he: FaqItem[] = [
   },
   {
     q: 'אפשר לשלם בתשלומים?',
-    a: 'בהחלט. בכרטיס אשראי אפשר לפרוס עד 12 תשלומים ללא ריבית. מקבלים כרטיס אשראי ו-Apple Pay.',
+    a: 'בהחלט. בכרטיס אשראי אפשר לפרוס עד 12 תשלומים ללא ריבית. מקבלים כרטיס אשראי, ביט, Apple Pay ו-Google Pay.',
   },
   {
     q: 'לאיזה גובה מתאים כל דגם?',
@@ -58,7 +58,7 @@ const en: FaqItem[] = [
   },
   {
     q: 'Can I pay in installments?',
-    a: 'Absolutely. By credit card you can split the payment into up to 12 interest-free installments. We accept credit cards and Apple Pay.',
+    a: 'Absolutely. By credit card you can split the payment into up to 12 interest-free installments. We accept credit cards, Bit, Apple Pay and Google Pay.',
   },
   {
     q: 'Which frame size suits my height?',

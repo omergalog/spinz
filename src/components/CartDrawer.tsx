@@ -1231,7 +1231,8 @@ export default function CartDrawer() {
                       </h4>
                       <button onClick={() => { const c = payChoice; setPayChoice(null); const w = withoutFields(c.session, ['google_pay']); openPayFrame(c.seq, { ...w, fields: { ...w.fields, hide_cc: '1' } }); }}
                         style={{ padding: '16px', borderRadius: '10px', border: 'none', backgroundColor: '#000', color: '#fff', fontFamily: "-apple-system, 'Heebo', sans-serif", fontSize: '17px', fontWeight: 600, cursor: 'pointer' }}>
-                        {t.cart.payChoiceAppleBit}
+                        {/* "ביט או  Pay": הלוגו של Apple Pay נשאר משמאל לשמאל-לימין גם בעברית */}
+                        {t.cart.payChoiceBitOr} <bdi dir="ltr">{'\uf8ff'} Pay</bdi>
                       </button>
                       <button onClick={() => { const c = payChoice; setPayChoice(null); submitToIframe(withoutFields(c.session, ['bit_pay', 'apple_pay', 'google_pay']), '_self'); }}
                         style={{ padding: '15px', borderRadius: '10px', border: `1px solid ${TEXT}`, backgroundColor: 'transparent', color: TEXT, fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 700, cursor: 'pointer' }}>

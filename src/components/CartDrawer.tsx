@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Plus, Minus, ArrowRight, ArrowLeft, CalendarClock } from 'lucide-react';
 import { COMPANY } from '../config/company';
 import { MAX_BIKES_PER_ORDER, MAX_PER_LINE, useCart, type UnitCoupon } from '../context/CartContext';
-import { type CheckoutSession, AlreadyPaidError, AttemptOpenError, CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, PurchaseInvalidError, TooManyCartsError, checkCoupon, checkUnitCoupon, bitEnabled, canApplePay, fetchStatus, fullPagePay, loadApplePay, openCheckout, reportBlockedFrame, reportStuck, submitToIframe }
+import { type CheckoutSession, AlreadyPaidError, AttemptOpenError, CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, PurchaseInvalidError, TooManyCartsError, checkCoupon, checkUnitCoupon, canApplePay, fetchStatus, loadApplePay, payMode, openCheckout, reportBlockedFrame, reportStuck, submitToIframe }
   from '../lib/payment';
 import { dropPurchase, ensurePurchase, markPurchasePaid, purchaseToken, startNewPurchase } from '../lib/purchase';
 import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
@@ -303,14 +303,14 @@ export default function CartDrawer() {
   const [payTimedOut, setPayTimedOut] = useState(false);
   // בחירת אמצעי תשלום במכשיר עם Apple Pay: הסל כבר נפתח, מחכים לבחירה
   const [payChoice, setPayChoice] = useState<{ seq: number; session: CheckoutSession } | null>(null);
+  // מסיר אמצעי תשלום מהטופס לטרנזילה לפי המקום שבו הוא נפתח (ראה payMode)
+  const withoutFields = (session: CheckoutSession, drop: string[]): CheckoutSession => {
+    if (!session.fields) return session;
+    const fields = { ...session.fields };
+    for (const k of drop) delete fields[k];
+    return { ...session, fields };
+  };
   const openPayFrame = (seq: number, session: CheckoutSession) => {
-    // במסלול הרגיל (מסך מלא + Apple Pay בחלון) אין בחלון ביט ו-Google Pay:
-    // שם הם נפלו (7.11). בבדיקת "הכל בחלון" (?payfull=0, לפי טרנזילה 15.11)
-    // כל אמצעי התשלום נשארים בחלון.
-    if (fullPagePay() && (session.fields?.bit_pay || session.fields?.google_pay)) {
-      const { bit_pay: _b, google_pay: _g, ...fields } = session.fields;
-      session = { ...session, fields };
-    }
     setPayForm({ seq, session, frame: `${TRANZILA_FRAME}-${session.session_id ?? seq}` });
     setStep('payment');
     loadApplePay();
@@ -719,14 +719,13 @@ export default function CartDrawer() {
       setLastPayLoad(null);
       setPayStuck(false);
       sessionIdRef.current = session.session_id ?? null;
-      // דף התשלום של טרנזילה כדף ראשי (ראה fullPagePay). החזרה
+      // דף התשלום של טרנזילה כדף ראשי (ראה payMode). החזרה
       // מטרנזילה עוברת דרך tranzila-return, שמנווט את החלון הראשי לדף התודה
       // או לדף הכשל, וזה עובד גם כשאין מסגרת.
-      if (fullPagePay()) {
-        // מכשיר עם Apple Pay: הלקוח בוחר (ראה canApplePay). אחרת ישר למסך מלא.
-        if (canApplePay()) { loadApplePay(); setPayChoice({ seq, session }); setOrdering(false); return; }
-        submitToIframe(session, '_self'); return;
-      }
+      // ראה payMode: אייפון/מק — בחירה; אחרים — מסך מלא; ?payfull=0 — הכל בחלון
+      const mode = payMode();
+      if (mode === 'auto' && canApplePay()) { loadApplePay(); setPayChoice({ seq, session }); setOrdering(false); return; }
+      if (mode !== 'frame') { submitToIframe(session, '_self'); return; }
       openPayFrame(seq, session);
     } catch (e) {
       // שגיאה מאוחרת של ניסיון שננטש לא מוצגת ולא משנה את המצב
@@ -1230,13 +1229,13 @@ export default function CartDrawer() {
                       <h4 style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: '19px', color: TEXT, margin: '0 0 6px', textAlign: 'center' }}>
                         {t.cart.payChoiceTitle}
                       </h4>
-                      <button onClick={() => { const c = payChoice; setPayChoice(null); openPayFrame(c.seq, c.session); }}
+                      <button onClick={() => { const c = payChoice; setPayChoice(null); openPayFrame(c.seq, withoutFields(c.session, ['google_pay'])); }}
                         style={{ padding: '16px', borderRadius: '10px', border: 'none', backgroundColor: '#000', color: '#fff', fontFamily: "-apple-system, 'Heebo', sans-serif", fontSize: '17px', fontWeight: 600, cursor: 'pointer' }}>
-                         Pay
+                        {t.cart.payChoiceAppleBit}
                       </button>
-                      <button onClick={() => { const c = payChoice; setPayChoice(null); submitToIframe(c.session, '_self'); }}
+                      <button onClick={() => { const c = payChoice; setPayChoice(null); submitToIframe(withoutFields(c.session, ['bit_pay', 'apple_pay', 'google_pay']), '_self'); }}
                         style={{ padding: '15px', borderRadius: '10px', border: `1px solid ${TEXT}`, backgroundColor: 'transparent', color: TEXT, fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 700, cursor: 'pointer' }}>
-                        {bitEnabled() ? t.cart.payChoiceCardBit : t.cart.payChoiceCard}
+                        {t.cart.payChoiceCard}
                       </button>
                       <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '12px', color: '#6A6862', margin: 0, textAlign: 'center' }}>{t.cart.cardsNote}</p>
                       <button onClick={() => { abandonPayment(); }}

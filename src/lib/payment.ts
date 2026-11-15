@@ -206,20 +206,29 @@ export async function openCheckout(input: {
 /**
  * איפה נפתח דף התשלום של טרנזילה.
  *
- * מ-15.11.2026 (לפי טרנזילה, פנייה 540465754): בחלון בתוך spinzbikes.com
- * לכולם, עם כרטיס, ביט, Google Pay ו-Apple Pay, בלי מסך בחירה. Apple Pay
- * עובד רק בדומיין שלנו (רשום אצל אפל), ולא בדף של טרנזילה.
+ * auto (ברירת מחדל, 15.11.2026 ערב):
+ *  - מכשיר עם Apple Pay: מסך בחירה. "Apple Pay או ביט" → חלון בתוך האתר
+ *    (Apple Pay עובד רק בדומיין שלנו; ביט נבדק שם באייפון 15.11).
+ *    "כרטיס אשראי" → דף טרנזילה במסך מלא.
+ *  - אחרים: דף טרנזילה במסך מלא.
+ * כרטיס עם 3DS בתוך החלון נכשל בספארי ("System Error" אחרי הקוד, 13–15.11),
+ * כנראה עוגיות צד שלישי חסומות. ב-15.11 צהריים עברנו לחלון לכולם לפי
+ * טרנזילה (פנייה 540465754) — כרטיס באייפון נשבר, וחזרנו.
  *
- * 14–15.11 היה מסך מלא, כי תשלומי 3DS נתקעו בחלון בטלפון ובאינסטגרם
- * (13–14.11). בחלון יש שוב את שומר "התשלום נתקע?" ומעבר לכשל אחרי 3 דק'.
- * מסך מלא נשאר לבדיקות: ?payfull=1 (נשאר בלשונית עד ?payfull=0).
+ * לבדיקות: ?payfull=0 — הכל בחלון; ?payfull=1 — הכל במסך מלא;
+ * ?payfull=auto — חזרה לברירת המחדל. נשמר בלשונית.
  */
-const FULLPAGE_KEY = 'spinz-payfull';
+type PayMode = 'auto' | 'frame' | 'full';
+const PAYMODE_KEY = 'spinz-paymode';
 try {
   const q = new URLSearchParams(window.location.search).get('payfull');
-  if (q === '1') sessionStorage.setItem(FULLPAGE_KEY, '1');
-  if (q === '0') sessionStorage.removeItem(FULLPAGE_KEY);
+  if (q === '0') sessionStorage.setItem(PAYMODE_KEY, 'frame');
+  if (q === '1') sessionStorage.setItem(PAYMODE_KEY, 'full');
+  if (q === 'auto') sessionStorage.removeItem(PAYMODE_KEY);
 } catch { /* אחסון חסום */ }
+export function payMode(): PayMode {
+  try { const v = sessionStorage.getItem(PAYMODE_KEY); return v === 'frame' || v === 'full' ? v : 'auto'; } catch { return 'auto'; }
+}
 
 /**
  * האם המכשיר יכול לשלם ב-Apple Pay.
@@ -250,10 +259,6 @@ try {
 } catch { /* אחסון חסום */ }
 export function bitEnabled(): boolean {
   try { return sessionStorage.getItem(BIT_OFF_KEY) !== '1'; } catch { return true; }
-}
-
-export function fullPagePay(): boolean {
-  try { return sessionStorage.getItem(FULLPAGE_KEY) === '1'; } catch { return false; }
 }
 
 export function submitToIframe(s: CheckoutSession, iframeName: string) {

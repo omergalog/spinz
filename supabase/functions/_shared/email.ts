@@ -784,7 +784,7 @@ export function warrantyEnds(delivered: Date): { frame: Date; parts: Date } {
   return { frame, parts };
 }
 
-function warrantyHtml(o: WarrantyEmail): string {
+export function warrantyHtml(o: WarrantyEmail): string {
   const en = o.lang === 'en';
   const c = WARRANTY[en ? 'en' : 'he'];
   const ends = warrantyEnds(o.deliveredAt);

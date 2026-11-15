@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Plus, Minus, ArrowRight, ArrowLeft, CalendarClock } from 'lucide-react';
 import { COMPANY } from '../config/company';
 import { MAX_BIKES_PER_ORDER, MAX_PER_LINE, useCart, type UnitCoupon } from '../context/CartContext';
-import { type CheckoutSession, AlreadyPaidError, AttemptOpenError, CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, PurchaseInvalidError, TooManyCartsError, checkCoupon, checkUnitCoupon, canApplePay, fetchStatus, fullPagePay, loadApplePay, openCheckout, reportBlockedFrame, reportStuck, submitToIframe }
+import { type CheckoutSession, AlreadyPaidError, AttemptOpenError, CouponRejectedError, HoldLimitError, OrderTooLargeError, OutOfStockError, PurchaseInvalidError, TooManyCartsError, checkCoupon, checkUnitCoupon, bitEnabled, canApplePay, fetchStatus, fullPagePay, loadApplePay, openCheckout, reportBlockedFrame, reportStuck, submitToIframe }
   from '../lib/payment';
 import { dropPurchase, ensurePurchase, markPurchasePaid, purchaseToken, startNewPurchase } from '../lib/purchase';
 import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
@@ -304,6 +304,11 @@ export default function CartDrawer() {
   // בחירת אמצעי תשלום במכשיר עם Apple Pay: הסל כבר נפתח, מחכים לבחירה
   const [payChoice, setPayChoice] = useState<{ seq: number; session: CheckoutSession } | null>(null);
   const openPayFrame = (seq: number, session: CheckoutSession) => {
+    // בחלון המוטמע אין ביט: שם הוא נפל אחרי החזרה מהאפליקציה (7.11)
+    if (session.fields?.bit_pay) {
+      const { bit_pay: _drop, ...fields } = session.fields;
+      session = { ...session, fields };
+    }
     setPayForm({ seq, session, frame: `${TRANZILA_FRAME}-${session.session_id ?? seq}` });
     setStep('payment');
     loadApplePay();
@@ -1228,7 +1233,7 @@ export default function CartDrawer() {
                       </button>
                       <button onClick={() => { const c = payChoice; setPayChoice(null); submitToIframe(c.session, '_self'); }}
                         style={{ padding: '15px', borderRadius: '10px', border: `1px solid ${TEXT}`, backgroundColor: 'transparent', color: TEXT, fontFamily: "'Heebo', sans-serif", fontSize: '16px', fontWeight: 700, cursor: 'pointer' }}>
-                        {t.cart.payChoiceCard}
+                        {bitEnabled() ? t.cart.payChoiceCardBit : t.cart.payChoiceCard}
                       </button>
                       <button onClick={() => { abandonPayment(); }}
                         style={{ background: 'none', border: 'none', color: '#6A6862', fontFamily: "'Heebo', sans-serif", fontSize: '13px', cursor: 'pointer', marginTop: '4px' }}>

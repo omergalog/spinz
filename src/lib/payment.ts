@@ -177,7 +177,7 @@ export async function openCheckout(input: {
       Authorization: `Bearer ${session?.access_token ??
         (supabase as unknown as { supabaseKey: string }).supabaseKey}`,
     },
-    body: JSON.stringify(attribution ? { ...input, attribution } : input),
+    body: JSON.stringify({ ...input, ...(attribution ? { attribution } : {}), ...(bitEnabled() ? { bit: true } : {}) }),
   });
 
   const body = await res.json().catch(() => ({}));
@@ -237,6 +237,22 @@ export function canApplePay(): boolean {
     const s = (window as unknown as { ApplePaySession?: { canMakePayments: () => boolean } }).ApplePaySession;
     return !!s && s.canMakePayments();
   } catch { return false; }
+}
+
+/**
+ * ביט: מצב בדיקה בקישור נסתר ?bit=1 (נשאר בלשונית עד ?bit=0). השרת מוסיף
+ * את ביט לדף התשלום רק כשהאתר מבקש. ביט מוצג רק במסך המלא: בחלון המוטמע
+ * הוא נפל אחרי החזרה מהאפליקציה (7.11).
+ */
+// ביט פעיל לכולם. ?bit=0 מכבה אותו בלשונית הזו בלבד (לבדיקות).
+const BIT_OFF_KEY = 'spinz-bit-off';
+try {
+  const q = new URLSearchParams(window.location.search).get('bit');
+  if (q === '0') sessionStorage.setItem(BIT_OFF_KEY, '1');
+  if (q === '1') sessionStorage.removeItem(BIT_OFF_KEY);
+} catch { /* אחסון חסום */ }
+export function bitEnabled(): boolean {
+  try { return sessionStorage.getItem(BIT_OFF_KEY) !== '1'; } catch { return true; }
 }
 
 export function fullPagePay(): boolean {

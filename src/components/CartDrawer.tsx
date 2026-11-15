@@ -304,8 +304,10 @@ export default function CartDrawer() {
   // בחירת אמצעי תשלום במכשיר עם Apple Pay: הסל כבר נפתח, מחכים לבחירה
   const [payChoice, setPayChoice] = useState<{ seq: number; session: CheckoutSession } | null>(null);
   const openPayFrame = (seq: number, session: CheckoutSession) => {
-    // בחלון המוטמע אין ביט ו-Google Pay: שם הם נפלו (7.11)
-    if (session.fields?.bit_pay || session.fields?.google_pay) {
+    // במסלול הרגיל (מסך מלא + Apple Pay בחלון) אין בחלון ביט ו-Google Pay:
+    // שם הם נפלו (7.11). בבדיקת "הכל בחלון" (?payfull=0, לפי טרנזילה 15.11)
+    // כל אמצעי התשלום נשארים בחלון.
+    if (fullPagePay() && (session.fields?.bit_pay || session.fields?.google_pay)) {
       const { bit_pay: _b, google_pay: _g, ...fields } = session.fields;
       session = { ...session, fields };
     }

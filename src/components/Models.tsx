@@ -8,7 +8,7 @@ import { supabase } from '../lib/supabase';
 import { fetchApprovedReviews } from '../lib/reviews';
 import { useLang, useT, useDir, localizePath } from '../i18n/LanguageContext';
 import { arrivalLabelIn, discountLabelIn, usePresale } from '../config/presale';
-import { checkCoupon, checkUnitCoupon } from '../lib/payment';
+import { checkCoupon } from '../lib/payment';
 import { TRACKING_STARTED_EVENT, trackProductView } from '../lib/track';
 
 const DARK   = '#1C1C1C';
@@ -167,18 +167,11 @@ export default function Models() {
     });
   }, [added]);
 
-  const { addItem, coupon, setCoupon, addUnitCoupon } = useCart();
+  const { addItem, coupon } = useCart();
 
-  // תצוגת הקופון. ההנחה מחושבת בשרת — כאן רק מציגים את התוצאה, ואותה
-  // פונקציה עצמה תקבע את הסכום שייגבה בפועל.
-  const [couponInput, setCouponInput] = useState(coupon);
-  // failed: הבדיקה לא הגיעה לשרת או לא קיבלה תשובה. זה לא "קוד לא תקף",
-  // והקוד השמור לא נמחק בגללה.
-  const [couponState, setCouponState] = useState<'idle' | 'checking' | 'ok' | 'bad' | 'failed'>(coupon ? 'ok' : 'idle');
+  // מחיר אחרי קופון ששמור בעגלה. ההנחה מחושבת בשרת — כאן רק מציגים.
+  // את הקוד עצמו מזינים רק בעגלה (15.11.2026).
   const [couponPrice, setCouponPrice] = useState<number | null>(null);
-  // קוד לזוג בודד (scope='unit'). לא נשמר כקוד ההזמנה: הוא נצמד לזוג
-  // שנוסף לעגלה מכאן.
-  const [unitCode, setUnitCode] = useState<string | null>(null);
   const color = colorVariants[selectedColor];
   const colorLabel = t.product.colors[color.id as keyof typeof t.product.colors];
   const size  = sizeVariants[selectedSize];
@@ -267,12 +260,6 @@ export default function Models() {
       color.skuCode,
       size.id,
     );
-    // קוד לזוג נצמד לזוג שנוסף עכשיו, ונגמר בו. לחיצה נוספת מוסיפה זוג
-    // במחיר הרגיל, לא עוד שימוש בקוד.
-    if (unitCode && couponPrice != null) {
-      addUnitCoupon(`spinz-${size.id}-${color.id}`, { code: unitCode, discount: Math.max(0, shownPrice - couponPrice) });
-      setUnitCode(null); setCouponInput(''); setCouponPrice(null); setCouponState('idle');
-    }
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
@@ -280,41 +267,14 @@ export default function Models() {
   // מחיר אחרי קופון. נבדק מחדש בכל שינוי וריאנט או מחיר, אחרת אפשר
   // היה להישאר עם מספר ישן על המסך.
   useEffect(() => {
-    if (unitCode) {
-      let alive = true;
-      checkUnitCoupon(unitCode, shownPrice, 0).then(r => {
-        if (!alive) return;
-        setCouponPrice(r.valid ? r.price ?? null : null);
-        setCouponState(r.valid ? 'ok' : r.failed ? 'failed' : 'bad');
-      });
-      return () => { alive = false; };
-    }
     if (!coupon) { setCouponPrice(null); return; }
     let alive = true;
     checkCoupon(coupon, shownPrice, 1).then(r => {
       if (!alive) return;
       setCouponPrice(r.valid ? r.total : null);
-      setCouponState(r.valid ? 'ok' : r.failed ? 'failed' : 'bad');
     });
     return () => { alive = false; };
-  }, [coupon, unitCode, shownPrice]);
-
-  const applyCoupon = async () => {
-    const code = couponInput.trim();
-    if (!code) { setCoupon(''); setCouponState('idle'); setCouponPrice(null); return; }
-    setCouponState('checking');
-    const r = await checkCoupon(code, shownPrice, 1);
-    // כשל רשת סומן כקוד לא תקף ומחק את קוד ההזמנה השמור (גם בעגלה).
-    // עכשיו: הודעה נפרדת, והקוד השמור והקוד לזוג נשארים כפי שהיו.
-    if (r.failed) { setCouponState('failed'); return; }
-    if (r.valid) { setUnitCode(null); setCoupon(code); setCouponPrice(r.total); setCouponState('ok'); return; }
-    if (r.reason === 'UNIT_SCOPE') {
-      const u = await checkUnitCoupon(code, shownPrice, 0);
-      if (u.failed) { setCouponState('failed'); return; }
-      if (u.valid && u.code) { setCoupon(''); setUnitCode(u.code); setCouponPrice(u.price ?? null); setCouponState('ok'); return; }
-    }
-    setUnitCode(null); setCoupon(''); setCouponPrice(null); setCouponState('bad');
-  };
+  }, [coupon, shownPrice]);
 
   // The upper block (label → heading → subtitle → rating → presale banner).
   // Rendered in two spots: on mobile it stays above the selectors; on desktop
@@ -480,69 +440,8 @@ export default function Models() {
           הלא נכון. הכפתור צמוד לשדה כדי שייקראו כיחידה אחת. */}
       {/* בלי maxWidth: ב-320px השדה היה צר מכפתור "הוסיפו לעגלה" שמתחתיו
           ונצמד לימין, ולכן נראה לא מיושר. עכשיו הוא ברוחב הכפתור. */}
-      <div style={{ marginTop: '16px' }}>
-        {/* htmlFor/id: בלעדיהם התווית נראית קשורה לשדה אבל אינה
-            קשורה אליו, וקורא מסך מכריז על שדה בלי שם. */}
-        <label htmlFor="product-coupon" style={{
-          display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '12px',
-          color: MUTED, marginBottom: '7px',
-        }}>
-          {t.cart.couponHint}
-        </label>
-        <div style={{
-          display: 'flex', alignItems: 'stretch', backgroundColor: '#FFFFFF',
-          border: `1px solid ${couponState === 'bad' ? '#FF6B6B'
-                    : couponState === 'ok' ? '#3B6B33' : '#E0DCD4'}`,
-          borderRadius: '8px', overflow: 'hidden',
-          transition: 'border-color 0.2s',
-        }}>
-          <input
-            id="product-coupon"
-            type="text"
-            dir="ltr"
-            value={couponInput}
-            onChange={e => { setCouponInput(e.target.value.toUpperCase()); setCouponState('idle'); }}
-            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); applyCoupon(); } }}
-            placeholder={t.cart.couponPlaceholder}
-            style={{
-              flex: 1, minWidth: 0, padding: '11px 14px',
-              backgroundColor: 'transparent', border: 'none', outline: 'none',
-              color: DARK, fontFamily: "'Heebo', sans-serif", fontSize: '14px',
-              letterSpacing: '0.06em',
-              direction: 'ltr', textAlign: 'left',
-            }}
-          />
-          <button
-            type="button"
-            onClick={applyCoupon}
-            disabled={couponState === 'checking' || !couponInput.trim()}
-            style={{
-              padding: '0 18px', backgroundColor: '#F5F2EC',
-              border: 'none', borderInlineStart: '1px solid #E0DCD4',
-              color: couponInput.trim() ? DARK : '#6A6862',
-              fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 700,
-              cursor: couponInput.trim() ? 'pointer' : 'default',
-              whiteSpace: 'nowrap', transition: 'color 0.2s',
-            }}>
-            {couponState === 'checking' ? '…' : t.cart.couponApply}
-          </button>
-        </div>
-        {couponState === 'bad' && (
-          <p style={{ color: '#FF6B6B', fontSize: '11.5px', margin: '5px 0 0', fontFamily: "'Heebo', sans-serif" }}>
-            {t.cart.couponBad}
-          </p>
-        )}
-        {couponState === 'failed' && (
-          <p role="status" style={{ color: '#7E6129', fontSize: '11.5px', margin: '5px 0 0', fontFamily: "'Heebo', sans-serif" }}>
-            {t.cart.couponCheckFailedRetry}
-          </p>
-        )}
-        {couponState === 'ok' && couponPrice != null && (
-          <p style={{ color: '#3B6B33', fontSize: '11.5px', margin: '5px 0 0', fontFamily: "'Heebo', sans-serif" }}>
-            {t.cart.couponOk}
-          </p>
-        )}
-      </div>
+      {/* שדה הקופון הוסר מכאן (15.11.2026, בקשת עומר): קוד הנחה מזינים רק
+          בעגלה. קופון ששמור בעגלה עדיין מוצג כאן במחיר. */}
     </div>
   );
 

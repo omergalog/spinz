@@ -204,24 +204,21 @@ export async function openCheckout(input: {
  * בכותרת Referer.
  */
 /**
- * תשלום במסך מלא: דף התשלום של טרנזילה נפתח כדף ראשי ולא בתוך מסגרת.
+ * איפה נפתח דף התשלום של טרנזילה.
  *
- * למה: בטלפונים, ובמיוחד בדפדפן של אינסטגרם, תשלומי כרטיס עם אימות 3DS
- * נתקעו בתוך המסגרת בלי שום תשובה מטרנזילה (13–14.11.2026). ההשערה: הדפדפן
- * חוסם לטרנזילה את העוגיות כשהיא מוטמעת באתר אחר, ואחרי האימות היא לא
- * מזהה את העסקה. כדף ראשי העוגיות שלה אינן "זרות".
+ * מ-15.11.2026 (לפי טרנזילה, פנייה 540465754): בחלון בתוך spinzbikes.com
+ * לכולם, עם כרטיס, ביט, Google Pay ו-Apple Pay, בלי מסך בחירה. Apple Pay
+ * עובד רק בדומיין שלנו (רשום אצל אפל), ולא בדף של טרנזילה.
  *
- * נבדק 14.11.2026 14:29: אייפון בתוך אינסטגרם, אימות 3DS מלא — עבר, וגם
- * Apple Pay מופיע. מאז זו ברירת המחדל לכולם.
- *
- * הדרך הישנה (מסגרת בתוך האתר) נשארה לבדיקות בלבד: ?payfull=0 (נשאר
- * בלשונית עד ?payfull=1).
+ * 14–15.11 היה מסך מלא, כי תשלומי 3DS נתקעו בחלון בטלפון ובאינסטגרם
+ * (13–14.11). בחלון יש שוב את שומר "התשלום נתקע?" ומעבר לכשל אחרי 3 דק'.
+ * מסך מלא נשאר לבדיקות: ?payfull=1 (נשאר בלשונית עד ?payfull=0).
  */
-const PAYFRAME_KEY = 'spinz-payframe';
+const FULLPAGE_KEY = 'spinz-payfull';
 try {
   const q = new URLSearchParams(window.location.search).get('payfull');
-  if (q === '0') sessionStorage.setItem(PAYFRAME_KEY, '1');
-  if (q === '1') sessionStorage.removeItem(PAYFRAME_KEY);
+  if (q === '1') sessionStorage.setItem(FULLPAGE_KEY, '1');
+  if (q === '0') sessionStorage.removeItem(FULLPAGE_KEY);
 } catch { /* אחסון חסום */ }
 
 /**
@@ -256,7 +253,7 @@ export function bitEnabled(): boolean {
 }
 
 export function fullPagePay(): boolean {
-  try { return sessionStorage.getItem(PAYFRAME_KEY) !== '1'; } catch { return true; }
+  try { return sessionStorage.getItem(FULLPAGE_KEY) === '1'; } catch { return false; }
 }
 
 export function submitToIframe(s: CheckoutSession, iframeName: string) {

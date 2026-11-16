@@ -17,9 +17,10 @@ const he: SpecText[] = [
     body: 'צמיגי Kenda נגד פנצ׳רים ברוחב 32 מ״מ. שכבת ההגנה מפחיתה את הסיכוי לפנצ׳ר מזכוכיות ומקוצים בעיר, והרוחב נותן אחיזה ונוחות על אספלט ועל מהמורות.',
   },
   {
-    title: 'יחס העברה חכם לעיר',
-    sub: 'גלגל שיניים 46T',
-    body: 'יחס העברה שנבחר לרכיבה עירונית: מתאים למישורים ולעליות מתונות, בלי הילוכים לתחזק.',
+    // 46T קדמי ו-Freewheel 16T אחורי — לפי הזמנת הרכש מהיצרן (16.11.2026).
+    title: 'סינגל ספיד חכם לעיר',
+    sub: '46T קדמי · 16T אחורי',
+    body: 'יחס העברה אחד שנבחר לרכיבה עירונית: מתאים למישורים ולעליות מתונות, בלי הילוכים לתחזק ובלי כבלי הילוכים לכוון. גלגל חופשי מאחור מאפשר להפסיק לדווש בירידות.',
   },
   {
     title: 'הנדסת חומרים חכמה',
@@ -62,9 +63,9 @@ const en: SpecText[] = [
     body: 'Kenda anti-puncture tires, 32 mm wide. The protective layer lowers the chance of flats from glass and thorns, and the width gives grip and comfort on asphalt and bumps.',
   },
   {
-    title: 'Gearing tuned for the city',
-    sub: '46T chainring',
-    body: 'A ratio chosen for city riding: suited to flats and gentle climbs, with no gears to maintain.',
+    title: 'A smart city single speed',
+    sub: '46T front · 16T rear',
+    body: 'One gear ratio chosen for city riding: right for flats and gentle climbs, with no gears to maintain and no shift cables to adjust. A freewheel at the back lets you coast downhill.',
   },
   {
     title: 'Smart material pairing',

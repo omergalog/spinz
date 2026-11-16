@@ -45,9 +45,10 @@ const he: SpecText[] = [
     body: 'שני בלמי יד נפרדים, אחד לכל גלגל, לבלימה מדורגת בתנועה העירונית.',
   },
   {
-    title: 'פדלים רחבים משודרגים',
-    sub: 'שטח דריכה רחב',
-    body: 'פדלים רחבים מפלסטיק קשיח בעיצוב נקי, עם שטח דריכה גדול יותר לדיווש נוח בכל נעל.',
+    // לפי הזמנת הרכש: Plastic Pedal M904; Accessories: Front & Rear Reflectors, Wheel Reflectors, Bell (16.11.2026).
+    title: 'מאובזרות מהקופסה',
+    sub: 'פדלים, פעמון ומחזירי אור',
+    body: 'פדלים רחבים מפלסטיק קשיח לדיווש נוח בכל נעל, פעמון, ומחזירי אור מלפנים, מאחור ובגלגלים. הכל כלול בקופסה, בלי לקנות תוספות.',
   },
 ];
 
@@ -88,9 +89,9 @@ const en: SpecText[] = [
     body: 'Two separate hand brakes, one for each wheel, for progressive braking in city traffic.',
   },
   {
-    title: 'Wide upgraded pedals',
-    sub: 'Wide platform',
-    body: 'Wide, clean-looking pedals in rigid composite, with a larger platform for comfortable pedaling in any shoe.',
+    title: 'Equipped out of the box',
+    sub: 'Pedals, bell and reflectors',
+    body: 'Wide hard-plastic pedals for comfortable riding in any shoe, a bell, and front, rear and wheel reflectors. It’s all in the box, no extras to buy.',
   },
 ];
 

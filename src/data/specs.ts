@@ -10,10 +10,11 @@ const he: SpecText[] = [
     body: 'שלדת אלומיניום המעניקה תחושת קלילות יוצאת דופן. מאפשרת זינוק זריז בכל רמזור ונוחה לנשיאה אל תוך הדירה או המשרד במאמץ מינימלי.',
   },
   {
-    // "עמידים לפנצ'ר" הוסר: אין מסמך יצרן שמאשר הגנה מפני פנצ'ר בדגם הזה.
+    // "אנטי פנצ'ר": בהזמנת הרכש מהיצרן — "Kenda Anti-Puncture Tire 700C × 32C" (16.11.2026).
+    // הדגם המדויק לא ידוע, ולכן "מפחיתה את הסיכוי" ולא "חסין/עמיד".
     title: 'צמיגים רחבים לעיר',
-    sub: 'Kenda 32 מ״מ',
-    body: 'צמיגים אורבניים ברוחב 32 מ״מ, שנותנים אחיזה ונוחות על אספלט ועל מהמורות.',
+    sub: 'Kenda 32 מ״מ · אנטי פנצ׳ר',
+    body: 'צמיגי Kenda נגד פנצ׳רים ברוחב 32 מ״מ. שכבת ההגנה מפחיתה את הסיכוי לפנצ׳ר מזכוכיות ומקוצים בעיר, והרוחב נותן אחיזה ונוחות על אספלט ועל מהמורות.',
   },
   {
     title: 'יחס העברה חכם לעיר',
@@ -57,8 +58,8 @@ const en: SpecText[] = [
   },
   {
     title: 'Wide city tires',
-    sub: 'Kenda 32 mm',
-    body: '32 mm urban tires that give grip and comfort on asphalt and over potholes.',
+    sub: 'Kenda 32 mm · anti-puncture',
+    body: 'Kenda anti-puncture tires, 32 mm wide. The protective layer lowers the chance of flats from glass and thorns, and the width gives grip and comfort on asphalt and bumps.',
   },
   {
     title: 'Gearing tuned for the city',

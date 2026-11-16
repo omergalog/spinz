@@ -6,7 +6,7 @@ export type SpecText = { title: string; sub: string; body: string };
 const he: SpecText[] = [
   {
     title: 'קלילות עירונית',
-    sub: 'שלדת אלומיניום',
+    sub: 'שלדת אלומיניום · משקל 10 ק״ג',
     body: 'שלדת אלומיניום המעניקה תחושת קלילות יוצאת דופן. מאפשרת זינוק זריז בכל רמזור ונוחה לנשיאה אל תוך הדירה או המשרד במאמץ מינימלי.',
   },
   {
@@ -52,7 +52,7 @@ const he: SpecText[] = [
 const en: SpecText[] = [
   {
     title: 'Light on its feet',
-    sub: 'Aluminum frame',
+    sub: 'Aluminum frame · 10 kg',
     body: 'An aluminum frame that feels remarkably light. Quick off the line at every traffic light, and easy to carry up to your apartment or office without breaking a sweat.',
   },
   {

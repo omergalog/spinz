@@ -66,10 +66,19 @@ try {
 const bikes = rows.filter(r => r.category === 'bike' && /^spinz-[a-z]+-\d+$/.test(r.slug) && COLORS[r.slug.split('-')[1]]);
 const tees = rows.filter(r => r.category === 'merch' && TEES[r.slug.replace(/-[a-z]+-[a-z]+$/, '')]);
 
+// מדיניות ההחזרות לפי התקנון (סעיף 4): 14 ימים, החזר מלא, בלי דמי ביטול,
+// החזרה בדואר על חשבון הלקוח. זהה למה שהוזן ב-Merchant Center (17.11.2026).
+const returnPolicy = {
+  '@type': 'MerchantReturnPolicy', applicableCountry: 'IL',
+  returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow', merchantReturnDays: 14,
+  returnMethod: 'https://schema.org/ReturnByMail', returnFees: 'https://schema.org/ReturnFeesCustomerResponsibility',
+  refundType: 'https://schema.org/FullRefund', merchantReturnLink: abs('/regulations'),
+};
+
 const offer = (r, url) => ({
   '@type': 'Offer', url, priceCurrency: 'ILS', price: priceOf(r).toFixed(2),
   availability: inStock(r) ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-  itemCondition: 'https://schema.org/NewCondition', shippingDetails,
+  itemCondition: 'https://schema.org/NewCondition', shippingDetails, hasMerchantReturnPolicy: returnPolicy,
 });
 
 const bikeGroup = lang => {
@@ -83,6 +92,7 @@ const bikeGroup = lang => {
       return {
         '@type': 'Product', sku: r.slug,
         name: `${BIKE[lang].name} – ${COLORS[color][lang]}, ${lang === 'en' ? 'size' : 'מידה'} ${size}`,
+        description: BIKE[lang].desc,
         image: abs(COLORS[color].image), color: COLORS[color][lang], size: `${size} (${SIZES[size]?.[lang] ?? ''})`,
         offers: offer(r, url),
       };
@@ -98,7 +108,7 @@ const teeGroups = lang => Object.entries(TEES).map(([base, t]) => {
     productGroupID: base, url, variesBy: ['https://schema.org/size'],
     hasVariant: tees.filter(r => r.slug.startsWith(base + '-')).map(r => {
       const size = r.slug.split('-').pop().toUpperCase();
-      return { '@type': 'Product', sku: r.slug, name: `${BRAND} ${t.name} – ${t.color[lang]} ${size}`,
+      return { '@type': 'Product', sku: r.slug, name: `${BRAND} ${t.name} – ${t.color[lang]} ${size}`, description: t[lang],
                image: abs(t.image), color: t.color[lang], size, offers: offer(r, url) };
     }),
   };

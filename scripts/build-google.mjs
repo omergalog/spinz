@@ -25,7 +25,7 @@ const COLORS = {
   beige: { he: "בז'",      en: 'Beige',       image: '/assets/bike-beige-v3.png' },
   olive: { he: 'ירוק זית', en: 'Olive green', image: '/assets/bike-olive-v3.png' },
 };
-const SIZES = { '54': { he: 'גובה 170–180 ס״מ', en: 'rider height 170–180 cm' }, '57': { he: 'גובה 180–188 ס״מ', en: 'rider height 180–188 cm' } };
+const SIZES = { '54': { he: 'גובה 168–178 ס״מ', en: 'rider height 168–178 cm' }, '57': { he: 'גובה 178–187 ס״מ', en: 'rider height 178–187 cm' } };
 const BIKE = {
   he: { name: 'SPINZ Urban – אופני עיר סינגל ספיד', desc: 'אופני עיר סינגל ספיד עם שלדת אלומיניום, משקל 10 ק״ג, צמיגי Kenda 32 מ״מ נגד פנצ׳רים, 46T/16T עם גלגל חופשי, בלם קדמי ואחורי. כולל פדלים, פעמון ומחזירי אור. משלוח עד הבית כלול במחיר.' },
   en: { name: 'SPINZ Urban – single-speed city bike', desc: 'Single-speed city bike with an aluminum frame, 10 kg, Kenda 32 mm anti-puncture tires, 46T/16T with a freewheel, front and rear brakes. Pedals, bell and reflectors included. Home delivery included in the price.' },

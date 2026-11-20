@@ -13,7 +13,7 @@ const models: BikeModel[] = [
   {
     id: 'spinz-54',
     name: 'SPINZ 54',
-    tagline: 'גובה 170–180 ס״מ',
+    tagline: 'גובה 168–178 ס״מ',
     image: '/assets/bike-black.png',
     price: 2290,
     accentColor: '#C9A870',
@@ -26,7 +26,7 @@ const models: BikeModel[] = [
   {
     id: 'spinz-57',
     name: 'SPINZ 57',
-    tagline: 'גובה 180–188 ס״מ',
+    tagline: 'גובה 178–187 ס״מ',
     image: '/assets/bike-black.png',
     price: 2290,
     accentColor: '#C9A870',
@@ -45,8 +45,8 @@ export const colorVariants = [
 ];
 
 export const sizeVariants = [
-  { id: '54', label: '54', range: 'גובה 170–180 ס״מ' },
-  { id: '57', label: '57', range: 'גובה 180–188 ס״מ' },
+  { id: '54', label: '54', range: 'גובה 168–178 ס״מ' },
+  { id: '57', label: '57', range: 'גובה 178–187 ס״מ' },
 ];
 
 export default models;

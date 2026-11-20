@@ -161,7 +161,7 @@ const buildProducts = (lang: Lang): SearchDoc[] => colorVariants.flatMap(c =>
     to: '/bikes',
     keywords: [
       c.label, s.label, ...(lang === 'en' ? ['buy', 'order', 'height'] : ['לקנות', 'להזמין', 'גובה']),
-      ...(s.id === '54' ? heightRange(165, 180) : heightRange(180, 193)),
+      ...(s.id === '54' ? heightRange(163, 178) : heightRange(178, 192)),
     ],
   })),
 );

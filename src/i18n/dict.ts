@@ -197,8 +197,8 @@ export const dict = {
         cta: 'בחרו את שלכם ←',
         riderHeight: 'גובה רוכב:',
         items: [
-          { height: '170–180 ס״מ', body: 'שלדה קומפקטית וזריזה, מתאימה לרכיבה עירונית קצרה ולמי שמחפש תחושת שליטה מלאה. קלה לתמרון בין מכוניות ובשבילים צרים.' },
-          { height: '180–188 ס״מ', body: 'שלדה מרווחת יותר, עם ישיבה מתוחה מעט יותר. מתאימה לרוכבים גבוהים ולמרחקים ארוכים יותר, למי שמחפש יציבות ושיוט חלק.' },
+          { height: '168–178 ס״מ', body: 'שלדה קומפקטית וזריזה, מתאימה לרכיבה עירונית קצרה ולמי שמחפש תחושת שליטה מלאה. קלה לתמרון בין מכוניות ובשבילים צרים.' },
+          { height: '178–187 ס״מ', body: 'שלדה מרווחת יותר, עם ישיבה מתוחה מעט יותר. מתאימה לרוכבים גבוהים ולמרחקים ארוכים יותר, למי שמחפש יציבות ושיוט חלק.' },
         ],
         colorDesc: {
           mat: 'הקלאסיקה. שחור עמוק ומאט שמשתלב עם הכל ונראה נקי.',
@@ -324,7 +324,7 @@ export const dict = {
       quotaFew: (n: number, c: string, sz: string) => `נשארו רק ${n} במחיר השקה · ${c} ${sz}`,
       quotaLeft: (n: number, c: string, sz: string) => `${n} יחידות במחיר השקה · ${c} ${sz}`,
       colors: { mat: 'שחור מט', beige: "בז'", olive: 'ירוק זית' },
-      heights: { '54': 'גובה 170–180 ס״מ', '57': 'גובה 180–188 ס״מ' },
+      heights: { '54': 'גובה 168–178 ס״מ', '57': 'גובה 178–187 ס״מ' },
     },
     cart: {
       title: 'עגלת קניות',
@@ -616,8 +616,8 @@ export const dict = {
         cta: 'Choose yours →',
         riderHeight: 'Rider height:',
         items: [
-          { height: '170–180 cm', body: 'A compact, nimble frame, suited to short city trips and riders who want full control. Easy to thread between cars and down narrow lanes.' },
-          { height: '180–188 cm', body: 'A roomier frame with a slightly more stretched-out position. Suits taller riders and longer distances, for anyone after stability and smooth cruising.' },
+          { height: '168–178 cm', body: 'A compact, nimble frame, suited to short city trips and riders who want full control. Easy to thread between cars and down narrow lanes.' },
+          { height: '178–187 cm', body: 'A roomier frame with a slightly more stretched-out position. Suits taller riders and longer distances, for anyone after stability and smooth cruising.' },
         ],
         colorDesc: {
           mat: 'The classic. A deep matte black that goes with everything and looks clean.',
@@ -767,7 +767,7 @@ export const dict = {
       quotaFew: (n: number, c: string, sz: string) => `Only ${n} left at launch price · ${c} ${sz}`,
       quotaLeft: (n: number, c: string, sz: string) => `${n} units at launch price · ${c} ${sz}`,
       colors: { mat: 'Matte Black', beige: 'Beige', olive: 'Olive Green' },
-      heights: { '54': 'Rider height 170–180 cm', '57': 'Rider height 180–188 cm' },
+      heights: { '54': 'Rider height 168–178 cm', '57': 'Rider height 178–187 cm' },
     },
     cart: {
       title: 'Your cart',

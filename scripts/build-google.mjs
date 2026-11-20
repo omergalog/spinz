@@ -19,10 +19,11 @@ const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://ayrwfyutpbkepnyjk
 const ANON = process.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_Yx3yf3sJdBr-I6fE5sQ44Q_BRiOttxN';
 
 const BRAND = 'SPINZ';
+// תמונות PNG לגוגל: ב-20.11 Merchant Center לא עיבד את ה-webp של השחור מט ("התמונה לא עובדה").
 const COLORS = {
-  mat:   { he: 'שחור מט',  en: 'Matte black', image: '/assets/bike-mat-v3.webp' },
-  beige: { he: "בז'",      en: 'Beige',       image: '/assets/bike-beige-v3.webp' },
-  olive: { he: 'ירוק זית', en: 'Olive green', image: '/assets/bike-olive-v3.webp' },
+  mat:   { he: 'שחור מט',  en: 'Matte black', image: '/assets/bike-mat-v3.png' },
+  beige: { he: "בז'",      en: 'Beige',       image: '/assets/bike-beige-v3.png' },
+  olive: { he: 'ירוק זית', en: 'Olive green', image: '/assets/bike-olive-v3.png' },
 };
 const SIZES = { '54': { he: 'גובה 170–180 ס״מ', en: 'rider height 170–180 cm' }, '57': { he: 'גובה 180–188 ס״מ', en: 'rider height 180–188 cm' } };
 const BIKE = {

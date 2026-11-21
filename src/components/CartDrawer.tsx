@@ -1119,78 +1119,8 @@ export default function CartDrawer() {
                       </div>
                     ))}
 
-                    {/* Coupon */}
-                    <div>
-                      <label htmlFor="cart-coupon" style={{ display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: '#6A6862', letterSpacing: '0.1em', marginBottom: '6px', textTransform: 'uppercase' }}>
-                        {t.cart.couponHint}
-                      </label>
-                      <div style={{
-                        display: 'flex', alignItems: 'stretch', backgroundColor: SUBTLE,
-                        border: `1px solid ${draftCheck && draftCheck.status !== 'checking' ? ERROR_TEXT
-                                  : appliedStatus === 'ok' && draftCode === appliedCode ? '#3B6B33' : BORDER}`,
-                        borderRadius: '8px', overflow: 'hidden',
-                      }}>
-                        <input
-                          id="cart-coupon"
-                          type="text"
-                          dir="ltr"
-                          placeholder={t.cart.couponPlaceholder}
-                          value={coupon}
-                          onChange={e => {
-                            // טיוטה בלבד: הקוד שהוחל לא משתנה עד "החל" מצליח.
-                            draftSeq.current += 1;
-                            setCoupon(e.target.value.toUpperCase());
-                            setDraftCheck(null);
-                          }}
-                          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); if (draftCheck?.status !== 'checking') applyDraft(); } }}
-                          style={{
-                            flex: 1, minWidth: 0, padding: '11px 14px',
-                            backgroundColor: 'transparent', border: 'none', outline: 'none',
-                            color: TEXT, fontFamily: "'Heebo', sans-serif", fontSize: '14px',
-                            letterSpacing: '0.06em', direction: 'ltr', textAlign: 'left',
-                          }}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => { applyDraft(); }}
-                          disabled={draftCheck?.status === 'checking' || !draftCode || draftCode === appliedCode}
-                          style={{
-                            padding: '0 18px', backgroundColor: '#EFEBE3',
-                            border: 'none', borderInlineStart: `1px solid ${BORDER}`,
-                            color: draftCode && draftCode !== appliedCode ? TEXT : '#B5B1AA',
-                            fontFamily: "'Heebo', sans-serif", fontSize: '13px', fontWeight: 700,
-                            cursor: draftCode && draftCode !== appliedCode ? 'pointer' : 'default', whiteSpace: 'nowrap',
-                          }}>
-                          {draftCheck?.status === 'checking' ? '…' : t.cart.couponApply}
-                        </button>
-                      </div>
-                      {draftCheck?.status === 'bad' && (
-                        <p role="alert" style={{ color: ERROR_TEXT, fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>
-                          {draftCheck.unitScope ? t.cart.couponUnitScope : t.cart.couponBad}
-                        </p>
-                      )}
-                      {draftCheck?.status === 'error' && (
-                        <p role="alert" style={{ color: ERROR_TEXT, fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>
-                          {t.cart.couponCheckFailed}{' '}
-                          <button type="button" onClick={() => { applyDraft(); }} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: ERROR_TEXT, fontWeight: 700, textDecoration: 'underline', textUnderlineOffset: '2px', fontFamily: 'inherit', fontSize: 'inherit' }}>{t.cart.couponRetry}</button>
-                        </p>
-                      )}
-                      {!draftCheck && draftCode && draftCode !== appliedCode && (
-                        <p style={{ color: MUTED_TEXT, fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>{t.cart.couponDraftPending}</p>
-                      )}
-                      {/* הקוד שקובע את הסכום, ומצבו מול העגלה הנוכחית */}
-                      {appliedCode && (
-                        <p aria-live="polite" style={{ color: appliedStatus === 'bad' || appliedStatus === 'error' ? ERROR_TEXT : '#3B6B33', fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}>
-                          {t.cart.couponActive}: <span dir="ltr" style={{ fontWeight: 700 }}>{appliedCode}</span>{' · '}
-                          {appliedStatus === 'ok' ? t.cart.couponOk
-                            : appliedStatus === 'pending' ? t.cart.couponUpdating
-                            : appliedStatus === 'error' ? t.cart.couponCheckFailed
-                            : appliedStatus === 'bad' ? t.cart.couponInvalidForCart(appliedCode) : ''}
-                          {couponLinks}
-                        </p>
-                      )}
-                    </div>
-
+                    {/* קוד הנחה: מ-20.11.2026 רק "+ קוד הנחה לזוג הזה" בשורת האופניים בעגלה
+                        (בקשת עומר). קוד הזמנה שכבר שמור (למשל מקישור) עדיין מוצג בסיכום עם הסרה. */}
                     {/* Summary */}
                     <div style={{ backgroundColor: SUBTLE, border: `1px solid ${BORDER}`, borderRadius: '8px', padding: '14px 16px', marginTop: '8px' }}>
                       {unitDiscTotal > 0 && (

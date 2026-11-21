@@ -1138,7 +1138,6 @@ export default function CartDrawer() {
                         labelStyle={err => ({ display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: err ? ERROR_TEXT : '#6A6862', letterSpacing: '0.1em', marginBottom: '6px', textTransform: 'uppercase' })}
                         inputStyle={err => ({ width: '100%', padding: '11px 14px', backgroundColor: SUBTLE, border: `1px solid ${err ? ERROR_TEXT : BORDER}`, borderRadius: '8px', color: TEXT, fontFamily: "'Heebo', sans-serif", fontSize: '14px', outline: 'none', boxSizing: 'border-box' })}
                         errorStyle={{ color: ERROR_TEXT, fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}
-                        hintStyle={{ color: '#7E6129', fontSize: '12px', fontFamily: "'Heebo', sans-serif", fontWeight: 600 }}
                       />
                     )}
 

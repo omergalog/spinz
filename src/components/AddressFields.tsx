@@ -59,8 +59,8 @@ function search<T>(items: T[], q: string, key: (t: T) => string[]): T[] {
 
 interface Labels {
   city: string; cityPlaceholder: string; street: string; streetPlaceholder: string; streetFirstCity: string;
-  num: string; numPlaceholder: string; numNoStreets: string; notListed: string; backToList: string;
-  pickFromList: string; noResults: string; required: string; loadFailed: string;
+  num: string; numPlaceholder: string; numNoStreets: string;
+  pickFromList: string; noResults: string; required: string; loadFailed: string; retry: string;
 }
 
 interface Props {
@@ -75,7 +75,6 @@ interface Props {
   inputStyle: (error: boolean) => React.CSSProperties;
   labelStyle: (error: boolean) => React.CSSProperties;
   errorStyle: React.CSSProperties;
-  hintStyle: React.CSSProperties;
 }
 
 function Combo<T>({ id, value, placeholder, disabled, error, items, getKey, render, onType, onPick, noResults, inputStyle }: {
@@ -140,20 +139,26 @@ function Combo<T>({ id, value, placeholder, disabled, error, items, getKey, rend
   );
 }
 
-export default function AddressFields({ value, onChange, errors, clearError, onStatus, labels, lang, inputStyle, labelStyle, errorStyle, hintStyle }: Props) {
+export default function AddressFields({ value, onChange, errors, clearError, onStatus, labels, lang, inputStyle, labelStyle, errorStyle }: Props) {
   const [cities, setCities] = useState<City[] | null>(null);
   const [streets, setStreets] = useState<string[] | null>(null);
   const [loadError, setLoadError] = useState(false);
   const [cityText, setCityText] = useState(value.city);
 
-  useEffect(() => { loadCities().then(setCities).catch(() => setLoadError(true)); }, []);
+  // טעינה נכשלה: לא עוברים להקלדה חופשית (21.11.2026, עומר: אסור לאשר עם עיר
+  // שלא מהרשימה). מציגים הודעה עם "נסו שוב", וההזמנה חסומה עד שהרשימה נטענת.
+  const [attempt, setAttempt] = useState(0);
+  useEffect(() => {
+    setLoadError(false);
+    loadCities().then(setCities).catch(() => setLoadError(true));
+  }, [attempt]);
   useEffect(() => {
     setStreets(null);
     if (value.cityCode == null) return;
     let alive = true;
     loadStreets(value.cityCode).then(s => { if (alive) setStreets(s); }).catch(() => { if (alive) setLoadError(true); });
     return () => { alive = false; };
-  }, [value.cityCode]);
+  }, [value.cityCode, attempt]);
   const noStreets = value.cityCode != null && streets !== null && streets.length === 0;
   const streetInList = !!streets && streets.includes(value.street.trim());
   useEffect(() => { onStatus({ noStreets, loadFailed: loadError, streetInList }); }, [noStreets, loadError, streetInList, onStatus]);
@@ -162,19 +167,20 @@ export default function AddressFields({ value, onChange, errors, clearError, onS
   const streetResults = useMemo(() => streets ? search(streets, value.street, s => [s]) : [], [streets, value.street]);
   const showCity = (c: City) => lang === 'en' && c.e ? `${c.n} (${c.e})` : c.n;
 
-  // שגיאת טעינה: לא חוסמים את הלקוח — עיר ורחוב בהקלדה חופשית
-  const manualAll = loadError;
-
   return (
     <>
+      {loadError && (
+        <p role="alert" style={{ ...errorStyle, fontSize: '12.5px', margin: 0 }}>
+          {labels.loadFailed}{' '}
+          <button type="button" onClick={() => setAttempt(a => a + 1)}
+            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', color: 'inherit', fontWeight: 700,
+                     textDecoration: 'underline', textUnderlineOffset: '2px', fontFamily: 'inherit', fontSize: 'inherit' }}>
+            {labels.retry}
+          </button>
+        </p>
+      )}
       <div>
         <label htmlFor="cart-addrCity" style={labelStyle(!!errors.city)}>{labels.city}</label>
-        {manualAll ? (
-          <input id="cart-addrCity" type="text" autoComplete="address-level2" value={value.city}
-            placeholder={labels.cityPlaceholder} aria-invalid={errors.city || undefined}
-            onChange={e => { onChange({ ...value, city: e.target.value, cityCode: null }); clearError('addrCity'); }}
-            style={inputStyle(!!errors.city)} />
-        ) : (
           <Combo<City>
             id="cart-addrCity" value={cityText} placeholder={labels.cityPlaceholder} error={!!errors.city}
             items={cityResults} getKey={c => String(c.c)} render={showCity}
@@ -190,20 +196,12 @@ export default function AddressFields({ value, onChange, errors, clearError, onS
               clearError('addrCity');
             }}
             noResults={cities ? labels.noResults : '…'} inputStyle={inputStyle} />
-        )}
-        {errors.city && <p role="alert" style={errorStyle}>{cityText.trim() && !manualAll ? labels.pickFromList : labels.required}</p>}
+        {errors.city && <p role="alert" style={errorStyle}>{cityText.trim() ? labels.pickFromList : labels.required}</p>}
       </div>
 
       {!noStreets && (
         <div>
           <label htmlFor="cart-addrStreet" style={labelStyle(!!errors.street)}>{labels.street}</label>
-          {value.manual || manualAll ? (
-            <input id="cart-addrStreet" type="text" autoComplete="address-line1" value={value.street}
-              disabled={value.cityCode == null && !manualAll}
-              placeholder={labels.streetPlaceholder} aria-invalid={errors.street || undefined}
-              onChange={e => { onChange({ ...value, street: e.target.value }); clearError('addrStreet'); }}
-              style={inputStyle(!!errors.street)} />
-          ) : (
             <Combo<string>
               id="cart-addrStreet" value={value.street}
               placeholder={value.cityCode == null ? labels.streetFirstCity : labels.streetPlaceholder}
@@ -212,16 +210,7 @@ export default function AddressFields({ value, onChange, errors, clearError, onS
               onType={s => { onChange({ ...value, street: s, manual: false }); clearError('addrStreet'); }}
               onPick={s => { onChange({ ...value, street: s, manual: false }); clearError('addrStreet'); }}
               noResults={streets ? labels.noResults : '…'} inputStyle={inputStyle} />
-          )}
-          {errors.street && <p role="alert" style={errorStyle}>{value.street.trim() && !value.manual ? labels.pickFromList : labels.required}</p>}
-          {!manualAll && value.cityCode != null && (
-            <button type="button"
-              onClick={() => { onChange({ ...value, manual: !value.manual, street: value.manual ? '' : value.street }); clearError('addrStreet'); }}
-              style={{ ...hintStyle, background: 'none', border: 'none', padding: 0, marginTop: '5px', cursor: 'pointer',
-                       textDecoration: 'underline', textUnderlineOffset: '2px' }}>
-              {value.manual ? labels.backToList : labels.notListed}
-            </button>
-          )}
+          {errors.street && <p role="alert" style={errorStyle}>{value.street.trim() ? labels.pickFromList : labels.required}</p>}
         </div>
       )}
 
@@ -240,9 +229,9 @@ export default function AddressFields({ value, onChange, errors, clearError, onS
 /** האם הכתובת שלמה לפי מה שהלקוח רואה */
 export function addressErrors(a: AddressValue, st: AddressStatus) {
   const e: { addrCity?: boolean; addrStreet?: boolean; addrNum?: boolean } = {};
-  if (st.loadFailed ? !a.city.trim() : a.cityCode == null) e.addrCity = true;
-  // רחוב: מהרשימה, או בהקלדה ידנית אחרי "הרחוב לא ברשימה" (או כשהרשימה לא נטענה)
-  if (!st.noStreets && (!a.street.trim() || (!a.manual && !st.loadFailed && !st.streetInList))) e.addrStreet = true;
+  // עיר ורחוב רק מהרשימה (21.11.2026, עומר). בלי הקלדה ידנית, גם אם הטעינה נכשלה.
+  if (a.cityCode == null) e.addrCity = true;
+  if (!st.noStreets && !st.streetInList) e.addrStreet = true;
   if (!a.num.trim()) e.addrNum = true;
   return e;
 }

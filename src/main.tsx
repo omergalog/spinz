@@ -33,6 +33,7 @@ import { captureEntry, trackPage } from './lib/track';
 import { useLocation } from 'react-router-dom';
 import CookieBanner from './components/CookieBanner';
 import { LanguageProvider, EN_PREFIX, langFromPath } from './i18n/LanguageContext';
+import HebrewSuggest from './components/HebrewSuggest';
 import { getDict } from './i18n/dict';
 
 // ref ו-UTM נקראים מהכתובת לפני שער הסיסמה ולפני כל ניווט, כדי שלא יאבדו.
@@ -118,6 +119,7 @@ function Root() {
             </main>
 
             <WhatsAppFab />
+            <HebrewSuggest />
             <AccessibilityWidget />
             </LanguageProvider>
           </BrowserRouter>

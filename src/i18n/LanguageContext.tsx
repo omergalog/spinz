@@ -41,6 +41,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const html = document.documentElement;
     html.lang = lang;
     html.dir = lang === 'he' ? 'rtl' : 'ltr';
+    html.setAttribute('translate', 'no'); // ראו meta google notranslate ב-index.html
     // תיאור ה-SEO הכללי שייך לדף הבית בלבד.
     // האפקט הזה רץ בכל החלפת מסלול, ובקומפוננטה ההורה — כלומר אחרי
     // האפקט של העמוד עצמו. כשהוא כתב בכל מסלול, הוא דרס את התיאור

@@ -369,12 +369,15 @@ export default function Models() {
           </span>
         </div>
       )}
-      <div aria-busy={!priceReady} style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap', visibility: priceReady ? 'visible' : 'hidden' }}>
-        <span style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(34px, 5vw, 46px)', color: couponPrice != null ? '#3B6B33' : DARK, letterSpacing: '-0.01em' }}>
+      {/* עד שהמחיר החי נטען לא נכתב שום סכום לעמוד (קודם נכתב ₪1,299 מוסתר).
+          key לפי הסכום: כל שינוי בונה את הטקסט מחדש, כך שגם תרגום של הדפדפן,
+          שמחליף את צמתי הטקסט, לא משאיר מחיר ישן על המסך (21.11.2026). */}
+      <div aria-busy={!priceReady} style={{ display: 'flex', alignItems: 'baseline', gap: '12px', flexWrap: 'wrap', visibility: priceReady ? 'visible' : 'hidden', minHeight: 'clamp(42px, 6vw, 56px)' }}>
+        {priceReady && <span key={`p-${couponPrice ?? shownPrice}`} style={{ fontFamily: "'Heebo', sans-serif", fontWeight: 800, fontSize: 'clamp(34px, 5vw, 46px)', color: couponPrice != null ? '#3B6B33' : DARK, letterSpacing: '-0.01em' }}>
           ₪{(couponPrice ?? shownPrice).toLocaleString('he-IL')}
-        </span>
-        {couponPrice != null ? (
-          <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', color: '#6A6862', textDecoration: 'line-through', textDecorationColor: '#3B6B33' }}>
+        </span>}
+        {!priceReady ? null : couponPrice != null ? (
+          <span key={`o-${shownPrice}`} style={{ fontFamily: "'Heebo', sans-serif", fontSize: '18px', color: '#6A6862', textDecoration: 'line-through', textDecorationColor: '#3B6B33' }}>
             ₪{shownPrice.toLocaleString('he-IL')}
           </span>
         ) : presale ? (
@@ -420,7 +423,7 @@ export default function Models() {
         ) : null}
       </div>
       {couponPrice == null && (
-        <p style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13.5px', color: MUTED, margin: '10px 0 0' }}>
+        <p key={`i-${priceReady ? payments : 'x'}`} style={{ fontFamily: "'Heebo', sans-serif", fontSize: '13.5px', color: MUTED, margin: '10px 0 0', visibility: priceReady ? 'visible' : 'hidden' }}>
           {/* בלי סכום חודשי: החלוקה בפועל נקבעת בטרנזילה (עיגול לתשלום
               הראשון), וסכום מעוגל כאן עלול לא להתאים לחיוב (20.10.2026). */}
           {t.product.installments(payments)}

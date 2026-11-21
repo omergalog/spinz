@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Plus, Minus, ArrowRight, ArrowLeft, CalendarClock } from 'lucide-react';
@@ -11,6 +11,7 @@ import { useT, useDir, useLang, localizePath } from '../i18n/LanguageContext';
 import { arrivalLabelIn, usePresale } from '../config/presale';
 import { merchLabel, merchParts } from '../data/merch';
 import PrivacyNote from './PrivacyNote';
+import AddressFields, { EMPTY_ADDRESS, addressErrors, composeAddress, type AddressStatus, type AddressValue } from './AddressFields';
 
 const DARK    = '#1C1C1C';   // text on gold buttons
 const GOLD    = '#C9A870';
@@ -388,9 +389,18 @@ export default function CartDrawer() {
     try { return JSON.parse(sessionStorage.getItem(DETAILS_KEY) ?? 'null')?.delivery === 'pickup' ? 'pickup' : 'ship'; }
     catch { return 'ship'; }
   });
+  // כתובת מובנית (עיר / רחוב / מספר), 21.11.2026 — ראו AddressFields
+  const [addr, setAddr] = useState<AddressValue>(() => {
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(DETAILS_KEY) ?? 'null');
+      return saved?.addr ? { ...EMPTY_ADDRESS, ...saved.addr } : EMPTY_ADDRESS;
+    } catch { return EMPTY_ADDRESS; }
+  });
+  const [addrStatus, setAddrStatus] = useState<AddressStatus>({ noStreets: false, loadFailed: false, streetInList: false });
+  const onAddrStatus = useCallback((st: AddressStatus) => setAddrStatus(st), []);
   useEffect(() => {
-    try { sessionStorage.setItem(DETAILS_KEY, JSON.stringify({ form, delivery })); } catch { /* אחסון חסום */ }
-  }, [form, delivery]);
+    try { sessionStorage.setItem(DETAILS_KEY, JSON.stringify({ form, delivery, addr })); } catch { /* אחסון חסום */ }
+  }, [form, delivery, addr]);
   const [formErrors, setFormErrors] = useState<Record<string, boolean>>({});
 
   // עמוד התשלום חי בתוך מסגרת, ולכן סיום התשלום אינו יכול פשוט להפנות
@@ -614,7 +624,7 @@ export default function CartDrawer() {
     const errors: Record<string, boolean> = {};
     if (!form.name.trim()) errors.name = true;
     if (!form.phone.trim()) errors.phone = true;
-    if (delivery === 'ship' && !form.address.trim()) errors.address = true;
+    if (delivery === 'ship') Object.assign(errors, addressErrors(addr, addrStatus));
     // אישור ההזמנה והחשבונית מגיעים במייל בלבד. בלי כתובת הלקוח
     // משלם ולא מקבל דבר, ואין לו אסמכתה לביטול.
     if (!form.email.trim() || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email.trim())) {
@@ -626,7 +636,7 @@ export default function CartDrawer() {
       // בדפדפן של אינסטגרם, אזור הטופס הוא רצועה צרה מעל הכפתור, והלקוח
       // לחץ "אשר הזמנה" ולא ראה כלום (14.11.2026). גוללים לשדה הראשון,
       // מתמקדים בו, ומציגים הודעה גם ליד הכפתור.
-      const first = (['name', 'phone', 'email', 'address'] as const).find(k => errors[k]);
+      const first = (['name', 'phone', 'email', 'addrCity', 'addrStreet', 'addrNum'] as const).find(k => errors[k]);
       const el = first ? document.getElementById(`cart-${first}`) : null;
       el?.scrollIntoView({ block: 'center', behavior: 'smooth' });
       (el as HTMLInputElement | null)?.focus({ preventScroll: true });
@@ -697,7 +707,7 @@ export default function CartDrawer() {
         name: form.name,
         phone: form.phone,
         email: form.email || undefined,
-        address: delivery === 'pickup' ? undefined : form.address,
+        address: delivery === 'pickup' ? undefined : composeAddress(addr, addrStatus.noStreets),
         delivery,
         // רק קוד שאושר מול העגלה הזו. מה שמופיע על המסך הוא מה שנגבה.
         coupon: code ?? undefined,
@@ -1042,7 +1052,7 @@ export default function CartDrawer() {
                             type="button"
                             role="radio"
                             aria-checked={delivery === k}
-                            onClick={() => { setDelivery(k); setFormErrors(f => ({ ...f, address: false })); }}
+                            onClick={() => { setDelivery(k); setFormErrors(f => ({ ...f, addrCity: false, addrStreet: false, addrNum: false })); }}
                             style={{
                               flex: 1, minHeight: '48px', padding: '10px 12px', borderRadius: '8px',
                               cursor: 'pointer', fontFamily: "'Heebo', sans-serif", fontSize: '13.5px',
@@ -1071,9 +1081,6 @@ export default function CartDrawer() {
                       { key: 'name', label: t.cart.nameLabel, placeholder: t.cart.namePlaceholder, type: 'text', auto: 'name' },
                       { key: 'phone', label: t.cart.phoneLabel, placeholder: '050-0000000', type: 'tel', auto: 'tel' },
                       { key: 'email', label: t.cart.emailLabel, placeholder: 'israel@example.com', type: 'email', auto: 'email' },
-                      ...(delivery === 'ship'
-                        ? [{ key: 'address', label: t.cart.addressLabel, placeholder: t.cart.addressPlaceholder, type: 'text', auto: 'street-address' }]
-                        : []),
                     ].map(({ key, label, placeholder, type, auto }) => (
                       <div key={key}>
                         {/* התווית הייתה נראית אך לא מקושרת לשדה, ולכן
@@ -1118,6 +1125,22 @@ export default function CartDrawer() {
                         </p>}
                       </div>
                     ))}
+
+                    {delivery === 'ship' && (
+                      <AddressFields
+                        value={addr}
+                        onChange={setAddr}
+                        errors={{ city: formErrors.addrCity, street: formErrors.addrStreet, num: formErrors.addrNum }}
+                        clearError={k => setFormErrors(f => ({ ...f, [k]: false }))}
+                        onStatus={onAddrStatus}
+                        lang={lang === 'en' ? 'en' : 'he'}
+                        labels={t.cart.addr}
+                        labelStyle={err => ({ display: 'block', fontFamily: "'Heebo', sans-serif", fontSize: '11px', color: err ? ERROR_TEXT : '#6A6862', letterSpacing: '0.1em', marginBottom: '6px', textTransform: 'uppercase' })}
+                        inputStyle={err => ({ width: '100%', padding: '11px 14px', backgroundColor: SUBTLE, border: `1px solid ${err ? ERROR_TEXT : BORDER}`, borderRadius: '8px', color: TEXT, fontFamily: "'Heebo', sans-serif", fontSize: '14px', outline: 'none', boxSizing: 'border-box' })}
+                        errorStyle={{ color: ERROR_TEXT, fontSize: '11px', margin: '4px 0 0', fontFamily: "'Heebo', sans-serif" }}
+                        hintStyle={{ color: '#7E6129', fontSize: '12px', fontFamily: "'Heebo', sans-serif", fontWeight: 600 }}
+                      />
+                    )}
 
                     {/* קוד הנחה: מ-20.11.2026 רק "+ קוד הנחה לזוג הזה" בשורת האופניים בעגלה
                         (בקשת עומר). קוד הזמנה שכבר שמור (למשל מקישור) עדיין מוצג בסיכום עם הסרה. */}

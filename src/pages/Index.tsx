@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import VideoSection from '../components/VideoSection';
 import Models from '../components/Models';
@@ -7,7 +7,6 @@ import StoryBand from '../components/StoryBand';
 import ExploreStrip from '../components/ExploreStrip';
 import LeadForm from '../components/LeadForm';
 import Footer from '../components/Footer';
-import Loader from '../components/Loader';
 import CartDrawer from '../components/CartDrawer';
 import { LOADER_DONE_EVENT } from '../lib/consent';
 import { CartProvider } from '../context/CartContext';
@@ -30,15 +29,22 @@ const Index = () => {
   // דף הבית אינו עובר דרך PageShell, ולכן כותרתו נקבעת כאן.
   useEffect(() => { document.title = t.meta.homeTitle; }, [t]);
 
-  const [showLoader, setShowLoader] = useState(() => !hasLoaded());
-  useLenis();
-
-  const handleLoaderDone = useCallback(() => {
-    loadedInMemory = true;
-    try { sessionStorage.setItem('spinz-loaded', '1'); } catch { /* אחסון חסום */ }
-    setShowLoader(false);
-    window.dispatchEvent(new Event(LOADER_DONE_EVENT));
+  // מסך הפתיחה הוסר (23.11.2026): כמעט 3 שניות המתנה בכל כניסה מאינסטגרם,
+  // כשמבקר שלא קונה נשאר בחציון 11 שניות. רכיב Loader נשאר בקוד אם נרצה אותו בחזרה.
+  // באנר העוגיות מחכה ל"סוף מסך הפתיחה" (spinz-loaded / LOADER_DONE_EVENT), ולכן
+  // מסמנים אותו כבר ברינדור הראשון — לפני שהבאנר קורא את הסימון — ושולחים את האירוע.
+  const [showLoader] = useState(() => {
+    if (!hasLoaded()) {
+      loadedInMemory = true;
+      try { sessionStorage.setItem('spinz-loaded', '1'); } catch { /* אחסון חסום */ }
+    }
+    return false;
+  });
+  useEffect(() => {
+    const t = setTimeout(() => window.dispatchEvent(new Event(LOADER_DONE_EVENT)), 0);
+    return () => clearTimeout(t);
   }, []);
+  useLenis();
 
   // Scroll to hash target when arriving from another page (e.g. /#lead-form, /#models)
   useEffect(() => {
@@ -54,7 +60,6 @@ const Index = () => {
 
   return (
     <CartProvider>
-      {showLoader && <Loader onDone={handleLoaderDone} />}
       <CartDrawer />
       <main style={{ backgroundColor: '#F5F2EC', minHeight: '100vh' }}>
         <Navbar />

@@ -42,13 +42,22 @@ export function initPixel() {
   if (ready || !PIXEL_ID || typeof window === 'undefined') return;
   ready = true;
 
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  const n: Fbq = ((...args: unknown[]) => {
-    (n.queue as unknown[]).push(args);
-  }) as Fbq;
-  n.queue = [];
-  window.fbq = window.fbq ?? n;
-  window._fbq = window._fbq ?? n;
+  // התבנית הרשמית של מטא: עד שהסקריפט נטען הקריאות נכנסות לתור, ואחרי
+  // הטעינה הוא מגדיר callMethod והקריאות עוברות אליו. בגרסה הקודמת (מאוגוסט)
+  // לא היה callMethod, ולכן כל אירוע אחרי הטעינה נשאר בתור ולא נשלח
+  // (התגלה 25.11 בבדיקה על האתר החי: רק ה-PageView הראשון הגיע).
+  if (!window.fbq) {
+    const n = function (...args: unknown[]) {
+      if (n.callMethod) n.callMethod(...args);
+      else (n.queue as unknown[]).push(args);
+    } as Fbq & { callMethod?: (...a: unknown[]) => void; push?: unknown; version?: string };
+    n.push = n;
+    n.loaded = true;
+    n.version = '2.0';
+    n.queue = [];
+    window.fbq = n;
+    window._fbq = window._fbq ?? n;
+  }
 
   const s = document.createElement('script');
   s.async = true;

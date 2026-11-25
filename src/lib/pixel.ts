@@ -64,6 +64,9 @@ export function initPixel() {
   s.src = 'https://connect.facebook.net/en_US/fbevents.js';
   document.head.appendChild(s);
 
+  // בלי "אירועים אוטומטיים" של מטא (למשל SubscribedButtonClick על כל לחיצה):
+  // רק האירועים שהאתר שולח בעצמו, בלי קשר להגדרות בממשק של מטא.
+  window.fbq?.('set', 'autoConfig', false, PIXEL_ID);
   window.fbq?.('init', PIXEL_ID);
   window.fbq?.('track', 'PageView');
   lastPageView = window.location.pathname;

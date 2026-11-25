@@ -167,7 +167,7 @@ export default function Models() {
     });
   }, [added]);
 
-  const { addItem, coupon } = useCart();
+  const { addItem, coupon, openCart } = useCart();
 
   // מחיר אחרי קופון ששמור בעגלה. ההנחה מחושבת בשרת — כאן רק מציגים.
   // את הקוד עצמו מזינים רק בעגלה (15.11.2026).
@@ -262,6 +262,9 @@ export default function Models() {
     );
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
+    // העגלה נפתחת מיד, כמו במרצ'נדייז (25.11.2026, עומר). קודם היא נשארה
+    // סגורה, וכמעט חצי ממי שהוסיף לסל לא הגיע לשלב הפרטים.
+    openCart();
   };
 
   // מחיר אחרי קופון. נבדק מחדש בכל שינוי וריאנט או מחיר, אחרת אפשר

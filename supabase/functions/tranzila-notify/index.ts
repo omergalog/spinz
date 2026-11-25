@@ -184,19 +184,22 @@ Deno.serve(async (req) => {
   // שזו אותה רכישה ולא תספור פעמיים.
   if (!data?.already) {
     const { data: s } = await db.from('checkout_sessions')
-      .select('customer_email, customer_phone, total_price, items')
+      .select('customer_email, customer_phone, total_price, items, ad_match')
       .eq('id', sessionId).maybeSingle();
 
-    if (s) {
+    // ad_match ריק = הלקוח לא אישר עוגיות פרסום (או שאין פיקסל): לא מדווחים.
+    // אם העמודה עוד לא קיימת השאילתה מחזירה שגיאה ו-s ריק — גם אז לא מדווחים.
+    if (s?.ad_match) {
       const metaErr = await sendPurchase({
         eventId: sessionId,
         value: s.total_price,
         email: s.customer_email,
         phone: s.customer_phone,
         contents: (s.items ?? []).map((i: Record<string, unknown>) => ({
-          id: `spinz-${i.color}-${i.size}`,
+          id: String(i.slug ?? `spinz-${i.color}-${i.size}`),
           quantity: Number(i.quantity ?? 1),
         })),
+        match: s.ad_match,
       });
       if (metaErr) await log(`אירוע הרכישה למטא נכשל: ${metaErr}`);
     }

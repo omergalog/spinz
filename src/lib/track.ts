@@ -14,6 +14,7 @@
  * מעכב או מכשיל ניווט, הוספה לסל או תשלום.
  */
 import { SUPABASE_URL } from './supabase';
+import { pixelAddToCart, pixelPageView, pixelViewContent } from './pixel';
 
 const ENDPOINT = `${SUPABASE_URL}/functions/v1/track`;
 const K = { vid: 'spinz-a-vid', ses: 'spinz-a-ses', attr: 'spinz-a-attr', test: 'spinz-a-test', stop: 'spinz-a-stop' };
@@ -171,17 +172,20 @@ function pageView(path: string, force = false) {
 
 /** מעבר בנתב (כולל הטעינה הראשונה). */
 export function trackPage(path: string) {
+  try { pixelPageView(path); } catch { /* פרסום בלבד */ }
   try { if (enabled) pageView(path); else lastPath = path; } catch { /* מעקב בלבד */ }
 }
 
 /** מחזיר true אם האירוע נרשם (כלומר המעקב פעיל). רכיב שמסמן "כבר נספר" נשען על זה. */
 export function trackProductView(slug: string, value?: number): boolean {
+  try { pixelViewContent(slug, value); } catch { /* פרסום בלבד */ }
   try { if (!enabled) return false; push({ type: 'product_view', product: slug, path: window.location.pathname, value }); return true; } catch { return false; }
 }
 
 /** רכיבים שמודדים צפייה (מוצר על המסך) נרשמים כאן, כדי לספור גם אחרי שהאישור ניתן כשהמוצר כבר מוצג. */
 export const TRACKING_STARTED_EVENT = 'spinz-tracking-started';
 export function trackAddToCart(slug: string, value?: number) {
+  try { pixelAddToCart(slug, value); } catch { /* פרסום בלבד */ }
   try { push({ type: 'add_to_cart', product: slug, path: window.location.pathname, value }); } catch { /* */ }
 }
 /** לפני פתיחת התשלום. נשלח מיד, ברקע. */

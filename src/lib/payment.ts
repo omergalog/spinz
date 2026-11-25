@@ -8,6 +8,7 @@
  */
 import { SUPABASE_URL, supabase } from './supabase';
 import { attributionForCheckout, trackBeginCheckout } from './track';
+import { adMatchForCheckout, pixelBeginCheckout } from './pixel';
 
 const FUNCTIONS = `${SUPABASE_URL}/functions/v1`;
 
@@ -167,6 +168,13 @@ export async function openCheckout(input: {
   // מעקב בלבד: לא ממתין לו ולא נכשל בגללו. בלי אישור עוגיות השיוך ריק.
   trackBeginCheckout();
   const attribution = attributionForCheckout();
+  // פרסום (מטא): רק עם פיקסל והסכמה. בלי זה השרת לא ידווח למטא על הרכישה.
+  let ad: Record<string, string> | undefined;
+  try {
+    pixelBeginCheckout(input.items.map(i => i.slug ?? `spinz-${i.color}-${i.size}`),
+      input.items.reduce((n, i) => n + (i.quantity || 1), 0));
+    ad = adMatchForCheckout();
+  } catch { ad = undefined; }
 
   const res = await fetch(`${FUNCTIONS}/tranzila-checkout`, {
     method: 'POST',
@@ -177,7 +185,7 @@ export async function openCheckout(input: {
       Authorization: `Bearer ${session?.access_token ??
         (supabase as unknown as { supabaseKey: string }).supabaseKey}`,
     },
-    body: JSON.stringify({ ...input, ...(attribution ? { attribution } : {}), ...(bitEnabled() ? { bit: true } : {}) }),
+    body: JSON.stringify({ ...input, ...(attribution ? { attribution } : {}), ...(ad ? { ad } : {}), ...(bitEnabled() ? { bit: true } : {}) }),
   });
 
   const body = await res.json().catch(() => ({}));

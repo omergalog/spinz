@@ -10,9 +10,13 @@
  * SHA-256 ולעולם לא נשלחים כפי שהם.
  */
 
-const PIXEL_ID = Deno.env.get('META_PIXEL_ID') ?? '';
-const TOKEN = Deno.env.get('META_CAPI_TOKEN') ?? '';
-const TEST_CODE = Deno.env.get('META_TEST_EVENT_CODE') ?? '';
+// נקרא בכל שליחה ולא פעם אחת בטעינה: סוד שנוסף או נמחק (למשל קוד הבדיקה
+// אחרי שהבדיקות נגמרו) תופס מיד, בלי לחכות לטעינה מחדש של הפונקציה.
+const cfg = () => ({
+  PIXEL_ID: Deno.env.get('META_PIXEL_ID') ?? '',
+  TOKEN: Deno.env.get('META_CAPI_TOKEN') ?? '',
+  TEST_CODE: Deno.env.get('META_TEST_EVENT_CODE') ?? '',
+});
 
 async function sha256(v: string): Promise<string> {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(v));
@@ -32,14 +36,47 @@ export type PurchaseEvent = {
   email?: string | null;
   phone?: string | null;
   contents?: Array<{ id: string; quantity: number }>;
+  /** checkout_sessions.ad_match: קיים רק כשהלקוח אישר עוגיות. */
+  match?: AdMatch | null;
 };
 
+export type AdMatch = { fbp?: string; fbc?: string; ip?: string; ua?: string; url?: string };
+
+const str = (v: unknown, max: number, re?: RegExp) =>
+  typeof v === 'string' && v.length > 0 && v.length <= max && (!re || re.test(v)) ? v : undefined;
+
+/**
+ * מה שהדפדפן שלח עם פתיחת התשלום (src/lib/pixel.ts → adMatchForCheckout),
+ * מאומת, פלוס IP ו-User-Agent של הדפדפן מהבקשה עצמה. null אם הדפדפן לא
+ * שלח — כלומר אין הסכמה או אין פיקסל.
+ */
+export function adMatchFrom(raw: unknown, ip: string, ua: string | null): AdMatch | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const r = raw as Record<string, unknown>;
+  const m: AdMatch = {
+    fbp: str(r.fbp, 200, /^fb\.\d\.\d+\.\d+$/),
+    fbc: str(r.fbc, 600, /^fb\.\d\.\d+\.[\w.-]+$/),
+    url: str(r.url, 500, /^https?:\/\//),
+    ip: str(ip, 64),
+    ua: str(ua ?? '', 500),
+  };
+  return Object.fromEntries(Object.entries(m).filter(([, v]) => v)) as AdMatch;
+}
+
 export async function sendPurchase(e: PurchaseEvent): Promise<string | null> {
+  const { PIXEL_ID, TOKEN, TEST_CODE } = cfg();
   if (!PIXEL_ID || !TOKEN) return null;   // לא מוגדר — לא שגיאה
 
-  const user: Record<string, string[]> = {};
+  // בלי הסכמה לעוגיות פרסום לא מדווחים למטא בכלל (מדיניות הפרטיות: "Meta — רק בהסכמה")
+  if (!e.match) return null;
+
+  const user: Record<string, unknown> = {};
   if (e.email) user.em = [await sha256(normEmail(e.email))];
   if (e.phone) user.ph = [await sha256(normPhone(e.phone))];
+  if (e.match.fbp) user.fbp = e.match.fbp;
+  if (e.match.fbc) user.fbc = e.match.fbc;
+  if (e.match.ip) user.client_ip_address = e.match.ip;
+  if (e.match.ua) user.client_user_agent = e.match.ua;
 
   try {
     const res = await fetch(
@@ -53,10 +90,13 @@ export async function sendPurchase(e: PurchaseEvent): Promise<string | null> {
             event_time: Math.floor(Date.now() / 1000),
             event_id: e.eventId,
             action_source: 'website',
+            ...(e.match.url ? { event_source_url: e.match.url } : {}),
             user_data: user,
             custom_data: {
               currency: 'ILS',
               value: e.value,
+              content_type: 'product',
+              content_ids: (e.contents ?? []).map(c => c.id),
               contents: e.contents ?? [],
             },
           }],

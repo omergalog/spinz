@@ -9,7 +9,10 @@
  *
  * בלי מזהה פיקסל מוגדר, כל הפונקציות כאן הן פעולות ריקות.
  */
-const PIXEL_ID = import.meta.env.VITE_META_PIXEL_ID as string | undefined;
+// מזהה הפיקסל אינו סוד (הוא מופיע בקוד של כל אתר עם פיקסל), ולכן הוא כאן
+// ולא רק במשתנה סביבה ב-Vercel. VITE_META_PIXEL_ID דורס אותו (בדיקות);
+// ערך ריק ('') מכבה את הפיקסל לגמרי.
+const PIXEL_ID = ((import.meta.env.VITE_META_PIXEL_ID as string | undefined) ?? '2067977790583173') || undefined;
 
 /** יש פיקסל מוגדר. הבאנר ומדיניות הפרטיות מזכירים את מטא רק אם כן. */
 export const PIXEL_ENABLED = !!PIXEL_ID;
@@ -18,6 +21,22 @@ type Fbq = ((...args: unknown[]) => void) & { queue?: unknown[]; loaded?: boolea
 declare global { interface Window { fbq?: Fbq; _fbq?: Fbq } }
 
 let ready = false;
+/** העמוד שעליו נשלח ה-PageView האחרון, כדי לא לשלוח פעמיים על אותו עמוד. */
+let lastPageView: string | null = null;
+/** צפיות במוצר שכבר דווחו בעמוד הנוכחי (מתאפס במעבר עמוד). */
+const viewed = new Set<string>();
+
+/**
+ * fbclid מהכתובת שבה נכנסו לאתר. נשמר בזיכרון בלבד: אם ההסכמה ניתנת רק
+ * בעמוד אחר, הכתובת המקורית כבר לא קיימת, וזה מה שמאפשר לשייך את הרכישה
+ * ללחיצה על המודעה. נקרא לפני כל ניווט.
+ */
+let landingFbclid: string | null = null;
+let landingAt = 0;
+try {
+  const v = new URLSearchParams(window.location.search).get('fbclid');
+  if (v && /^[\w-]{10,500}$/.test(v)) { landingFbclid = v; landingAt = Date.now(); }
+} catch { /* לא חוסם טעינה */ }
 
 export function initPixel() {
   if (ready || !PIXEL_ID || typeof window === 'undefined') return;
@@ -38,6 +57,18 @@ export function initPixel() {
 
   window.fbq?.('init', PIXEL_ID);
   window.fbq?.('track', 'PageView');
+  lastPageView = window.location.pathname;
+}
+
+/**
+ * צפייה בעמוד במעבר בנתב. האתר הוא אפליקציית עמוד יחיד: בלי זה מטא
+ * רואה רק את העמוד הראשון. העמוד שבו הפיקסל נטען כבר נספר ב-initPixel.
+ */
+export function pixelPageView(path: string) {
+  if (!ready || !PIXEL_ID || path === lastPageView) return;
+  lastPageView = path;
+  viewed.clear();
+  window.fbq?.('track', 'PageView');
 }
 
 const track = (event: string, params?: Record<string, unknown>, eventId?: string) => {
@@ -45,14 +76,43 @@ const track = (event: string, params?: Record<string, unknown>, eventId?: string
   window.fbq?.('track', event, params ?? {}, eventId ? { eventID: eventId } : undefined);
 };
 
-export const pixelViewContent = (id: string, value: number) =>
-  track('ViewContent', { content_ids: [id], content_type: 'product', value, currency: 'ILS' });
+const money = (value?: number) =>
+  typeof value === 'number' && value > 0 ? { value, currency: 'ILS' } : {};
 
-export const pixelAddToCart = (id: string, value: number) =>
-  track('AddToCart', { content_ids: [id], content_type: 'product', value, currency: 'ILS' });
+/** פעם אחת לכל מוצר בכל עמוד (הרכיב מנסה שוב כשההסכמה ניתנת אחרי שהמוצר כבר מוצג). */
+export function pixelViewContent(id: string, value?: number) {
+  if (!ready || viewed.has(id)) return;
+  viewed.add(id);
+  track('ViewContent', { content_ids: [id], content_type: 'product', ...money(value) });
+}
 
-export const pixelBeginCheckout = (value: number, items: number) =>
-  track('InitiateCheckout', { value, currency: 'ILS', num_items: items });
+export const pixelAddToCart = (id: string, value?: number) =>
+  track('AddToCart', { content_ids: [id], content_type: 'product', ...money(value) });
+
+export const pixelBeginCheckout = (ids: string[], items: number) =>
+  track('InitiateCheckout', { content_ids: ids, content_type: 'product', num_items: items });
+
+const cookie = (name: string): string | null => {
+  try {
+    const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : null;
+  } catch { return null; }
+};
+
+/**
+ * מה שנשלח לשרת עם פתיחת התשלום, כדי שאירוע הרכישה מהשרת יותאם
+ * ללחיצה על המודעה. רק כשיש פיקסל והגולש אישר עוגיות — אחרת undefined,
+ * והשרת לא שולח למטא כלום על הרכישה הזו.
+ */
+export function adMatchForCheckout(): Record<string, string> | undefined {
+  if (!ready || !PIXEL_ID) return undefined;   // ready = נטען אחרי הסכמה
+  const out: Record<string, string> = { url: window.location.href.slice(0, 500) };
+  const fbp = cookie('_fbp');
+  if (fbp) out.fbp = fbp.slice(0, 200);
+  const fbc = cookie('_fbc') ?? (landingFbclid ? `fb.1.${landingAt}.${landingFbclid}` : null);
+  if (fbc) out.fbc = fbc.slice(0, 600);
+  return out;
+}
 
 /**
  * הרכישה נשלחת גם מהשרת. מזהה האירוע זהה בשני הצדדים, ולכן מטא

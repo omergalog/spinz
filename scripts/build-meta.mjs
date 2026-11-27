@@ -23,6 +23,27 @@ const base = { he: await readFile('dist/index.html', 'utf8'), en: await readFile
 
 const fail = msg => { console.error(`build-meta: ${msg}`); process.exit(1); };
 
+/*
+ * canonical ו-hreflang ישירות בקובץ (27.11.2026). LanguageContext מוסיף אותם
+ * גם בדפדפן, עם אותם ערכים בדיוק, ומחליף את אלה — כך שאין כפילות. בקובץ הם
+ * נקראים כבר בסריקה הראשונה, לפני הרצת JavaScript. לגולש אין שום הבדל.
+ * cancel-order: noindex — העמוד נשאר זמין באתר, רק לא מוצג בתוצאות החיפוש.
+ */
+const NOINDEX = new Set(['cancel-order']);
+const pageUrl = (lang, path) => `${SITE}${lang === 'en' ? (path ? `/en/${path}` : '/en') : `/${path}`}`;
+const headTags = (lang, path) => (NOINDEX.has(path) ? ['<meta name="robots" content="noindex" />'] : [
+  `<link rel="canonical" href="${pageUrl(lang, path)}" />`,
+  `<link rel="alternate" hreflang="he" href="${pageUrl('he', path)}" />`,
+  `<link rel="alternate" hreflang="en" href="${pageUrl('en', path)}" />`,
+  `<link rel="alternate" hreflang="x-default" href="${pageUrl('he', path)}" />`,
+]).map(t => `    ${t}\n`).join('');
+const withHead = (html, lang, path) => {
+  if (html.includes('rel="canonical"')) fail(`כבר יש canonical ב-${lang}/${path}`);
+  const out = html.replace('</head>', `${headTags(lang, path)}  </head>`);
+  if (out === html) fail(`לא נמצא </head> ב-${lang}/${path}`);
+  return out;
+};
+
 let count = 0;
 for (const lang of ['he', 'en']) {
   for (const path of [...PAGES, ...GUIDE_SLUGS.map(s => `guides/${s}`)]) {
@@ -30,12 +51,13 @@ for (const lang of ['he', 'en']) {
     if (!m) fail(`אין כותרת ל-${lang}/${path}`);
     const url = `${SITE}${lang === 'en' ? '/en' : ''}/${path}`;
     const src = base[lang];
-    const out = src
+    let out = src
       .replace(/<title>[^<]*<\/title>/, `<title>${esc(m.title)}</title>`)
       .replace(/(<meta name="description" content=")[^"]*/, `$1${esc(m.description)}`)
       .replace(/(<meta property="og:title" content=")[^"]*/, `$1${esc(m.title)}`)
       .replace(/(<meta property="og:description" content=")[^"]*/, `$1${esc(m.description)}`)
       .replace(/(<meta property="og:url" content=")[^"]*/, `$1${url}`);
+    out = withHead(out, lang, path);
     // כל אחת מחמש ההחלפות חייבת לקרות. אם התבנית השתנתה, עדיף שהבנייה תיכשל
     for (const needle of [`<title>${esc(m.title)}</title>`, `content="${esc(m.description)}"`, `content="${url}"`])
       if (!out.includes(needle)) fail(`החלפה לא בוצעה ב-${lang}/${path}`);
@@ -44,6 +66,12 @@ for (const lang of ['he', 'en']) {
     await writeFile(`${dir}/index.html`, out);
     count++;
   }
+}
+
+// דפי הבית (dist/index.html, dist/en/index.html) — אחרי שהעותקים כבר נבנו מהם
+for (const lang of ['he', 'en']) {
+  const f = lang === 'en' ? 'dist/en/index.html' : 'dist/index.html';
+  await writeFile(f, withHead(base[lang], lang, ''));
 }
 
 // vercel.json: כל מדריך צריך כלל משלו, אחרת יוגש index.html עם כותרת דף הבית

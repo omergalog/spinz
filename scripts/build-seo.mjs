@@ -14,7 +14,9 @@ import { readFile, writeFile } from 'node:fs/promises';
 
 const SITE = 'https://www.spinzbikes.com';
 const PAGES = ['', 'bikes', 'merch', 'specs', 'sizes', 'faq', 'guides', 'story', 'gallery',
-  'community', 'reviews', 'contact', 'terms', 'regulations', 'cancel-order', 'accessibility'];
+  'community', 'reviews', 'contact', 'terms', 'regulations', 'accessibility'];
+// cancel-order הוצא מהמפה (27.11.2026): העמוד מסומן noindex (build-meta.mjs) —
+// נשאר זמין לגולשים ומקושר מהפוטר, רק לא מוצג בתוצאות החיפוש.
 // presale-terms הוצא (7.11.2026): בזמן שהפרי-סייל כבוי הכתובת מפנה לתקנון (vercel.json).
 
 const guidesSrc = await readFile('src/data/guides.ts', 'utf8');

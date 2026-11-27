@@ -420,6 +420,11 @@ export default function Models() {
             {launch && launch.remaining > 0 && (
               <span style={{ fontFamily: "'Heebo', sans-serif", fontSize: '14px', fontWeight: 700, color: '#8A4B2E' }}>
                 {t.product.launchUnits(launch.units)}
+                {/* המחיר שאחרי ההשקה (27.11.2026, עומר): כהמשך המשפט ולא כמחיר מחוק —
+                    עוד לא נמכר בו. נלקח מהמחיר הרגיל בדשבורד. */}
+                {price > (salePrice ?? price) && (
+                  <span style={{ fontWeight: 500, color: MUTED }}>{t.product.afterLaunchThen}<span style={{ fontWeight: 800, fontSize: '17px', color: DARK, whiteSpace: 'nowrap' }}>₪{price.toLocaleString('he-IL')}</span></span>
+                )}
               </span>
             )}
           </>
